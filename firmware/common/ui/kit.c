@@ -2,7 +2,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "ui_internal.h"
+#include "kit.h"
 
 /* ---- Sprite cache --------------------------------------------------------
  * Art is stored as 8-bit indexed pixels; on first use it is expanded to
@@ -81,12 +81,11 @@ void gfx_release_screen(void) {
     }
 }
 
-const wf_sprite *icon(int id) { return &wf_ui_icons[id]; }
 
 /* ---- Basics ---------------------------------------------------------------- */
 void kit_pos(lv_obj_t *obj, int x, int y) { lv_obj_align(obj, LV_ALIGN_CENTER, x - CX, y - CY); }
 
-lv_obj_t *kit_screen(int scene) {
+lv_obj_t *kit_screen(const wf_sprite *scene) {
     lv_obj_t *old = lv_screen_active();
     lv_obj_t *scr = lv_obj_create(NULL);
     lv_obj_remove_style_all(scr);
@@ -98,9 +97,9 @@ lv_obj_t *kit_screen(int scene) {
     lv_obj_clean(lv_layer_top());
     if (old && old != scr) lv_obj_delete(old);
     gfx_release_screen();
-    if (scene >= 0) {
+    if (scene) {
         lv_obj_t *bg = lv_image_create(scr);
-        lv_image_set_src(bg, gfx_sprite(&wf_scenes[scene], PIX));
+        lv_image_set_src(bg, gfx_sprite(scene, PIX));
         lv_obj_set_pos(bg, -1, -1);
         lv_obj_remove_flag(bg, LV_OBJ_FLAG_CLICKABLE);
     }
@@ -384,6 +383,8 @@ void kit_burst(lv_obj_t *parent, const wf_sprite *ic, int x, int y, int count) {
 }
 
 static lv_obj_t *toast_obj;
+static char last_toast[64];
+const char *kit_last_toast(void) { return last_toast; }
 static void toast_gone(lv_anim_t *a) {
     if (a->var == toast_obj) toast_obj = NULL;
     lv_obj_delete_async(a->var);
@@ -412,7 +413,7 @@ void kit_toast(const char *text, const wf_sprite *ic) {
     lv_label_set_text(l, text);
     kit_pos(p, CX, 128);
     toast_obj = p;
-    snprintf(ui.toast, sizeof ui.toast, "%s", text);
+    snprintf(last_toast, sizeof last_toast, "%s", text);
     lv_anim_t a;
     lv_anim_init(&a);
     lv_anim_set_var(&a, p);
@@ -484,9 +485,6 @@ void kit_dialog_close(lv_obj_t *dialog) {
     if (dialog && lv_obj_is_valid(dialog)) lv_obj_delete_async(dialog);
 }
 
-lv_obj_t *kit_back_button(lv_obj_t *parent, lv_event_cb_t cb) {
-    return kit_round_button(parent, icon(WF_ICON_BACK), NULL, CX, 420, 60, COL_PANEL_HI, cb, 0);
-}
 
 const char *fmt_duration(uint32_t s, char *buf, size_t cap) {
     if (s >= 3600) snprintf(buf, cap, "%luh %02lum", (unsigned long)(s / 3600), (unsigned long)(s / 60 % 60));

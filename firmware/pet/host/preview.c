@@ -26,11 +26,10 @@ uint32_t wf_platform_random(void) { rnd = rnd * 1664525u + 1013904223u; return r
 void *wf_platform_big_alloc(size_t n) { return malloc(n); }
 void wf_platform_big_free(void *p) { free(p); }
 static int saves;
-void wf_platform_save(const wf_game *g) {
-    static uint8_t buf[WF_SAVE_BYTES];
+void wf_platform_save(const void *data, size_t len) {
     wf_game back;
-    size_t n = wf_save_encode(g, (uint32_t)++saves, buf, sizeof buf);
-    if (n != WF_SAVE_BYTES || !wf_save_decode(buf, n, &back, NULL)) { fprintf(stderr, "save roundtrip failed\n"); exit(1); }
+    if (!wf_save_decode(data, len, &back, NULL)) { fprintf(stderr, "save roundtrip failed\n"); exit(1); }
+    saves++;
 }
 void wf_platform_brightness(int p) { (void)p; }
 static bool radio;

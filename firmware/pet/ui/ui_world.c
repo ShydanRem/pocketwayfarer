@@ -21,7 +21,7 @@ static void on_island(lv_event_t *e) {
 }
 
 void scr_map(void) {
-    lv_obj_t *s = kit_screen(WF_SCENE_MAP);
+    lv_obj_t *s = pet_screen(WF_SCENE_MAP);
     for (int z = 0; z < WF_ZONE_COUNT; z++) {
         int x = wf_map_islands[z][0] * PIX, y = wf_map_islands[z][1] * PIX;
         bool open = z <= ui.g.zone_unlocked;
@@ -127,7 +127,7 @@ static void on_expedition(lv_event_t *e) {
 
 void scr_zone(void) {
     const wf_zone_info *z = wf_zone_get(ui.zone);
-    lv_obj_t *s = kit_screen(WF_SCENE_ARENA_MEADOW + z->scene);
+    lv_obj_t *s = pet_screen(WF_SCENE_ARENA_MEADOW + z->scene);
     kit_dim(s, 140);
     kit_label(s, &wf_font_big, COL_GOLD, z->name, CX, 76);
     char buf[96];
@@ -281,7 +281,7 @@ static void layout_peers(void) {
 }
 
 void scr_link(void) {
-    link_scr = kit_screen(-1);
+    link_scr = pet_screen(-1);
     lv_obj_set_style_bg_color(link_scr, lv_color_hex(0x0a1a24), 0);
     memset(peer_btn, 0, sizeof peer_btn);
     memset(peer_lbl, 0, sizeof peer_lbl);

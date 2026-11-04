@@ -1,6 +1,7 @@
 #pragma once
 /* Timing widgets drawn around the round display. */
-#include "ui_internal.h"
+#include "kit.h"
+#include "timing.h"
 
 typedef struct {
     lv_obj_t *root, *spark, *zones[3];
@@ -25,7 +26,8 @@ int ring_judge(ring_widget *w);
 bool ring_expired(const ring_widget *w);
 void ring_close(ring_widget *w);
 
-void parry_open(parry_widget *w, lv_obj_t *parent, const wf_parry *p, uint32_t color, lv_event_cb_t cb);
+void parry_open(parry_widget *w, lv_obj_t *parent, const wf_parry *p, uint32_t color, const wf_sprite *shield,
+                lv_event_cb_t cb);
 void parry_update(parry_widget *w);
 int parry_judge(parry_widget *w);
 bool parry_expired(const parry_widget *w);

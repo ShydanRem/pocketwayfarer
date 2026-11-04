@@ -2,8 +2,18 @@
 #include <stdio.h>
 #include <string.h>
 #include "ui_internal.h"
+#include "save.h"
+
+uint8_t wf_lang;
 
 wf_ui_state ui;
+
+const wf_sprite *icon(int id) { return &wf_ui_icons[id]; }
+lv_obj_t *pet_screen(int scene) { return kit_screen(scene >= 0 ? &wf_scenes[scene] : NULL); }
+lv_obj_t *kit_back_button(lv_obj_t *parent, lv_event_cb_t cb) {
+    return kit_round_button(parent, icon(WF_ICON_BACK), NULL, CX, 420, 60, COL_PANEL_HI, cb, 0);
+}
+
 
 static uint32_t last_tick_s;
 static uint32_t save_due_s;
@@ -20,7 +30,10 @@ void mark_dirty(void) {
 
 void wf_ui_flush_save(void) {
     if (!ui.loaded) return;
-    wf_platform_save(&ui.g);
+    static uint8_t buf[WF_SAVE_BYTES];
+    static uint32_t seq;
+    size_t n = wf_save_encode(&ui.g, ++seq, buf, sizeof buf);
+    if (n) wf_platform_save(buf, n);
     ui.dirty = false;
     save_due_s = 0;
     ui.last_save_s = now_s();
@@ -93,7 +106,7 @@ static void on_begin(lv_event_t *e) {
 }
 
 void scr_onboard(void) {
-    lv_obj_t *s = kit_screen(WF_SCENE_HOME_NIGHT);
+    lv_obj_t *s = pet_screen(WF_SCENE_HOME_NIGHT);
     kit_dim(s, 90);
     lv_obj_t *t = kit_label(s, &wf_font_huge, COL_GOLD, "Pocket\nWayfarer", CX, 92);
     lv_obj_set_style_text_line_space(t, 4, 0);
@@ -238,3 +251,21 @@ void wf_ui_link_rx(const uint8_t from[6], const uint8_t *data, size_t len) {
     if (!ui.loaded) return;
     wf_link_receive(&ui.link, &ui.g, from, data, len, lv_tick_get(), now_s());
 }
+
+/* ---- App interface (common/platform.h) -------------------------------------- */
+const char *wf_app_save_key(void) { return "pet"; }
+size_t wf_app_save_max(void) { return WF_SAVE_BYTES; }
+void wf_app_start(const uint8_t *save, size_t len) {
+    static wf_game loaded;
+    bool ok = save && wf_save_decode(save, len, &loaded, NULL);
+    wf_ui_start(ok ? &loaded : NULL);
+}
+void wf_app_tick(void) { wf_ui_tick(); }
+bool wf_app_key(int key) { return wf_ui_key(key); }
+void wf_app_link_rx(const uint8_t from[6], const uint8_t *data, size_t len) { wf_ui_link_rx(from, data, len); }
+void wf_app_flush_save(void) { wf_ui_flush_save(); }
+bool wf_app_busy(void) {
+    int s = ui.screen;
+    return s == WF_SCR_BATTLE || s == WF_SCR_DUEL || s == WF_SCR_PLAY || s == WF_SCR_TRAIN || s == WF_SCR_LINK;
+}
+void wf_app_wake(void) { go(WF_SCR_HOME); }

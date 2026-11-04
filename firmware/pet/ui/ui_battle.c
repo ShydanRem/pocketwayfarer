@@ -2,6 +2,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
+#include "ui_internal.h"
 #include "ring.h"
 
 enum { PH_INTRO, PH_CHOOSE, PH_RING, PH_ANIM, PH_TELEGRAPH, PH_PARRY, PH_WAIT, PH_END };
@@ -357,7 +358,7 @@ static void side_panel(int side, int x, int y, int bar_w) {
 }
 
 static void build(int scene) {
-    B.scr = kit_screen(scene);
+    B.scr = pet_screen(scene);
     memset(&B.ring, 0, sizeof B.ring);
     memset(&B.parry, 0, sizeof B.parry);
     B.items_dlg = B.end_dlg = NULL;
@@ -497,7 +498,7 @@ void battle_tick(void) {
             wf_parry p;
             wf_parry_make(&p, &r, B.b->f[0].spd, B.b->f[1].spd, B.b->boss);
             uint32_t color = B.b->foe_intent == WF_ACT_SKILL ? 0xff6a3a : 0xff4f7a;
-            parry_open(&B.parry, B.scr, &p, color, on_parry_tap);
+            parry_open(&B.parry, B.scr, &p, color, icon(WF_ICON_SHIELD), on_parry_tap);
             phase(PH_PARRY);
         }
         break;

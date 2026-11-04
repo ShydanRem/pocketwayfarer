@@ -44,7 +44,7 @@ static void on_menu_item(lv_event_t *e) {
 }
 
 void scr_menu(void) {
-    lv_obj_t *s = kit_screen(home_scene());
+    lv_obj_t *s = pet_screen(home_scene());
     lv_obj_t *dim = kit_dim(s, 165);
     lv_obj_add_event_cb(dim, on_home, LV_EVENT_CLICKED, NULL);
     static const char *const names[M_COUNT] = {"Nutri", "Gioca", "Allena", "Esplora", "Legami", "Zaino", "Diario", NULL};
@@ -117,7 +117,7 @@ static void on_feed(lv_event_t *e) {
 static void on_shop(lv_event_t *e) { (void)e; go(WF_SCR_SHOP); }
 
 void scr_feed(void) {
-    lv_obj_t *s = kit_screen(home_scene());
+    lv_obj_t *s = pet_screen(home_scene());
     kit_dim(s, 150);
     food_count = 0;
     for (int i = 0; i < WF_IT_COUNT; i++)
@@ -234,7 +234,7 @@ static void bag_fill(void) {
 }
 
 void scr_bag(void) {
-    lv_obj_t *s = kit_screen(-1);
+    lv_obj_t *s = pet_screen(-1);
     lv_obj_set_style_bg_color(s, lv_color_hex(0x141830), 0);
     kit_text_button(s, "Zaino", CX - 66, 62, 120, 44, ui.bag_tab ? COL_PANEL_HI : COL_BTN, on_tab, 0);
     kit_text_button(s, "Bottega", CX + 66, 62, 120, 44, ui.bag_tab ? COL_BTN : COL_PANEL_HI, on_tab, 1);
@@ -308,7 +308,7 @@ void scr_diary(void) {
         old_list = lv_obj_get_child(lv_screen_active(), 0);
         if (old_list) diary_scroll = lv_obj_get_scroll_y(old_list);
     }
-    lv_obj_t *s = kit_screen(-1);
+    lv_obj_t *s = pet_screen(-1);
     lv_obj_set_style_bg_color(s, lv_color_hex(0x1a1630), 0);
     lv_obj_t *list = lv_obj_create(s);
     lv_obj_remove_style_all(list);

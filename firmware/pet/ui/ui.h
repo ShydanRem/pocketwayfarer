@@ -11,24 +11,13 @@
 #include "game.h"
 #include "link.h"
 
-#define WF_RES 466
-
-/* ---- Hooks implemented by the platform ------------------------------- */
-uint32_t wf_platform_now_s(void);          /* wall clock (RTC) seconds */
-uint32_t wf_platform_random(void);
-void *wf_platform_big_alloc(size_t bytes); /* PSRAM on the device */
-void wf_platform_big_free(void *p);
-void wf_platform_save(const wf_game *g);   /* persist (called sparingly) */
-void wf_platform_brightness(int percent);
-void wf_platform_radio(bool on);           /* ESP-NOW on/off */
-void wf_platform_link_send(void *ctx, const uint8_t *peer, const uint8_t *data, size_t len);
+#include "platform.h"
 
 /* ---- UI API ---------------------------------------------------------- */
 /* `loaded` = NULL starts the onboarding (new companion). */
 void wf_ui_start(const wf_game *loaded);
 /* Call every few ms from the LVGL task, after lv_timer_handler(). */
 void wf_ui_tick(void);
-enum { WF_KEY_BOOT_SHORT = 0, WF_KEY_BOOT_LONG, WF_KEY_PWR_SHORT };
 /* Returns true when the UI consumed the key. */
 bool wf_ui_key(int key);
 /* Radio frame received (from the ESP-NOW callback, marshalled to the LVGL task). */

@@ -14,34 +14,35 @@
 #include "lvgl.h"
 #include "nvs.h"
 #include "nvs_flash.h"
-#include "save.h"
-#include "ui.h"
+#include "platform.h"
 
 static const char *TAG = "wayfarer";
 #define NVS_PART "wf_nvs"
 #define RADIO_CHANNEL 1
 #define IDLE_OFF_MS 45000u
+#define RX_MAX 120
 
 /* ---- Storage ------------------------------------------------------------------ */
-static uint32_t save_seq;
-
-static bool load_game(wf_game *g) {
+static uint8_t *load_save(size_t *len) {
     nvs_handle_t h;
-    if (nvs_open_from_partition(NVS_PART, "wayfarer", NVS_READONLY, &h) != ESP_OK) return false;
-    static uint8_t buf[WF_SAVE_BYTES];
-    size_t len = sizeof buf;
-    bool ok = nvs_get_blob(h, "save", buf, &len) == ESP_OK && wf_save_decode(buf, len, g, &save_seq);
+    if (nvs_open_from_partition(NVS_PART, "wayfarer", NVS_READONLY, &h) != ESP_OK) return NULL;
+    size_t cap = wf_app_save_max();
+    uint8_t *buf = heap_caps_malloc(cap, MALLOC_CAP_8BIT);
+    *len = cap;
+    if (buf && nvs_get_blob(h, wf_app_save_key(), buf, len) != ESP_OK) {
+        heap_caps_free(buf);
+        buf = NULL;
+    }
     nvs_close(h);
-    return ok;
+    return buf;
 }
 
-void wf_platform_save(const wf_game *g) {
-    static uint8_t buf[WF_SAVE_BYTES];
-    size_t n = wf_save_encode(g, ++save_seq, buf, sizeof buf);
+void wf_platform_save(const void *data, size_t len) {
     nvs_handle_t h;
-    if (!n || nvs_open_from_partition(NVS_PART, "wayfarer", NVS_READWRITE, &h) != ESP_OK) return;
+    if (nvs_open_from_partition(NVS_PART, "wayfarer", NVS_READWRITE, &h) != ESP_OK) return;
     /* NVS commits a blob atomically: a power cut keeps the previous save. */
-    if (nvs_set_blob(h, "save", buf, n) != ESP_OK || nvs_commit(h) != ESP_OK) ESP_LOGW(TAG, "save failed");
+    if (nvs_set_blob(h, wf_app_save_key(), data, len) != ESP_OK || nvs_commit(h) != ESP_OK)
+        ESP_LOGW(TAG, "save failed");
     nvs_close(h);
 }
 
@@ -59,7 +60,7 @@ void wf_platform_brightness(int percent) { board_brightness((unsigned)percent); 
 typedef struct {
     uint8_t from[6];
     uint8_t len;
-    uint8_t data[WF_PACKET_BYTES];
+    uint8_t data[RX_MAX];
 } rx_frame;
 
 static QueueHandle_t rx_queue;
@@ -67,7 +68,7 @@ static bool wifi_ready, radio_on;
 static const uint8_t broadcast[6] = {0xff, 0xff, 0xff, 0xff, 0xff, 0xff};
 
 static void on_recv(const esp_now_recv_info_t *info, const uint8_t *data, int len) {
-    if (len != WF_PACKET_BYTES || !rx_queue) return;
+    if (len <= 0 || len > RX_MAX || !rx_queue) return;
     rx_frame f;
     memcpy(f.from, info->src_addr, 6);
     f.len = (uint8_t)len;
@@ -166,9 +167,10 @@ void app_main(void) {
 
     board_init();
     ESP_LOGI(TAG, "RTC %s, time %lu", board_rtc_ok() ? "ok" : "missing", (unsigned long)board_rtc_now());
-    static wf_game saved;
-    bool have = load_game(&saved);
-    wf_ui_start(have ? &saved : NULL);
+    size_t save_len = 0;
+    uint8_t *save = load_save(&save_len);
+    wf_app_start(save, save_len);
+    if (save) heap_caps_free(save);
 
     key_state k[2] = {0};
     bool screen_on = true;
@@ -177,16 +179,13 @@ void app_main(void) {
         keys(k, &pwr, &boot, &boot_long);
         if (screen_on) {
             board_tick();
-            wf_ui_tick();
+            wf_app_tick();
             rx_frame f;
-            while (xQueueReceive(rx_queue, &f, 0) == pdTRUE) wf_ui_link_rx(f.from, f.data, f.len);
-            if (boot) wf_ui_key(WF_KEY_BOOT_SHORT);
-            if (boot_long) wf_ui_key(WF_KEY_BOOT_LONG);
-            int scr = wf_ui_screen();
-            bool busy = scr == WF_SCR_BATTLE || scr == WF_SCR_DUEL || scr == WF_SCR_PLAY || scr == WF_SCR_TRAIN ||
-                        scr == WF_SCR_LINK;
-            if (pwr || (!busy && lv_display_get_inactive_time(NULL) > IDLE_OFF_MS)) {
-                wf_ui_flush_save();
+            while (xQueueReceive(rx_queue, &f, 0) == pdTRUE) wf_app_link_rx(f.from, f.data, f.len);
+            if (boot) wf_app_key(WF_KEY_BOOT_SHORT);
+            if (boot_long) wf_app_key(WF_KEY_BOOT_LONG);
+            if (pwr || (!wf_app_busy() && lv_display_get_inactive_time(NULL) > IDLE_OFF_MS)) {
+                wf_app_flush_save();
                 wf_platform_radio(false);
                 board_panel(false);
                 screen_on = false;
@@ -200,7 +199,7 @@ void app_main(void) {
                 screen_on = true;
                 /* Swallow the key/touch that woke us up. */
                 while (k[0].level || k[1].level) { keys(k, &pwr, &boot, &boot_long); vTaskDelay(pdMS_TO_TICKS(20)); }
-                wf_ui_goto(WF_SCR_HOME);
+                wf_app_wake();
             }
         }
     }

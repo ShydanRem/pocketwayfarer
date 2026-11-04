@@ -7,6 +7,8 @@
 #include <stdint.h>
 #include "rng.h"
 
+enum { WF_Q_MISS = 0, WF_Q_GOOD, WF_Q_GREAT, WF_Q_PERFECT };
+
 typedef struct {
     uint16_t period_ms;     /* one full revolution */
     int16_t start;          /* spark angle at t=0, degrees clockwise from 12 o'clock */

@@ -7,8 +7,7 @@
 #include <stdbool.h>
 #include <stdint.h>
 #include "game.h"
-
-enum { WF_Q_MISS = 0, WF_Q_GOOD, WF_Q_GREAT, WF_Q_PERFECT };
+#include "timing.h"
 
 typedef enum {
     WF_ACT_STRIKE = 0,

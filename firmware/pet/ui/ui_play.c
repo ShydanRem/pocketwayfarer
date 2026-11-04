@@ -2,6 +2,7 @@
 #include <math.h>
 #include <stdio.h>
 #include <string.h>
+#include "ui_internal.h"
 #include "ring.h"
 
 static void on_home(lv_event_t *e) { (void)e; go(WF_SCR_HOME); }
@@ -74,7 +75,7 @@ static void spawn(void) {
 }
 
 void scr_play(void) {
-    play_scr = kit_screen(WF_SCENE_HOME_NIGHT);
+    play_scr = pet_screen(WF_SCENE_HOME_NIGHT);
     memset(stars, 0, sizeof stars);
     score = combo = 0;
     play_over = false;
@@ -213,7 +214,7 @@ static void on_pick(lv_event_t *e) {
 }
 
 void scr_train(void) {
-    train_scr = kit_screen(WF_SCENE_ARENA_MEADOW);
+    train_scr = pet_screen(WF_SCENE_ARENA_MEADOW);
     memset(&tring, 0, sizeof tring);
     if (train_stat < 0) {
         kit_dim(train_scr, 120);

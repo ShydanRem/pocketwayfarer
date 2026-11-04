@@ -76,7 +76,8 @@ void ring_close(ring_widget *w) {
     w->active = false;
 }
 
-void parry_open(parry_widget *w, lv_obj_t *parent, const wf_parry *p, uint32_t color, lv_event_cb_t cb) {
+void parry_open(parry_widget *w, lv_obj_t *parent, const wf_parry *p, uint32_t color, const wf_sprite *shield,
+                lv_event_cb_t cb) {
     w->parry = *p;
     w->color = color;
     w->root = catcher(parent, cb, w);
@@ -91,9 +92,11 @@ void parry_open(parry_widget *w, lv_obj_t *parent, const wf_parry *p, uint32_t c
     lv_obj_set_style_bg_color(w->guard, lv_color_hex(0x5aa0ff), 0);
     lv_obj_set_style_bg_opa(w->guard, 50, 0);
     lv_obj_remove_flag(w->guard, LV_OBJ_FLAG_CLICKABLE);
-    lv_obj_t *ic = lv_image_create(w->guard);
-    lv_image_set_src(ic, gfx_sprite(icon(WF_ICON_SHIELD), 3));
-    lv_obj_center(ic);
+    if (shield) {
+        lv_obj_t *ic = lv_image_create(w->guard);
+        lv_image_set_src(ic, gfx_sprite(shield, 3));
+        lv_obj_center(ic);
+    }
     w->wave = lv_obj_create(w->root);
     lv_obj_remove_style_all(w->wave);
     lv_obj_set_style_radius(w->wave, LV_RADIUS_CIRCLE, 0);
@@ -128,7 +131,8 @@ void parry_close(parry_widget *w) {
 }
 
 void quality_popup(lv_obj_t *parent, int q, int x, int y) {
-    static const char *const words[] = {"Mancato", "Bene", "Ottimo!", "PERFETTO!"};
+    static const char *const it[] = {"Mancato", "Bene", "Ottimo!", "PERFETTO!"};
+    static const char *const en[] = {"Miss", "Good", "Great!", "PERFECT!"};
     static const uint32_t colors[] = {COL_DIM, COL_TEXT, COL_HP, COL_GOLD};
-    kit_float_text(parent, words[q & 3], colors[q & 3], q == 3 ? &wf_font_huge : &wf_font_big, x, y);
+    kit_float_text(parent, TR(it[q & 3], en[q & 3]), colors[q & 3], q == 3 ? &wf_font_huge : &wf_font_big, x, y);
 }

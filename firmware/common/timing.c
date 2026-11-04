@@ -1,5 +1,4 @@
 #include "timing.h"
-#include "battle.h"
 
 int wf_angle_diff(int a, int b) {
     int d = (a - b) % 360;

@@ -255,7 +255,7 @@ void scr_home(void) {
     int hour = ui_hour();
     int scene = hour >= 7 && hour < 18 ? WF_SCENE_HOME_DAY : hour >= 18 && hour < 21 ? WF_SCENE_HOME_DUSK
               : WF_SCENE_HOME_NIGHT;
-    scr = kit_screen(scene);
+    scr = pet_screen(scene);
     shown_form = -1;
     expr_override = -1;
     hatch_running = false;
