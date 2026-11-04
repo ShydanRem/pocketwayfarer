@@ -1,0 +1,20 @@
+cmake_minimum_required(VERSION 3.16)
+project(pocketwayfarer_host C)
+set(CMAKE_C_STANDARD 11)
+set(CONFIG_LV_BUILD_DEMOS OFF CACHE BOOL "" FORCE)
+set(CONFIG_LV_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+set(CONFIG_LV_USE_THORVG_INTERNAL OFF CACHE BOOL "" FORCE)
+set(LV_BUILD_CONF_PATH "${CMAKE_CURRENT_LIST_DIR}/lv_conf.h" CACHE PATH "" FORCE)
+add_subdirectory(../.deps/lvgl lvgl)
+
+file(GLOB CORE ../core/*.c)
+file(GLOB UI ../ui/*.c ../ui/art/*.c)
+
+add_executable(test_core test_core.c ${CORE})
+target_include_directories(test_core PRIVATE ../core)
+target_compile_options(test_core PRIVATE -Wall -Wextra -Werror)
+
+add_executable(preview preview.c ${CORE} ${UI})
+target_include_directories(preview PRIVATE ../core ../ui)
+target_compile_options(preview PRIVATE -Wall -Wextra -Wno-unused-parameter)
+target_link_libraries(preview lvgl m)

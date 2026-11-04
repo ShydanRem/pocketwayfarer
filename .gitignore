@@ -1,0 +1,9 @@
+firmware/.deps/
+firmware/build/
+firmware/sdkconfig
+firmware/sdkconfig.old
+firmware/managed_components/
+build/
+*.ppm
+__pycache__/
+node_modules/
