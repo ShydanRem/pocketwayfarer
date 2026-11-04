@@ -4,6 +4,7 @@
  * Plain C11, integer arithmetic only (deterministic on every device), no LVGL.
  * Design: docs/RPG-DESIGN.md. */
 #include <stdbool.h>
+#include <stddef.h>
 #include <stdint.h>
 #include "i18n.h"
 #include "rng.h"

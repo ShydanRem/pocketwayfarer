@@ -30,13 +30,20 @@ cd firmware && idf.py set-target esp32s3 && idf.py build
 idf.py -p /dev/ttyACM0 flash monitor
 ```
 
+## Due giochi, un firmware
+
+`firmware/main` è indipendente dal gioco: parla con l'interfaccia "app" di
+`common/platform.h`. `-DWF_GAME=rpg` (predefinito) compila l'RPG, `-DWF_GAME=pet`
+il compagno della v0.1. Ognuno salva con la propria chiave NVS.
+
 ## Memoria
 
 | | |
 |---|---|
 | App | partizione `factory` da 6 MB |
-| Salvataggio | partizione NVS `wf_nvs` (256 KB), un blob versionato con CRC32 (`core/save.c`), scritto in modo atomico da NVS |
-| Grafica | sprite indicizzati 8 bit in flash (~450 KB), espansi a 3× in PSRAM (RGB565 + alfa) alla prima visualizzazione e liberati a ogni cambio schermata; le icone restano in cache |
+| Salvataggio | partizione NVS `wf_nvs` (256 KB), un blob versionato con CRC32 (~1,4 KB per l'RPG), scritto in modo atomico da NVS |
+| Grafica | sprite indicizzati 8 bit in flash, espansi a 3× in PSRAM (RGB565 + alfa) alla prima visualizzazione e liberati a ogni cambio schermata; l'eroe è composto a runtime da 13 livelli ritagliati |
+| Binario | RPG ~1,9 MB, compagno ~1,6 MB |
 | Rendering | LVGL a buffer parziale (466×48 righe, DMA interna), lettura touch ogni 10 ms per i minigiochi di timing |
 
 ## Tempo
@@ -62,9 +69,10 @@ si corregge dal Diario senza toccare la simulazione.
 
 1. verifica che la grafica generata sia aggiornata (`build_art.py --check`);
 2. compila ed esegue i test del core con AddressSanitizer/UBSan;
-3. compila la vera UI LVGL per PC ed esegue `preview`, che gioca uno scenario
-   completo (schiusa, cura, lotta con anello e parata, mappa, minigiochi,
-   duello con un secondo Pocket virtuale) e salva gli screenshot in `docs/img`.
+3. compila la vera UI LVGL per PC ed esegue i preview dei due giochi, che
+   giocano uno scenario completo (per l'RPG: creazione dell'eroe, città,
+   lotta con anello e parata, cambio classe, equip, bottega, forgia, dungeon,
+   boss, caccia automatica, inglese) e salvano gli screenshot in `docs/img`.
 
 ## Collaudo
 
@@ -75,4 +83,5 @@ Non ancora eseguito sull'hardware. Da verificare, in ordine:
 - [ ] tasti BOOT/PWR, spegnimento e risveglio, consumi in light sleep
 - [ ] RTC: ora conservata a dispositivo spento con batteria
 - [ ] salvataggio dopo stacco improvviso dell'alimentazione
-- [ ] Legami tra due Pocket: vicini, saluto, dono, duello completo
+- [ ] fluidità della composizione dell'eroe e dei cambi schermata
+- [ ] (compagno v0.1) Legami tra due Pocket: vicini, saluto, dono, duello

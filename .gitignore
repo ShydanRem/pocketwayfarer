@@ -7,3 +7,4 @@ build/
 *.ppm
 __pycache__/
 node_modules/
+firmware/build-pet/
