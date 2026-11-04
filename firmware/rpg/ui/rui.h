@@ -2,6 +2,7 @@
 /* RPG user interface — internal header shared by the r_*.c screens. */
 #include "kit.h"
 #include "ring.h"
+#include "fx.h"
 #include "rpg.h"
 #include "timing.h"
 #include "art/rpg_art.h"
@@ -35,6 +36,8 @@ void r_dirty(void);
 void r_save_now(void);
 void r_go(int screen);
 const wf_sprite *ri(int id);
+/* Scene background plus its ambient lights and particles. */
+lv_obj_t *r_scene(int scene);
 
 /* Hero picture --------------------------------------------------------------- */
 typedef struct {

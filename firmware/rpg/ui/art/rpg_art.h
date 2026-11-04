@@ -3,6 +3,8 @@
 #include "sprite.h"
 #include "rpg.h"
 
+#include "fx.h"
+typedef struct { uint8_t particles; uint32_t color; uint8_t nlights; fx_light lights[12]; } rpg_scene_fx;
 /* Hero layer: cropped sprite drawn at (x, y) on the 48x48 hero grid. */
 typedef struct { wf_sprite s; int8_t x, y; } wf_layer;
 
@@ -58,7 +60,8 @@ enum {
     RS_COUNT
 };
 
-static const uint8_t rpg_world_spots[5][2] = {{78, 122}, {34, 92}, {44, 42}, {106, 30}, {124, 82}};
+/* Map spots in screen pixels: five zones, then the town. */
+static const uint16_t rpg_world_spots[6][2] = {{232, 372}, {108, 284}, {132, 128}, {320, 88}, {376, 248}, {232, 220}};
 
 extern const wf_layer rpg_body[RACE_COUNT][5];
 extern const wf_layer rpg_face[4][4][2];
@@ -81,3 +84,4 @@ extern const wf_sprite rpg_element_icons[EL_COUNT];
 extern const wf_sprite rpg_skill_icons[11];
 extern const wf_sprite rpg_ui_icons[RI_COUNT];
 extern const wf_sprite rpg_scenes[RS_COUNT];
+extern const rpg_scene_fx rpg_scene_fxs[RS_COUNT];

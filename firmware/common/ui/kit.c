@@ -99,8 +99,9 @@ lv_obj_t *kit_screen(const wf_sprite *scene) {
     gfx_release_screen();
     if (scene) {
         lv_obj_t *bg = lv_image_create(scr);
-        lv_image_set_src(bg, gfx_sprite(scene, PIX));
-        lv_obj_set_pos(bg, -1, -1);
+        int scale = (WF_RES + scene->w - 1) / scene->w;
+        lv_image_set_src(bg, gfx_sprite(scene, scale));
+        lv_obj_set_pos(bg, -(scene->w * scale - WF_RES) / 2, -(scene->h * scale - WF_RES) / 2);
         lv_obj_remove_flag(bg, LV_OBJ_FLAG_CLICKABLE);
     }
     return scr;

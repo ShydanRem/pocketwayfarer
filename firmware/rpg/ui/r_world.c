@@ -22,9 +22,9 @@ static void on_spot(lv_event_t *e) {
 }
 
 void scr_map(void) {
-    lv_obj_t *s = kit_screen(&rpg_scenes[RS_WORLD]);
+    lv_obj_t *s = r_scene(RS_WORLD);
     for (int z = 0; z < RPG_ZONES; z++) {
-        int x = rpg_world_spots[z][0] * 3, y = rpg_world_spots[z][1] * 3;
+        int x = rpg_world_spots[z][0], y = rpg_world_spots[z][1];
         bool open = z <= R.g.zone_unlocked;
         lv_obj_t *hit = lv_obj_create(s);
         lv_obj_remove_style_all(hit);
@@ -46,10 +46,10 @@ void scr_map(void) {
     lv_obj_t *town = lv_obj_create(s);
     lv_obj_remove_style_all(town);
     lv_obj_set_size(town, 90, 70);
-    kit_pos(town, 234, 222);
+    kit_pos(town, rpg_world_spots[5][0], rpg_world_spots[5][1]);
     lv_obj_add_flag(town, LV_OBJ_FLAG_CLICKABLE);
     lv_obj_add_event_cb(town, on_go, LV_EVENT_CLICKED, (void *)(intptr_t)R_TOWN);
-    kit_pill(s, TR("Borgo Lanterna", "Lantern Hollow"), 234, 262);
+    kit_pill(s, TR("Borgo Lanterna", "Lantern Hollow"), rpg_world_spots[5][0], rpg_world_spots[5][1] + 36);
 }
 
 /* ---- Zone ---------------------------------------------------------------------------- */
@@ -82,7 +82,7 @@ static void on_enter(lv_event_t *e) {
 
 void scr_zone(void) {
     const rpg_zone_info *z = rpg_zone(R.zone);
-    lv_obj_t *s = kit_screen(&rpg_scenes[RS_FIELD_MEADOW + z->field_scene]);
+    lv_obj_t *s = r_scene(RS_FIELD_MEADOW + z->field_scene);
     kit_dim(s, 130);
     kit_label(s, &wf_font_big, COL_GOLD, TX(z->field_name), CX, 70);
     char buf[128];
@@ -280,7 +280,7 @@ void scr_dungeon(void) {
     if (!run->active) { r_go(R_TOWN); return; }
     R.shop_in_dungeon = false;
     const rpg_zone_info *z = rpg_zone(run->zone);
-    lv_obj_t *s = kit_screen(&rpg_scenes[RS_DUNGEON_CRYPT + z->dungeon_scene]);
+    lv_obj_t *s = r_scene(RS_DUNGEON_CRYPT + z->dungeon_scene);
     kit_dim(s, 150);
     r_vitals_arcs(s, &d_hp, &d_sp);
     rpg_stats st;

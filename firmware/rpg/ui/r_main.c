@@ -10,6 +10,13 @@ uint32_t r_now(void) { return wf_platform_now_s(); }
 int r_hour(void) { return (int)((r_now() / 3600u + R.g.hour_offset) % 24u); }
 const wf_sprite *ri(int id) { return &rpg_ui_icons[id]; }
 
+lv_obj_t *r_scene(int scene) {
+    lv_obj_t *s = kit_screen(&rpg_scenes[scene]);
+    const rpg_scene_fx *f = &rpg_scene_fxs[scene];
+    fx_scene(s, f->lights, f->nlights, f->particles, f->color, 16);
+    return s;
+}
+
 void r_dirty(void) {
     R.dirty = true;
     uint32_t t = r_now() + 3;
@@ -64,7 +71,7 @@ static void on_lang(lv_event_t *e) {
 }
 
 void scr_title(void) {
-    lv_obj_t *s = kit_screen(&rpg_scenes[RS_TITLE]);
+    lv_obj_t *s = r_scene(RS_TITLE);
     lv_obj_t *t = kit_label(s, &wf_font_huge, COL_GOLD, "Pocket\nWayfarer", CX, 116);
     lv_obj_set_style_text_line_space(t, 4, 0);
     kit_label(s, &wf_font_small, COL_TEXT, TR("Un RPG tascabile", "A pocket RPG"), CX, 182);
@@ -167,7 +174,7 @@ static void on_step(lv_event_t *e) {
 }
 
 void scr_create(void) {
-    lv_obj_t *s = kit_screen(&rpg_scenes[RS_TOWN]);
+    lv_obj_t *s = r_scene(RS_TOWN);
     kit_dim(s, 120);
     if (!draft.name[0]) {
         random_name();
@@ -318,7 +325,7 @@ static void on_soon(lv_event_t *e) {
 void scr_town(void) {
     if (R.g.run.active) { r_go(R_DUNGEON); return; }
     bool night = r_hour() < 7 || r_hour() >= 20;
-    lv_obj_t *s = kit_screen(&rpg_scenes[night ? RS_TOWN_NIGHT : RS_TOWN]);
+    lv_obj_t *s = r_scene(night ? RS_TOWN_NIGHT : RS_TOWN);
     static const uint32_t colors[3] = {COL_HUNGER, 0xffd23f, COL_MOOD};
     static const int icons_[3] = {RI_FOOD, RI_STAMINA, RI_MORALE};
     static const float mids[3] = {226.0f, 270.0f, 314.0f};
@@ -336,7 +343,8 @@ void scr_town(void) {
     lv_obj_set_style_radius(t_info, 10, 0);
     hero_look l;
     hero_look_from_game(&l, &R.g);
-    t_hero = hero_obj(s, &l, HX_IDLE, 3, CX, 262);
+    fx_shadow(s, CX, 352, 90);
+    t_hero = hero_obj(s, &l, HX_IDLE, 3, CX, 286);
     kit_bob(t_hero, 3, 1500);
     /* Hub buttons around the hero. */
     static const struct { int icon; wf_text name; int screen; int x, y; uint32_t color; } hub[] = {

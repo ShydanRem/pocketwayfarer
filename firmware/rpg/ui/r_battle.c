@@ -26,7 +26,7 @@ static struct {
 } B;
 
 #define HERO_X CX
-#define HERO_Y 336
+#define HERO_Y 352
 
 void r_start_battle(const rpg_foe *foes, int n, bool dungeon, bool boss) {
     memset(&B.b, 0, sizeof B.b);
@@ -129,6 +129,12 @@ static int play(const rpg_event *e) {
         if (e->actor < 0 || e->actor == 3) {
             lv_obj_t *t = B.foe_img[e->target];
             lunge(e->actor == 3 && B.summon ? B.summon : B.hero, (B.foe_x[e->target] - HERO_X) / 4, -40);
+            fx_sparks(B.scr, tx(e->target), ty(e->target) + 10, e->kind == EV_CRIT_HIT ? 0xffd060 : 0xfff0d0,
+                      e->kind == EV_CRIT_HIT ? 10 : 5);
+            if (e->kind == EV_CRIT_HIT) {
+                fx_flash(0xffffff, 150, 220);
+                fx_shake(B.scr, 7, 320);
+            }
             kit_flash(t, 0xffffff, 240);
             kit_shake(t, e->kind == EV_CRIT_HIT ? 10 : 5);
             snprintf(buf, sizeof buf, "-%ld", (long)e->value);
@@ -142,6 +148,10 @@ static int play(const rpg_event *e) {
             return 420;
         }
         lunge(B.foe_img[e->actor], (HERO_X - B.foe_x[e->actor]) / 4, 40);
+        if (e->value) {
+            fx_sparks(B.scr, HERO_X, HERO_Y - 10, 0xff6a4a, 5);
+            if (e->value * 5 > B.b.h.st.max_hp) { fx_shake(B.scr, 6, 280); fx_flash(0xff2a2a, 90, 200); }
+        }
         lv_obj_set_style_image_recolor(B.hero, lv_color_hex(0xff4a4a), 0);
         kit_flash(B.hero, 0xff4a4a, 260);
         kit_shake(B.hero, 6);
@@ -200,6 +210,7 @@ static int play(const rpg_event *e) {
         return 420;
     case EV_KO:
         if (e->actor >= 0 && e->actor < RPG_MAX_FOES) {
+            fx_sparks(B.scr, tx(e->actor), ty(e->actor) + 20, 0xc8a0ff, 12);
             fade_out(B.foe_img[e->actor]);
             update_foe(e->actor);
             place_marker();
@@ -505,20 +516,22 @@ static void on_parry_tap(lv_event_t *e) {
 void scr_battle(void) {
     const rpg_zone_info *z = rpg_zone(R.g.run.active && B.dungeon ? R.g.run.zone : R.zone);
     int scene = B.dungeon ? RS_DUNGEON_CRYPT + z->dungeon_scene : RS_FIELD_MEADOW + z->field_scene;
-    B.scr = kit_screen(&rpg_scenes[scene]);
+    B.scr = r_scene(scene);
     memset(&B.ring, 0, sizeof B.ring);
     memset(&B.parry, 0, sizeof B.parry);
     B.summon = NULL;
     B.skill_layer = NULL;
     B.end_dlg = B.item_dlg = NULL;
     int n = B.b.nfoes;
-    static const int xs[3][3] = {{CX, 0, 0}, {150, 316, 0}, {112, CX, 354}};
-    static const int ys[3][3] = {{176, 0, 0}, {180, 180, 0}, {190, 164, 190}};
+    static const int xs[3][3] = {{CX, 0, 0}, {140, 326, 0}, {112, CX, 354}};
+    static const int feet[3][3] = {{292, 0, 0}, {290, 290, 0}, {296, 272, 296}};
     for (int i = 0; i < n; i++) {
         const rpg_foe *f = &B.b.foe[i];
-        B.scale[i] = n == 3 && !f->boss ? 2 : 3;
+        B.scale[i] = n >= 2 && !f->boss ? 2 : 3;
         B.foe_x[i] = xs[n - 1][i];
-        B.foe_y[i] = f->boss ? 158 : ys[n - 1][i];
+        int sh = rpg_monsters[f->species][0].h * B.scale[i];
+        B.foe_y[i] = feet[n - 1][i] - sh / 2 + 4;
+        fx_shadow(B.scr, B.foe_x[i], feet[n - 1][i], n >= 2 ? 70 : f->boss ? 150 : 100);
         B.foe_img[i] = kit_img(B.scr, &rpg_monsters[f->species][0], B.scale[i], B.foe_x[i], B.foe_y[i]);
         lv_obj_add_flag(B.foe_img[i], LV_OBJ_FLAG_CLICKABLE);
         lv_obj_add_event_cb(B.foe_img[i], on_foe, LV_EVENT_CLICKED, (void *)(intptr_t)i);
@@ -532,10 +545,11 @@ void scr_battle(void) {
         B.foe_lbl[i] = kit_label(B.scr, &wf_font_small, f->elite ? COL_GOLD : COL_TEXT, buf, B.foe_x[i], by + 18);
     }
     hero_look_from_game(&B.look, &R.g);
+    fx_shadow(B.scr, HERO_X, HERO_Y + 66, 90);
     B.hero = hero_obj(B.scr, &B.look, HX_IDLE, 3, HERO_X, HERO_Y);
     kit_bob(B.hero, 3, 1500);
     r_vitals_arcs(B.scr, &B.hp_arc, &B.sp_arc);
-    B.vitals = kit_label(B.scr, &wf_font_small, COL_TEXT, "", CX, 436);
+    B.vitals = kit_label(B.scr, &wf_font_small, COL_TEXT, "", CX, 446);
     B.marker = kit_img(B.scr, ri(RI_STAR), 2, 0, 0);
     kit_bob(B.marker, 5, 600);
     static const struct { int icon, x, y, size; uint32_t color; } btn[6] = {
