@@ -32,7 +32,7 @@ jobs:
         shell: bash
         run: |
           . "$IDF_PATH/export.sh"
-          printf '%s\n' "$PATH" | tr ':' '\n' >> "$GITHUB_PATH"
+          printf '%s\n' "$(dirname "$(command -v cmake)")" "$(dirname "$(command -v python)")" >> "$GITHUB_PATH"
           python -m pip --version
       - name: Install build-time Python tools
         run: python -m pip install -r requirements-art.txt -r requirements-site.txt
