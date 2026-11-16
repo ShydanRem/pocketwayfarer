@@ -1,0 +1,50 @@
+{
+  "source_hashes": {
+    "actors.png": "3c08923d3533baa7741aaa9c4d01264e652e29cb5d26de16269d0f29683b50af",
+    "bestiary.png": "c439e670886770890b3a376ab055cb0ded564f49c9fcbdb9cf3cf25225417523",
+    "environments.png": "a416abbd1081361df88d33530c2bfe8e299d19ff11e2978b466c59d01a98f8f4",
+    "loadouts.png": "e93a3112570f9898acd2493b5cfc7fe7afc12f75e123b5cd8956938b878900f8",
+    "relics.png": "b58592d5cb1aaf4b9c82de5c241b0de0435c79377d7ccedd90d65e9d8ba491bb"
+  },
+  "font_hashes": {
+    "body.ttf": "57f73e11f51999432bf7ab22ce55b6f945d5eca1bf824404cfa9ec2e3718c84e",
+    "title.ttf": "aac3f559445d23f0f567a243f91f3f6ad6cb4b5cafa1521a3479fffe0637f0bd"
+  },
+  "source_tool": "OpenAI ImageGen",
+  "runtime_format": "8-bit indexed RGB565; binary alpha",
+  "backgrounds": {
+    "count": 2,
+    "grid": [
+      233,
+      233
+    ],
+    "display_scale": 2
+  },
+  "actors": {
+    "original": 3,
+    "loadouts": 3,
+    "additional_enemies": 5,
+    "frames_each": 4,
+    "grid": [
+      88,
+      88
+    ],
+    "display_scale": 2
+  },
+  "relics": {
+    "count": 6,
+    "grid": [
+      88,
+      88
+    ],
+    "display_scale": 2
+  },
+  "transforms": [
+    "equal-cell extraction",
+    "nearest-neighbor grid resampling",
+    "alpha threshold 128",
+    "240-color palette without dithering",
+    "RGB565 encoding"
+  ],
+  "status": "Imported static art; run the native UI smoke check for integration evidence"
+}

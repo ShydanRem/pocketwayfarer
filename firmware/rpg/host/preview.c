@@ -118,7 +118,7 @@ int main(int argc, char **argv) {
     wf_app_start(NULL, 0);
     run(500);
     shot("titolo");
-    click_text("Nuova avventura");
+    click_text("Personalizza");
     run(300);
     shot("crea-razza");
     click(374, 300);                 /* elf */
@@ -270,7 +270,7 @@ int main(int argc, char **argv) {
     rpg_hunt_start(g, 0, fake_s);
     fake_s += 3 * 3600;
     g->hour_offset = 12;
-    r_go(R_TOWN);
+    r_go(R_TOWN_CLASSIC);
     run(1200);
     shot("citta-notte-caccia");
     click(233, 146);
@@ -283,7 +283,7 @@ int main(int argc, char **argv) {
     wf_lang = 1;
     g->lang = 1;
     g->hour_offset = 0;
-    r_go(R_TOWN);
+    r_go(R_TOWN_CLASSIC);
     run(300);
     shot("town-english");
     printf("preview: %d screenshots, %d saves\n", shot_no, saves);

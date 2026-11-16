@@ -277,6 +277,7 @@ bool rpg_tick(rpg_game *g, uint32_t now) {
     if (now <= g->last_update) return changed;
     uint32_t minutes = (now - g->last_update) / 60u;
     if (!minutes) return changed;
+    uint32_t first_minute = g->last_update / 60u;
     g->last_update += minutes * 60u;
     if (minutes > 14u * 24u * 60u) minutes = 14u * 24u * 60u;
     rpg_hero *h = &g->hero;
@@ -286,7 +287,7 @@ bool rpg_tick(rpg_game *g, uint32_t now) {
     for (uint32_t i = 0; i < minutes; i++) {
         h->hunger -= 100;
         clamp_need(&h->hunger);
-        if (h->hunger == 0 && i % 30 == 0) add16(&h->morale, -1, 100);
+        if (h->hunger == 0 && (first_minute + i + 1u) % 30u == 0) add16(&h->morale, -1, 100);
         if (resting && h->hunger > 20000 && ++h->stamina_acc >= 6) {
             h->stamina_acc = 0;
             add16(&h->stamina, 1, 100);
@@ -308,6 +309,7 @@ void rpg_roll_day(rpg_game *g, uint32_t day) {
         g->daily_claimed = 0;
     }
     g->day = day;
+    g->gold_remainder = 0;
     wf_rng r;
     wf_rng_seed(&r, day * 2654435761u ^ g->rng_state);
     static const uint8_t goals[Q_KIND_COUNT][2] = {
@@ -317,7 +319,7 @@ void rpg_roll_day(rpg_game *g, uint32_t day) {
     uint16_t used = 0;
     for (int i = 0; i < RPG_QUESTS; i++) {
         int k;
-        do { k = wf_rng_range(&r, 0, Q_KIND_COUNT - 1); } while (used & (1u << k));
+        do { k = wf_rng_range(&r, 0, Q_KIND_COUNT - 1); } while (k == Q_GREET || (used & (1u << k)));
         used |= (uint16_t)(1u << k);
         rpg_quest *q = &g->quests[i];
         q->kind = (uint8_t)k;
@@ -377,6 +379,16 @@ int rpg_buy(rpg_game *g, int c, int count) {
 }
 
 /* ---- Quests, daily, friends --------------------------------------------------------- */
+void rpg_gold_add(rpg_game *g, uint32_t amount) {
+    if (amount > UINT32_MAX - g->gold) amount = UINT32_MAX - g->gold;
+    g->gold += amount;
+    bool eligible = false;
+    for (int i = 0; i < RPG_QUESTS; i++) eligible |= g->quests[i].kind == Q_GOLD && !g->quests[i].claimed;
+    if (!eligible) { g->gold_remainder = 0; return; }
+    uint32_t remainder = g->gold_remainder + amount % 50u;
+    rpg_quest_bump(g, Q_GOLD, (int)(amount / 50u + remainder / 50u));
+    g->gold_remainder = (uint8_t)(remainder % 50u);
+}
 void rpg_quest_bump(rpg_game *g, int kind, int amount) {
     if (kind == Q_SKILL && amount == 0) return;    /* learning is not "using" */
     for (int i = 0; i < RPG_QUESTS; i++) {
@@ -392,7 +404,7 @@ int rpg_quest_claim(rpg_game *g, int i) {
     rpg_quest *q = &g->quests[i];
     if (q->claimed || q->progress < q->goal) return 0;
     q->claimed = 1;
-    g->gold += q->gold;
+    rpg_gold_add(g, q->gold);
     if (g->cons[q->reward] < 99) g->cons[q->reward]++;
     rpg_gain_xp(g, rpg_xp_next(g->hero.level) / 8u, rpg_job_xp_next(g->hero.cls, g->hero.job_level) / 8u, NULL);
     return q->gold;
@@ -414,7 +426,7 @@ int rpg_daily_claim(rpg_game *g, int *item) {
     g->daily_claimed = 1;
     if (g->streak < 7) g->streak++;
     int gold = 20 + g->streak * 10 + g->hero.level * 2;
-    g->gold += (uint32_t)gold;
+    rpg_gold_add(g, (uint32_t)gold);
     int it = g->streak >= 7 ? CO_HIPOTION : g->streak >= 4 ? CO_PIE : CO_BREAD;
     if (g->cons[it] < 99) g->cons[it]++;
     if (g->streak >= 3 && g->cons[CO_ORE] < 99) g->cons[CO_ORE]++;

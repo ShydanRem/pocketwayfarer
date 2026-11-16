@@ -23,19 +23,26 @@ static struct {
     ring_widget ring;
     parry_widget parry;
     hero_look look;
+    uint32_t suspended_at, ready_until;
+    bool suspended;
 } B;
 
 #define HERO_X CX
 #define HERO_Y 352
 
 void r_start_battle(const rpg_foe *foes, int n, bool dungeon, bool boss) {
+    rpg_classic_begin(&R.g);
+    R.g.classic.dungeon = (uint8_t)dungeon;
+    R.g.classic.zone = (uint8_t)R.zone;
     memset(&B.b, 0, sizeof B.b);
     memcpy(B.start_foes, foes, sizeof(rpg_foe) * (size_t)n);
     int flags = (dungeon ? B_FLAG_DUNGEON : 0) | (boss ? B_FLAG_BOSS : 0);
     rpg_battle_start(&B.b, &R.g, foes, n, wf_platform_random(), flags);
     B.dungeon = dungeon;
     B.boss = boss;
+    B.suspended = false; B.ready_until = 0;
     r_go(R_BATTLE);
+    r_save_now();
 }
 
 static void phase(int p) { B.phase = p; B.phase_at = lv_tick_get(); }
@@ -279,6 +286,7 @@ static void on_end(lv_event_t *e) {
     kit_dialog_close(B.end_dlg);
     B.end_dlg = NULL;
     int st = B.b.state;
+    rpg_classic_cancel(&R.g);
     if (B.dungeon) { r_after_dungeon_battle(st); return; }
     r_save_now();
     r_go(st == B_LOST ? R_TOWN : R_ZONE);
@@ -290,6 +298,8 @@ static void finish(void) {
     set_info(NULL);
     rpg_loot loot;
     rpg_battle_finish(&R.g, &B.b, &loot);
+    R.g.classic.active = 2;
+    R.g.classic.outcome = B.b.state;
     char body[300], name[48];
     const char *title;
     const wf_sprite *ic = NULL;
@@ -316,6 +326,7 @@ static void finish(void) {
     }
     B.end_dlg = kit_dialog(title, body, ic);
     kit_dialog_button(B.end_dlg, TR("Continua", "Continue"), COL_BTN_OK, on_end, 0);
+    r_save_now();
 }
 
 /* ---- Turn flow ------------------------------------------------------------------------------- */
@@ -378,7 +389,7 @@ static void do_hero(const rpg_action *a, int q) {
 
 static void on_ring_tap(lv_event_t *e) {
     (void)e;
-    if (B.phase != PH_RING) return;
+    if (B.phase != PH_RING || B.suspended || B.ready_until) return;
     int q = ring_judge(&B.ring);
     ring_close(&B.ring);
     quality_popup(B.scr, q, CX, 110);
@@ -466,6 +477,7 @@ static void on_item_pick(lv_event_t *e) {
 }
 
 static void on_button(lv_event_t *e) {
+    if (B.suspended || B.ready_until) return;
     int which = (int)(intptr_t)lv_event_get_user_data(e);
     if (B.phase != PH_CHOOSE && which != 5) return;
     rpg_action a = {0};
@@ -497,6 +509,7 @@ static void on_button(lv_event_t *e) {
 }
 
 static void on_foe(lv_event_t *e) {
+    if (B.suspended || B.ready_until) return;
     int i = (int)(intptr_t)lv_event_get_user_data(e);
     if (B.b.foe[i].hp <= 0) return;
     B.target = i;
@@ -505,7 +518,7 @@ static void on_foe(lv_event_t *e) {
 
 static void on_parry_tap(lv_event_t *e) {
     (void)e;
-    if (B.phase != PH_PARRY) return;
+    if (B.phase != PH_PARRY || B.suspended || B.ready_until) return;
     int q = parry_judge(&B.parry);
     parry_close(&B.parry);
     rpg_battle_foe(&B.b, q);
@@ -582,6 +595,13 @@ void scr_battle(void) {
 
 void battle_tick(void) {
     uint32_t t = lv_tick_get();
+    if (B.suspended) return;
+    if (B.ready_until) {
+        if ((int32_t)(t - B.ready_until) < 0) return;
+        B.ready_until = 0;
+        if (B.phase == PH_RING) set_info(TR("Tocca sull'arco dorato!", "Tap on the golden arc!"));
+        else if (B.phase == PH_PARRY) set_info(TR("Para: tocca quando l'onda arriva!", "Parry: tap when the wave lands!"));
+    }
     switch (B.phase) {
     case PH_INTRO:
         if (t - B.phase_at > 900) { set_info(NULL); hero_turn(); }
@@ -650,3 +670,28 @@ bool battle_key(int key) {
 int rpg_battle_ring_quality_now(void) { return B.phase == PH_RING ? ring_judge(&B.ring) : -1; }
 int rpg_battle_parry_quality_now(void) { return B.phase == PH_PARRY ? parry_judge(&B.parry) : -1; }
 int rpg_battle_phase(void) { return B.phase; }
+
+void r_classic_suspend(void) {
+    if (R.screen != R_BATTLE || B.suspended) return;
+    uint32_t now = lv_tick_get();
+    if (B.ready_until && (int32_t)(B.ready_until - now) > 0) {
+        uint32_t remaining = B.ready_until - now;
+        B.phase_at -= remaining; B.next_ev_at -= remaining;
+        if (B.ring.active) B.ring.start -= remaining;
+        if (B.parry.active) B.parry.start -= remaining;
+    }
+    B.ready_until = 0;
+    B.suspended = true;
+    B.suspended_at = now;
+    r_dirty();
+}
+void r_classic_wake(void) {
+    if (R.screen != R_BATTLE || !B.suspended) return;
+    uint32_t now = lv_tick_get(), delta = now - B.suspended_at + 650u;
+    B.phase_at += delta; B.next_ev_at += delta;
+    if (B.ring.active) B.ring.start += delta;
+    if (B.parry.active) B.parry.start += delta;
+    B.suspended = false;
+    B.ready_until = now + 650u;
+    if (B.phase != PH_END) set_info(TR("Preparati...", "Get ready..."));
+}

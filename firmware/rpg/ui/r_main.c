@@ -36,7 +36,7 @@ void r_save_now(void) {
 void r_go(int screen) {
     R.screen = screen;
     switch (screen) {
-    case R_TITLE: scr_title(); break;
+    case R_TITLE: scr_lantern_title(); break;
     case R_CREATE: scr_create(); break;
     case R_TOWN: scr_town(); break;
     case R_MAP: scr_map(); break;
@@ -51,6 +51,8 @@ void r_go(int screen) {
     case R_SHOP: scr_shop(); break;
     case R_FORGE: scr_forge(); break;
     case R_QUESTS: scr_quests(); break;
+    case R_TOWN_CLASSIC: scr_town_classic(); break;
+    case R_LANTERN: scr_lantern(); break;
     default: scr_town(); break;
     }
 }
@@ -257,7 +259,11 @@ static void on_gift(lv_event_t *e) {
 static void on_collect(lv_event_t *e) {
     (void)e;
     rpg_haul h;
-    if (rpg_hunt_collect(&R.g, r_now(), &h) != RPG_OK) return;
+    int status = rpg_hunt_collect(&R.g, r_now(), &h);
+    if (status != RPG_OK) {
+        kit_toast(status == RPG_ERR_BAG ? TR("Fai spazio nello zaino: il bottino ti aspetta", "Make room in your bag: your haul is safe") : rpg_err(status), ri(RI_BAG));
+        return;
+    }
     char body[220], d[24];
     int n = snprintf(body, sizeof body, TR("%s di caccia, %lu mostri.\n+%lu PE  +%lu oro", "%s of hunting, %lu kills.\n+%lu XP  +%lu gold"),
                      r_fmt_time(h.minutes * 60u, d, sizeof d), (unsigned long)h.kills, (unsigned long)h.xp, (unsigned long)h.gold);
@@ -322,7 +328,7 @@ static void on_soon(lv_event_t *e) {
     kit_toast(TR("Legami: in arrivo (party, duelli, scambi)", "Bonds: coming soon (party, duels, trades)"), ri(RI_LINK));
 }
 
-void scr_town(void) {
+void scr_town_classic(void) {
     if (R.g.run.active) { r_go(R_DUNGEON); return; }
     bool night = r_hour() < 7 || r_hour() >= 20;
     lv_obj_t *s = r_scene(night ? RS_TOWN_NIGHT : RS_TOWN);
@@ -402,7 +408,21 @@ void wf_app_start(const uint8_t *save, size_t len) {
         R.loaded = true;
         rpg_tick(&R.g, r_now());
         wf_platform_brightness(R.g.brightness);
-        r_go(R.g.run.active ? R_DUNGEON : R_TOWN);
+        /* A sudden power cut can restore an unpaused committed checkpoint.
+         * Never start consuming a timing window while the player is booting. */
+        if (R.g.lantern.state >= LN_CHOOSE && R.g.lantern.state <= LN_IMPACT)
+            R.g.lantern.paused = 1;
+        if (R.g.classic.active == 2) {
+            int outcome = R.g.classic.outcome;
+            bool dungeon = R.g.classic.dungeon;
+            R.zone = R.g.classic.zone;
+            rpg_classic_cancel(&R.g);
+            if (dungeon) r_after_dungeon_battle(outcome);
+            else { r_save_now(); r_go(outcome == B_LOST ? R_TOWN : R_ZONE); }
+        } else {
+            r_go(R.g.run.active ? R_DUNGEON : R.g.lantern.state ? R_LANTERN : R_TOWN);
+            if (R.screen == R_DUNGEON) r_recover_dungeon_navigation();
+        }
     } else {
         r_go(R_TITLE);
     }
@@ -417,7 +437,10 @@ void wf_app_tick(void) {
         if (R.dirty && ((R.save_due_s && t >= R.save_due_s) || t - R.last_save_s >= 300)) r_save_now();
     }
     switch (R.screen) {
-    case R_TOWN: town_tick(); break;
+    case R_TOWN: lantern_tick(); break;
+    case R_TOWN_CLASSIC: town_tick(); break;
+    case R_LANTERN: lantern_tick(); break;
+    case R_TITLE: lantern_tick(); break;
     case R_BATTLE: battle_tick(); break;
     case R_CREATE: create_tick(); break;
     default: break;
@@ -425,6 +448,7 @@ void wf_app_tick(void) {
 }
 
 bool wf_app_key(int key) {
+    if (R.screen == R_LANTERN || R.screen == R_TOWN) return lantern_key(key);
     if (R.screen == R_BATTLE && battle_key(key)) return true;
     if (key == WF_KEY_BOOT_SHORT || key == WF_KEY_BOOT_LONG) {
         if (!R.loaded) return false;
@@ -440,8 +464,11 @@ bool wf_app_key(int key) {
 }
 
 void wf_app_link_rx(const uint8_t from[6], const uint8_t *data, size_t len) { (void)from; (void)data; (void)len; }
-void wf_app_flush_save(void) { if (R.dirty) r_save_now(); }
-bool wf_app_busy(void) { return R.screen == R_BATTLE || R.screen == R_CREATE; }
+void wf_app_flush_save(void) { lantern_suspend(); r_classic_suspend(); if (R.dirty) r_save_now(); }
+bool wf_app_busy(void) { return R.screen == R_BATTLE || R.screen == R_CREATE ||
+    (R.screen == R_LANTERN && ln_active(&R.g.lantern) && !R.g.lantern.paused); }
 void wf_app_wake(void) {
-    if (R.screen == R_TOWN) town_refresh();
+    if (R.screen == R_TOWN_CLASSIC) town_refresh();
+    lantern_wake();
+    r_classic_wake();
 }

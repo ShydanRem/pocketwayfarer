@@ -1,0 +1,35 @@
+  save size: 1372 bytes
+  dungeon 0: floor 10 reached (best 10)
+  dungeon 0 cleared 6/6
+  dungeon 1: floor 10 reached (best 10)
+    z1 Archer    lv21 died floor 10 room 4 kind 8 foes 1 (Leviathan lv22)
+    z1 Rogue     lv20 died floor 10 room 4 kind 8 foes 1 (Leviathan lv22)
+    z1 Cleric    lv21 died floor 10 room 4 kind 8 foes 1 (Leviathan lv22)
+  dungeon 1 cleared 3/6
+    z2 Knight    lv30 died floor 5 room 4 kind 8 foes 1 (Elder Stump lv27)
+  dungeon 2: floor 5 reached (best 4)
+    z2 Arcanist  lv29 died floor 5 room 4 kind 8 foes 1 (Elder Stump lv27)
+    z2 Paladin   lv30 died floor 5 room 4 kind 8 foes 1 (Elder Stump lv27)
+    z2 Mystic    lv30 died floor 5 room 4 kind 8 foes 1 (Elder Stump lv27)
+  dungeon 2 cleared 2/6
+    z3 Knight    lv46 died floor 10 room 4 kind 8 foes 1 (Demon Lord lv50)
+  dungeon 3: floor 10 reached (best 9)
+    z3 Arcanist  lv43 died floor 5 room 4 kind 8 foes 1 (Ash Dragon lv41)
+    z3 Duelist   lv43 died floor 5 room 4 kind 8 foes 1 (Ash Dragon lv41)
+  dungeon 3 cleared 3/6
+  dungeon 4: floor 10 reached (best 10)
+    z4 Chronoman lv65 died floor 10 room 4 kind 8 foes 1 (Star Dragon lv72)
+    z4 Templar   lv65 died floor 10 room 4 kind 8 foes 1 (Star Dragon lv72)
+  dungeon 4 cleared 4/6
+
+  field win% (AUTO, good timing) by family and level
+  lv    Warrior     Mage   Archer    Rogue   Cleric     Monk Artifice Occultis
+   3   100/90/1 100/88/1 100/93/0 100/81/2 100/80/2 100/91/1 100/88/1 100/92/0
+   8   100/86/2 100/77/1 100/88/0 100/75/3 100/77/3 100/89/1 100/84/1 100/86/1
+  15   100/83/2 100/76/2 100/82/1 100/70/4 100/80/2 100/83/1 100/79/2 100/80/1
+  25   100/87/2 100/71/3 100/82/1 100/71/3 100/77/3 100/82/2 100/82/2 100/75/1
+  38   100/82/4  93/50/5  96/71/2 100/68/4 100/73/5 100/75/4 100/72/4  96/63/2
+  55   100/91/2 100/82/2 100/88/1 100/79/3 100/81/6 100/82/3 100/85/3 100/93/0
+  68   100/92/3 100/77/2 100/85/2 100/77/4 100/75/7 100/86/3 100/84/4 100/85/1
+  overall field win rate: 99%, hp left 80%, rounds 2 (win/hp/rounds)
+rpg: 55639 checks passed

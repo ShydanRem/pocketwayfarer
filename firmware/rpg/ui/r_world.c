@@ -57,8 +57,9 @@ static void on_fight(lv_event_t *e) {
     (void)e;
     rpg_foe foes[RPG_MAX_FOES];
     int n;
+    rpg_classic_begin(&R.g);
     int r = rpg_field_encounter(&R.g, R.zone, foes, &n);
-    if (r != RPG_OK) { kit_toast(rpg_err(r), ri(r == RPG_ERR_STAMINA ? RI_STAMINA : RI_HEART)); return; }
+    if (r != RPG_OK) { rpg_classic_cancel(&R.g); kit_toast(rpg_err(r), ri(r == RPG_ERR_STAMINA ? RI_STAMINA : RI_HEART)); return; }
     r_dirty();
     r_start_battle(foes, n, false, false);
 }
@@ -175,12 +176,14 @@ static void on_room(lv_event_t *e) {
     room_col = (int)(v & 15);
     rpg_foe foes[RPG_MAX_FOES];
     int n = 0;
+    rpg_classic_begin(&R.g);
     int kind = rpg_room_enter(&R.g, room_row, room_col, foes, &n);
-    if (kind < 0) { kit_toast(rpg_err(-kind), ri(RI_STAMINA)); return; }
+    if (kind < 0) { rpg_classic_cancel(&R.g); kit_toast(rpg_err(-kind), ri(RI_STAMINA)); return; }
     r_dirty();
     if (n) { r_start_battle(foes, n, true, kind == ROOM_BOSS); return; }
-    if (kind == ROOM_STAIRS) { r_go(R_DUNGEON); stairs_dialog(); return; }
+    if (kind == ROOM_STAIRS) { rpg_classic_cancel(&R.g); r_save_now(); r_go(R_DUNGEON); stairs_dialog(); return; }
     if (kind == ROOM_MERCHANT) {
+        rpg_classic_cancel(&R.g);
         rpg_room_result res;
         rpg_room_resolve(&R.g, &res, foes, &n);
         R.shop_in_dungeon = true;
@@ -197,6 +200,7 @@ static void on_room(lv_event_t *e) {
         r_start_battle(foes, n, true, false);
         return;
     }
+    rpg_classic_cancel(&R.g);
     r_save_now();
     r_go(R_DUNGEON);
     char body[160], name[48];
@@ -338,6 +342,14 @@ void scr_dungeon(void) {
     kit_round_button(s, ri(RI_BAG), NULL, 414, 210, 52, COL_PANEL_HI, on_supplies, 0);
     snprintf(buf, sizeof buf, "%lu", (unsigned long)run->gold);
     kit_label(s, &wf_font_small, COL_GOLD, buf, 414, 252);
+}
+
+void r_recover_dungeon_navigation(void) {
+    rpg_run *run = &R.g.run;
+    if (!run->active || run->row != RPG_ROWS) return;
+    int kind = run->rooms[RPG_ROWS][run->col];
+    if (kind == ROOM_STAIRS) stairs_dialog();
+    else if (kind == ROOM_BOSS && (run->cleared[RPG_ROWS] & (1u << run->col))) r_after_dungeon_battle(B_WON);
 }
 
 /* ---- Quests & options ------------------------------------------------------------------------ */

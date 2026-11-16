@@ -8,6 +8,8 @@
 #include <stdint.h>
 #include "i18n.h"
 #include "rng.h"
+#include "lantern.h"
+#include "lantern_coach.h"
 
 #define RPG_NAME_LEN 12
 #define RPG_MAX_LEVEL 70
@@ -269,26 +271,7 @@ typedef struct {
     uint32_t last_greet_day;
 } rpg_friend;
 
-typedef struct {
-    rpg_hero hero;
-    uint32_t gold;
-    rpg_item bag[RPG_BAG];
-    uint8_t cons[CO_COUNT];
-    uint8_t gems[SP_COUNT];
-    uint8_t zone_unlocked;          /* highest field/dungeon open */
-    uint8_t best_floor[RPG_ZONES];
-    rpg_run run;
-    rpg_hunt hunt;
-    uint32_t day;
-    uint8_t streak, daily_claimed;
-    rpg_quest quests[RPG_QUESTS];
-    rpg_friend friends[RPG_FRIENDS];
-    uint32_t last_update;
-    uint32_t created;
-    uint32_t rng_state;
-    uint32_t kills, deaths, bosses;
-    uint8_t lang, brightness, hour_offset, auto_battle;
-} rpg_game;
+typedef struct rpg_game rpg_game;
 
 /* ---- Lifecycle (hero.c) ------------------------------------------------------------- */
 typedef struct {
@@ -299,6 +282,7 @@ void rpg_game_new(rpg_game *g, const rpg_new_hero *h, uint32_t now, uint32_t see
 /* Real-time simulation (needs, regeneration, new day). Returns true if anything changed. */
 bool rpg_tick(rpg_game *g, uint32_t now);
 void rpg_roll_day(rpg_game *g, uint32_t day);
+void rpg_gold_add(rpg_game *g, uint32_t amount);
 
 typedef struct {
     int32_t max_hp, max_sp;
@@ -500,8 +484,44 @@ void rpg_hunt_preview(const rpg_game *g, uint32_t now, rpg_haul *out);
 int rpg_hunt_collect(rpg_game *g, uint32_t now, rpg_haul *out);
 
 /* ---- Save (save.c) -------------------------------------------------------------------- */
+#define RPG_V1_PROFILE_BYTES 1356u
+#define RPG_V2_PROFILE_BYTES 1420u
+#define RPG_V3_PROFILE_BYTES 2788u
+typedef struct {
+    uint8_t active;    /* 1: unfinished transaction; 2: settled result awaiting navigation */
+    uint8_t outcome, dungeon, zone;
+    uint8_t gold_remainder;
+    uint8_t profile[RPG_V1_PROFILE_BYTES];
+} rpg_classic_checkpoint;
+
+struct rpg_game {
+    rpg_hero hero;
+    uint32_t gold;
+    rpg_item bag[RPG_BAG];
+    uint8_t cons[CO_COUNT];
+    uint8_t gems[SP_COUNT];
+    uint8_t zone_unlocked;
+    uint8_t best_floor[RPG_ZONES];
+    rpg_run run;
+    rpg_hunt hunt;
+    uint32_t day;
+    uint8_t streak, daily_claimed;
+    rpg_quest quests[RPG_QUESTS];
+    rpg_friend friends[RPG_FRIENDS];
+    uint32_t last_update, created, rng_state;
+    uint32_t kills, deaths, bosses;
+    uint8_t lang, brightness, hour_offset, auto_battle;
+    rpg_lantern lantern;
+    uint8_t gold_remainder; /* actual earned coins modulo 50, never discarded per payout */
+    rpg_classic_checkpoint classic;
+    uint8_t reserved_v3[2]; /* preserve the old profile's tail padding */
+    ln_coach coach;
+};
+void rpg_classic_begin(rpg_game *g);
+void rpg_classic_cancel(rpg_game *g);
+void rpg_classic_recover(rpg_game *g);
 #define RPG_SAVE_MAGIC 0x31475052u   /* "RPG1" */
-#define RPG_SAVE_VERSION 1u
+#define RPG_SAVE_VERSION 4u
 size_t rpg_save_size(void);
 size_t rpg_save_encode(const rpg_game *g, uint8_t *out, size_t cap);
 bool rpg_save_decode(const uint8_t *in, size_t len, rpg_game *g);

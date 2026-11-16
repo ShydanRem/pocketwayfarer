@@ -9,7 +9,7 @@
 
 enum {
     R_TITLE, R_CREATE, R_TOWN, R_MAP, R_ZONE, R_BATTLE, R_DUNGEON, R_HERO, R_SKILLS, R_CLASS,
-    R_EQUIP, R_BAG, R_SHOP, R_FORGE, R_QUESTS, R_SCREEN_COUNT
+    R_EQUIP, R_BAG, R_SHOP, R_FORGE, R_QUESTS, R_TOWN_CLASSIC, R_LANTERN, R_SCREEN_COUNT
 };
 
 typedef struct {
@@ -70,6 +70,13 @@ lv_obj_t *r_back(lv_obj_t *parent, int screen);
 void scr_title(void);
 void scr_create(void);
 void scr_town(void);
+void scr_town_classic(void);
+void scr_lantern_title(void);
+void scr_lantern(void);
+void lantern_tick(void);
+bool lantern_key(int key);
+void lantern_suspend(void);
+void lantern_wake(void);
 void scr_map(void);
 void scr_zone(void);
 void scr_battle(void);
@@ -89,3 +96,6 @@ bool battle_key(int key);
 /* Starts a battle; `dungeon` makes it part of the current descent. */
 void r_start_battle(const rpg_foe *foes, int n, bool dungeon, bool boss);
 void r_after_dungeon_battle(int state);
+void r_recover_dungeon_navigation(void);
+void r_classic_suspend(void);
+void r_classic_wake(void);

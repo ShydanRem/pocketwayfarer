@@ -1,0 +1,4 @@
+[ 93%] Built target lvgl
+[ 93%] Building C object CMakeFiles/play_lantern.dir/workspace/pocketwayfarer/firmware/rpg/ui/r_lantern.c.o
+[ 93%] Linking C executable play_lantern
+[100%] Built target play_lantern

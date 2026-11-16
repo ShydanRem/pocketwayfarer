@@ -1,5 +1,7 @@
 # Firmware
 
+Per mettere il gioco sul Pocket senza compilare, usa la [guida di installazione USB dal browser](INSTALLAZIONE.md). Per backup e aggiornamenti leggi [SALVATAGGI.md](SALVATAGGI.md).
+
 ## Hardware
 
 Waveshare **ESP32-S3-Touch-AMOLED-1.75**: ESP32-S3R8 (8 MB PSRAM), 16 MB flash,
@@ -36,14 +38,25 @@ idf.py -p /dev/ttyACM0 flash monitor
 `common/platform.h`. `-DWF_GAME=rpg` (predefinito) compila l'RPG, `-DWF_GAME=pet`
 il compagno della v0.1. Ognuno salva con la propria chiave NVS.
 
+L'RPG include ora la prima spedizione HD-2D Lanternbound, con accesso al gioco
+classico dal borgo. Regole, catture effettive e istruzioni del build dedicato:
+[LANTERNBOUND.md](LANTERNBOUND.md). Il formato RPG v4 legge v1/v2/v3 e conserva lo stato completo della spedizione,
+incluso il timing in pausa. Aggiunge reliquia iniziale, bestiario, frazioni
+oro delle missioni e snapshot transazionale per gli incontri classici. Un
+riavvio ripropone l’incontro classico dallo stato precedente all’ingresso;
+la nuova spedizione riprende invece l’esatta fase salvata, in pausa. La v4
+conserva anche lezioni apprese e preferenza dei suggerimenti; il feedback
+registra l’attore coinvolto e la Risonanza usata. Gli effetti visivi derivano
+dal tempo della fase e non introducono timer di regole separati.
+
 ## Memoria
 
 | | |
 |---|---|
 | App | partizione `factory` da 6 MB |
-| Salvataggio | partizione NVS `wf_nvs` (256 KB), un blob versionato con CRC32 (~1,4 KB per l'RPG), scritto in modo atomico da NVS |
-| Grafica | sprite indicizzati 8 bit in flash, espansi a 3× in PSRAM (RGB565 + alfa) alla prima visualizzazione e liberati a ogni cambio schermata; l'eroe è composto a runtime da 13 livelli ritagliati |
-| Binario | RPG ~1,9 MB, compagno ~1,6 MB |
+| Salvataggio | partizione NVS `wf_nvs` (256 KB), un blob versionato con CRC32 (2808 byte per l’RPG v4, header incluso), scritto in modo atomico da NVS |
+| Grafica | sprite indicizzati 8 bit in flash, espansi in PSRAM (RGB565 + alfa) e liberati al cambio schermata. HD-2D: fondali 233×233 a 2×, attori 88×88 a 1×/2×/3×; nel classico l'eroe resta composto da livelli ritagliati |
+| Binario | RPG con Lanternbound ~2,84 MiB (53% libero nei 6 MiB della partizione), compagno ~1,6 MB |
 | Rendering | LVGL a buffer parziale (466×48 righe, DMA interna), lettura touch ogni 10 ms per i minigiochi di timing |
 
 ## Tempo
@@ -70,9 +83,18 @@ si corregge dal Diario senza toccare la simulazione.
 1. verifica che la grafica generata sia aggiornata (`build_art.py --check`);
 2. compila ed esegue i test del core con AddressSanitizer/UBSan;
 3. compila la vera UI LVGL per PC ed esegue i preview dei due giochi, che
-   giocano uno scenario completo (per l'RPG: creazione dell'eroe, città,
+   giocano scenari completi (Lanternbound: 45 catture, 306 salvataggi validati; per l’RPG classico: creazione dell'eroe, città,
    lotta con anello e parata, cambio classe, equip, bottega, forgia, dungeon,
    boss, caccia automatica, inglese) e salvano gli screenshot in `docs/img`.
+
+Per una prova interattiva dello stesso codice nativo, su Linux con SDL2:
+
+```sh
+bash scripts/play-desktop.sh
+```
+
+Dettagli e controlli: [LANTERNBOUND.md](LANTERNBOUND.md#giocare-sul-desktop-linux).
+Dimensione esatta e hash della build: [firmware.json](lantern-evidence/firmware.json).
 
 ## Collaudo
 

@@ -1,0 +1,96 @@
+{
+  "source": "https://github.com/esphome/esp-web-tools/blob/10.5.2/package-lock.json",
+  "packages": [
+    {
+      "name": "@improv-wifi/serial-sdk",
+      "version": "3.0.0",
+      "license": "Apache-2.0",
+      "resolved": "https://registry.npmjs.org/@improv-wifi/serial-sdk/-/serial-sdk-3.0.0.tgz",
+      "integrity": "sha512-XU3ferx91w97AgW6K9wCXtBlg3N4umzZEKYhumdiNMzwZy9YqDOQH/QcinpJ3p34ykrft6EQTykfAs+uDPzjgw=="
+    },
+    {
+      "name": "@lit-labs/ssr-dom-shim",
+      "version": "1.2.0",
+      "resolved": "https://registry.npmjs.org/@lit-labs/ssr-dom-shim/-/ssr-dom-shim-1.2.0.tgz",
+      "integrity": "sha512-yWJKmpGE6lUURKAaIltoPIE/wrbY3TEkqQt+X0m+7fQNnAv0keydnYvbiJFP1PnMhizmIWRWOG5KLhYyc/xl+g==",
+      "license": null
+    },
+    {
+      "name": "@lit/context",
+      "version": "1.1.6",
+      "resolved": "https://registry.npmjs.org/@lit/context/-/context-1.1.6.tgz",
+      "integrity": "sha512-M26qDE6UkQbZA2mQ3RjJ3Gzd8TxP+/0obMgE5HfkfLhEEyYE3Bui4A5XHiGPjy0MUGAyxB3QgVuw2ciS0kHn6A==",
+      "license": null
+    },
+    {
+      "name": "@lit/reactive-element",
+      "version": "2.1.0",
+      "license": "BSD-3-Clause",
+      "resolved": "https://registry.npmjs.org/@lit/reactive-element/-/reactive-element-2.1.0.tgz",
+      "integrity": "sha512-L2qyoZSQClcBmq0qajBVbhYEcG6iK0XfLn66ifLe/RfC0/ihpc+pl0Wdn8bJ8o+hj38cG0fGXRgSS20MuXn7qA=="
+    },
+    {
+      "name": "@material/web",
+      "version": "2.5.0",
+      "resolved": "https://registry.npmjs.org/@material/web/-/web-2.5.0.tgz",
+      "integrity": "sha512-x2Uovyq8E/Zc1xHXd9s1eBMXF5pMHVAt70pISKd0fL3Ajj4L6zQaQUY/awcfR2RDAMKXC7i4+vr0arv1YaOR/g==",
+      "license": null
+    },
+    {
+      "name": "@types/trusted-types",
+      "version": "2.0.7",
+      "resolved": "https://registry.npmjs.org/@types/trusted-types/-/trusted-types-2.0.7.tgz",
+      "integrity": "sha512-ScaPdn1dQczgbl0QFTeTOmVHFULt394XJgOQNoyVhZ6r2vLnMLJfBPd53SB52T/3G36VI1/g2MZaX0cwDuXsfw==",
+      "license": null
+    },
+    {
+      "name": "atob-lite",
+      "version": "2.0.0",
+      "resolved": "https://registry.npmjs.org/atob-lite/-/atob-lite-2.0.0.tgz",
+      "integrity": "sha512-LEeSAWeh2Gfa2FtlQE1shxQ8zi5F9GHarrGKz08TMdODD5T4eH6BMsvtnhbWZ+XQn+Gb6om/917ucvRu7l7ukw==",
+      "license": null
+    },
+    {
+      "name": "esptool-js",
+      "version": "0.7.0",
+      "license": "Apache-2.0",
+      "resolved": "https://registry.npmjs.org/esptool-js/-/esptool-js-0.7.0.tgz",
+      "integrity": "sha512-9wHuW/s9t4Vs6HKcr3pra3gbRVWwaN0eabMWodWH4KEJHEYZxgmWwZ3s0F4xcWVCZOc/L98bGZ4uWoZvR8KBKA=="
+    },
+    {
+      "name": "esptool-js/node_modules/pako",
+      "version": "2.2.0",
+      "resolved": "https://registry.npmjs.org/pako/-/pako-2.2.0.tgz",
+      "integrity": "sha512-zJq6RP/5q+TO2OpFV3FHzlPnFjmkb7Nc99a5SNjJE+uu/PkpChs+NIZSSzbBoD+6kjiISXjfYdwj1ZRQ81dz/w==",
+      "license": null
+    },
+    {
+      "name": "lit",
+      "version": "3.3.3",
+      "resolved": "https://registry.npmjs.org/lit/-/lit-3.3.3.tgz",
+      "integrity": "sha512-fycuvZg/hkpozL00lm1pEJH5nN/lr9ZXd6mJI2HSN4+Bzc+LDNdEApJ6HFbPkdFNHLvOplIIuJvxkS4XUxqirw==",
+      "license": null
+    },
+    {
+      "name": "lit-element",
+      "version": "4.2.0",
+      "license": "BSD-3-Clause",
+      "resolved": "https://registry.npmjs.org/lit-element/-/lit-element-4.2.0.tgz",
+      "integrity": "sha512-MGrXJVAI5x+Bfth/pU9Kst1iWID6GHDLEzFEnyULB/sFiRLgkd8NPK/PeeXxktA3T6EIIaq8U3KcbTU5XFcP2Q=="
+    },
+    {
+      "name": "lit-html",
+      "version": "3.3.0",
+      "license": "BSD-3-Clause",
+      "resolved": "https://registry.npmjs.org/lit-html/-/lit-html-3.3.0.tgz",
+      "integrity": "sha512-RHoswrFAxY2d8Cf2mm4OZ1DgzCoBKUKSPvA1fhtSELxUERq2aQQ2h05pO9j81gS1o7RIRJ+CePLogfyahwmynw=="
+    },
+    {
+      "name": "tslib",
+      "version": "2.9.1",
+      "license": "0BSD",
+      "resolved": "https://registry.npmjs.org/tslib/-/tslib-2.9.1.tgz",
+      "integrity": "sha512-a4Ux9VKuIMHsOS7ENbEq6hK2ZGYIT27Rtl0E4eD9KqwxhKiQeMZE/9xb3IdYwWaSOyIBQLExhQgXDTYoiCxnWA=="
+    }
+  ]
+}
