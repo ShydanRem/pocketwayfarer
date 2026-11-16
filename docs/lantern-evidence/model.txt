@@ -1,0 +1,9 @@
+432 deterministic runs: 288 baseline + 144 with starting relics.
+lantern art: 52 assets up to date
+coach/feedback: actual learning, miss/retry, opt-out, exact actor/damage, resonance and burn: passed
+lantern miss: 0/24 0/24 0/24
+lantern good: 20/24 16/24 15/24
+lantern great: 24/24 24/24 24/24
+lantern perfect: 24/24 24/24 24/24
+all six starting relics x three loadouts x eight seeds, all seven bestiary entries: passed
+lantern: 38075 save/resume snapshots, 37639 rule transitions passed

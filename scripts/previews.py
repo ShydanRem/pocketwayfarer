@@ -13,6 +13,10 @@ dst.mkdir(parents=True, exist_ok=True)
 mask = Image.new('L', (466, 466), 0)
 ImageDraw.Draw(mask).ellipse((0, 0, 465, 465), fill=255)
 shots = []
+stems = {p.stem for p in src.glob('*.ppm')}
+for old in dst.glob('[0-9][0-9]-*.png'):
+    if old.stem not in stems:
+        old.unlink()
 for ppm in sorted(src.glob('*.ppm')):
     im = Image.open(ppm).convert('RGB')
     out = Image.new('RGBA', (466, 466), (0, 0, 0, 0))
@@ -28,4 +32,27 @@ if shots:
     for i, s in enumerate(shots):
         sheet.alpha_composite(s.resize((tile - 10, tile - 10), Image.LANCZOS), ((i % cols) * tile + 5, (i // cols) * tile + 5))
     sheet.save(dst / 'galleria.png')
+    if dst.name == 'lantern':
+        # Native-size proof of the three representative screens; no concept art.
+        names = ['02-borgo', '05-combattimento', '10-reliquia']
+        overview = Image.new('RGBA', (3 * 490, 490), (16, 24, 32, 255))
+        for i, name in enumerate(names):
+            capture = Image.open(dst / (name + '.png')).convert('RGBA')
+            overview.alpha_composite(capture, (i * 490 + 12, 12))
+        overview.save(dst / 'panoramica.png')
+        cast = Image.new('RGBA', (980, 980), (16, 24, 32, 255))
+        for i, name in enumerate(['03-assetto', '25-piromante', '26-predone', '14-guardiano']):
+            capture = Image.open(dst / (name + '.png')).convert('RGBA')
+            cast.alpha_composite(capture, ((i % 2) * 490 + 12, (i // 2) * 490 + 12))
+        cast.save(dst / 'assetti-e-guardiano.png')
+        for output, names in {
+            'guida-e-risonanza': ['32-guida-primo-attacco', '35-parata-perfetta-scudo', '39-risonanza-impatto'],
+            'impatto-dei-tre-eroi': ['36-fendente-impatto', '41-brace-impatto', '42-doppio-impatto'],
+        }.items():
+            if not all((dst / (name + '.png')).exists() for name in names):
+                continue
+            proof = Image.new('RGBA', (3 * 490, 490), (16, 24, 32, 255))
+            for i, name in enumerate(names):
+                proof.alpha_composite(Image.open(dst / (name + '.png')).convert('RGBA'), (i * 490 + 12, 12))
+            proof.save(dst / (output + '.png'))
 print(f'{len(shots)} previews -> {dst}')

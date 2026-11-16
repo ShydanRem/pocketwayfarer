@@ -7,4 +7,5 @@ build/
 *.ppm
 __pycache__/
 node_modules/
+/.openai/
 firmware/build-pet/

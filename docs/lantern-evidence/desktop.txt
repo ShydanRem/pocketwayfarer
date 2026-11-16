@@ -1,0 +1,20 @@
+Native Linux SDL2 interactive evidence — 2026-11-16, onboarding increment
+Exact native C11/LVGL rules/UI, 466x466 logical surface, current coaching/FX.
+Observed through Cloud Desktop in a separate new process/profile:
+1. Quick Play -> village -> Sentinel loadout -> route.
+2. Trail -> first-fight Attack suggestion and highlighted Attack control.
+3. Skills -> cost explanation, readable HP/SP and both skill buttons.
+4. Back -> Attack -> golden arc, attack pose and contextual timing caption.
+5. P -> black display; P -> same encounter paused with Resume.
+Profile: build/desktop-onboarding-playtest.bin (v4).
+The previous desktop session was kept open; no prior profile was overwritten.
+The manual route inspection also found a wrapped pair caption. Source caption
+was shortened and the native integration verifies it fits one line.
+This interaction verifies desktop inputs and the displayed guidance, not
+physical latency, human enjoyment, or a manually completed new full run.
+
+Final automated migration smoke:
+Command: SDL_VIDEODRIVER=dummy build/host/cmake/play_lantern --save build/desktop-onboarding-migration.bin --smoke
+Input: copy of actual previous desktop-playtest.bin, 2804-byte CRC save v3.
+Output: 2808-byte CRC save v4, header/payload size/CRC verified.
+Result: Native desktop closed cleanly.

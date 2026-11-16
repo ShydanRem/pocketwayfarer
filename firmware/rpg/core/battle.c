@@ -601,7 +601,7 @@ void rpg_battle_finish(rpg_game *g, const rpg_battle *b, rpg_loot *loot) {
     }
     g->rng_state = r.s;
     loot->job_xp = loot->xp * 7u / 10u;
-    g->gold += loot->gold;
+    rpg_gold_add(g, loot->gold);
     for (int c = 0; c < CO_COUNT; c++) {
         int v = g->cons[c] + loot->cons[c];
         g->cons[c] = (uint8_t)(v > 99 ? 99 : v);
@@ -609,7 +609,6 @@ void rpg_battle_finish(rpg_game *g, const rpg_battle *b, rpg_loot *loot) {
     if (loot->gem && g->gems[loot->gem - 1] < 99) g->gems[loot->gem - 1]++;
     g->kills += (uint32_t)kills;
     rpg_quest_bump(g, Q_KILL, kills);
-    rpg_quest_bump(g, Q_GOLD, (int)(loot->gold / 50u));
     int m = hero->morale + 1 + (b->flags & B_FLAG_BOSS ? 4 : 0);
     hero->morale = (int16_t)(m > 100 ? 100 : m);
     int jl = 0;

@@ -159,7 +159,7 @@ int rpg_unequip(rpg_game *g, int slot) {
 uint32_t rpg_sell(rpg_game *g, int i) {
     if ((unsigned)i >= RPG_BAG || rpg_item_empty(&g->bag[i])) return 0;
     uint32_t v = rpg_item_value(&g->bag[i]);
-    g->gold += v;
+    rpg_gold_add(g, v);
     for (int k = 0; k < 2; k++)                       /* gems come back out */
         if (g->bag[i].gems[k] && g->gems[g->bag[i].gems[k] - 1] < 99) g->gems[g->bag[i].gems[k] - 1]++;
     rpg_bag_remove(g, i);

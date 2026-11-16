@@ -152,7 +152,7 @@ void rpg_room_resolve(rpg_game *g, rpg_room_result *res, rpg_foe *foes, int *n) 
         res->got_item = rpg_bag_add(g, &res->item);
         res->value = 10 + floor_level(run, 0) * 3;
         run->gold += (uint32_t)res->value;
-        g->gold += (uint32_t)res->value;
+        rpg_gold_add(g, (uint32_t)res->value);
         break;
     case ROOM_TRAP: {
         int avoid = clampi(35 + (st.stat[ST_AGI] + st.stat[ST_DEX]) / 2, 35, 90);
@@ -186,7 +186,7 @@ void rpg_room_resolve(rpg_game *g, rpg_room_result *res, rpg_foe *foes, int *n) 
             g->cons[CO_ORE] = (uint8_t)clampi(g->cons[CO_ORE] + 2, 0, 99);
         } else {                      /* treasure pile */
             uint32_t gold = 20u + (uint32_t)floor_level(run, 0) * 5u;
-            g->gold += gold;
+            rpg_gold_add(g, gold);
             run->gold += gold;
         }
         break;
@@ -312,9 +312,12 @@ void rpg_hunt_preview(const rpg_game *g, uint32_t now, rpg_haul *out) {
 int rpg_hunt_collect(rpg_game *g, uint32_t now, rpg_haul *out) {
     if (!g->hunt.active) return RPG_ERR_NONE;
     rpg_hunt_preview(g, now, out);
+    /* Reject the entire claim before paying anything. The deterministic haul
+     * remains available until equipment capacity is sufficient. */
+    if (rpg_bag_count(g) + out->nitems > RPG_BAG) return RPG_ERR_BAG;
     const rpg_zone_info *z = rpg_zone(g->hunt.zone);
     g->hunt.active = 0;
-    g->gold += out->gold;
+    rpg_gold_add(g, out->gold);
     for (int i = 0; i < out->nitems; i++) rpg_bag_add(g, &out->items[i]);
     for (int c = 0; c < CO_COUNT; c++) g->cons[c] = (uint8_t)clampi(g->cons[c] + out->cons[c], 0, 99);
     if (out->gems) {

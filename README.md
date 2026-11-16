@@ -1,80 +1,84 @@
 # Pocket Wayfarer
 
-Un **RPG fantasy tascabile** per il **Waveshare ESP32-S3-Touch-AMOLED-1.75**
-(AMOLED rotondo 466×466, touch): crei il tuo eroe, scegli una delle 8 classi e
-la fai evolvere fino a 40 classi in stile Ragnarok Online, ti equipaggi, esplori
-campi e dungeon a stanze, combatti gruppi di mostri con un sistema di timing
-pensato per lo schermo rotondo, e l'eroe va a caccia da solo mentre il
-dispositivo è in tasca. Nella città ti aspettano bottega, forgia, locanda e
-missioni giornaliere. Interfaccia in italiano e inglese.
+**Un borgo illuminato, una strada da scegliere, un faro da riaccendere.**
 
-![Galleria](docs/img/rpg/galleria.png)
+Un RPG fantasy HD-2D per **Waveshare ESP32-S3-Touch-AMOLED-1.75**, con schermo rotondo 466×466, touch e tasti. La nuova esperienza **Lanternbound** include cinque stanze, tre eroi, reliquie con effetti distinti e un ritorno al borgo che prepara il viaggio successivo.
 
-> Ispirato a [PocketD-D](https://github.com/ShydanRem/PocketD-D) (stesso
-> hardware, stesso autore) per il dispositivo e lo stile pixel art, senza
-> regole o contenuti di D&D. Progettazione completa: [docs/RPG-DESIGN.md](docs/RPG-DESIGN.md).
+![Schermate reali: borgo, combattimento e reliquia](docs/img/lantern/panoramica.png)
 
-## Il gioco
+**[Installa dal browser](https://shydanrem.github.io/pocketwayfarer/)** · **[Manuale illustrato](docs/GUIDA.md)** · **[Tutta la documentazione](docs/README.md)**
 
-| | |
+> **0.3.0-preview.1** — UI e regole verificate su PC, firmware compilato per ESP32-S3. Il collaudo sul Pocket fisico non è ancora completato. Il sito viene pubblicato dal workflow GitHub Pages; la configurazione iniziale è descritta in [Pubblicazione](docs/PUBBLICAZIONE.md).
+
+## Sul Pocket, in pochi passaggi
+
+1. Apri l’installer da **Chrome o Edge su computer** e collega il Pocket con un cavo USB dati.
+2. Conferma il modello, premi **Collega e installa** e scegli la porta USB.
+3. Segui il dialogo e attendi il completamento. Per aggiornare una build Pocket Wayfarer con lo stesso layout, lascia **Erase device** disattivato.
+
+Il pacchetto include firmware, grafica e font: non servono compilazione, microSD o configurazione Wi-Fi. La pagina verifica i tre binari prima di abilitare l’installazione. La cancellazione completa elimina i salvataggi; prima di cambiare gioco o layout consulta [Backup e aggiornamenti](docs/SALVATAGGI.md).
+
+**Compatibilità:** soltanto Waveshare ESP32-S3-Touch-AMOLED-1.75, CO5300, CST9217, 16 MB flash, 8 MB PSRAM. Schede dal nome simile non sono considerate compatibili automaticamente. [Installazione completa e procedura manuale](docs/INSTALLAZIONE.md).
+
+## Il primo viaggio
+
+**Gioca → Parti → scegli l’assetto → Parti → scegli il cammino.** La guida contestuale insegna attacco, parata e Risonanza mentre giochi; i suggerimenti appresi scompaiono e si possono ripetere dalle opzioni.
+
+| Nella spedizione | La tua scelta |
 |---|---|
-| **Eroe** | 4 razze (Umano, Elfo, Nano, Ferino) con piccoli bonus, 5 carnagioni, 6 acconciature × 8 colori, colore degli occhi. L'aspetto cambia con classe, arma, mano secondaria ed elmo. |
-| **Classi** | 8 di base (Guerriero, Mago, Arciere, Ladro, Chierico, Monaco, Artefice, Occultista) → 16 avanzate → 16 maestre. 104 abilità con livelli 1–5. Livello base e livello di classe separati. |
-| **Caratteristiche** | FOR, AGI, VIT, INT, DES, FRT con costo crescente; attacco, magia, difese, critico, schivata, doppia azione. |
-| **Equip** | 7 slot, 22 tipi di oggetto in 5 materiali, 5 rarità con affissi casuali, alveoli per le gemme d'anima dei mostri, forgia da +1 a +10. |
-| **Lotta** | Fino a 3 nemici, tocchi per scegliere il bersaglio. In attacco tocchi quando la scintilla passa sull'arco dorato (PERFETTO = critico); in difesa pari l'onda di ogni nemico (parata perfetta = contrattacco). Stati alterati, elementi, evocazioni, abilità ad area, AUTO. |
-| **Mondo** | 5 campi e 5 dungeon da 10 piani, 42 specie di mostri, 10 boss. Ogni piano è una mappa di stanze da scegliere (lotte, élite, forzieri e mimic, trappole, fontane, mercanti, eventi); checkpoint al piano 6. |
-| **In tasca** | Caccia automatica fino a 12 ore; fame, stamina e morale dell'eroe calano in tempo reale; regalo giornaliero con serie e 3 missioni al giorno. |
+| Percorsi | Vedi i nemici prima di entrare: un avversario robusto o due più fragili. |
+| Combattimento | Bersaglio, attacco a tempo, due abilità e Guardia per recuperare PM e ridurre i danni. |
+| Risonanza | Tre parate perfette preparano l’effetto dell’offensiva del tuo assetto. |
+| Reliquie | Sei effetti autoriali, due proposte per ricompensa, massimo tre slot. |
+| Eventi | Focolare per riprendere fiato o Specchio per un patto a costo di PV. |
+| Ritorno | Rientri con tutto l’oro; una sconfitta perde `floor(oro / 4)`. Retry senza attesa di stamina. |
+| Vittoria | Il Guardiano chiude il viaggio; conservi un progetto equipaggiabile nella run successiva. |
 
-Tasti: **BOOT** = indietro (in lotta: tocco di timing), **PWR** = schermo
-spento/acceso. Lo schermo si spegne da solo dopo 45 s fuori dalle lotte.
+![Sentinella, Piromante, Predone e Guardiano del Faro](docs/img/lantern/assetti-e-guardiano.png)
 
-Il bilanciamento è verificato da una simulazione (`firmware/rpg/host/test_rpg.c`):
-ogni famiglia di classi, a 7 livelli, combatte in AUTO nei campi e scende in
-tutti i dungeon.
+La Sentinella protegge e prepara, il Piromante applica bruciatura, il Predone sfrutta la Preparazione. Affondi, rinculo, parata perfetta ed effetti distinti rispettano pausa e movimento ridotto. Nel borgo trovi mappa, bestiario, collezione e opzioni IT/EN.
 
-## Struttura
+## Controlli essenziali
 
-```
-firmware/
-  common/   RNG, timing, toolkit LVGL, anello/parata, font, testi IT/EN
-  rpg/      il gioco: core/ (regole, dati, lotta, mondo, salvataggi) e ui/
-  pet/      la v0.1 col compagno tamagotchi (build alternativa)
-  main/     ESP-IDF: display, touch, tasti, RTC, NVS, ESP-NOW, risparmio
-  host/     build per PC: test e preview della vera interfaccia
-scripts/
-  art/      pixel art procedurale (eroe a strati, mostri, icone, scenari, font)
-  build_rpg_art.py, build_art.py, previews.py, firmware-deps.py, check.sh
-```
+| Comando | Azione |
+|---|---|
+| Touch | Bersaglio, menu e timing di attacco/parata. |
+| BOOT | Timing; fuori dal minigioco, indietro o pausa secondo la schermata. |
+| II | Pausa anche durante l’anello e la parata. |
+| PWR | Salva e spegne/riaccende lo schermo. |
 
-## Compilare
+Riprendi conserva la fase e concede 650 ms di preparazione. Timing assistito allarga le finestre del 50%; movimento ridotto mantiene i segnali necessari senza effetti decorativi in movimento. [Regole, eroi e reliquie](docs/GUIDA.md).
 
-Prerequisiti: ESP-IDF 5.5.x; Python 3 con Pillow e NumPy solo per rigenerare la grafica.
+## Provare senza dispositivo
 
-```bash
-python3 scripts/firmware-deps.py
+Su Linux, con runtime SDL2, CMake e compilatore C/C++:
+
+```sh
+bash scripts/play-desktop.sh
 ```
 
-```bash
-cd firmware && idf.py set-target esp32s3 && idf.py build
-```
+Mouse = touch, Spazio/Invio = BOOT, Esc = BOOT lungo, P = PWR, F5 = salva/ricarica. È la stessa UI nativa C/LVGL del firmware. Usa `--save build/prova.bin` per un profilo separato. [Requisiti e istruzioni di sviluppo](docs/SVILUPPO.md).
 
-```bash
-idf.py -p /dev/ttyACM0 flash monitor
-```
+## Il gioco classico resta disponibile
 
-Per il gioco del compagno (v0.1): `idf.py -B build-pet -DWF_GAME=pet build`.
+Da **… → Classico** accedi al precedente RPG: creazione dettagliata, 40 classi, equipaggiamento, campi e dungeon, bottega, forgia, missioni e caccia offline. Usa lo stesso profilo migrato; non richiede un downgrade. Il redesign grafico non copre ancora tutte le sue schermate e regioni. Legami nell’RPG e audio non sono funzioni completate della preview.
 
-Controlli su PC (grafica aggiornata, test con sanitizer, screenshot reali):
+I difetti dell’audit su incontri interrotti, missioni oro/sociali, morale e bottino a zaino pieno sono coperti da regressioni correnti. [Progettazione classica](docs/RPG-DESIGN.md), [regole implementate e prove](docs/LANTERNBOUND.md).
 
-```bash
-bash scripts/check.sh
-```
+## Documentazione
 
-## Stato
+| Per… | Documento |
+|---|---|
+| Installare via USB o manualmente | [Installazione](docs/INSTALLAZIONE.md) |
+| Imparare il gioco | [Manuale illustrato](docs/GUIDA.md) |
+| Aggiornare, fare backup e ripristinare | [Salvataggi](docs/SALVATAGGI.md) |
+| Problemi di browser, porta o schermo | [Risoluzione dei problemi](docs/RISOLUZIONE-PROBLEMI.md) |
+| Compilare, verificare o modificare | [Sviluppo](docs/SVILUPPO.md) |
+| Gestire sito e pacchetti su GitHub Pages | [Pubblicazione](docs/PUBBLICAZIONE.md) |
+| Hardware, memoria e checklist fisica | [Firmware](docs/FIRMWARE.md) |
 
-**v0.2 (tappa M1)**: tutto il ciclo di gioco funziona ed è verificato su PC con
-la vera UI LVGL (screenshot in `docs/img/rpg`). Il firmware compila per
-ESP32-S3, ma **il collaudo sul dispositivo non è ancora stato fatto**
-([checklist](docs/FIRMWARE.md#collaudo)). Prossime tappe: Legami via ESP-NOW
-(party cooperativo, duelli, scambi), poi suoni e altri contenuti.
+## Verifiche e provenienza
+
+La suite comprende 55.639 controlli RPG, 1.434 del compagno, 432 spedizioni simulate e 45 catture native Lanternbound con 306 salvataggi validati. Include sanitizer, migrazione v1/v2/v3 al formato v4, guida, pause, retry e confronto del rendering aggiornato con quello completo. [Log e limiti](docs/lantern-evidence/README.md). Sono verifiche del codice e dei percorsi esercitati, non misure di autonomia o coinvolgimento dei giocatori.
+
+Gli atlas HD-2D originali e i font hanno [sorgenti, prompt e registro](assets/lantern/README.md). [Crediti e licenze dei componenti](THIRD_PARTY.md). L’installazione dal browser si ispira al percorso di [TamaPoke](https://socquique.github.io/TamaPoke/web/) e usa ESP Web Tools; non copia firmware o contenuti del gioco. L’infrastruttura hardware deriva dal lavoro su [PocketD-D](https://github.com/ShydanRem/PocketD-D), senza contenuti o regole D&D.

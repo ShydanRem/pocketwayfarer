@@ -1,0 +1,291 @@
+{
+  "date": "2026-11-16",
+  "schema_platform_note": "mobile is a touch-schema proxy; actual target is native ESP32-S3 C11/LVGL and optional Linux SDL2 host.",
+  "gdd": {
+    "content": [
+      {
+        "type": "text",
+        "text": "# Pocket Wayfarer: Lanternbound — Game Design Doc\n**Genre:** tactical fantasy timing RPG · **Platform:** mobile\n\n## Pitch\nDefeat the room-5 Beacon Guardian and keep one collected relic blueprint.\nAudience: Build a native embedded HD-2D game slice called Pocket Wayfarer Lanternbound for players wanting short tactical fantasy expeditions. Skills opens 2 choices, costing 6 SP for power strike or 5 SP for loadout support Enemy intent is shown for 650ms before each parry. a power skill at 3 consumes the charges for the loadou … \\[excerpt; full caller text retained in source\\_sections\\]\n\n## Core loop\nEach room is one level, exactly 5 levels. / Guard restores 4 SP and halves incoming damage during that enemy turn. / Tap the screen or press BOOT to stop the attack spark or parry wave. / Attack rotates every 1400ms and expires after 2800ms. / Enemy intent is shown for 650ms before each parry. / After each completed ro … \\[excerpt; full caller text retained in source\\_sections\\]\n\n## Control map\n- Keyboard/mouse: tap arrows to compare and Choose to keep one, maximum 3.\n- Touch: Tap Play, Depart, choose one of 3 loadouts with left/right touch buttons, and tap Depart. / In combat, tap a living enemy to select it, then Attack, Skills or Guard. / Tap the screen or press BOOT to stop the attack spark or parry wave. / tap arrows to compare and Choose to keep one, maximum 3. / Tap II to Pause and Re … \\[excerpt; full caller text retained in source\\_sections\\]\n- Action coverage: move: keyboard/mouse not specified, touch not specified; jump: keyboard/mouse not specified, touch not specified; select: keyboard/mouse stated, touch stated; interact: keyboard/mouse not specified, touch stated\n\n## Levels / waves\nEach room is one level, exactly 5 levels. / Tap the screen or press BOOT to stop the attack spark or parry wave. / Power strike and basic attack use 0.4/1/1.25/1.5 quality multipliers, without a second automatic critical multiplier. / PWR flush saves the full encounter, pending action, enemies, RNG, elapsed timing, res … \\[excerpt; full caller text retained in source\\_sections\\]\n\n## Assets — proposed sizes, not requirements\n- sprite: player or primary interactive object; 64×64px (proposed).\n- sprite: objective, obstacle or opponent if required; 48×48px (proposed).\n- UI: button/icon; 48×48px (proposed).\n- UI: background; 390×844px (proposed).\n- sound: optional action and round-end cues, with mute; ≤1 second (proposed).\n\n## HUD / screens\nStart menu with quick Play and optional Customize, Village, Loadout, Route, Combat HUD and skill menu, Pause, Relic comparison, Recovery event, Continue/Return, Blueprint selection, Victory, Game over/defeat with Retry, Collection with Equip/Remove, Map, seven-entry discovery Bestiary, three-page How to Play, Options,  … \\[excerpt; full caller text retained in source\\_sections\\]\n\n## Win / loss\n1 life per run. Reaching 0 HP is game over and defeat; retry respawns at room 1 with full HP/SP and no hunger/stamina gate. Sentinel starts 120 HP/24 SP, Ember Mage 96/36, Trickster 104/28. The final boss has 176 HP and alternating heavy/double patterns. Defeat banks 75 percent of run gold with loss rounded down. Victo … \\[excerpt; full caller text retained in source\\_sections\\]\n\n## Done when\n1) Real LVGL touch and BOOT controls complete all 5 levels and reach victory, defeat, retreat and retry. 2) Pause/save/reload/resume retains the exact enemies, action and elapsed timing; gold cannot be collected twice. 3) Model tests cover all 3 loadouts, all six starting relics, all seven enemies, timing assist and v1 … \\[excerpt; full caller text retained in source\\_sections\\]\n\n**Proposed checks:** Verify every stated action using the keyboard/mouse and touch mappings that actually exist. Verify the stated round outcome and restart rules; resolve missing rules before implementation. Preview at 390×844 and at 375px mobile width; verify readable HUD and usable touch controls.\n\n**Limitations:** Deterministic English wording extraction, not semantic interpretation, translation or a tested game. Caller statements remain unverified. Missing mappings are not invented; asset dimensions and tests are labelled proposals. The compact Markdown uses excerpts where needed; source\\_sections preserves the supplied section text."
+      }
+    ],
+    "structuredContent": {
+      "title": "Pocket Wayfarer: Lanternbound",
+      "genre": "tactical fantasy timing RPG",
+      "platform": "mobile",
+      "markdown": "# Pocket Wayfarer: Lanternbound — Game Design Doc\n**Genre:** tactical fantasy timing RPG · **Platform:** mobile\n\n## Pitch\nDefeat the room-5 Beacon Guardian and keep one collected relic blueprint.\nAudience: Build a native embedded HD-2D game slice called Pocket Wayfarer Lanternbound for players wanting short tactical fantasy expeditions. Skills opens 2 choices, costing 6 SP for power strike or 5 SP for loadout support Enemy intent is shown for 650ms before each parry. a power skill at 3 consumes the charges for the loadou … \\[excerpt; full caller text retained in source\\_sections\\]\n\n## Core loop\nEach room is one level, exactly 5 levels. / Guard restores 4 SP and halves incoming damage during that enemy turn. / Tap the screen or press BOOT to stop the attack spark or parry wave. / Attack rotates every 1400ms and expires after 2800ms. / Enemy intent is shown for 650ms before each parry. / After each completed ro … \\[excerpt; full caller text retained in source\\_sections\\]\n\n## Control map\n- Keyboard/mouse: tap arrows to compare and Choose to keep one, maximum 3.\n- Touch: Tap Play, Depart, choose one of 3 loadouts with left/right touch buttons, and tap Depart. / In combat, tap a living enemy to select it, then Attack, Skills or Guard. / Tap the screen or press BOOT to stop the attack spark or parry wave. / tap arrows to compare and Choose to keep one, maximum 3. / Tap II to Pause and Re … \\[excerpt; full caller text retained in source\\_sections\\]\n- Action coverage: move: keyboard/mouse not specified, touch not specified; jump: keyboard/mouse not specified, touch not specified; select: keyboard/mouse stated, touch stated; interact: keyboard/mouse not specified, touch stated\n\n## Levels / waves\nEach room is one level, exactly 5 levels. / Tap the screen or press BOOT to stop the attack spark or parry wave. / Power strike and basic attack use 0.4/1/1.25/1.5 quality multipliers, without a second automatic critical multiplier. / PWR flush saves the full encounter, pending action, enemies, RNG, elapsed timing, res … \\[excerpt; full caller text retained in source\\_sections\\]\n\n## Assets — proposed sizes, not requirements\n- sprite: player or primary interactive object; 64×64px (proposed).\n- sprite: objective, obstacle or opponent if required; 48×48px (proposed).\n- UI: button/icon; 48×48px (proposed).\n- UI: background; 390×844px (proposed).\n- sound: optional action and round-end cues, with mute; ≤1 second (proposed).\n\n## HUD / screens\nStart menu with quick Play and optional Customize, Village, Loadout, Route, Combat HUD and skill menu, Pause, Relic comparison, Recovery event, Continue/Return, Blueprint selection, Victory, Game over/defeat with Retry, Collection with Equip/Remove, Map, seven-entry discovery Bestiary, three-page How to Play, Options,  … \\[excerpt; full caller text retained in source\\_sections\\]\n\n## Win / loss\n1 life per run. Reaching 0 HP is game over and defeat; retry respawns at room 1 with full HP/SP and no hunger/stamina gate. Sentinel starts 120 HP/24 SP, Ember Mage 96/36, Trickster 104/28. The final boss has 176 HP and alternating heavy/double patterns. Defeat banks 75 percent of run gold with loss rounded down. Victo … \\[excerpt; full caller text retained in source\\_sections\\]\n\n## Done when\n1) Real LVGL touch and BOOT controls complete all 5 levels and reach victory, defeat, retreat and retry. 2) Pause/save/reload/resume retains the exact enemies, action and elapsed timing; gold cannot be collected twice. 3) Model tests cover all 3 loadouts, all six starting relics, all seven enemies, timing assist and v1 … \\[excerpt; full caller text retained in source\\_sections\\]\n\n**Proposed checks:** Verify every stated action using the keyboard/mouse and touch mappings that actually exist. Verify the stated round outcome and restart rules; resolve missing rules before implementation. Preview at 390×844 and at 375px mobile width; verify readable HUD and usable touch controls.\n\n**Limitations:** Deterministic English wording extraction, not semantic interpretation, translation or a tested game. Caller statements remain unverified. Missing mappings are not invented; asset dimensions and tests are labelled proposals. The compact Markdown uses excerpts where needed; source\\_sections preserves the supplied section text.",
+      "sections": {
+        "pitch": {
+          "objective": "Defeat the room-5 Beacon Guardian and keep one collected relic blueprint.",
+          "audience": "Build a native embedded HD-2D game slice called Pocket Wayfarer Lanternbound for players wanting short tactical fantasy expeditions.\nSkills opens 2 choices, costing 6 SP for power strike or 5 SP for loadout support\nEnemy intent is shown for 650ms before each parry.\na power skill at 3 consumes the charges for the loadout's extra effect.\nhits apply 2 burn damage for 2 turns\nRoom 2 offers Hearth (+25 HP or +12 SP) or Mirror (offer 12 HP, requiring HP above 12, for 3 resonance and +8 SP\nrefuse for +12 SP).\nScore progression is +10 per cleared non-boss room and +40 for final boss, maximum 80 after 5 levels.\nHow it should feel: An enemy announces its intent for 650ms before parry, each relic states its numeric effect, and retry returns to full resources in one results-screen action.",
+          "status": "caller statements, not verified"
+        },
+        "core_loop": [
+          "Each room is one level, exactly 5 levels.",
+          "Guard restores 4 SP and halves incoming damage during that enemy turn.",
+          "Tap the screen or press BOOT to stop the attack spark or parry wave.",
+          "Attack rotates every 1400ms and expires after 2800ms.",
+          "Enemy intent is shown for 650ms before each parry.",
+          "After each completed room, Continue advances one room or Return banks all earned run gold."
+        ],
+        "controls": {
+          "keyboard": [
+            "tap arrows to compare and Choose to keep one, maximum 3."
+          ],
+          "touch": [
+            "Tap Play, Depart, choose one of 3 loadouts with left/right touch buttons, and tap Depart.",
+            "In combat, tap a living enemy to select it, then Attack, Skills or Guard.",
+            "Tap the screen or press BOOT to stop the attack spark or parry wave.",
+            "tap arrows to compare and Choose to keep one, maximum 3.",
+            "Tap II to Pause and Resume to continue."
+          ],
+          "coverage": [
+            {
+              "action": "move",
+              "keyboard_stated": false,
+              "touch_stated": false
+            },
+            {
+              "action": "jump",
+              "keyboard_stated": false,
+              "touch_stated": false
+            },
+            {
+              "action": "select",
+              "keyboard_stated": true,
+              "touch_stated": true
+            },
+            {
+              "action": "interact",
+              "keyboard_stated": false,
+              "touch_stated": true
+            }
+          ],
+          "unavailable_statements": []
+        },
+        "waves": [
+          "Each room is one level, exactly 5 levels.",
+          "Tap the screen or press BOOT to stop the attack spark or parry wave.",
+          "Power strike and basic attack use 0.4/1/1.25/1.5 quality multipliers, without a second automatic critical multiplier.",
+          "PWR flush saves the full encounter, pending action, enemies, RNG, elapsed timing, resources and paused flag."
+        ],
+        "assets": [
+          {
+            "kind": "sprite",
+            "item": "player or primary interactive object",
+            "width": 64,
+            "height": 64,
+            "status": "proposed, not supplied requirements"
+          },
+          {
+            "kind": "sprite",
+            "item": "objective, obstacle or opponent if required",
+            "width": 48,
+            "height": 48,
+            "status": "proposed, not supplied requirements"
+          },
+          {
+            "kind": "UI",
+            "item": "button/icon",
+            "width": 48,
+            "height": 48,
+            "status": "proposed, not supplied requirements"
+          },
+          {
+            "kind": "UI",
+            "item": "background",
+            "width": 390,
+            "height": 844,
+            "status": "proposed, not supplied requirements"
+          },
+          {
+            "kind": "sound",
+            "item": "optional action and round-end cues, with mute",
+            "duration_seconds": 1,
+            "status": "proposed, not supplied requirements"
+          }
+        ],
+        "hud": "Start menu with quick Play and optional Customize, Village, Loadout, Route, Combat HUD and skill menu, Pause, Relic comparison, Recovery event, Continue/Return, Blueprint selection, Victory, Game over/defeat with Retry, Collection with Equip/Remove, Map, seven-entry discovery Bestiary, three-page How to Play, Options, native offline Hunt status/collection, and access to Classic mode.",
+        "win_loss": "1 life per run. Reaching 0 HP is game over and defeat; retry respawns at room 1 with full HP/SP and no hunger/stamina gate. Sentinel starts 120 HP/24 SP, Ember Mage 96/36, Trickster 104/28. The final boss has 176 HP and alternating heavy/double patterns. Defeat banks 75 percent of run gold with loss rounded down. Victory banks all 80 possible gold. Bank transfer is idempotent across reloading.\nScore: Gold is the score/currency. Score progression is +10 per cleared non-boss room and +40 for final boss, maximum 80 after 5 levels. HUD shows room out of 5, HP, SP, selected enemy HP and resonance out of 3. A collected blueprint can equip one starting relic before the next run; this occupies one of the 3 relic slots. Collection and discovered bestiary entries persist across retry.",
+        "done_when": "1) Real LVGL touch and BOOT controls complete all 5 levels and reach victory, defeat, retreat and retry. 2) Pause/save/reload/resume retains the exact enemies, action and elapsed timing; gold cannot be collected twice. 3) Model tests cover all 3 loadouts, all six starting relics, all seven enemies, timing assist and v1/v2 save migration; audit regressions exercise real award and navigation paths. 4) UI screenshots are captured at native 466x466 with circular mask, Italian accents and English. A generic 375px phone-width check does not apply to this firmware; the desktop window letterboxes its 466px logical surface and preserves hit positions when resized. 5) The native ESP32 build fits its 6MiB app partition. Physical touch, frame time, battery and human engagement remain release gates.",
+        "proposed_tests": [
+          "Verify every stated action using the keyboard/mouse and touch mappings that actually exist.",
+          "Verify the stated round outcome and restart rules; resolve missing rules before implementation.",
+          "Preview at 390×844 and at 375px mobile width; verify readable HUD and usable touch controls."
+        ]
+      },
+      "source_sections": {
+        "introduction": [
+          "Build a native embedded HD-2D game slice called Pocket Wayfarer Lanternbound for players wanting short tactical fantasy expeditions. The product is C11/LVGL on a 466x466 circular Waveshare ESP32-S3 AMOLED touch display; mobile is only the plugin schema proxy, not a phone port. This brief describes the implemented slice; device performance and human fun remain unverified."
+        ],
+        "goal": [
+          "Defeat the room-5 Beacon Guardian and keep one collected relic blueprint."
+        ],
+        "core mechanics": [
+          "",
+          "1. Tap Play, Depart, choose one of 3 loadouts with left/right touch buttons, and tap Depart. Choose Trail or Pier at branching rooms; The first Trail creates 1 root keeper and Pier 2 ember wisps. Later solo routes draw from root keeper, moss wolf and tide crab; pair routes draw from ember wisp, lantern bat and jade moth. Route previews use copied state and never consume the run RNG. There is no free character movement or jump. Room order is combat, choice event, combat, combat, boss. Each room is one level, exactly 5 levels.",
+          "2. In combat, tap a living enemy to select it, then Attack, Skills or Guard. Skills opens 2 choices, costing 6 SP for power strike or 5 SP for loadout support; unavailable skills are disabled. Guard restores 4 SP and halves incoming damage during that enemy turn. Tap the screen or press BOOT to stop the attack spark or parry wave. Attack rotates every 1400ms and expires after 2800ms. Full Good/Great/Perfect windows are 220/140/90ms, with optional 50 percent wider assist. Power strike and basic attack use 0.4/1/1.25/1.5 quality multipliers, without a second automatic critical multiplier. Enemy intent is shown for 650ms before each parry. Parry takes 100/70/45/20 percent damage by quality. Perfect parry adds one resonance up to 3; a power skill at 3 consumes the charges for the loadout's extra effect.",
+          "3. Non-boss combat awards 10 gold and, while below the 3-relic cap, offers 2 distinct relics; tap arrows to compare and Choose to keep one, maximum 3. There are 6 authored effects: perfect parry restores 3 SP; wounded targets take +4 damage; Guard prepares +8 damage; enter battle with 12 shield; hits apply 2 burn damage for 2 turns; continuing heals 6 HP. Room 2 offers Hearth (+25 HP or +12 SP) or Mirror (offer 12 HP, requiring HP above 12, for 3 resonance and +8 SP; refuse for +12 SP). Either gives 10 gold. After each completed room, Continue advances one room or Return banks all earned run gold. Boss gives 40 gold including its normal room award. Victory then asks the player to select and keep one owned relic blueprint.",
+          "4. Tap II to Pause and Resume to continue. Pause freezes gameplay and timing. PWR flush saves the full encounter, pending action, enemies, RNG, elapsed timing, resources and paused flag. Restart/wake preserves the phase and requires Resume followed by a 650ms preparation countdown. From results Retry resets run HP/SP, timing, route, resonance, relics and unbanked currency while retaining banked profile, options and blueprint collection. BOOT judges timing during attack/parry, closes the skill menu or pauses at decision phases; menu BOOT returns to village."
+        ],
+        "win/lose": [
+          "1 life per run. Reaching 0 HP is game over and defeat; retry respawns at room 1 with full HP/SP and no hunger/stamina gate. Sentinel starts 120 HP/24 SP, Ember Mage 96/36, Trickster 104/28. The final boss has 176 HP and alternating heavy/double patterns. Defeat banks 75 percent of run gold with loss rounded down. Victory banks all 80 possible gold. Bank transfer is idempotent across reloading.",
+          "Score: Gold is the score/currency. Score progression is +10 per cleared non-boss room and +40 for final boss, maximum 80 after 5 levels. HUD shows room out of 5, HP, SP, selected enemy HP and resonance out of 3. A collected blueprint can equip one starting relic before the next run; this occupies one of the 3 relic slots. Collection and discovered bestiary entries persist across retry."
+        ],
+        "screens": [
+          "Start menu with quick Play and optional Customize, Village, Loadout, Route, Combat HUD and skill menu, Pause, Relic comparison, Recovery event, Continue/Return, Blueprint selection, Victory, Game over/defeat with Retry, Collection with Equip/Remove, Map, seven-entry discovery Bestiary, three-page How to Play, Options, native offline Hunt status/collection, and access to Classic mode."
+        ],
+        "design": [
+          "Original pixel-art HD-2D source atlases with two layered-looking baked backgrounds, 3 distinct loadout appearances, 6 ordinary species and a unique brass lighthouse boss with 4 poses each, 6 relic illustrations, licensed DejaVu fonts with Italian accents, native LVGL controls and localized text. Jade/petrol/ivory/amber palette with vermilion danger. Sprites use integer scaling and shared row-wide scale with fixed foot anchors; the boss has its own authored atlas row. Backgrounds are 233x233 at 2x. Main touch actions are at least 72px tall; controls fit the circular screen. Reduced-motion suppresses ambient pose cycling."
+        ],
+        "sound": [
+          "No audio is implemented because physical audio hardware has not been verified. Essential feedback works silently."
+        ],
+        "how it should feel": [
+          "An enemy announces its intent for 650ms before parry, each relic states its numeric effect, and retry returns to full resources in one results-screen action. Target 3-5 minute sessions and input feedback below 100ms are future on-device/human measurements, not certified outcomes.",
+          "Build ONLY this bounded slice in the existing native project; preserve the old hero, inventory and Classic mode. Write CRC save v3 while migrating v1 and v2. Classic encounters take a pre-entry transaction snapshot: full restart restores that snapshot and reoffers the encounter; paid results and stairs reconstruct navigation without paying twice. Classic screen power cycling freezes timing and gives a 650ms preparation countdown. Gold quest fractions persist across small payouts, morale agrees across tick chunk sizes, unavailable social quests are filtered and migrated, and a full equipment bag leaves idle loot atomically unclaimed. Provide an optional Linux SDL2 interactive host of the same native LVGL code: mouse is touch, Space/Enter is BOOT, P is power, F5 saves/reloads. No multiplayer, payment, ads, 3D renderer, full class-art replacement or phone/browser port."
+        ],
+        "done when": [
+          "1) Real LVGL touch and BOOT controls complete all 5 levels and reach victory, defeat, retreat and retry. 2) Pause/save/reload/resume retains the exact enemies, action and elapsed timing; gold cannot be collected twice. 3) Model tests cover all 3 loadouts, all six starting relics, all seven enemies, timing assist and v1/v2 save migration; audit regressions exercise real award and navigation paths. 4) UI screenshots are captured at native 466x466 with circular mask, Italian accents and English. A generic 375px phone-width check does not apply to this firmware; the desktop window letterboxes its 466px logical surface and preserves hit positions when resized. 5) The native ESP32 build fits its 6MiB app partition. Physical touch, frame time, battery and human engagement remain release gates."
+        ]
+      },
+      "limitations": [
+        "Deterministic English wording extraction, not semantic interpretation, translation or a tested game.",
+        "Caller statements remain unverified. Missing mappings are not invented; asset dimensions and tests are labelled proposals.",
+        "The compact Markdown uses excerpts where needed; source_sections preserves the supplied section text."
+      ]
+    },
+    "isError": false
+  },
+  "balance": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"genre\":\"turn-based timing fantasy RPG\",\"assumptions\":[\"This is conditional arithmetic, not a playtest, simulation or difficulty guarantee.\",\"When omitted, the planning horizon is 5 waves and growth is 0%; these are planning defaults, not supplied game facts.\",\"Growth scales enemy count only; enemy speed stays at its supplied value because no speed-growth rule was supplied.\",\"Each enemy awards 100 proposed planning points; this is a suggested scoring convention, not a supplied rule.\",\"Clear-time estimates assume one damage per shot, every shot hits, no reload, no downtime and all enemies require enemy_hp damage.\"],\"formulas\":{\"enemy_count\":\"ceil(spawn_per_wave × (1 + wave_growth_pct / 100)^(wave - 1)); capped at 1000000 for safe planning\",\"enemy_speed_px_s\":\"supplied enemy_speed_px_s; no invented speed growth\",\"estimated_clear_seconds\":\"enemy_count × enemy_hp / fire_rate_per_s (conditional ideal minimum)\",\"target_points\":\"enemy_count × 100 proposed points per enemy\",\"jump_airtime_seconds\":\"2 × sqrt(2 × jump_height_px / 980)\",\"jump_range_px\":\"player_speed_px_s × jump_airtime_seconds\"},\"curve\":[{\"wave_or_level\":1,\"enemy_count\":null,\"enemy_speed_px_s\":null,\"estimated_clear_seconds\":null,\"target_points\":null},{\"wave_or_level\":2,\"enemy_count\":null,\"enemy_speed_px_s\":null,\"estimated_clear_seconds\":null,\"target_points\":null},{\"wave_or_level\":3,\"enemy_count\":null,\"enemy_speed_px_s\":null,\"estimated_clear_seconds\":null,\"target_points\":null},{\"wave_or_level\":4,\"enemy_count\":null,\"enemy_speed_px_s\":null,\"estimated_clear_seconds\":null,\"target_points\":null},{\"wave_or_level\":5,\"enemy_count\":null,\"enemy_speed_px_s\":null,\"estimated_clear_seconds\":null,\"target_points\":null}],\"jump\":{\"gravity_px_s2\":null,\"airtime_seconds\":null,\"horizontal_range_px\":null,\"gap_px\":null},\"unknown_inputs\":[\"player_speed_px_s\",\"jump_height_px\",\"gap_px\",\"enemy_speed_px_s\",\"spawn_per_wave\",\"wave_growth_pct\",\"fire_rate_per_s\",\"enemy_hp\"],\"feasibility\":{\"status\":\"incomplete\",\"warnings\":[]},\"suggested_fixes\":[],\"balance_numbers\":\"Balance numbers (conditional planning):\\nlives: 1\\nlevel_seconds: 36\\nwaves_or_levels: 5\\nPlanning curve: 5 waves; count growth 0% per wave; constant supplied enemy speed.\\nProposed scoring: 100 points per enemy, subject to design approval.\\nWave 1: enemies unknown, speed unknown px/s, ideal clear unknown s, proposed target unknown points.\\nWave 2: enemies unknown, speed unknown px/s, ideal clear unknown s, proposed target unknown points.\\nWave 3: enemies unknown, speed unknown px/s, ideal clear unknown s, proposed target unknown points.\\nWave 4: enemies unknown, speed unknown px/s, ideal clear unknown s, proposed target unknown points.\\nWave 5: enemies unknown, speed unknown px/s, ideal clear unknown s, proposed target unknown points.\\nClear estimates assume 1 damage/shot, all shots hit and no reload/downtime. Playtest before treating these numbers as balanced.\"}"
+      }
+    ],
+    "structuredContent": {
+      "genre": "turn-based timing fantasy RPG",
+      "assumptions": [
+        "This is conditional arithmetic, not a playtest, simulation or difficulty guarantee.",
+        "When omitted, the planning horizon is 5 waves and growth is 0%; these are planning defaults, not supplied game facts.",
+        "Growth scales enemy count only; enemy speed stays at its supplied value because no speed-growth rule was supplied.",
+        "Each enemy awards 100 proposed planning points; this is a suggested scoring convention, not a supplied rule.",
+        "Clear-time estimates assume one damage per shot, every shot hits, no reload, no downtime and all enemies require enemy_hp damage."
+      ],
+      "formulas": {
+        "enemy_count": "ceil(spawn_per_wave × (1 + wave_growth_pct / 100)^(wave - 1)); capped at 1000000 for safe planning",
+        "enemy_speed_px_s": "supplied enemy_speed_px_s; no invented speed growth",
+        "estimated_clear_seconds": "enemy_count × enemy_hp / fire_rate_per_s (conditional ideal minimum)",
+        "target_points": "enemy_count × 100 proposed points per enemy",
+        "jump_airtime_seconds": "2 × sqrt(2 × jump_height_px / 980)",
+        "jump_range_px": "player_speed_px_s × jump_airtime_seconds"
+      },
+      "curve": [
+        {
+          "wave_or_level": 1,
+          "enemy_count": null,
+          "enemy_speed_px_s": null,
+          "estimated_clear_seconds": null,
+          "target_points": null
+        },
+        {
+          "wave_or_level": 2,
+          "enemy_count": null,
+          "enemy_speed_px_s": null,
+          "estimated_clear_seconds": null,
+          "target_points": null
+        },
+        {
+          "wave_or_level": 3,
+          "enemy_count": null,
+          "enemy_speed_px_s": null,
+          "estimated_clear_seconds": null,
+          "target_points": null
+        },
+        {
+          "wave_or_level": 4,
+          "enemy_count": null,
+          "enemy_speed_px_s": null,
+          "estimated_clear_seconds": null,
+          "target_points": null
+        },
+        {
+          "wave_or_level": 5,
+          "enemy_count": null,
+          "enemy_speed_px_s": null,
+          "estimated_clear_seconds": null,
+          "target_points": null
+        }
+      ],
+      "jump": {
+        "gravity_px_s2": null,
+        "airtime_seconds": null,
+        "horizontal_range_px": null,
+        "gap_px": null
+      },
+      "unknown_inputs": [
+        "player_speed_px_s",
+        "jump_height_px",
+        "gap_px",
+        "enemy_speed_px_s",
+        "spawn_per_wave",
+        "wave_growth_pct",
+        "fire_rate_per_s",
+        "enemy_hp"
+      ],
+      "feasibility": {
+        "status": "incomplete",
+        "warnings": []
+      },
+      "suggested_fixes": [],
+      "balance_numbers": "Balance numbers (conditional planning):\nlives: 1\nlevel_seconds: 36\nwaves_or_levels: 5\nPlanning curve: 5 waves; count growth 0% per wave; constant supplied enemy speed.\nProposed scoring: 100 points per enemy, subject to design approval.\nWave 1: enemies unknown, speed unknown px/s, ideal clear unknown s, proposed target unknown points.\nWave 2: enemies unknown, speed unknown px/s, ideal clear unknown s, proposed target unknown points.\nWave 3: enemies unknown, speed unknown px/s, ideal clear unknown s, proposed target unknown points.\nWave 4: enemies unknown, speed unknown px/s, ideal clear unknown s, proposed target unknown points.\nWave 5: enemies unknown, speed unknown px/s, ideal clear unknown s, proposed target unknown points.\nClear estimates assume 1 damage/shot, all shots hit and no reload/downtime. Playtest before treating these numbers as balanced."
+    },
+    "isError": false
+  },
+  "check": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"score\":95,\"overall\":95,\"scores\":{\"audience\":100,\"measurable_mechanics\":100,\"feel\":100,\"genre_objective\":100,\"controls\":100,\"core_loop\":100,\"win_loss\":100,\"health_respawn\":100,\"score_progression\":100,\"screens\":100,\"visual_audio\":100,\"platform_layout\":100,\"scope_acceptance\":100},\"outcome_mode\":\"explicit_conditions\",\"missing\":[{\"priority\":3,\"criterion\":\"vague_adjectives\",\"message\":\"Vague adjectives do not define observable behavior.\",\"suggestion\":\"Replace vague adjectives with measurable behavior: for example move 220 px/s, jump 140 px, respond within 100 ms, or finish a 60-second round.\",\"question\":\"Which measurable speed, jump height, response time or round length should replace the vague wording?\"}],\"follow_up_questions\":[\"Which measurable speed, jump height, response time or round length should replace the vague wording?\"],\"limitations\":[\"English keyword heuristics only; natural wording may be missed and negation may be misread.\",\"A score measures stated requirements, not feasibility, safety, completeness, code quality or a playable game.\",\"No model, game execution, translation or network call is performed.\"]}"
+      }
+    ],
+    "structuredContent": {
+      "score": 95,
+      "overall": 95,
+      "scores": {
+        "audience": 100,
+        "measurable_mechanics": 100,
+        "feel": 100,
+        "genre_objective": 100,
+        "controls": 100,
+        "core_loop": 100,
+        "win_loss": 100,
+        "health_respawn": 100,
+        "score_progression": 100,
+        "screens": 100,
+        "visual_audio": 100,
+        "platform_layout": 100,
+        "scope_acceptance": 100
+      },
+      "outcome_mode": "explicit_conditions",
+      "missing": [
+        {
+          "priority": 3,
+          "criterion": "vague_adjectives",
+          "message": "Vague adjectives do not define observable behavior.",
+          "suggestion": "Replace vague adjectives with measurable behavior: for example move 220 px/s, jump 140 px, respond within 100 ms, or finish a 60-second round.",
+          "question": "Which measurable speed, jump height, response time or round length should replace the vague wording?"
+        }
+      ],
+      "follow_up_questions": [
+        "Which measurable speed, jump height, response time or round length should replace the vague wording?"
+      ],
+      "limitations": [
+        "English keyword heuristics only; natural wording may be missed and negation may be misread.",
+        "A score measures stated requirements, not feasibility, safety, completeness, code quality or a playable game.",
+        "No model, game execution, translation or network call is performed."
+      ]
+    },
+    "isError": false
+  }
+}

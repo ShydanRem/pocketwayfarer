@@ -1,0 +1,6 @@
+art: up to date
+rpg art: up to date
+rpg: 55639 checks passed
+core: 1434 checks passed
+34 previews -> docs/img/rpg
+27 previews -> docs/img/pet

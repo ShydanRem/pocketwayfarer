@@ -1,0 +1,9 @@
+morale: minute updates and offline hour agree (98/98)
+gold: fractional payouts survive reload, accumulate and saturate safely
+quests: unavailable social goals excluded and existing unclaimed goals repaired
+classic fight: interrupted transaction restores consumables, vitals and actual parent room
+boss: v3 transaction and v2 orphan migration both leave the encounter reachable
+idle haul: full bag rejects atomically, gear remains claimable and cannot be claimed twice
+v2 run migration and equipped blueprint/bestiary persistence: passed
+v3 migration: exact profile/run retained; v4 coaching and effects roundtrip: passed
+reliability: all audit regressions passed

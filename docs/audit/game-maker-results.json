@@ -1,0 +1,297 @@
+{
+  "purpose": "Native ESP32 audit; mobile flag is a schema proxy. Initial GDD predates the final user-selected HD-2D art direction; final brief and HD2D-REDESIGN.md supersede initial art suggestions.",
+  "design_initial_draft": {
+    "content": [
+      {
+        "type": "text",
+        "text": "# Pocket Wayfarer: Lantern Expeditions — Game Design Doc\n**Genre:** tactical timing RPG / short expedition roguelite · **Platform:** mobile\n\n## Pitch\nComplete one expedition through 5 rooms, including a final boss, and bring home one selected relic that changes the hero's build. Target session duration 3-5 minutes, a target to measure rather than a timeout.\nAudience: Build a game prototype called \"Pocket Wayfarer: Lantern Expeditions\" for players who enjoy short tactical RPG sessions and collecting original fantasy heroes. Platform: The actual product is native C11/LVGL 9.4 firmware for Waveshare ESP32-S3-Touch-AMOLED-1.75, circular 466x466 touch screen with BOOT and PWR buttons. F … \\[excerpt; full caller text retained in source\\_sections\\]\n\n## Core loop\nEach hero turn is followed by each surviving enemy, at most 2 in ordinary fights. / Defense and mastery: Before an enemy attack, show a labeled attack intent for at least 650 ms, then a closing wave with the same 220/140/90 ms full windows. / No damage immunity or counterattack on every perfect. / Rewards and risk: Aft … \\[excerpt; full caller text retained in source\\_sections\\]\n\n## Control map\n- Keyboard/mouse: For browser review only, Tab selects actionable buttons and Enter activates them\n- Touch: Route choice: Tap one of 2 connected, labeled room options to advance exactly 1 room. / Combat: Tap a living enemy to select it, then tap Attack or one of 2 equipped skills. / tap anywhere or press BOOT once to strike. / Rewards and risk: After a won combat, show 2 temporary relic options and tap exactly 1\n- Action coverage: move: keyboard/mouse not specified, touch not specified; jump: keyboard/mouse not specified, touch not specified; select: keyboard/mouse not specified, touch stated; interact: keyboard/mouse not specified, touch stated\n\n## Levels / waves\nDefense and mastery: Before an enemy attack, show a labeled attack intent for at least 650 ms, then a closing wave with the same 220/140/90 ms full windows.\n\n## Assets — proposed sizes, not requirements\n- sprite: player or primary interactive object; 64×64px (proposed).\n- sprite: objective, obstacle or opponent if required; 48×48px (proposed).\n- UI: button/icon; 48×48px (proposed).\n- UI: background; 390×844px (proposed).\n- sound: optional action and round-end cues, with mute; ≤1 second (proposed).\n\n## HUD / screens\nQuick start/hero choice, town with one primary Depart action, route, combat HUD, relic choice, pause/resume, victory, defeat with Retry, and options with sound on/off and assist timing +50 percent. Optional character cosmetics follow the first expedition instead of blocking the first fight.\n\n## Win / loss\nOne life per expedition. Hero HP reaching 0 loses and respawns in town with full HP and no stamina gate; defeating the room-5 boss wins. No arbitrary real-time deadline. New run restores full HP and the chosen loadout. Free retreat is available after every resolved room.\n\n## Done when\n1) All 3 archetypes can complete room 5 through actual touch/BOOT controls. 2) Victory, HP-zero loss, retreat and Retry are each reachable and preserve the stated currency rules. 3) Pause/resume, PWR suspend/wake, power-cut save recovery and 12-hour offline collection preserve correct state. 4) Key actions and text fit … \\[excerpt; full caller text retained in source\\_sections\\]\n\n**Proposed checks:** Verify every stated action using the keyboard/mouse and touch mappings that actually exist. Verify the stated round outcome and restart rules; resolve missing rules before implementation. Preview at 390×844 and at 375px mobile width; verify readable HUD and usable touch controls.\n\n**Limitations:** Deterministic English wording extraction, not semantic interpretation, translation or a tested game. Caller statements remain unverified. Missing mappings are not invented; asset dimensions and tests are labelled proposals. The compact Markdown uses excerpts where needed; source\\_sections preserves the supplied section text."
+      }
+    ],
+    "structuredContent": {
+      "title": "Pocket Wayfarer: Lantern Expeditions",
+      "genre": "tactical timing RPG / short expedition roguelite",
+      "platform": "mobile",
+      "markdown": "# Pocket Wayfarer: Lantern Expeditions — Game Design Doc\n**Genre:** tactical timing RPG / short expedition roguelite · **Platform:** mobile\n\n## Pitch\nComplete one expedition through 5 rooms, including a final boss, and bring home one selected relic that changes the hero's build. Target session duration 3-5 minutes, a target to measure rather than a timeout.\nAudience: Build a game prototype called \"Pocket Wayfarer: Lantern Expeditions\" for players who enjoy short tactical RPG sessions and collecting original fantasy heroes. Platform: The actual product is native C11/LVGL 9.4 firmware for Waveshare ESP32-S3-Touch-AMOLED-1.75, circular 466x466 touch screen with BOOT and PWR buttons. F … \\[excerpt; full caller text retained in source\\_sections\\]\n\n## Core loop\nEach hero turn is followed by each surviving enemy, at most 2 in ordinary fights. / Defense and mastery: Before an enemy attack, show a labeled attack intent for at least 650 ms, then a closing wave with the same 220/140/90 ms full windows. / No damage immunity or counterattack on every perfect. / Rewards and risk: Aft … \\[excerpt; full caller text retained in source\\_sections\\]\n\n## Control map\n- Keyboard/mouse: For browser review only, Tab selects actionable buttons and Enter activates them\n- Touch: Route choice: Tap one of 2 connected, labeled room options to advance exactly 1 room. / Combat: Tap a living enemy to select it, then tap Attack or one of 2 equipped skills. / tap anywhere or press BOOT once to strike. / Rewards and risk: After a won combat, show 2 temporary relic options and tap exactly 1\n- Action coverage: move: keyboard/mouse not specified, touch not specified; jump: keyboard/mouse not specified, touch not specified; select: keyboard/mouse not specified, touch stated; interact: keyboard/mouse not specified, touch stated\n\n## Levels / waves\nDefense and mastery: Before an enemy attack, show a labeled attack intent for at least 650 ms, then a closing wave with the same 220/140/90 ms full windows.\n\n## Assets — proposed sizes, not requirements\n- sprite: player or primary interactive object; 64×64px (proposed).\n- sprite: objective, obstacle or opponent if required; 48×48px (proposed).\n- UI: button/icon; 48×48px (proposed).\n- UI: background; 390×844px (proposed).\n- sound: optional action and round-end cues, with mute; ≤1 second (proposed).\n\n## HUD / screens\nQuick start/hero choice, town with one primary Depart action, route, combat HUD, relic choice, pause/resume, victory, defeat with Retry, and options with sound on/off and assist timing +50 percent. Optional character cosmetics follow the first expedition instead of blocking the first fight.\n\n## Win / loss\nOne life per expedition. Hero HP reaching 0 loses and respawns in town with full HP and no stamina gate; defeating the room-5 boss wins. No arbitrary real-time deadline. New run restores full HP and the chosen loadout. Free retreat is available after every resolved room.\n\n## Done when\n1) All 3 archetypes can complete room 5 through actual touch/BOOT controls. 2) Victory, HP-zero loss, retreat and Retry are each reachable and preserve the stated currency rules. 3) Pause/resume, PWR suspend/wake, power-cut save recovery and 12-hour offline collection preserve correct state. 4) Key actions and text fit … \\[excerpt; full caller text retained in source\\_sections\\]\n\n**Proposed checks:** Verify every stated action using the keyboard/mouse and touch mappings that actually exist. Verify the stated round outcome and restart rules; resolve missing rules before implementation. Preview at 390×844 and at 375px mobile width; verify readable HUD and usable touch controls.\n\n**Limitations:** Deterministic English wording extraction, not semantic interpretation, translation or a tested game. Caller statements remain unverified. Missing mappings are not invented; asset dimensions and tests are labelled proposals. The compact Markdown uses excerpts where needed; source\\_sections preserves the supplied section text.",
+      "sections": {
+        "pitch": {
+          "objective": "Complete one expedition through 5 rooms, including a final boss, and bring home one selected relic that changes the hero's build. Target session duration 3-5 minutes, a target to measure rather than a timeout.",
+          "audience": "Build a game prototype called \"Pocket Wayfarer: Lantern Expeditions\" for players who enjoy short tactical RPG sessions and collecting original fantasy heroes.\nPlatform: The actual product is native C11/LVGL 9.4 firmware for Waveshare ESP32-S3-Touch-AMOLED-1.75, circular 466x466 touch screen with BOOT and PWR buttons.\nFor browser review only, Tab selects actionable buttons and Enter activates them\nDefense and mastery: Before an enemy attack, show a labeled attack intent for at least 650 ms, then a closing wave with the same 220/140/90 ms full windows.\nat 3 charges, one equipped skill may consume all charges for one extra declared effect.\na return is never penalized for elapsed absence.\nDesign: Original 2D pixel art with consistent pixel density and 3x integer scaling, readable silhouettes, dark ink backgrounds, amber lantern light, cyan magic, and magenta reserved for danger.\nNumeric values above are proposed starting values for human playtests.",
+          "status": "caller statements, not verified"
+        },
+        "core_loop": [
+          "Each hero turn is followed by each surviving enemy, at most 2 in ordinary fights.",
+          "Defense and mastery: Before an enemy attack, show a labeled attack intent for at least 650 ms, then a closing wave with the same 220/140/90 ms full windows.",
+          "No damage immunity or counterattack on every perfect.",
+          "Rewards and risk: After a won combat, show 2 temporary relic options and tap exactly 1",
+          "At each resolved room, Continue advances while Return banks earned currency and ends the run."
+        ],
+        "controls": {
+          "keyboard": [
+            "For browser review only, Tab selects actionable buttons and Enter activates them"
+          ],
+          "touch": [
+            "Route choice: Tap one of 2 connected, labeled room options to advance exactly 1 room.",
+            "Combat: Tap a living enemy to select it, then tap Attack or one of 2 equipped skills.",
+            "tap anywhere or press BOOT once to strike.",
+            "Rewards and risk: After a won combat, show 2 temporary relic options and tap exactly 1"
+          ],
+          "coverage": [
+            {
+              "action": "move",
+              "keyboard_stated": false,
+              "touch_stated": false
+            },
+            {
+              "action": "jump",
+              "keyboard_stated": false,
+              "touch_stated": false
+            },
+            {
+              "action": "select",
+              "keyboard_stated": false,
+              "touch_stated": true
+            },
+            {
+              "action": "interact",
+              "keyboard_stated": false,
+              "touch_stated": true
+            }
+          ],
+          "unavailable_statements": []
+        },
+        "waves": [
+          "Defense and mastery: Before an enemy attack, show a labeled attack intent for at least 650 ms, then a closing wave with the same 220/140/90 ms full windows."
+        ],
+        "assets": [
+          {
+            "kind": "sprite",
+            "item": "player or primary interactive object",
+            "width": 64,
+            "height": 64,
+            "status": "proposed, not supplied requirements"
+          },
+          {
+            "kind": "sprite",
+            "item": "objective, obstacle or opponent if required",
+            "width": 48,
+            "height": 48,
+            "status": "proposed, not supplied requirements"
+          },
+          {
+            "kind": "UI",
+            "item": "button/icon",
+            "width": 48,
+            "height": 48,
+            "status": "proposed, not supplied requirements"
+          },
+          {
+            "kind": "UI",
+            "item": "background",
+            "width": 390,
+            "height": 844,
+            "status": "proposed, not supplied requirements"
+          },
+          {
+            "kind": "sound",
+            "item": "optional action and round-end cues, with mute",
+            "duration_seconds": 1,
+            "status": "proposed, not supplied requirements"
+          }
+        ],
+        "hud": "Quick start/hero choice, town with one primary Depart action, route, combat HUD, relic choice, pause/resume, victory, defeat with Retry, and options with sound on/off and assist timing +50 percent. Optional character cosmetics follow the first expedition instead of blocking the first fight.",
+        "win_loss": "One life per expedition. Hero HP reaching 0 loses and respawns in town with full HP and no stamina gate; defeating the room-5 boss wins. No arbitrary real-time deadline. New run restores full HP and the chosen loadout. Free retreat is available after every resolved room.",
+        "done_when": "1) All 3 archetypes can complete room 5 through actual touch/BOOT controls. 2) Victory, HP-zero loss, retreat and Retry are each reachable and preserve the stated currency rules. 3) Pause/resume, PWR suspend/wake, power-cut save recovery and 12-hour offline collection preserve correct state. 4) Key actions and text fit the 466px circular mask and pass a separate 375px touch-layout proxy with no page scrolling; proxy success is not hardware certification. 5) On-device input latency is measured and 5 new human players attempt the slice; target at least 4 understand the timing and at least 3 voluntarily replay once, to be confirmed rather than claimed.",
+        "proposed_tests": [
+          "Verify every stated action using the keyboard/mouse and touch mappings that actually exist.",
+          "Verify the stated round outcome and restart rules; resolve missing rules before implementation.",
+          "Preview at 390×844 and at 375px mobile width; verify readable HUD and usable touch controls."
+        ]
+      },
+      "source_sections": {
+        "introduction": [
+          "Build a game prototype called \"Pocket Wayfarer: Lantern Expeditions\" for players who enjoy short tactical RPG sessions and collecting original fantasy heroes.",
+          "Platform: The actual product is native C11/LVGL 9.4 firmware for Waveshare ESP32-S3-Touch-AMOLED-1.75, circular 466x466 touch screen with BOOT and PWR buttons. The plugin's mobile platform selection is only a touch-layout proxy; no browser/mobile migration is requested. Everything below is a proposed vertical slice, not implemented behavior."
+        ],
+        "goal": [
+          "Complete one expedition through 5 rooms, including a final boss, and bring home one selected relic that changes the hero's build. Target session duration 3-5 minutes, a target to measure rather than a timeout."
+        ],
+        "core mechanics": [
+          "",
+          "1. Route choice: Tap one of 2 connected, labeled room options to advance exactly 1 room. A room resolves through combat or a 2-option event; preview enemy intent or reward/risk before selection. For browser review only, Tab selects actionable buttons and Enter activates them; no character movement or jumping exists.",
+          "2. Combat: Tap a living enemy to select it, then tap Attack or one of 2 equipped skills. Attack and damaging skills open a timing ring; tap anywhere or press BOOT once to strike. Proposed full timing windows: Good 220 ms, Great 140 ms, Perfect 90 ms at a fixed 1400 ms rotation; resolve once per action, with a 2800 ms timeout causing a weak strike. Proposed damage multipliers 0.4/1.0/1.25/1.5 by quality, with no extra critical multiplier stacked on Perfect. Each hero turn is followed by each surviving enemy, at most 2 in ordinary fights.",
+          "3. Defense and mastery: Before an enemy attack, show a labeled attack intent for at least 650 ms, then a closing wave with the same 220/140/90 ms full windows. Miss/Good/Great/Perfect take 100/70/45/20 percent of incoming damage. Perfect adds 1 resonance charge; at 3 charges, one equipped skill may consume all charges for one extra declared effect. No damage immunity or counterattack on every perfect.",
+          "4. Rewards and risk: After a won combat, show 2 temporary relic options and tap exactly 1; maximum 3 temporary relics. Events present 2 explicit outcomes. At each resolved room, Continue advances while Return banks earned currency and ends the run. Final boss victory banks earned currency and allows keeping 1 relic blueprint. Defeat keeps banked progression and loses only 25 percent of unbanked run currency.",
+          "5. Pause, save and retry: BOOT on route returns to the previous menu; during timing it judges the action. A visible Pause button freezes simulation, timing and animations, then Resume continues. PWR saves and suspends the current battle and run; wake restores the same phase with a new 650 ms ready countdown. From results, Retry resets run-only HP/SP, charges, temporary relics, route and unbanked currency and starts room 1 within 2 taps. Persistent unlocked cosmetics/blueprints remain."
+        ],
+        "win/lose": [
+          "One life per expedition. Hero HP reaching 0 loses and respawns in town with full HP and no stamina gate; defeating the room-5 boss wins. No arbitrary real-time deadline. New run restores full HP and the chosen loadout. Free retreat is available after every resolved room."
+        ],
+        "scoring & progression": [
+          "Display rooms completed out of 5, current HP/SP, resonance 0-3, run currency and banked currency. Each cleared room gives 10 run currency; boss gives 30 additional currency, maximum base total 80. Permanent progression unlocks sidegrade blueprints and cosmetics, not automatic stat inflation. One region, 3 selectable archetypes with 2 equipped skills each, 6 ordinary enemy species, 1 boss with 2 telegraphed attack patterns, 6 authored relics and 2 choice events. No random legendary drop table in this slice. Offline hunting is capped at 12 hours and gives common crafting materials only; a return is never penalized for elapsed absence."
+        ],
+        "screens": [
+          "Quick start/hero choice, town with one primary Depart action, route, combat HUD, relic choice, pause/resume, victory, defeat with Retry, and options with sound on/off and assist timing +50 percent. Optional character cosmetics follow the first expedition instead of blocking the first fight."
+        ],
+        "design": [
+          "Original 2D pixel art with consistent pixel density and 3x integer scaling, readable silhouettes, dark ink backgrounds, amber lantern light, cyan magic, and magenta reserved for danger. Keep essential text/actions in a central safe area verified against the circular mask, with minimum 52px touch targets; show shape/text cues as well as color."
+        ],
+        "sound": [
+          "Optional brief attack/parry/relic sounds if supported by the existing board's verified audio hardware; Mute option. Do not assume a speaker exists."
+        ],
+        "how it should feel": [
+          "Measured input feedback within 100 ms on hardware, first playable battle within 45 seconds, ordinary fight target 15-35 seconds, boss 40-60 seconds, resume and retry predictable.",
+          "Build ONLY this slice in the existing native project; do not rewrite drivers, delete existing class/content tables or break old saves. Freeze multiplayer, additional regions, class trees, ads, payments and leaderboards. Version any changed save format and retain/migrate the existing profile. Numeric values above are proposed starting values for human playtests."
+        ],
+        "done when": [
+          "1) All 3 archetypes can complete room 5 through actual touch/BOOT controls. 2) Victory, HP-zero loss, retreat and Retry are each reachable and preserve the stated currency rules. 3) Pause/resume, PWR suspend/wake, power-cut save recovery and 12-hour offline collection preserve correct state. 4) Key actions and text fit the 466px circular mask and pass a separate 375px touch-layout proxy with no page scrolling; proxy success is not hardware certification. 5) On-device input latency is measured and 5 new human players attempt the slice; target at least 4 understand the timing and at least 3 voluntarily replay once, to be confirmed rather than claimed."
+        ]
+      },
+      "limitations": [
+        "Deterministic English wording extraction, not semantic interpretation, translation or a tested game.",
+        "Caller statements remain unverified. Missing mappings are not invented; asset dimensions and tests are labelled proposals.",
+        "The compact Markdown uses excerpts where needed; source_sections preserves the supplied section text."
+      ]
+    },
+    "isError": false
+  },
+  "balance": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"genre\":\"Turn-based timing RPG; proposed 5-room native embedded expedition\",\"assumptions\":[\"This is conditional arithmetic, not a playtest, simulation or difficulty guarantee.\",\"When omitted, the planning horizon is 5 waves and growth is 0%; these are planning defaults, not supplied game facts.\",\"Growth scales enemy count only; enemy speed stays at its supplied value because no speed-growth rule was supplied.\",\"Each enemy awards 100 proposed planning points; this is a suggested scoring convention, not a supplied rule.\",\"Clear-time estimates assume one damage per shot, every shot hits, no reload, no downtime and all enemies require enemy_hp damage.\"],\"formulas\":{\"enemy_count\":\"ceil(spawn_per_wave × (1 + wave_growth_pct / 100)^(wave - 1)); capped at 1000000 for safe planning\",\"enemy_speed_px_s\":\"supplied enemy_speed_px_s; no invented speed growth\",\"estimated_clear_seconds\":\"enemy_count × enemy_hp / fire_rate_per_s (conditional ideal minimum)\",\"target_points\":\"enemy_count × 100 proposed points per enemy\",\"jump_airtime_seconds\":\"2 × sqrt(2 × jump_height_px / 980)\",\"jump_range_px\":\"player_speed_px_s × jump_airtime_seconds\"},\"curve\":[{\"wave_or_level\":1,\"enemy_count\":null,\"enemy_speed_px_s\":null,\"estimated_clear_seconds\":null,\"target_points\":null},{\"wave_or_level\":2,\"enemy_count\":null,\"enemy_speed_px_s\":null,\"estimated_clear_seconds\":null,\"target_points\":null},{\"wave_or_level\":3,\"enemy_count\":null,\"enemy_speed_px_s\":null,\"estimated_clear_seconds\":null,\"target_points\":null},{\"wave_or_level\":4,\"enemy_count\":null,\"enemy_speed_px_s\":null,\"estimated_clear_seconds\":null,\"target_points\":null},{\"wave_or_level\":5,\"enemy_count\":null,\"enemy_speed_px_s\":null,\"estimated_clear_seconds\":null,\"target_points\":null}],\"jump\":{\"gravity_px_s2\":null,\"airtime_seconds\":null,\"horizontal_range_px\":null,\"gap_px\":null},\"unknown_inputs\":[\"player_speed_px_s\",\"jump_height_px\",\"gap_px\",\"enemy_speed_px_s\",\"spawn_per_wave\",\"wave_growth_pct\",\"fire_rate_per_s\",\"enemy_hp\"],\"feasibility\":{\"status\":\"incomplete\",\"warnings\":[]},\"suggested_fixes\":[],\"balance_numbers\":\"Balance numbers (conditional planning):\\nlives: 1\\nlevel_seconds: 36\\nwaves_or_levels: 5\\nPlanning curve: 5 waves; count growth 0% per wave; constant supplied enemy speed.\\nProposed scoring: 100 points per enemy, subject to design approval.\\nWave 1: enemies unknown, speed unknown px/s, ideal clear unknown s, proposed target unknown points.\\nWave 2: enemies unknown, speed unknown px/s, ideal clear unknown s, proposed target unknown points.\\nWave 3: enemies unknown, speed unknown px/s, ideal clear unknown s, proposed target unknown points.\\nWave 4: enemies unknown, speed unknown px/s, ideal clear unknown s, proposed target unknown points.\\nWave 5: enemies unknown, speed unknown px/s, ideal clear unknown s, proposed target unknown points.\\nClear estimates assume 1 damage/shot, all shots hit and no reload/downtime. Playtest before treating these numbers as balanced.\"}"
+      }
+    ],
+    "structuredContent": {
+      "genre": "Turn-based timing RPG; proposed 5-room native embedded expedition",
+      "assumptions": [
+        "This is conditional arithmetic, not a playtest, simulation or difficulty guarantee.",
+        "When omitted, the planning horizon is 5 waves and growth is 0%; these are planning defaults, not supplied game facts.",
+        "Growth scales enemy count only; enemy speed stays at its supplied value because no speed-growth rule was supplied.",
+        "Each enemy awards 100 proposed planning points; this is a suggested scoring convention, not a supplied rule.",
+        "Clear-time estimates assume one damage per shot, every shot hits, no reload, no downtime and all enemies require enemy_hp damage."
+      ],
+      "formulas": {
+        "enemy_count": "ceil(spawn_per_wave × (1 + wave_growth_pct / 100)^(wave - 1)); capped at 1000000 for safe planning",
+        "enemy_speed_px_s": "supplied enemy_speed_px_s; no invented speed growth",
+        "estimated_clear_seconds": "enemy_count × enemy_hp / fire_rate_per_s (conditional ideal minimum)",
+        "target_points": "enemy_count × 100 proposed points per enemy",
+        "jump_airtime_seconds": "2 × sqrt(2 × jump_height_px / 980)",
+        "jump_range_px": "player_speed_px_s × jump_airtime_seconds"
+      },
+      "curve": [
+        {
+          "wave_or_level": 1,
+          "enemy_count": null,
+          "enemy_speed_px_s": null,
+          "estimated_clear_seconds": null,
+          "target_points": null
+        },
+        {
+          "wave_or_level": 2,
+          "enemy_count": null,
+          "enemy_speed_px_s": null,
+          "estimated_clear_seconds": null,
+          "target_points": null
+        },
+        {
+          "wave_or_level": 3,
+          "enemy_count": null,
+          "enemy_speed_px_s": null,
+          "estimated_clear_seconds": null,
+          "target_points": null
+        },
+        {
+          "wave_or_level": 4,
+          "enemy_count": null,
+          "enemy_speed_px_s": null,
+          "estimated_clear_seconds": null,
+          "target_points": null
+        },
+        {
+          "wave_or_level": 5,
+          "enemy_count": null,
+          "enemy_speed_px_s": null,
+          "estimated_clear_seconds": null,
+          "target_points": null
+        }
+      ],
+      "jump": {
+        "gravity_px_s2": null,
+        "airtime_seconds": null,
+        "horizontal_range_px": null,
+        "gap_px": null
+      },
+      "unknown_inputs": [
+        "player_speed_px_s",
+        "jump_height_px",
+        "gap_px",
+        "enemy_speed_px_s",
+        "spawn_per_wave",
+        "wave_growth_pct",
+        "fire_rate_per_s",
+        "enemy_hp"
+      ],
+      "feasibility": {
+        "status": "incomplete",
+        "warnings": []
+      },
+      "suggested_fixes": [],
+      "balance_numbers": "Balance numbers (conditional planning):\nlives: 1\nlevel_seconds: 36\nwaves_or_levels: 5\nPlanning curve: 5 waves; count growth 0% per wave; constant supplied enemy speed.\nProposed scoring: 100 points per enemy, subject to design approval.\nWave 1: enemies unknown, speed unknown px/s, ideal clear unknown s, proposed target unknown points.\nWave 2: enemies unknown, speed unknown px/s, ideal clear unknown s, proposed target unknown points.\nWave 3: enemies unknown, speed unknown px/s, ideal clear unknown s, proposed target unknown points.\nWave 4: enemies unknown, speed unknown px/s, ideal clear unknown s, proposed target unknown points.\nWave 5: enemies unknown, speed unknown px/s, ideal clear unknown s, proposed target unknown points.\nClear estimates assume 1 damage/shot, all shots hit and no reload/downtime. Playtest before treating these numbers as balanced."
+    },
+    "isError": false
+  },
+  "final_brief_check": {
+    "content": [
+      {
+        "type": "text",
+        "text": "{\"score\":92,\"overall\":92,\"scores\":{\"audience\":100,\"measurable_mechanics\":100,\"feel\":100,\"genre_objective\":100,\"controls\":100,\"core_loop\":100,\"win_loss\":100,\"health_respawn\":100,\"score_progression\":0,\"screens\":75,\"visual_audio\":100,\"platform_layout\":100,\"scope_acceptance\":100},\"outcome_mode\":\"explicit_conditions\",\"missing\":[{\"priority\":3,\"criterion\":\"score_progression\",\"message\":\"Missing or unclear score progression.\",\"suggestion\":\"Define scoring and level/difficulty progression or explicitly limit the prototype to one level.\",\"question\":\"How is progress or score shown, and how many levels or difficulty steps are in scope?\"},{\"priority\":3,\"criterion\":\"screens\",\"message\":\"Missing or unclear screens.\",\"suggestion\":\"List start/menu, HUD, pause and game-over screens. Restart and local high-score persistence are useful optional details.\",\"question\":\"Which menu, score/health display, and game-over/restart screens should be included?\"}],\"follow_up_questions\":[\"How is progress or score shown, and how many levels or difficulty steps are in scope?\",\"Which menu, score/health display, and game-over/restart screens should be included?\"],\"limitations\":[\"English keyword heuristics only; natural wording may be missed and negation may be misread.\",\"A score measures stated requirements, not feasibility, safety, completeness, code quality or a playable game.\",\"No model, game execution, translation or network call is performed.\"]}"
+      }
+    ],
+    "structuredContent": {
+      "score": 92,
+      "overall": 92,
+      "scores": {
+        "audience": 100,
+        "measurable_mechanics": 100,
+        "feel": 100,
+        "genre_objective": 100,
+        "controls": 100,
+        "core_loop": 100,
+        "win_loss": 100,
+        "health_respawn": 100,
+        "score_progression": 0,
+        "screens": 75,
+        "visual_audio": 100,
+        "platform_layout": 100,
+        "scope_acceptance": 100
+      },
+      "outcome_mode": "explicit_conditions",
+      "missing": [
+        {
+          "priority": 3,
+          "criterion": "score_progression",
+          "message": "Missing or unclear score progression.",
+          "suggestion": "Define scoring and level/difficulty progression or explicitly limit the prototype to one level.",
+          "question": "How is progress or score shown, and how many levels or difficulty steps are in scope?"
+        },
+        {
+          "priority": 3,
+          "criterion": "screens",
+          "message": "Missing or unclear screens.",
+          "suggestion": "List start/menu, HUD, pause and game-over screens. Restart and local high-score persistence are useful optional details.",
+          "question": "Which menu, score/health display, and game-over/restart screens should be included?"
+        }
+      ],
+      "follow_up_questions": [
+        "How is progress or score shown, and how many levels or difficulty steps are in scope?",
+        "Which menu, score/health display, and game-over/restart screens should be included?"
+      ],
+      "limitations": [
+        "English keyword heuristics only; natural wording may be missed and negation may be misread.",
+        "A score measures stated requirements, not feasibility, safety, completeness, code quality or a playable game.",
+        "No model, game execution, translation or network call is performed."
+      ]
+    },
+    "isError": false
+  }
+}

@@ -1,0 +1,7 @@
+same 60 minutes, hunger zero: morale minute-ticks=40; hour-tick=98
+ten level-1 reward payouts: gold=70; gold quest progress=0/4
+365 generated daily sets: 138 contain greet-friends quest
+save/reload unresolved normal fight: cleared=0; next reachable=1
+save/reload unresolved boss: active=1; row=4; reachable=0
+idle hunt with full bag: reported items=4; bag remains 40/40; all gear unchanged=1
+audit probes: all observations reproduced

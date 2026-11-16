@@ -1,0 +1,24 @@
+{
+  "artifact": "Pocket Wayfarer HD-2D direction 01",
+  "kind": "AI-generated visual concept, not a canonical game asset package",
+  "user_direction": "High-quality authored pixel art, HD-2D",
+  "tool": "OpenAI ImageGen",
+  "source": "/workspace/generated_images/exec-115d4d73-314a-4b30-b50b-a14f9e72a02f.png",
+  "copy": "concepts/hd2d-direction-01.png",
+  "sha256": "c46adc8d74e495d6e8b3566f92bc32a2cefe9e5ea7d6085d0067e6b4bd336504",
+  "prompt_file": "hd2d-concept-prompt.txt",
+  "width": 1774,
+  "height": 887,
+  "verification": [
+    "file-format check",
+    "visual concept inspection",
+    "exact source copy"
+  ],
+  "not_verified": [
+    "runtime import",
+    "separate sprite animation",
+    "native-size touch readability",
+    "device frame time and memory",
+    "production asset package validation"
+  ]
+}

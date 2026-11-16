@@ -1,0 +1,3 @@
+# Preserve the original bytes of third-party legal notices and vendor bundles.
+assets/lantern/fonts/LICENSE.txt -whitespace
+web/vendor/** -whitespace
