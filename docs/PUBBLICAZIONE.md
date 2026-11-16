@@ -36,6 +36,8 @@ La cartella del sito pubblicato è `build/site/`. I file di sviluppo, i salvatag
 
 Le pull request costruiscono e verificano il sito ma non pubblicano su Pages. Il job di deployment usa l’ambiente `github-pages` e i permessi `pages: write` e `id-token: write`; le fasi di build hanno soltanto accesso in lettura al repository.
 
+Dopo il deployment, `check-published-site.py` scarica dall’indirizzo pubblico manuale, pagina, crediti, moduli JavaScript, screenshot e pacchetto firmware. Controlla commit pubblicato, SHA-256 dei tre binari e corrispondenza fra ZIP e file usati dall’installer. Ripete il controllo per un breve intervallo se la CDN serve ancora il rilascio precedente. Questo controllo HTTP non sostituisce il collaudo visuale del browser o la scrittura sul dispositivo.
+
 ## Controlli prima di pubblicare
 
 ```sh
