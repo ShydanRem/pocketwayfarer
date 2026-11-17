@@ -53,7 +53,11 @@ I nomi possono essere abbreviati nei pulsanti di combattimento per mantenere leg
 
 ## Le sei reliquie
 
-Dopo uno scontro ordinario vengono proposte due reliquie diverse, finché hai spazio. Puoi confrontarle prima di scegliere. Ne porti **al massimo tre**; una reliquia iniziale equipaggiata occupa già uno slot.
+Dopo ogni scontro ordinario vengono proposte due reliquie diverse. Ne porti **al massimo tre**; una reliquia iniziale equipaggiata occupa già uno slot. Con spazio libero usa **Scegli**; a tre slot usa **Confronta** per vedere la nuova reliquia in alto e quella da lasciare in basso. Le frecce scorrono le tre possedute: **Sostituisci** conferma lo scambio, **Indietro** o BOOT annullano senza rimuovere nulla. **Lascia** rinuncia alla ricompensa mantenendo l’assetto.
+
+![Confronto nativo fra nuova reliquia e reliquia da sostituire](img/lantern/47-confronto-reliquie.png)
+
+Se riavvii durante il confronto ritrovi le due proposte e tutte le reliquie possedute. La selezione temporanea non è un oggetto già rimosso. Il salvataggio conserva lo scambio soltanto dopo la conferma.
 
 | Reliquia | Effetto |
 |---|---|
@@ -65,6 +69,8 @@ Dopo uno scontro ordinario vengono proposte due reliquie diverse, finché hai sp
 | Bussola del Faro | Proseguire dopo una stanza recupera fino a 6 PV. |
 
 Dopo la vittoria sul boss scegli un progetto fra le reliquie possedute nella run. Nel borgo apri **Zaino/Collezione**, scorri i progetti e scegli **Equipaggia**. La prossima spedizione partirà con quella reliquia; **Rimuovi** torna a una partenza senza progetto.
+
+Puoi rinunciare a tutte le reliquie: vincere senza averne mantiene il premio di 80 monete e aumenta le vittorie, ma non aggiunge un progetto alla collezione.
 
 ## Focolare o Specchio
 

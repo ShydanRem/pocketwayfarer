@@ -59,6 +59,10 @@ bool ln_tap(rpg_lantern *l);
 /* Returns true when a discrete state transition occurs. Paused runs do not tick. */
 bool ln_tick(rpg_lantern *l, unsigned delta_ms);
 bool ln_choose_relic(rpg_lantern *l, int choice);
+int ln_relic_count(const rpg_lantern *l);
+/* Full loadouts require one atomic exchange; browsing never removes an item. */
+bool ln_replace_relic(rpg_lantern *l, int choice, int outgoing);
+bool ln_skip_relic(rpg_lantern *l);
 bool ln_keep_blueprint(rpg_lantern *l, int relic);
 bool ln_event(rpg_lantern *l, int choice);
 bool ln_continue(rpg_lantern *l);

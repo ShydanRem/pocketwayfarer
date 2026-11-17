@@ -1,0 +1,24 @@
+Relic exchange increment — 2026-11-17
+
+Native automated verification (recorded in ui-sanitizers.txt):
+49 real LVGL framebuffer captures, 430 save validations, all six relic effects
+in Italian and English, touch/BOOT cancel, PWR and restart, atomic exchange,
+skip, complete no-relic win and idempotent payout. ASan/UBSan passed.
+
+Desktop artifact smoke:
+SDL_VIDEODRIVER=dummy build/host/cmake/play_lantern --save build/relic-desktop-headless.bin --smoke
+Input: a separate copy of the synthetic 2808-byte v4 full-loadout QA profile
+emitted by preview_lantern. SDL dummy launched the native executable and
+completed its smoke loop. The output save has a valid v4 header, length and CRC.
+
+Manual visible-window attempt: not passed.
+The resumed environment did not export a display session to shell commands.
+Launching against the observed X0 socket returned an X11 authorization error.
+No display authorization or access-control setting was changed. Cloud Desktop
+opened a terminal, but its text-input API could not identify a text field;
+two input attempts sent no text. The launcher shortcut produced no dialog.
+No relic comparison was manually clicked in a visible game window.
+
+This limitation concerns the additional manual desktop check. It does not
+invalidate the real-LVGL scripted input, framebuffer and sanitizer evidence.
+Physical Pocket flashing, latency and human enjoyment remain unverified.

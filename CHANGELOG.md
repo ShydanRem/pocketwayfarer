@@ -1,5 +1,12 @@
 # Note di versione
 
+## 0.3.0-preview.2 — 17 novembre 2026
+
+- Le ricompense continuano a offrire due reliquie anche a tre slot: confronto degli effetti e sostituzione esplicita di una reliquia posseduta.
+- È possibile rinunciare alla ricompensa. Indietro/BOOT annullano il confronto; riavvio e PWR non rimuovono oggetti non confermati.
+- Vincere senza reliquie conclude regolarmente il viaggio, accredita l’oro una sola volta e non assegna un progetto inesistente.
+- Salvataggi invariati nel formato v4; guida illustrata e sito aggiornati. Il collaudo fisico resta da completare.
+
 ## 0.3.0-preview.1 — 16 novembre 2026
 
 ### Lanternbound

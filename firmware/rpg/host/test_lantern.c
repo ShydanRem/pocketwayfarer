@@ -38,7 +38,7 @@ static unsigned tick_at_quality(rpg_lantern *l, int quality) {
     static const unsigned offset[] = {250, 95, 60, 0};
     return (l->state == LN_ATTACK ? 700u : 1000u) + offset[quality];
 }
-static int play(int archetype, uint32_t seed, int quality, int branch, int starter) {
+static int play(int archetype, uint32_t seed, int quality, int branch, int starter, int policy) {
     rpg_game g;
     fresh(&g);
     if (starter >= 0) { g.lantern.blueprints = (uint8_t)(1u << starter); g.lantern.equipped = (uint8_t)(starter+1); }
@@ -57,7 +57,15 @@ static int play(int archetype, uint32_t seed, int quality, int branch, int start
         case LN_RELIC:
             assert(l->offers[0] != l->offers[1]);
             assert(!(l->relics & (1u << l->offers[0])) && !(l->relics & (1u << l->offers[1])));
-            assert(ln_choose_relic(l, (int)(seed & 1u))); break;
+            if (policy == 2) assert(ln_skip_relic(l));
+            else if (ln_relic_count(l) < 3) assert(ln_choose_relic(l, (int)(seed & 1u)));
+            else if (!policy) assert(ln_skip_relic(l));
+            else {
+                int outgoing = 0;
+                while (!(l->relics & (1u << outgoing))) outgoing++;
+                assert(ln_replace_relic(l, (int)(seed & 1u), outgoing));
+            }
+            assert(ln_relic_count(l) <= 3); break;
         case LN_EVENT: assert(ln_event(l, 0)); break;
         case LN_CLEARED: assert(ln_continue(l)); break;
         case LN_BLUEPRINT: {
@@ -84,6 +92,7 @@ static int play(int archetype, uint32_t seed, int quality, int branch, int start
     assert(ln_bank(&g.lantern) == 0);
     if (won) assert(reward == 80 && g.lantern.wins == 1);
     else assert(g.lantern.state == LN_LOST);
+    if (policy == 2) assert(!g.lantern.relics && !g.lantern.blueprints);
     return won;
 }
 static void migration(void) {
@@ -156,6 +165,56 @@ static void relics(void) {
     a.state = LN_PARRY; a.elapsed_ms = 1000; a.sp = 0; a.relics = 1u << LR_HEART;
     assert(ln_tap(&a) && a.sp == 4 && a.resonance == 1); /* +3 relic, +1 end turn */
 }
+static void relic_exchanges(void) {
+    rpg_game g;
+    for (unsigned mask = 0; mask < (1u << LR_COUNT); mask++) {
+        fresh(&g); ln_start(&g.lantern, LN_MAGE, 31);
+        rpg_lantern *l = &g.lantern;
+        l->relics = (uint8_t)mask;
+        if (ln_relic_count(l) != 3) continue;
+        l->state = LN_RELIC; l->room = 3; l->currency = 30;
+        int n = 0;
+        for (int r = 0; r < LR_COUNT && n < 2; r++)
+            if (!(mask & (1u << r))) l->offers[n++] = (uint8_t)r;
+        roundtrip(&g);
+        rpg_lantern before = *l;
+        assert(!ln_choose_relic(l, 0) && !ln_choose_relic(l, 1));
+        assert(!ln_replace_relic(l, -1, 0) && !ln_replace_relic(l, 2, 0));
+        assert(!ln_replace_relic(l, 0, -1) && !ln_replace_relic(l, 0, LR_COUNT));
+        assert(!memcmp(l, &before, sizeof before));
+        for (int choice = 0; choice < 2; choice++) for (int outgoing = 0; outgoing < LR_COUNT; outgoing++) {
+            *l = before;
+            bool owned = (mask & (1u << outgoing)) != 0;
+            assert(ln_replace_relic(l, choice, outgoing) == owned);
+            rpg_lantern expected = before;
+            if (owned) {
+                expected.relics = (uint8_t)((mask & ~(1u << outgoing)) | (1u << before.offers[choice]));
+                expected.state = LN_CLEARED;
+                assert(ln_relic_count(l) == 3);
+            }
+            assert(!memcmp(l, &expected, sizeof expected));
+            roundtrip(&g);
+            if (owned) assert(!ln_replace_relic(l, choice, outgoing)); /* no repeated exchange */
+        }
+        *l = before;
+        assert(ln_skip_relic(l) && l->relics == mask && l->rng == before.rng && l->currency == 30);
+        roundtrip(&g);
+        assert(!ln_skip_relic(l));
+    }
+    fresh(&g); ln_start(&g.lantern, LN_SENTINEL, 72);
+    rpg_lantern *l = &g.lantern;
+    l->state = LN_RELIC; l->relics = 1u << LR_BELL; l->offers[0] = LR_HEART;
+    rpg_lantern before = *l;
+    assert(!ln_replace_relic(l, 0, LR_BELL) && !memcmp(l, &before, sizeof before));
+    l->offers[0] = LR_BELL; before = *l;
+    assert(!ln_choose_relic(l, 0) && !memcmp(l, &before, sizeof before));
+    l->offers[0] = LR_COUNT; before = *l;
+    assert(!ln_choose_relic(l, 0) && !memcmp(l, &before, sizeof before));
+    assert(ln_skip_relic(l) && l->relics == (1u << LR_BELL));
+    l->state = LN_BLUEPRINT; before = *l;
+    assert(!ln_skip_relic(l) && !memcmp(l, &before, sizeof before));
+    puts("relic exchange: all 20 three-slot loadouts, both offers, owned/unowned targets, atomic failures, skip and save/reload: passed");
+}
 static void coaching_and_feedback(void) {
     rpg_game g; fresh(&g);
     rpg_lantern *l = &g.lantern, before;
@@ -202,13 +261,13 @@ static void coaching_and_feedback(void) {
     puts("coach/feedback: actual learning, miss/retry, opt-out, exact actor/damage, resonance and burn: passed");
 }
 int main(void) {
-    migration(); timing_pause_and_boundaries(); relics(); coaching_and_feedback();
+    migration(); timing_pause_and_boundaries(); relics(); relic_exchanges(); coaching_and_feedback();
     int any_loss = 0;
     for (int q = 0; q <= 3; q++) {
         printf("lantern %s:", q == 0 ? "miss" : q == 1 ? "good" : q == 2 ? "great" : "perfect");
         for (int a = 0; a < 3; a++) {
             int wins = 0;
-            for (uint32_t seed = 1; seed <= 24; seed++) wins += play(a, seed, q, (int)(seed & 1u), -1);
+            for (uint32_t seed = 1; seed <= 24; seed++) wins += play(a, seed, q, (int)(seed & 1u), -1, false);
             if (q == 3) assert(wins == 24);
             if (q == 0) any_loss |= wins < 24;
             printf(" %d/24", wins);
@@ -217,9 +276,14 @@ int main(void) {
     }
     assert(any_loss);
     for (int relic = 0; relic < LR_COUNT; relic++) for (int a = 0; a < LN_ARCHETYPES; a++)
-        for (uint32_t seed = 1; seed <= 8; seed++) assert(play(a, seed, WF_Q_GREAT, (int)(seed&1u), relic));
+        for (uint32_t seed = 1; seed <= 8; seed++) {
+            assert(play(a, seed, WF_Q_GREAT, (int)(seed&1u), relic, false));
+            assert(play(a, seed, WF_Q_GREAT, (int)(seed&1u), relic, true));
+        }
+    for (int a = 0; a < LN_ARCHETYPES; a++) for (uint32_t seed = 1; seed <= 8; seed++)
+        assert(play(a, seed, WF_Q_PERFECT, (int)(seed&1u), -1, 2));
     assert(discovered == (1u << LN_ENEMIES)-1u);
-    puts("all six starting relics x three loadouts x eight seeds, all seven bestiary entries: passed");
+    puts("600 runs: baseline, all starting relics x loadouts x eight seeds x skip/replace, and 24 no-relic wins; all bestiary entries: passed");
     printf("lantern: %u save/resume snapshots, %u rule transitions passed\n", snapshots, steps);
     return 0;
 }
