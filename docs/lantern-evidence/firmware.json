@@ -5,7 +5,7 @@
   "idf_version": "5.5.1",
   "app": "build/firmware-hd2d/pocketwayfarer.bin",
   "bytes": 3292560,
-  "sha256": "3f831ecdee97b1a0ed979eb5e1fd5f5c988f1e939bbadd126b4da9818840c373",
+  "sha256": "92cf23bff7f548aac0605f7f1253e6d6811bc08206f6bfe2814fed893e9df10d",
   "app_partition_bytes": 6291456,
   "save_version": 4,
   "save_bytes": 2808,

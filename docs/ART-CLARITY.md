@@ -16,7 +16,7 @@ Sono principi di composizione applicabili a questo hardware, non una promessa di
 
 ## Scelte visive realizzate
 
-Il borgo usa un canale al crepuscolo, architetture illuminate ai bordi e una piazza libera dietro l'eroe. Nell'arena, la foschia blu-viola e le campiture ampie arretrano rispetto ad avorio, ambra e verde acqua delle figure. La saturazione è distribuita per importanza, anziché aumentata ovunque. Il fondale resta colorato, ma non deve contendere il primo piano ai combattenti.
+La schermata iniziale separa titolo, sottotitolo, figura intera e pulsanti: nessuna lettera attraversa la sagoma. Anche il sottotitolo ha un fondino leggibile. Il borgo usa un canale al crepuscolo, architetture illuminate ai bordi e una piazza libera dietro l'eroe. Nell'arena, la foschia blu-viola e le campiture ampie arretrano rispetto ad avorio, ambra e verde acqua delle figure. La saturazione è distribuita per importanza, anziché aumentata ovunque. Il fondale resta colorato, ma non deve contendere il primo piano ai combattenti.
 
 I tre assetti hanno nuove forme e colori: Sentinella con mantello avorio e scudo verde acqua; Piromante con capelli chiari, veste prugna e lanterna; Predone con giacca indaco, fascia e due lame. Anche le sette specie nemiche hanno nuove sorgenti a quattro pose. Le palette sono condivise fra le pose di ciascuna riga, per evitare oscillazioni cromatiche dovute alla conversione.
 

@@ -102,9 +102,10 @@ static void check_buttons(lv_obj_t *o) {
     for (uint32_t i = 0; i < lv_obj_get_child_count(o); i++) check_buttons(lv_obj_get_child(o, (int)i));
 }
 static void check_hero_clearance(const char *name) {
+    bool title = R.screen == R_TITLE;
     bool town = R.screen == R_TOWN;
     bool battle = R.screen == R_LANTERN && R.g.lantern.state >= LN_CHOOSE && R.g.lantern.state <= LN_IMPACT;
-    if (!town && !battle) return;
+    if (!title && !town && !battle) return;
     lv_obj_t *screen = lv_screen_active();
     bool found = false;
     for (unsigned i = 0; i < lv_obj_get_child_count(screen); i++) {
@@ -112,7 +113,7 @@ static void check_hero_clearance(const char *name) {
         if (!lv_obj_check_type(o, &lv_image_class) || lv_obj_get_width(o) != 176) continue;
         lv_area_t a; lv_obj_get_coords(o, &a);
         int cx = (a.x1+a.x2+1)/2;
-        if (cx < (town ? 145 : 105) || cx > (town ? 175 : 150)) continue;
+        if (cx < (title ? 230 : town ? 145 : 105) || cx > (title ? 236 : town ? 175 : 150)) continue;
         const lv_image_dsc_t *image = lv_image_get_src(o);
         assert(image->header.cf == LV_COLOR_FORMAT_RGB565A8);
         const uint8_t *alpha = image->data + image->header.stride * image->header.h;
@@ -120,12 +121,12 @@ static void check_hero_clearance(const char *name) {
             if (!alpha[y*image->header.w+x]) continue;
             /* Test actual expanded sprite pixels against the rendered HUD,
              * rather than its padded transparent canvas. Feet used to fail. */
-            assert(a.y1+(int)y > 106 && a.y1+(int)y < (town ? 279 : 285));
+            assert(a.y1+(int)y > (title ? 137 : 106) && a.y1+(int)y < (title ? 287 : town ? 279 : 285));
         }
         found = true;
     }
     /* Town subpages share R_TOWN but intentionally have no hero. */
-    if (!strcmp(name, "borgo") || !strcmp(name, "village-english") || !strcmp(name, "combattimento")) assert(found);
+    if (title || !strcmp(name, "borgo") || !strcmp(name, "village-english") || !strcmp(name, "combattimento")) assert(found);
 }
 static void shot(const char *name) {
     lv_obj_update_layout(lv_screen_active());

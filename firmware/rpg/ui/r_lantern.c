@@ -181,10 +181,12 @@ enum { C_DEPART = 1, C_HERO, C_BAG, C_MORE, C_HOME, C_CLASSIC, C_MAP, C_EQUIP, C
 
 void scr_lantern_title(void) {
     scene(PAGE_TITLE, 0, 50);
-    panel(L.root, CX, 123, 298, 100, 205);
-    label(L.root, "POCKET\nWAYFARER", CX, 120, 282, IVORY, true);
-    label(L.root, "L A N T E R N B O U N D", CX, 194, 284, AMBER, false);
-    L.hero = kit_img(L.root, hero_sprite(0), 2, CX, 225);
+    panel(L.root, CX, 91, 330, 46, 225);
+    label(L.root, "POCKET WAYFARER", CX, 91, 314, IVORY, true);
+    panel(L.root, CX, 124, 238, 28, 225);
+    label(L.root, "LANTERNBOUND", CX, 124, 270, AMBER, false);
+    ground_shadow(CX, 282, 70);
+    L.hero = kit_img(L.root, hero_sprite(0), 2, CX, 202);
     button(L.root, TR("Gioca", "Play"), CX, 323, 236, 72, C_QUICK, true);
     button(L.root, TR("Personalizza", "Customize"), CX, 397, 176, 52, C_CUSTOM, false);
     button(L.root, wf_lang ? "EN" : "IT", CX, 43, 52, 42, C_LANGUAGE, false);

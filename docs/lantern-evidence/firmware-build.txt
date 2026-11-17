@@ -6,7 +6,7 @@ Executing "ninja all"...
 Bootloader binary size 0x57e0 bytes. 0x2820 bytes (31%) free.
 [2/9] No install step for 'bootloader'
 [3/9] Completed 'bootloader'
-[4/9] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/__/rpg/ui/r_main.c.obj
+[4/9] Building C object esp-idf/main/CMakeFiles/__idf_main.dir/__/rpg/ui/r_lantern.c.obj
 [5/9] Linking C static library esp-idf/main/libmain.a
 [6/9] Generating esp-idf/esp_system/ld/sections.ld
 [7/9] Linking CXX executable pocketwayfarer.elf
