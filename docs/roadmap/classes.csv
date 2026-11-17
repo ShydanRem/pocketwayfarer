@@ -1,0 +1,41 @@
+id,italiano,english,family_id,tier,parent_id,branch,illustration,player_sprite,next_milestone
+0,Guerriero,Warrior,0,1,-1,base,base_imported,legacy_family_tier,R2
+1,Mago,Mage,1,1,-1,base,base_imported,legacy_family_tier,R2
+2,Arciere,Archer,2,1,-1,base,base_imported,legacy_family_tier,R2
+3,Ladro,Rogue,3,1,-1,base,base_imported,legacy_family_tier,R2
+4,Chierico,Cleric,4,1,-1,base,base_imported,legacy_family_tier,R2
+5,Monaco,Monk,5,1,-1,base,base_imported,legacy_family_tier,R2
+6,Artefice,Artificer,6,1,-1,base,base_imported,legacy_family_tier,R2
+7,Occultista,Occultist,7,1,-1,base,base_imported,legacy_family_tier,R2
+8,Cavaliere,Knight,0,2,0,A,explicit_family_reference,legacy_family_tier,R3
+9,Berserker,Berserker,0,2,0,B,explicit_family_reference,legacy_family_tier,R3
+10,Elementalista,Elementalist,1,2,1,A,explicit_family_reference,legacy_family_tier,R3
+11,Arcanista,Arcanist,1,2,1,B,explicit_family_reference,legacy_family_tier,R3
+12,Ramingo,Ranger,2,2,2,A,explicit_family_reference,legacy_family_tier,R3
+13,Cecchino,Sharpshooter,2,2,2,B,explicit_family_reference,legacy_family_tier,R3
+14,Assassino,Assassin,3,2,3,A,explicit_family_reference,legacy_family_tier,R3
+15,Duellante,Duelist,3,2,3,B,explicit_family_reference,legacy_family_tier,R3
+16,Paladino,Paladin,4,2,4,A,explicit_family_reference,legacy_family_tier,R3
+17,Sacerdote,Priest,4,2,4,B,explicit_family_reference,legacy_family_tier,R3
+18,Campione,Champion,5,2,5,A,explicit_family_reference,legacy_family_tier,R3
+19,Mistico,Mystic,5,2,5,B,explicit_family_reference,legacy_family_tier,R3
+20,Fabbro,Blacksmith,6,2,6,A,explicit_family_reference,legacy_family_tier,R3
+21,Alchimista,Alchemist,6,2,6,B,explicit_family_reference,legacy_family_tier,R3
+22,Negromante,Necromancer,7,2,7,A,explicit_family_reference,legacy_family_tier,R3
+23,Stregone,Warlock,7,2,7,B,explicit_family_reference,legacy_family_tier,R3
+24,Cavaliere del Drago,Dragon Knight,0,3,8,A,explicit_family_reference,legacy_family_tier,R4
+25,Signore della Guerra,Warlord,0,3,9,B,explicit_family_reference,legacy_family_tier,R4
+26,Arcimago,Archmage,1,3,10,A,explicit_family_reference,legacy_family_tier,R4
+27,Cronomante,Chronomancer,1,3,11,B,explicit_family_reference,legacy_family_tier,R4
+28,Signore delle Bestie,Beastmaster,2,3,12,A,explicit_family_reference,legacy_family_tier,R4
+29,Arco della Tempesta,Stormbow,2,3,13,B,explicit_family_reference,legacy_family_tier,R4
+30,Lama Notturna,Nightblade,3,3,14,A,explicit_family_reference,legacy_family_tier,R4
+31,Maestro di Lame,Blademaster,3,3,15,B,explicit_family_reference,legacy_family_tier,R4
+32,Templare,Templar,4,3,16,A,explicit_family_reference,legacy_family_tier,R4
+33,Ierofante,Hierophant,4,3,17,B,explicit_family_reference,legacy_family_tier,R4
+34,Gran Maestro,Grandmaster,5,3,18,A,explicit_family_reference,legacy_family_tier,R4
+35,Asceso,Ascendant,5,3,19,B,explicit_family_reference,legacy_family_tier,R4
+36,Forgiarune,Runesmith,6,3,20,A,explicit_family_reference,legacy_family_tier,R4
+37,Trasmutatore,Transmuter,6,3,21,B,explicit_family_reference,legacy_family_tier,R4
+38,Signore della Morte,Deathlord,7,3,22,A,explicit_family_reference,legacy_family_tier,R4
+39,Evocavuoto,Voidcaller,7,3,23,B,explicit_family_reference,legacy_family_tier,R4

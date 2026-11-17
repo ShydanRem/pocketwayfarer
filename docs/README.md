@@ -15,11 +15,12 @@ Pocket Wayfarer è un RPG fantasy per **Waveshare ESP32-S3-Touch-AMOLED-1.75**. 
 | Giocare su PC, compilare o modificare il progetto | [Sviluppo e build](SVILUPPO.md) |
 | Pubblicare sito e firmware su GitHub Pages | [Pubblicazione e rilascio](PUBBLICAZIONE.md) |
 
-La versione `0.4.0-preview.1` è una **preview**. Il core e la UI nativa sono verificati su PC, e il firmware compila per ESP32-S3; il nuovo build deve ancora essere collaudato sul Pocket fisico. L’installer mostra lo stesso stato.
+La versione `0.4.1-preview.1` è una **preview**. Il core e la UI nativa sono verificati su PC, e il firmware compila per ESP32-S3; il nuovo build deve ancora essere collaudato sul Pocket fisico. L’installer mostra lo stesso stato.
 
 ## Per approfondire
 
 - [Regole e prove del redesign Lanternbound](LANTERNBOUND.md).
+- [Roadmap dettagliata](ROADMAP.md), [lotto attivo](roadmap/STATUS.md) e [direzione artistica delle classi](CLASS-ART-BIBLE.md).
 - [Ricerca e nuova leggibilità grafica](ART-CLARITY.md).
 - [Audit di cerchio, input, risveglio e dialoghi](DEVICE-AUDIT-2026-11-17.md).
 - [Guida contestuale e feedback del combattimento](ONBOARDING-FEEDBACK.md).

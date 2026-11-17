@@ -1,5 +1,13 @@
 # Note di versione
 
+## 0.4.1-preview.1 — 17 novembre 2026
+
+- Atlante consultabile da Borgo → … → Classi: 40 schede IT/EN, abilità proprie delle classi e otto alberi di evoluzione con nodi selezionabili.
+- Otto nuove illustrazioni rappresentative delle classi base. Le 32 evoluzioni indicano quando mostrano il ritratto della famiglia; l'avatar personale mantiene aspetto ed equipaggiamento esistenti.
+- Dettagli scorrevoli con Chiudi sempre raggiungibile, ritorno con BOOT e consultazione senza cambiare classe, assegnare abilità o ricompense.
+- Roadmap operativa, registro delle 40 classi e direzione artistica per il futuro rig modulare. Pagina Roadmap sul sito e immagini native nel manuale.
+- Verifiche dedicate per 80 schede bilingui, 208 riferimenti alle abilità locali e 16 percorsi; 17 catture native e profilo personalizzato invariato. Salvataggi v4 e partizioni invariati; collaudo fisico ancora aperto.
+
 ## 0.4.0-preview.1 — 17 novembre 2026
 
 - Nuove sorgenti per borgo, arena, tre eroi e sette specie nemiche; composizione meno rumorosa dietro le sagome, palette condivise fra pose, fondali nativi 466×466 e ombre di contatto. Ricerca e confronto documentati in `docs/ART-CLARITY.md`.

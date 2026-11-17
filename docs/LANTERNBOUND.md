@@ -1,6 +1,6 @@
 # Lanternbound — spedizione HD-2D giocabile
 
-Implementazione aggiornata al 17 novembre 2026 (`0.4.0-preview.1`) nella **UI nativa C11/LVGL di Pocket Wayfarer**, per l’AMOLED circolare 466×466. Sono disponibili firmware compilato e un eseguibile Linux interattivo dello stesso codice. Le immagini sotto sono catture della UI effettiva.
+Implementazione aggiornata al 17 novembre 2026 (`0.4.1-preview.1`) nella **UI nativa C11/LVGL di Pocket Wayfarer**, per l’AMOLED circolare 466×466. Sono disponibili firmware compilato e un eseguibile Linux interattivo dello stesso codice. Le immagini sotto sono catture della UI effettiva. La 0.4.1 aggiunge l’atlante delle classi; i tre assetti e le regole della spedizione restano distinti dalle 40 classi classiche. Piano e prove dell’incremento: [ROADMAP.md](ROADMAP.md).
 
 ![Borgo, combattimento e reliquia](img/lantern/panoramica.png)
 
@@ -85,7 +85,7 @@ L'[audit del 17 novembre](DEVICE-AUDIT-2026-11-17.md) corregge inoltre il cerchi
 | Sanitizer UI | LVGL e UI compilati/eseguiti con ASan/UBSan senza errori rilevati. Leak scan finale disattivato perché l’app mantiene la scena attiva. Buffer immagini controllati anche su ricostruzioni ripetute del borgo. |
 | Memoria immagini host | Picco 1.302.884 byte (~1,24 MiB) nella preview Lanternbound. È memoria dei buffer immagini, non consumo totale del firmware o picco di ogni schermata classica. |
 | Desktop interattivo | Avvio, percorso, guida, timing e PWR/ripresa osservati nella precedente preview; migrazione desktop v3 verificata con SDL dummy. La nuova revisione ha catture e input LVGL automatici, senza una nuova prova manuale completa. |
-| Firmware | ESP-IDF 5.5.1, build ESP32-S3 riuscita; dimensione e hash dell’app in [firmware.json](lantern-evidence/firmware.json). Nessun flash eseguito. |
+| Firmware | ESP-IDF 5.5.1, build ESP32-S3 riuscita; dimensione e hash dell’app in [firmware.json](roadmap/evidence/firmware.json). Nessun flash eseguito. |
 
 Log in [lantern-evidence](lantern-evidence/). La strategia automatica usa offensive quando possibile e attacchi base altrimenti, senza riempire risorse fra incontri salvo l’evento. Senza reliquia iniziale, con timing sempre Bene, vincono 20/24 Sentinelle, 16/24 Piromanti e 15/24 Predoni; sempre Ottimo/Perfetto 24/24, sempre Mancato 0/24. Le 288 run con progetto iniziale usano Ottimo, le 24 senza reliquie Perfetto. Questa è taratura del modello, non una misura del divertimento.
 

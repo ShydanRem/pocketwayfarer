@@ -53,6 +53,10 @@ if(RPG_UI)
   target_include_directories(test_device_ui PRIVATE ../rpg/core ../rpg/ui ${COMMON_INC})
   target_compile_options(test_device_ui PRIVATE -Wall -Wextra -Werror -Wno-unused-parameter -UNDEBUG)
   target_link_libraries(test_device_ui lvgl m)
+  add_executable(preview_classes ../rpg/host/preview_classes.c ${RPG_CORE} ${RPG_UI} ${COMMON} ${COMMON_UI})
+  target_include_directories(preview_classes PRIVATE ../rpg/core ../rpg/ui ${COMMON_INC})
+  target_compile_options(preview_classes PRIVATE -Wall -Wextra -Werror -Wno-unused-parameter -UNDEBUG)
+  target_link_libraries(preview_classes lvgl m)
   # Optional interactive host. Headers are acquired with scripts/desktop-deps.py;
   # firmware and repeatable headless checks do not depend on SDL.
   set(SDL2_HEADER_DIR "${CMAKE_CURRENT_LIST_DIR}/../../build/desktop-deps/include")

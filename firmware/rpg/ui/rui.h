@@ -9,7 +9,7 @@
 
 enum {
     R_TITLE, R_CREATE, R_TOWN, R_MAP, R_ZONE, R_BATTLE, R_DUNGEON, R_HERO, R_SKILLS, R_CLASS,
-    R_EQUIP, R_BAG, R_SHOP, R_FORGE, R_QUESTS, R_TOWN_CLASSIC, R_LANTERN, R_SCREEN_COUNT
+    R_EQUIP, R_BAG, R_SHOP, R_FORGE, R_QUESTS, R_TOWN_CLASSIC, R_LANTERN, R_CLASS_ATLAS, R_SCREEN_COUNT
 };
 
 typedef struct {
@@ -84,6 +84,8 @@ void scr_dungeon(void);
 void scr_hero(void);
 void scr_skills(void);
 void scr_class(void);
+void scr_class_atlas(void);
+bool class_atlas_key(int key);
 void scr_equip(void);
 void scr_bag(void);
 void scr_shop(void);

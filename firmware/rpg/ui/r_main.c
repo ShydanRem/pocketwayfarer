@@ -52,6 +52,7 @@ void r_go(int screen) {
     case R_HERO: scr_hero(); break;
     case R_SKILLS: scr_skills(); break;
     case R_CLASS: scr_class(); break;
+    case R_CLASS_ATLAS: scr_class_atlas(); break;
     case R_EQUIP: scr_equip(); break;
     case R_BAG: scr_bag(); break;
     case R_SHOP: scr_shop(); break;
@@ -455,6 +456,7 @@ void wf_app_tick(void) {
 
 bool wf_app_key(int key) {
     if (key >= WF_KEY_BOOT_SHORT && key <= WF_KEY_BOOT_DOWN) lv_display_trigger_activity(NULL);
+    if (R.screen == R_CLASS_ATLAS) return class_atlas_key(key);
     if (R.screen == R_LANTERN || R.screen == R_TOWN) return lantern_key(key);
     if (R.screen == R_BATTLE && battle_key(key)) return true;
     if (key == WF_KEY_BOOT_SHORT || key == WF_KEY_BOOT_LONG) {

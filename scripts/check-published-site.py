@@ -7,6 +7,7 @@ import json
 import re
 import time
 import zipfile
+from pathlib import Path
 from urllib.error import URLError
 from urllib.parse import urlsplit
 from urllib.request import Request, urlopen
@@ -47,16 +48,19 @@ def check(base, commit):
         assert archive.testzip() is None
         for name, data in files.items():
             assert archive.read(name) == data, name + ': public ZIP differs from installer'
-    for name in ['index.html', 'guide.html', 'notices.html']:
+    for name in ['index.html', 'guide.html', 'notices.html','roadmap.html']:
         data, mime = get(name)
         assert 'text/html' in mime and '<html lang="it">' in data.decode(), name + ': missing document'
     for name in ['js/install.mjs', 'vendor/esp-web-tools/install-button.js']:
         data, mime = get(name)
         assert data and 'javascript' in mime, name + ': invalid module response'
-    data, mime = get('assets/screens/borgo.png')
-    assert data.startswith(b'\x89PNG\r\n\x1a\n') and 'image/png' in mime, 'Missing native screenshot'
+    source_root=Path(__file__).resolve().parents[1]
+    for name,source in [('borgo','docs/img/lantern/02-borgo.png'),('classi','docs/img/classes/otto-classi-base.png')]:
+        data,mime=get('assets/screens/'+name+'.png')
+        assert data.startswith(b'\x89PNG\r\n\x1a\n') and 'image/png' in mime, 'Missing native screenshot'
+        assert hashlib.sha256(data).digest()==hashlib.sha256((source_root/source).read_bytes()).digest(), 'Stale native screenshot'
     print(f'Public site passed: {base}, commit {commit}, {release["version"]}; '
-          '3 HTML documents, JavaScript modules, screenshot, 3 firmware SHA-256 hashes and complete ZIP')
+          '4 HTML documents, JavaScript modules, 2 exact native screenshots, 3 firmware SHA-256 hashes and complete ZIP')
 
 
 if __name__ == '__main__':

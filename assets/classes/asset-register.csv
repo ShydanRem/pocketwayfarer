@@ -1,0 +1,2 @@
+asset,origin,source,license_or_terms,modifications,verification
+base-class-illustrations,OpenAI ImageGen,source/base-classes.png,Applicable generation-tool terms; no third-party stock license asserted,Mechanical equal-cell slicing; shared scale and foot anchor; nearest grid; alpha128;96-color palette;RGB565,Source gutters and deterministic import checked; native integration tracked in R1 evidence; physical-device test pending

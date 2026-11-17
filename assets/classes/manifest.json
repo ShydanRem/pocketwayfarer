@@ -1,0 +1,72 @@
+{
+  "source": "assets/classes/source/base-classes.png",
+  "sha256": "6e8e55f56edfeaf438387030b52147ca2e23f1c79b1e7d7cd9e37f7d7c43b3a7",
+  "tool": "OpenAI ImageGen",
+  "source_identity": "exec-ee986e68-ed60-45bf-ae12-58e2a8490899.png",
+  "role": "Eight representative base-class illustrations; not the customizable player avatar",
+  "count": 8,
+  "grid": [
+    88,
+    88
+  ],
+  "display_scale": 2,
+  "source_cell_bounds": [
+    [
+      74,
+      36,
+      363,
+      407
+    ],
+    [
+      97,
+      34,
+      355,
+      407
+    ],
+    [
+      100,
+      34,
+      356,
+      407
+    ],
+    [
+      84,
+      55,
+      377,
+      407
+    ],
+    [
+      75,
+      34,
+      351,
+      410
+    ],
+    [
+      103,
+      51,
+      331,
+      410
+    ],
+    [
+      78,
+      47,
+      364,
+      409
+    ],
+    [
+      84,
+      34,
+      383,
+      411
+    ]
+  ],
+  "transforms": [
+    "shared scale across all eight classes",
+    "foot anchor84",
+    "nearest-neighbor",
+    "alpha threshold128",
+    "96-color palette per illustration",
+    "RGB565"
+  ],
+  "physical_device_tested": false
+}

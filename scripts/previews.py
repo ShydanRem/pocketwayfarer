@@ -32,6 +32,13 @@ if shots:
     for i, s in enumerate(shots):
         sheet.alpha_composite(s.resize((tile - 10, tile - 10), Image.LANCZOS), ((i % cols) * tile + 5, (i // cols) * tile + 5))
     sheet.save(dst / 'galleria.png')
+    if dst.name == 'classes':
+        base = sorted(p for p in dst.glob('*-classe-??.png') if int(p.stem[-2:]) < 8)
+        if len(base) == 8:
+            overview = Image.new('RGBA', (1960,980), (16,24,32,255))
+            for i,p in enumerate(base):
+                overview.alpha_composite(Image.open(p).convert('RGBA'), ((i%4)*490+12,(i//4)*490+12))
+            overview.save(dst / 'otto-classi-base.png')
     if dst.name == 'lantern':
         # Native-size proof of the three representative screens; no concept art.
         names = ['02-borgo', '05-combattimento', '10-reliquia']

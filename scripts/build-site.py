@@ -23,6 +23,7 @@ SCREENS = {
     'assetti-e-guardiano': 'assetti-e-guardiano',
     'confronto-reliquie': '47-confronto-reliquie',
 }
+CLASS_SCREENS = {'classi': 'otto-classi-base', 'arciere': '03-classe-02'}
 
 
 def manual_html():
@@ -37,6 +38,8 @@ def manual_html():
         rendered = re.sub(r'<(/?)h([1-5])(\b)', lambda m: f'<{m[1]}h{int(m[2])+1}{m[3]}', rendered)
         for original, alias in reverse_images.items():
             rendered = rendered.replace('src="img/lantern/' + original + '"', 'src="assets/screens/' + alias + '" loading="lazy"')
+        for alias,original in CLASS_SCREENS.items():
+            rendered = rendered.replace('src="img/classes/'+original+'.png"', 'src="assets/screens/'+alias+'.png" loading="lazy"')
         for original, alias in aliases.items():
             rendered = re.sub(r'href="' + re.escape(original) + r'(?:#[^"]*)?"', 'href="' + alias + '"', rendered)
         rendered = rendered.replace('id="installazione-manuale"', 'id="manuale"').replace('id="la-porta-usb-non-compare"', 'id="connessione"')
@@ -50,6 +53,22 @@ def manual_html():
         rendered = re.sub(r'<p>(<img [^>]+>)</p>', image_figure, rendered)
         sections.append(f'<section id="{anchor}">{rendered}</section>')
     return '\n'.join(sections)
+
+
+def roadmap_html():
+    body = markdown.markdown((ROOT/'docs/ROADMAP.md').read_text(),extensions=['tables','fenced_code','toc'])
+    body = re.sub(r'<(/?)h([1-5])(\b)', lambda m:f'<{m[1]}h{int(m[2])+1}{m[3]}',body)
+    commit = subprocess.check_output(['git','rev-parse','HEAD'],cwd=ROOT,text=True).strip()
+    def source_link(match):
+        path=match[1]
+        if re.match(r'^[a-z]+:|#',path): return match[0]
+        resolved=(ROOT/'docs'/path).resolve()
+        assert resolved.is_relative_to(ROOT)
+        assert resolved.exists(), f'Missing roadmap source: {path}'
+        return 'href="https://github.com/ShydanRem/pocketwayfarer/blob/'+commit+'/'+resolved.relative_to(ROOT).as_posix()+'"'
+    body=re.sub(r'href="([^"]+)"',source_link,body)
+    body=body.replace('src="img/classes/otto-classi-base.png"','src="assets/screens/classi.png" loading="lazy"')
+    return body.replace('<table>','<div class="table-wrap"><table>').replace('</table>','</table></div>')
 
 
 def notices_html():
@@ -81,6 +100,10 @@ def main():
         original = ROOT / 'docs/img/lantern' / (source + '.png')
         shutil.copyfile(original, screens / (name + '.png'))
         images[name + '.png'] = dict(source=original.relative_to(ROOT).as_posix(), sha256=hashlib.sha256(original.read_bytes()).hexdigest())
+    for name,source in CLASS_SCREENS.items():
+        original=ROOT/'docs/img/classes'/(source+'.png')
+        shutil.copyfile(original,screens/(name+'.png'))
+        images[name+'.png']=dict(source=original.relative_to(ROOT).as_posix(),sha256=hashlib.sha256(original.read_bytes()).hexdigest())
     fonts = output / 'assets/fonts'; fonts.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(ROOT / 'assets/lantern/fonts/title.ttf', fonts / 'title.ttf')
     shutil.copyfile(ROOT / 'assets/lantern/fonts/LICENSE.txt', fonts / 'LICENSE.txt')
@@ -93,7 +116,7 @@ def main():
     spec = importlib.util.spec_from_file_location('package_firmware', ROOT / 'scripts/package-firmware.py')
     package = importlib.util.module_from_spec(spec); spec.loader.exec_module(package)
     package.build_package(args.firmware_build.resolve(), output / 'firmware', args.allow_dirty)
-    for page, body in [('guide', manual_html()), ('notices', notices_html())]:
+    for page, body in [('guide', manual_html()), ('notices', notices_html()), ('roadmap',roadmap_html())]:
         template = (ROOT / 'web' / (page + '.template.html')).read_text()
         (output / (page + '.html')).write_text(template.replace('{{CONTENT}}', body).replace('{{VERSION}}', (ROOT / 'VERSION').read_text().strip()))
     # Only local preview configuration; this is a GitHub Pages project, not a
