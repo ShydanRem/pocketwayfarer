@@ -8,7 +8,7 @@ Un RPG fantasy HD-2D per **Waveshare ESP32-S3-Touch-AMOLED-1.75**, con schermo r
 
 **[Installa dal browser](https://shydanrem.github.io/pocketwayfarer/)** · **[Manuale illustrato](docs/GUIDA.md)** · **[Tutta la documentazione](docs/README.md)**
 
-> **0.3.0-preview.1** — UI e regole verificate su PC, firmware compilato per ESP32-S3. Il collaudo sul Pocket fisico non è ancora completato. Il sito viene pubblicato dal workflow GitHub Pages; la configurazione iniziale è descritta in [Pubblicazione](docs/PUBBLICAZIONE.md).
+> **0.3.0-preview.2** — UI e regole verificate su PC, firmware compilato per ESP32-S3. Il collaudo sul Pocket fisico non è ancora completato. Il sito viene pubblicato dal workflow GitHub Pages; la configurazione iniziale è descritta in [Pubblicazione](docs/PUBBLICAZIONE.md).
 
 ## Sul Pocket, in pochi passaggi
 
@@ -29,7 +29,7 @@ Il pacchetto include firmware, grafica e font: non servono compilazione, microSD
 | Percorsi | Vedi i nemici prima di entrare: un avversario robusto o due più fragili. |
 | Combattimento | Bersaglio, attacco a tempo, due abilità e Guardia per recuperare PM e ridurre i danni. |
 | Risonanza | Tre parate perfette preparano l’effetto dell’offensiva del tuo assetto. |
-| Reliquie | Sei effetti autoriali, due proposte per ricompensa, massimo tre slot. |
+| Reliquie | Sei effetti, due proposte per ricompensa; a tre slot confronti e sostituisci, oppure rinunci. |
 | Eventi | Focolare per riprendere fiato o Specchio per un patto a costo di PV. |
 | Ritorno | Rientri con tutto l’oro; una sconfitta perde `floor(oro / 4)`. Retry senza attesa di stamina. |
 | Vittoria | Il Guardiano chiude il viaggio; conservi un progetto equipaggiabile nella run successiva. |
@@ -79,6 +79,6 @@ I difetti dell’audit su incontri interrotti, missioni oro/sociali, morale e bo
 
 ## Verifiche e provenienza
 
-La suite comprende 55.639 controlli RPG, 1.434 del compagno, 432 spedizioni simulate e 45 catture native Lanternbound con 306 salvataggi validati. Include sanitizer, migrazione v1/v2/v3 al formato v4, guida, pause, retry e confronto del rendering aggiornato con quello completo. [Log e limiti](docs/lantern-evidence/README.md). Sono verifiche del codice e dei percorsi esercitati, non misure di autonomia o coinvolgimento dei giocatori.
+La suite comprende 55.639 controlli RPG, 1.434 del compagno, 600 spedizioni simulate e 49 catture native Lanternbound con 430 salvataggi validati. Include sanitizer, migrazione v1/v2/v3 al formato v4, guida, pause, retry, scambi di reliquie e confronto del rendering aggiornato con quello completo. [Log e limiti](docs/lantern-evidence/README.md). Sono verifiche del codice e dei percorsi esercitati, non misure di autonomia o coinvolgimento dei giocatori.
 
 Gli atlas HD-2D originali e i font hanno [sorgenti, prompt e registro](assets/lantern/README.md). [Crediti e licenze dei componenti](THIRD_PARTY.md). L’installazione dal browser si ispira al percorso di [TamaPoke](https://socquique.github.io/TamaPoke/web/) e usa ESP Web Tools; non copia firmware o contenuti del gioco. L’infrastruttura hardware deriva dal lavoro su [PocketD-D](https://github.com/ShydanRem/PocketD-D), senza contenuti o regole D&D.

@@ -19,9 +19,10 @@ LV_FONT_DECLARE(ln_font_title)
 #define TITLE (&ln_font_title)
 
 enum { PAGE_TOWN, PAGE_BATTLE, PAGE_ROUTE, PAGE_RELIC, PAGE_EVENT, PAGE_CLEAR, PAGE_RESULT,
-       PAGE_MENU, PAGE_LOADOUT, PAGE_OPTIONS, PAGE_COLLECTION, PAGE_TITLE, PAGE_MAP, PAGE_BESTIARY, PAGE_HELP, PAGE_HUNT };
+       PAGE_MENU, PAGE_LOADOUT, PAGE_OPTIONS, PAGE_COLLECTION, PAGE_TITLE, PAGE_MAP, PAGE_BESTIARY, PAGE_HELP, PAGE_HUNT,
+       PAGE_REPLACE };
 static struct {
-    int page, pick, frame, skill_menu;
+    int page, pick, frame, skill_menu, offer_pick;
     uint32_t clock, anim_clock, ready_ms, visual_clock;
     lantern_fx effects;
     int coach_tip;
@@ -152,7 +153,8 @@ enum { C_DEPART = 1, C_HERO, C_BAG, C_MORE, C_HOME, C_CLASSIC, C_MAP, C_EQUIP, C
        C_POWER, C_SUPPORT, C_PAUSE, C_RESUME, C_TARGET0, C_TARGET1, C_RELIC,
        C_CONTINUE, C_RETREAT, C_EVENT0, C_EVENT1, C_RETRY, C_ASSIST, C_MOTION,
        C_LANGUAGE, C_QUICK, C_CUSTOM, C_COLLECTION, C_ABORT, C_EQUIP_RELIC,
-       C_BESTIARY, C_HELP, C_HUNT, C_COLLECT_HUNT, C_TIPS, C_REPLAY_TIPS, C_ACK_TIP };
+       C_BESTIARY, C_HELP, C_HUNT, C_COLLECT_HUNT, C_TIPS, C_REPLAY_TIPS, C_ACK_TIP,
+       C_REPLACE_RELIC, C_CANCEL_REPLACE, C_SKIP_RELIC };
 
 void scr_lantern_title(void) {
     scene(PAGE_TITLE, 0, 50);
@@ -549,15 +551,40 @@ static void reward(void) {
     scene(PAGE_RELIC, 1, 145);
     bool blueprint = game()->state == LN_BLUEPRINT;
     int r = chosen_relic();
+    bool full = ln_relic_count(game()) == 3;
     header(blueprint ? TR("Progetto del Faro", "Beacon blueprint") : TR("Reliquia scoperta", "Relic discovered"),
-           blueprint ? TR("Porta una reliquia al borgo", "Keep one relic in the village") : TR("Scegli una delle due", "Choose one of two"));
+           blueprint ? TR("Porta una reliquia al borgo", "Keep one relic in the village")
+                     : full ? TR("3/3 slot · puoi sostituire", "3/3 slots · you can replace")
+                            : TR("Scegli una delle due", "Choose one of two"));
     kit_img(L.root, &ln_relics[r], 2, CX, 201);
     panel(L.root, CX, 292, 316, 84, 245);
     label(L.root, TX(ln_relic_name(r)), CX, 270, 302, AMBER, false);
     label(L.root, TX(ln_relic_text(r)), CX, 309, 290, IVORY, false);
     button(L.root, "<", 102, 204, 72, 72, C_LEFT, false);
     button(L.root, ">", 364, 204, 72, 72, C_RIGHT, false);
-    button(L.root, blueprint ? TR("CONSERVA", "KEEP") : TR("SCEGLI", "CHOOSE"), CX, 377, 214, 72, C_RELIC, true);
+    button(L.root, blueprint ? TR("CONSERVA", "KEEP") : full ? TR("CONFRONTA", "COMPARE") : TR("SCEGLI", "CHOOSE"), CX, 374, 214, 64, C_RELIC, true);
+    if (!blueprint) button(L.root, TR("Lascia", "Skip"), CX, 433, 124, 40, C_SKIP_RELIC, false);
+}
+static void replace_relic(void) {
+    scene(PAGE_REPLACE, 1, 165);
+    int incoming = game()->offers[L.offer_pick], outgoing = L.pick;
+    header(TR("Confronta", "Compare"), TR("Nuova sopra · attuale sotto", "New above · current below"));
+    const int relics[] = {incoming, outgoing};
+    for (int i = 0; i < 2; i++) {
+        int y = 174 + i * 122;
+        panel(L.root, CX, y, 324, 120, 245);
+        kit_img(L.root, &ln_relics[relics[i]], 1, 116, y);
+        lv_obj_t *name = label(L.root, TX(ln_relic_name(relics[i])), 280, y, 222, i ? IVORY : AMBER, false);
+        lv_obj_t *text = label(L.root, TX(ln_relic_text(relics[i])), 280, y, 222, IVORY, false);
+        lv_obj_update_layout(name); lv_obj_update_layout(text);
+        int height = lv_obj_get_height(name);
+        kit_pos(name, 280, y - 54 + height / 2);
+        kit_pos(text, 280, y - 54 + height + 4 + lv_obj_get_height(text) / 2);
+    }
+    button(L.root, "<", 51, 296, 44, 56, C_LEFT, false);
+    button(L.root, ">", 415, 296, 44, 56, C_RIGHT, false);
+    button(L.root, TR("Sostituisci", "Replace"), CX, 389, 224, 56, C_REPLACE_RELIC, true);
+    button(L.root, TR("Indietro", "Back"), CX, 434, 124, 40, C_CANCEL_REPLACE, false);
 }
 static void event(void) {
     scene(PAGE_EVENT, 1, 115);
@@ -640,6 +667,13 @@ static void on_click(lv_event_t *e) {
     if (c == C_MAP) { world_map(); return; }
     if (c == C_BESTIARY) { L.pick = 0; bestiary(); return; }
     if (c == C_HELP) { L.pick = 0; help(); return; }
+    if (c == C_CANCEL_REPLACE) { L.pick = L.offer_pick; reward(); return; }
+    if (c == C_RELIC && l->state == LN_RELIC && ln_relic_count(l) == 3) {
+        L.offer_pick = L.pick & 1;
+        L.pick = 0;
+        while (!(l->relics & (1u << L.pick))) L.pick++;
+        replace_relic(); return;
+    }
     if (c == C_HUNT) { hunt(); return; }
     if (c == C_COLLECT_HUNT) {
         rpg_haul haul;
@@ -663,6 +697,11 @@ static void on_click(lv_event_t *e) {
         else if (L.page == PAGE_COLLECTION) { L.pick = (L.pick + LR_COUNT + step) % LR_COUNT; collection(); }
         else if (L.page == PAGE_BESTIARY) { L.pick = (L.pick + LN_ENEMIES + step) % LN_ENEMIES; bestiary(); }
         else if (L.page == PAGE_HELP) { L.pick = (L.pick + 3 + step) % 3; help(); }
+        else if (L.page == PAGE_REPLACE) {
+            do { L.pick = (L.pick + LR_COUNT + step) % LR_COUNT; }
+            while (!(l->relics & (1u << L.pick)));
+            replace_relic();
+        }
         else if (L.page == PAGE_RELIC) {
             if (l->state == LN_BLUEPRINT) {
                 int r = chosen_relic();
@@ -700,6 +739,8 @@ static void on_click(lv_event_t *e) {
     case C_SKILLS: success = ln_action(l, LN_SUPPORT, l->target); L.skill_menu = 0; break;
     case C_GUARD: success = ln_action(l, LN_GUARD, l->target); break;
     case C_RELIC: success = l->state == LN_BLUEPRINT ? ln_keep_blueprint(l, chosen_relic()) : ln_choose_relic(l, L.pick & 1); L.pick = 0; break;
+    case C_REPLACE_RELIC: success = ln_replace_relic(l, L.offer_pick, L.pick); L.pick = 0; break;
+    case C_SKIP_RELIC: success = ln_skip_relic(l); L.pick = 0; break;
     case C_EVENT0: case C_EVENT1: success = ln_event(l, c == C_EVENT1); break;
     case C_CONTINUE: success = ln_continue(l); break;
     case C_RETREAT: success = ln_retreat(l); break;
@@ -739,6 +780,7 @@ void lantern_tick(void) {
 }
 bool lantern_key(int key) {
     if (key != WF_KEY_BOOT_SHORT && key != WF_KEY_BOOT_LONG) return false;
+    if (L.page == PAGE_REPLACE) { L.pick = L.offer_pick; reward(); return true; }
     if (L.page == PAGE_BATTLE) {
         rpg_lantern before = *game();
         if (!game()->paused && !L.ready_ms && ln_tap(game())) { changed_from(&before); return true; }

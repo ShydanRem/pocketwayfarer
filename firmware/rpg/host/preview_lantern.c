@@ -150,6 +150,111 @@ static void return_after_hit(void) {
     while (R.g.lantern.state == LN_IMPACT) run(5);
     assert(R.g.lantern.state == LN_RELIC); press("SCEGLI"); press("Rientra"); press("Borgo");
 }
+static void check_relic_comparison(int incoming, int outgoing) {
+    lv_obj_update_layout(lv_screen_active());
+    const int relics[] = {incoming, outgoing};
+    for (int i = 0; i < 2; i++) {
+        lv_obj_t *name = find(lv_screen_active(), TX(ln_relic_name(relics[i])));
+        lv_obj_t *text = find(lv_screen_active(), TX(ln_relic_text(relics[i])));
+        assert(name && text);
+        lv_area_t a, b; lv_obj_get_coords(name, &a); lv_obj_get_coords(text, &b);
+        if (a.y2 >= b.y1 || b.y2 > 234 + i * 122)
+            fprintf(stderr, "relic comparison overflow: %s name=%d..%d text=%d..%d\n",
+                    TX(ln_relic_name(relics[i])), a.y1, a.y2, b.y1, b.y2);
+        assert(a.y1 >= 114 + i * 122 && a.y2 < b.y1 && b.y2 <= 234 + i * 122);
+        assert(a.x1 >= 166 && a.x2 <= 394 && b.x1 >= 166 && b.x2 <= 394);
+    }
+    check_buttons(lv_screen_active());
+}
+static int selected_offer(void) {
+    return find(lv_screen_active(), TX(ln_relic_name(R.g.lantern.offers[0]))) ? 0 : 1;
+}
+static void relic_exchange_ui(void) {
+    for (int language = 0; language < 2; language++) for (int first = 0; first < LR_COUNT; first++) {
+        wf_lang = R.g.lang = (uint8_t)language;
+        rpg_lantern *l = &R.g.lantern;
+        ln_start(l, LN_SENTINEL, 882u + (unsigned)first);
+        l->state = LN_RELIC; l->room = 3; l->currency = 30;
+        l->relics = (uint8_t)((1u << first) | (1u << ((first+1) % LR_COUNT)) | (1u << ((first+2) % LR_COUNT)));
+        int n = 0;
+        for (int r = 0; r < LR_COUNT && n < 2; r++) if (!(l->relics & (1u << r))) l->offers[n++] = (uint8_t)r;
+        r_go(R_LANTERN); r_dirty(); wf_app_flush_save(); run(50);
+        rpg_lantern before = *l;
+        uint32_t gold = R.g.gold;
+        if (!language && !first) {
+            shot("reliquie-tre-slot");
+            /* Synthetic QA profile for a separate desktop smoke test. */
+            char path[512]; snprintf(path, sizeof path, "%s/relic-full-save.bin", dest);
+            FILE *fixture = fopen(path, "wb"); assert(fixture);
+            assert(fwrite(saved, 1, saved_len, fixture) == saved_len);
+            assert(!fclose(fixture));
+        }
+        press(">"); int choice = selected_offer();
+        press(language ? "COMPARE" : "CONFRONTA");
+        int outgoing = 0;
+        while (!(l->relics & (1u << outgoing))) outgoing++;
+        for (int i = 0; i < 3; i++) {
+            check_relic_comparison(l->offers[choice], outgoing);
+            assert(!memcmp(l, &before, sizeof before));
+            if (!first && !i) shot(language ? "confronto-reliquie-en" : "confronto-reliquie");
+            press(">");
+            do { outgoing = (outgoing + 1) % LR_COUNT; } while (!(l->relics & (1u << outgoing)));
+        }
+        press(language ? "Back" : "Indietro");
+        assert(selected_offer() == choice && !memcmp(l, &before, sizeof before));
+        press(language ? "COMPARE" : "CONFRONTA");
+        wf_app_key(WF_KEY_BOOT_SHORT); run(50);
+        assert(selected_offer() == choice && !memcmp(l, &before, sizeof before));
+        press(language ? "COMPARE" : "CONFRONTA");
+        wf_app_key(WF_KEY_PWR_SHORT); run(50); wf_app_key(WF_KEY_PWR_SHORT); run(50);
+        assert(!memcmp(l, &before, sizeof before));
+        check_relic_comparison(l->offers[choice], outgoing);
+        wf_app_flush_save(); wf_app_start(saved, saved_len); run(50);
+        assert(!memcmp(&R.g.lantern, &before, sizeof before) && R.g.gold == gold);
+        choice = selected_offer(); press(language ? "COMPARE" : "CONFRONTA");
+        l = &R.g.lantern; outgoing = 0;
+        while (!(l->relics & (1u << outgoing))) outgoing++;
+        int incoming = l->offers[choice];
+        press(language ? "Replace" : "Sostituisci");
+        assert(l->state == LN_CLEARED && ln_relic_count(l) == 3);
+        assert(l->relics == ((before.relics & ~(1u << outgoing)) | (1u << incoming)));
+        assert(l->currency == before.currency && l->rng == before.rng && R.g.gold == gold);
+        unsigned swapped = l->relics;
+        wf_app_flush_save(); wf_app_start(saved, saved_len); run(50);
+        assert(R.g.lantern.state == LN_CLEARED && R.g.lantern.relics == swapped);
+        /* A second reward can be declined without changing the loadout. */
+        l = &R.g.lantern; l->state = LN_RELIC;
+        r_go(R_LANTERN); unsigned owned = l->relics;
+        press(language ? "Skip" : "Lascia");
+        assert(l->state == LN_CLEARED && l->relics == owned && R.g.gold == gold);
+    }
+    puts("relic UI: all six effects IT/EN, three owned choices, touch/BOOT cancel, PWR/restart, atomic replace and skip: passed");
+}
+static void no_relic_victory_ui(void) {
+    wf_lang = R.g.lang = 0;
+    R.g.lantern.equipped = 0;
+    unsigned projects = R.g.lantern.blueprints, wins = R.g.lantern.wins;
+    uint32_t gold = R.g.gold;
+    ln_start(&R.g.lantern, LN_SENTINEL, 661);
+    r_go(R_LANTERN);
+    for (int room = 0; room < 5; room++) {
+        assert(R.g.lantern.room == room);
+        if (room == 1) { press("Focolare"); press("+25 PV"); }
+        else {
+            press(room == 4 ? "Affrontalo" : "Sentiero"); play_battle();
+            if (room < 4) { assert(R.g.lantern.state == LN_RELIC); press("Lascia"); }
+        }
+        assert(!R.g.lantern.relics);
+        if (room < 4) press("Prosegui");
+    }
+    assert(R.g.lantern.state == LN_WON && R.g.lantern.wins == wins + 1);
+    assert(R.g.gold == gold + 80 && R.g.lantern.blueprints == projects);
+    shot("vittoria-senza-reliquie");
+    wf_app_flush_save(); wf_app_start(saved, saved_len); run(50);
+    assert(R.g.lantern.state == LN_WON && R.g.gold == gold + 80 && R.g.lantern.wins == wins + 1);
+    press("Borgo");
+    puts("no-relic UI: all five rooms, skip every reward, win without blueprint softlock, exactly one gold payout after reload: passed");
+}
 int main(int argc, char **argv) {
     assert(argc == 2); dest = argv[1];
     lv_init(); lv_tick_set_cb(tick);
@@ -336,6 +441,9 @@ int main(int argc, char **argv) {
     press("DEPART"); press("Depart"); press("Trail");
     assert(find(lv_screen_active(), TX(ln_coach_text(LNT_ATTACK)))); shot("first-fight-guidance-english");
     press("II"); press("Abandon"); press("Village");
+    relic_exchange_ui();
+    press("Return"); press("Village");
+    no_relic_victory_ui();
     size_t stable = image_bytes;
     for (int i = 0; i < 12; i++) { r_go(R_TOWN); run(20); }
     assert(image_bytes == stable);

@@ -1,4 +1,6 @@
-lantern UI: 45 real-LVGL screenshots, 306 validated saves; image buffers peak 1642376 bytes
+relic UI: all six effects IT/EN, three owned choices, touch/BOOT cancel, PWR/restart, atomic replace and skip: passed
+no-relic UI: all five rooms, skip every reward, win without blueprint softlock, exactly one gold payout after reload: passed
+lantern UI: 49 real-LVGL screenshots, 430 validated saves; image buffers peak 1642376 bytes
 touch/BOOT, all five rooms, target/skill menus, pause/reload/resume, victory/defeat/retry, one-time bank, IT/EN: passed
 classic ring: repeated power cycles, countdown input blocking and pre-entry rollback: passed
 guidance/FX: learned lessons, replay/opt-out, second run, all loadouts, resonance pause/reload, reduced motion and button bounds IT/EN: passed

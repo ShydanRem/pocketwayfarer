@@ -1,15 +1,15 @@
 {
   "date": "2026-11-16",
-  "increment": "first-expedition-guidance-and-combat-feedback",
+  "increment": "relic-comparison-exchange-and-skip",
   "target": "ESP32-S3",
   "idf_version": "5.5.1",
   "app": "build/firmware-hd2d/pocketwayfarer.bin",
-  "bytes": 2973200,
-  "sha256": "49af14044867d25acbe77539d09eed75a7baea1e866a69c09ec749c9575fd05c",
+  "bytes": 2974688,
+  "sha256": "36a54785afcfb1407d8181fd1470ba410c96a6c4abbdc8235c364bff8e051ada",
   "app_partition_bytes": 6291456,
   "save_version": 4,
   "save_bytes": 2808,
   "flashed": false,
   "physical_device_tested": false,
-  "app_version": "0.3.0-preview.1"
+  "app_version": "0.3.0-preview.2"
 }

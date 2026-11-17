@@ -122,11 +122,14 @@ static void impact(rpg_lantern *l, int next) { l->next_state = (uint8_t)next; st
 static void victory(rpg_lantern *l) {
     l->currency = (uint16_t)(l->currency + (l->room == 4 ? 40 : 10));
     if (l->room == 4) {
-        impact(l, LN_BLUEPRINT);
+        if (l->relics) impact(l, LN_BLUEPRINT);
+        else {
+            /* Declining every relic still permits a complete, bankable win. */
+            if (l->wins < UINT16_MAX) l->wins++;
+            impact(l, LN_WON);
+        }
     } else {
-        int n = 0;
-        for (int r = 0; r < LR_COUNT; r++) n += has(l, r);
-        if (n >= 3) { impact(l, LN_CLEARED); return; }
+        if (ln_relic_count(l) > 3) { impact(l, LN_CLEARED); return; }
         for (int i = 0; i < 2; i++) {
             int r;
             do { r = roll(l, 0, LR_COUNT - 1); } while (has(l, r) || (i && r == l->offers[0]));
@@ -273,9 +276,30 @@ bool ln_tick(rpg_lantern *l, unsigned ms) {
     }
     return false;
 }
+int ln_relic_count(const rpg_lantern *l) {
+    int count = 0;
+    for (int r = 0; r < LR_COUNT; r++) count += has(l, r);
+    return count;
+}
+static bool relic_offer(const rpg_lantern *l, int choice) {
+    return l->state == LN_RELIC && (unsigned)choice < 2 &&
+           l->offers[choice] < LR_COUNT && !has(l, l->offers[choice]);
+}
 bool ln_choose_relic(rpg_lantern *l, int choice) {
-    if (l->state != LN_RELIC || (unsigned)choice > 1 || l->offers[choice] >= LR_COUNT) return false;
+    if (!relic_offer(l, choice) || ln_relic_count(l) >= 3) return false;
     l->relics |= (uint8_t)(1u << l->offers[choice]);
+    stage(l, LN_CLEARED);
+    return true;
+}
+bool ln_replace_relic(rpg_lantern *l, int choice, int outgoing) {
+    if (!relic_offer(l, choice) || ln_relic_count(l) != 3 ||
+        (unsigned)outgoing >= LR_COUNT || !has(l, outgoing)) return false;
+    l->relics = (uint8_t)((l->relics & ~(1u << outgoing)) | (1u << l->offers[choice]));
+    stage(l, LN_CLEARED);
+    return true;
+}
+bool ln_skip_relic(rpg_lantern *l) {
+    if (l->state != LN_RELIC) return false;
     stage(l, LN_CLEARED);
     return true;
 }
@@ -317,11 +341,12 @@ unsigned ln_bank(rpg_lantern *l) {
 }
 void ln_sanitize(rpg_lantern *l) {
     bool invalid = l->state >= LN_STATE_COUNT || l->archetype >= 3 || l->room > 4 || l->nfoes > 2;
+    if (ln_relic_count(l) > 3) invalid = true;
     if (l->state == LN_BLUEPRINT && !(l->relics & ((1u << LR_COUNT) - 1u))) invalid = true;
     if (ln_active(l) && (l->max_hp < 1 || l->max_hp > 120 || l->hp < 0 || l->hp > l->max_hp || l->max_sp > 36 || l->sp < 0 || l->sp > l->max_sp)) invalid = true;
     if (l->state >= LN_CHOOSE && l->state <= LN_IMPACT && (!l->nfoes || l->target >= l->nfoes)) invalid = true;
     if ((l->state == LN_PARRY || l->state == LN_TELEGRAPH) && l->acting >= l->nfoes) invalid = true;
-    if (l->state == LN_IMPACT && l->next_state != LN_CHOOSE && l->next_state != LN_TELEGRAPH && l->next_state != LN_RELIC && l->next_state != LN_CLEARED && l->next_state != LN_BLUEPRINT && l->next_state != LN_LOST) invalid = true;
+    if (l->state == LN_IMPACT && l->next_state != LN_CHOOSE && l->next_state != LN_TELEGRAPH && l->next_state != LN_RELIC && l->next_state != LN_CLEARED && l->next_state != LN_BLUEPRINT && l->next_state != LN_WON && l->next_state != LN_LOST) invalid = true;
     for (int i = 0; i < l->nfoes && i < 2; i++) if (l->foes[i].kind >= LN_ENEMIES || l->foes[i].intent > LN_MEND || l->foes[i].max_hp < 1 || l->foes[i].hp > l->foes[i].max_hp || l->foes[i].hp < 0) invalid = true;
     if (invalid) { ln_home(l); l->state = LN_NONE; }
     l->assist = !!l->assist; l->reduced_motion = !!l->reduced_motion;

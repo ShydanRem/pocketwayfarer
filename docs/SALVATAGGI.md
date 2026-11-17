@@ -64,6 +64,7 @@ La versione corrente scrive il formato **v4** e legge v1, v2 e v3. Il blob RPG v
 | Situazione | Comportamento |
 |---|---|
 | Lanternbound, PWR o riavvio | Ripristina la fase salvata in pausa; Riprendi concede 650 ms. |
+| Riavvio durante il confronto di una reliquia | Riapre le due proposte con l’assetto intatto. La sostituzione è salvata soltanto dopo la conferma. |
 | Riavvio durante una battaglia classica non conclusa | Ripristina lo stato precedente all’ingresso e ripropone l’incontro, con consumabili e risorse coerenti. |
 | Risultato classico già pagato | Ricostruisce la navigazione senza assegnare di nuovo il premio. |
 | Profilo vecchio v1/v2/v3 | Viene migrato senza sostituire l’eroe. I vincitori di una precedente v3 possono ripetere i suggerimenti dalle opzioni. |

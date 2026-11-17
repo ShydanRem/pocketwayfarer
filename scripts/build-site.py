@@ -21,6 +21,7 @@ SCREENS = {
     'risonanza': '39-risonanza-impatto', 'vittoria': '16-vittoria', 'opzioni': '27-options-english',
     'titolo': '01-titolo', 'panoramica': 'panoramica', 'guida-e-risonanza': 'guida-e-risonanza',
     'assetti-e-guardiano': 'assetti-e-guardiano',
+    'confronto-reliquie': '47-confronto-reliquie',
 }
 
 
