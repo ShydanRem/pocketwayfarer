@@ -1,0 +1,14 @@
+{
+  "enemies_row_bounds": [
+    0,
+    278,
+    498,
+    737,
+    937,
+    1143,
+    1361,
+    1659
+  ],
+  "columns": 4,
+  "source_note": "Row boundaries lie in the measured transparent gutters; generated source rows are not equally tall."
+}

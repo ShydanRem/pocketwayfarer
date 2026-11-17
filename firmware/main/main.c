@@ -1,6 +1,7 @@
 /* Pocket Wayfarer firmware entry point: storage, ESP-NOW radio, keys and power. */
 #include <string.h>
 #include "board.h"
+#include "device_input.h"
 #include "esp_event.h"
 #include "esp_heap_caps.h"
 #include "esp_log.h"
@@ -22,6 +23,27 @@ static const char *TAG = "wayfarer";
 #define IDLE_OFF_MS 45000u
 #define RX_MAX 120
 
+/* Local serial diagnostics: actual awake-loop cadence, never a guessed FPS. */
+static void runtime_cadence(bool awake) {
+    static uint32_t last, report_at, samples, slow, maximum;
+    static uint64_t total;
+    uint32_t now = lv_tick_get();
+    if (!awake) { last = 0; return; }
+    if (last) {
+        uint32_t delta = now - last;
+        samples++; total += delta;
+        if (delta > 100) slow++;
+        if (delta > maximum) maximum = delta;
+    }
+    last = now;
+    if (now - report_at >= 10000 && samples) {
+        ESP_LOGI(TAG, "awake loop: samples=%lu mean=%lums max=%lums over100ms=%lu",
+                 (unsigned long)samples, (unsigned long)(total / samples),
+                 (unsigned long)maximum, (unsigned long)slow);
+        report_at = now; samples = slow = maximum = 0; total = 0;
+    }
+}
+
 /* ---- Storage ------------------------------------------------------------------ */
 static uint8_t *load_save(size_t *len) {
     nvs_handle_t h;
@@ -37,13 +59,15 @@ static uint8_t *load_save(size_t *len) {
     return buf;
 }
 
-void wf_platform_save(const void *data, size_t len) {
+bool wf_platform_save(const void *data, size_t len) {
     nvs_handle_t h;
-    if (nvs_open_from_partition(NVS_PART, "wayfarer", NVS_READWRITE, &h) != ESP_OK) return;
+    if (nvs_open_from_partition(NVS_PART, "wayfarer", NVS_READWRITE, &h) != ESP_OK) return false;
     /* NVS commits a blob atomically: a power cut keeps the previous save. */
-    if (nvs_set_blob(h, wf_app_save_key(), data, len) != ESP_OK || nvs_commit(h) != ESP_OK)
-        ESP_LOGW(TAG, "save failed");
+    esp_err_t result = nvs_set_blob(h, wf_app_save_key(), data, len);
+    if (result == ESP_OK) result = nvs_commit(h);
+    if (result != ESP_OK) ESP_LOGW(TAG, "save failed: %s", esp_err_to_name(result));
     nvs_close(h);
+    return result == ESP_OK;
 }
 
 /* ---- Platform hooks ---------------------------------------------------------- */
@@ -130,26 +154,21 @@ void wf_platform_link_send(void *ctx, const uint8_t *peer, const uint8_t *data, 
 }
 
 /* ---- Keys & power ----------------------------------------------------------- */
-typedef struct {
-    int level;
-    int64_t down_at;
-    bool long_sent;
-} key_state;
-
-static void keys(key_state k[2], bool *pwr_click, bool *boot_click, bool *boot_long) {
+static void keys(wf_key_state k[2], bool *pwr_click, bool *boot_click, bool *boot_long, bool *boot_down) {
     int levels[2];
     board_buttons(levels);
-    int64_t now = lv_tick_get();
-    *pwr_click = *boot_click = *boot_long = false;
+    uint32_t now = lv_tick_get();
+    *pwr_click = *boot_click = *boot_long = *boot_down = false;
     for (int i = 0; i < 2; i++) {
-        int lv = levels[i] < 0 ? 0 : levels[i];
-        if (lv && !k[i].level) { k[i].down_at = now; k[i].long_sent = false; }
-        if (lv && i == 1 && !k[i].long_sent && now - k[i].down_at > 700) { k[i].long_sent = true; *boot_long = true; }
-        if (!lv && k[i].level && !k[i].long_sent && now - k[i].down_at > 30) {
+        if (levels[i] < 0) continue; /* unavailable is not a release */
+        int lv = levels[i];
+        int event = wf_key_sample(&k[i], lv, now, i == 1);
+        if (i == 1 && event == WF_KEY_EVENT_DOWN) *boot_down = true;
+        if (event == WF_KEY_EVENT_LONG) *boot_long = true;
+        if (event == WF_KEY_EVENT_CLICK) {
             if (i == 0) *pwr_click = true;
             else *boot_click = true;
         }
-        k[i].level = lv;
     }
 }
 
@@ -172,18 +191,22 @@ void app_main(void) {
     wf_app_start(save, save_len);
     if (save) heap_caps_free(save);
 
-    key_state k[2] = {0};
+    wf_key_state k[2] = {0};
     bool screen_on = true;
     for (;;) {
-        bool pwr, boot, boot_long;
-        keys(k, &pwr, &boot, &boot_long);
+        runtime_cadence(screen_on);
+        bool pwr, boot, boot_long, boot_down;
+        keys(k, &pwr, &boot, &boot_long, &boot_down);
         if (screen_on) {
-            board_tick();
-            wf_app_tick();
-            rx_frame f;
-            while (xQueueReceive(rx_queue, &f, 0) == pdTRUE) wf_app_link_rx(f.from, f.data, f.len);
+            if (pwr || boot || boot_long || boot_down) lv_display_trigger_activity(NULL);
+            /* Dispatch physical timing before a possibly expensive render. */
+            if (boot_down && wf_app_key(WF_KEY_BOOT_DOWN)) k[1].long_sent = true;
             if (boot) wf_app_key(WF_KEY_BOOT_SHORT);
             if (boot_long) wf_app_key(WF_KEY_BOOT_LONG);
+            wf_app_tick();
+            board_tick(); /* render this iteration's simulation, not the previous frame */
+            rx_frame f;
+            while (xQueueReceive(rx_queue, &f, 0) == pdTRUE) wf_app_link_rx(f.from, f.data, f.len);
             if (pwr || (!wf_app_busy() && lv_display_get_inactive_time(NULL) > IDLE_OFF_MS)) {
                 wf_app_flush_save();
                 wf_platform_radio(false);
@@ -195,10 +218,12 @@ void app_main(void) {
         } else {
             if (board_wait_wake()) {
                 board_panel(true);
-                lv_display_trigger_activity(NULL);
                 screen_on = true;
-                /* Swallow the key/touch that woke us up. */
-                while (k[0].level || k[1].level) { keys(k, &pwr, &boot, &boot_long); vTaskDelay(pdMS_TO_TICKS(20)); }
+                /* The continuous clock is already current; do not dispatch
+                 * timers/input before the app shifts its timing origins. */
+                lv_display_trigger_activity(NULL);
+                board_input_after_wake();
+                wf_key_after_wake(&k[0]); wf_key_after_wake(&k[1]);
                 wf_app_wake();
             }
         }

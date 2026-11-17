@@ -2,7 +2,7 @@
 #include <stdint.h>
 /* 8-bit indexed sprite; with `alpha` set, index 0 is transparent. */
 typedef struct {
-    uint8_t w, h;
+    uint16_t w, h; /* full-resolution backgrounds as well as small sprites */
     uint8_t alpha;
     uint16_t colors;
     const uint16_t *pal;   /* RGB565 */

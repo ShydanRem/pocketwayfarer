@@ -1,6 +1,6 @@
 # Lanternbound — spedizione HD-2D giocabile
 
-Implementazione del 16 novembre 2026 nella **UI nativa C11/LVGL di Pocket Wayfarer**, per l’AMOLED circolare 466×466. Sono disponibili firmware compilato e un eseguibile Linux interattivo dello stesso codice. Le immagini sotto sono catture della UI effettiva.
+Implementazione aggiornata al 17 novembre 2026 (`0.4.0-preview.1`) nella **UI nativa C11/LVGL di Pocket Wayfarer**, per l’AMOLED circolare 466×466. Sono disponibili firmware compilato e un eseguibile Linux interattivo dello stesso codice. Le immagini sotto sono catture della UI effettiva.
 
 ![Borgo, combattimento e reliquia](img/lantern/panoramica.png)
 
@@ -21,7 +21,7 @@ Dal menu `...` si aprono mappa, bestiario con indizi, collezione, opzioni, guida
 | Azione | Risultato |
 |---|---|
 | Toccare un nemico vivo | Cambia bersaglio e barra PV mostrata. |
-| Attacco | Apre l’anello; tocco o BOOT giudica il timing. |
+| Attacco | Apre l’anello; tocco o pressione iniziale di BOOT giudica il timing usando il tempo dell'evento. |
 | Abilità | Due mosse: offensiva da 6 PM e supporto da 5 PM; disabilitate se manca la risorsa. |
 | Guardia | Recupera 4 PM e dimezza i danni del turno nemico successivo. |
 | Parata | Dopo 650 ms di intento, toccare quando l’onda raggiunge il cerchio centrale. |
@@ -36,9 +36,9 @@ Sentinella: 120 PV/24 PM, Baluardo aggiunge 30 scudo e cura 6 PV; Risonanza aggi
 
 ## Grafica e limiti del trattamento
 
-Sono importate **52 immagini runtime**: due fondali, tre nuovi assetti a quattro pose, sei specie ordinarie e boss a quattro pose, sei reliquie, più quattro fotogrammi dell’eroe iniziale conservati nel vecchio atlas. Le pose sono inattiva, respiro, attacco e guardia/colpito; non sono un set completo di camminata e combo. Scala uniforme per riga e ancoraggio dei piedi evitano salti di dimensione fra pose.
+Sono importate **52 immagini runtime**: due fondali, tre nuovi assetti a quattro pose, sei specie ordinarie e boss a quattro pose, sei reliquie, più quattro fotogrammi duplicati della Sentinella per compatibilità con la tabella attori. Le pose sono inattiva, respiro, attacco e guardia/colpito; non sono un set completo di camminata e combo. Scala, palette e ancoraggio dei piedi condivisi per riga evitano salti fra pose.
 
-Fondali 233×233 a 2×; attori e reliquie su griglia 88×88 con scala intera. Profondità e luce dei fondali sono dipinte, senza renderer 3D o illuminazione dinamica. Controlli, testi, font e barre sono oggetti LVGL effettivi. I titoli si adattano all’altezza dei testi IT/EN e i pulsanti abilità hanno spazio dedicato. I font DejaVu sono rasterizzati a 20/22 px con accenti italiani. Sorgenti, prompt, licenze, registro e hash: [assets/lantern](../assets/lantern/README.md).
+Fondali nativi 466×466 a 1×; attori e reliquie su griglia 88×88 con scala intera. Nel combattimento eroe, avversario singolo e boss usano 2×, le coppie 1× con aree di selezione separate. Il fondale lascia una fascia quieta dietro le sagome, con ombre di contatto LVGL. Profondità e luce dei fondali sono dipinte, senza renderer 3D o illuminazione dinamica. Controlli, testi, font e barre sono oggetti LVGL effettivi. I font DejaVu sono rasterizzati a 20/22 px con accenti italiani. [Ricerca, confronto e limiti della revisione](ART-CLARITY.md). Sorgenti, prompt, licenze, registro e hash: [assets/lantern](../assets/lantern/README.md).
 
 Il redesign non copre ancora tutte le schermate, regioni o combinazioni estetiche delle 40 classi classiche. Nessun audio è implementato: il percorso hardware non è stato verificato. I segnali essenziali sono visivi.
 
@@ -70,6 +70,8 @@ Il formato **v4**, 2808 byte con header, accetta v1 (profilo da 1356 byte), v2 (
 
 Le regressioni correnti sono in [test_reliability.c](../firmware/rpg/host/test_reliability.c). L’[audit](audit/REVIEW-2026-11-16.md) e le sue sonde rimangono documenti storici della baseline `df85308`.
 
+L'[audit del 17 novembre](DEVICE-AUDIT-2026-11-17.md) corregge inoltre il cerchio fermo con frame oltre 100 ms, giudizio touch arretrato e BOOT al rilascio, ripresa del clock, input di risveglio, sovrapposizione dei bersagli, cache immagini, toast pendenti, dialoghi e retry del salvataggio. Le finestre e le regole di danno restano quelle indicate sopra.
+
 ## Verifiche eseguite
 
 | Verifica | Evidenza |
@@ -78,10 +80,11 @@ Le regressioni correnti sono in [test_reliability.c](../firmware/rpg/host/test_r
 | Core preesistente | 55.639 controlli RPG e 1.434 del compagno con ASan/UBSan. |
 | Spedizione | **600 partite simulate**, 52.393 snapshot salva/ripristina e 51.509 transizioni. 288 run di base, 288 con tutti i progetti iniziali e politiche rinuncia/sostituzione (6 × 3 × 8 × 2), 24 vittorie senza reliquie. Verificate le venti combinazioni di tre slot. Incontrate tutte le sette specie incluso boss. |
 | Affidabilità | Regressioni oro/morale/missioni/caccia/transazione/navigazione e migrazione v1/v2/v3 superate. |
-| UI nativa | **49 catture, 430 salvataggi validati**: touch/BOOT, abilità/bersaglio, cinque stanze, eventi, reliquia iniziale, pagine del borgo, vittoria/sconfitta/retry, IT/EN, pause e recupero classico. Inclusi confronto di tutti gli effetti, annullamento touch/BOOT, PWR/riavvio durante lo scambio e vittoria senza reliquie. |
+| UI nativa | **49 catture, 432 salvataggi validati**: touch/BOOT, abilità/bersaglio, cinque stanze, eventi, reliquia iniziale, pagine del borgo, vittoria/sconfitta/retry, IT/EN, pause e recupero classico. Inclusi confronto di tutti gli effetti, annullamento touch/BOOT, PWR/riavvio durante lo scambio e vittoria senza reliquie. |
+| Regressioni dispositivo/UI | Tre catture del cerchio con frame da 120 ms; touch/BOOT a tempo dell'evento; scadenza, salvataggio lento/fallito, 20 s di schermo spento; 220 immagini stabili, 44 dialoghi e 42 specie di gemme. Sono scenari simulati sullo stesso codice nativo. |
 | Sanitizer UI | LVGL e UI compilati/eseguiti con ASan/UBSan senza errori rilevati. Leak scan finale disattivato perché l’app mantiene la scena attiva. Buffer immagini controllati anche su ricostruzioni ripetute del borgo. |
-| Memoria immagini host | Picco 1.642.376 byte (~1,57 MiB), sotto 2 MiB. È memoria dei buffer immagini, non consumo totale del firmware. |
-| Desktop interattivo | Avvio, percorso, primo suggerimento, menu abilità, timing e PWR/ripresa osservati nella vera app con profilo separato. Verificata anche la migrazione di un vero salvataggio desktop v3 tramite SDL dummy. |
+| Memoria immagini host | Picco 1.302.884 byte (~1,24 MiB) nella preview Lanternbound. È memoria dei buffer immagini, non consumo totale del firmware o picco di ogni schermata classica. |
+| Desktop interattivo | Avvio, percorso, guida, timing e PWR/ripresa osservati nella precedente preview; migrazione desktop v3 verificata con SDL dummy. La nuova revisione ha catture e input LVGL automatici, senza una nuova prova manuale completa. |
 | Firmware | ESP-IDF 5.5.1, build ESP32-S3 riuscita; dimensione e hash dell’app in [firmware.json](lantern-evidence/firmware.json). Nessun flash eseguito. |
 
 Log in [lantern-evidence](lantern-evidence/). La strategia automatica usa offensive quando possibile e attacchi base altrimenti, senza riempire risorse fra incontri salvo l’evento. Senza reliquia iniziale, con timing sempre Bene, vincono 20/24 Sentinelle, 16/24 Piromanti e 15/24 Predoni; sempre Ottimo/Perfetto 24/24, sempre Mancato 0/24. Le 288 run con progetto iniziale usano Ottimo, le 24 senza reliquie Perfetto. Questa è taratura del modello, non una misura del divertimento.

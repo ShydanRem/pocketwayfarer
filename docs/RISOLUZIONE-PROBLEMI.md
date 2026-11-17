@@ -19,6 +19,10 @@ Comincia dal sintomo. Per problemi di porta o collegamento non è necessario can
 
 La procedura di recovery indicata da Waveshare usa **BOOT tenuto premuto durante RESET**: premi e rilascia RESET, poi rilascia BOOT. Individua i pulsanti sulla documentazione della tua esatta revisione; non confondere PWR, che nel gioco controlla lo schermo, con RESET. Se il reset automatico non riesce, segui la [guida ufficiale di flashing](https://docs.waveshare.com/ESP32-S3-Touch-AMOLED-1.75/Firmware-Flashing) e il [troubleshooting Waveshare](https://github.com/waveshareteam/ESP32-S3-Touch-AMOLED-1.75/blob/main/docs/troubleshooting.md).
 
+## Il cerchio si ferma o il timing sembra in ritardo
+
+La `0.4.0-preview.1` corregge un errore che scartava il tempo dei fotogrammi oltre 100 ms, oltre al giudizio touch basato sul fotogramma precedente e a BOOT giudicato al rilascio. Aggiorna conservando il profilo secondo [SALVATAGGI.md](SALVATAGGI.md). Nei minigiochi premi BOOT quando vuoi giudicare: non serve aspettare il rilascio. Le correzioni sono coperte da regressioni native; la latenza fisica del nuovo build resta da misurare. [Cause e prove](DEVICE-AUDIT-2026-11-17.md).
+
 ## La scrittura si interrompe
 
 Tieni aperta la pagina, usa una connessione USB diretta e riprova dopo aver liberato la porta. Con la procedura manuale puoi ridurre il baud rate da `460800` a `115200`. Annota l’errore prima di scegliere un’eventuale cancellazione: per una semplice connessione fallita non è il primo rimedio.

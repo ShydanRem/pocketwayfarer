@@ -44,7 +44,7 @@ python -m pip install -r requirements-art.txt -r requirements-site.txt
 bash scripts/check.sh
 ```
 
-Lo script verifica i dati grafici generati, esegue i test del core con AddressSanitizer/UBSan e produce le schermate reali della UI in `docs/img`. Le catture sono del motore LVGL, non mockup del sito. La suite del modello include 432 spedizioni; la preview Lanternbound verifica 45 catture e 306 salvataggi, suggerimenti, pause, retry e recupero classico.
+Lo script verifica i dati grafici generati, esegue i test del core e del campionamento input con AddressSanitizer/UBSan e produce le schermate reali della UI in `docs/img`. Le catture sono del motore LVGL, non mockup del sito. La suite del modello include 600 spedizioni; la preview Lanternbound verifica 49 catture e 432 salvataggi. `test_device_ui` aggiunge tre catture di timing, frame lenti, input prima dell'aggiornamento, errori di salvataggio, durata delle cache e dialoghi scorrevoli. Le sue catture sono in `build/host/device-regressions`. Imposta `POCKET_PREVIEW_ROOT=build/prova` per conservare i PNG delle preview fuori dai documenti.
 
 Per rigenerare intenzionalmente i dati HD-2D:
 

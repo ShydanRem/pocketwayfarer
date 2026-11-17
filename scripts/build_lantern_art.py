@@ -19,6 +19,7 @@ sys.path.insert(0, str(ROOT / 'scripts'))
 from build_art import Emitter
 
 SOURCE = ROOT / 'assets/lantern/source'
+PRISM = SOURCE / 'prism'
 OUTPUT = ROOT / 'firmware/rpg/ui/art'
 
 
@@ -68,19 +69,22 @@ def indexed(im, size, transparent=False):
     return pixels
 
 
-def atlas_rows(path, count):
+def atlas_rows(path, count, bounds=None):
     """One shared scale and foot anchor per row; never resize individual poses."""
     sheet = Image.open(path).convert('RGBA')
+    bounds = bounds or [round(i * sheet.height / count) for i in range(count + 1)]
+    assert len(bounds) == count + 1 and bounds[0] == 0 and bounds[-1] == sheet.height
     result = []
     for r in range(count):
-        crops = [sheet.crop((round(c * sheet.width / 4), round(r * sheet.height / count),
-                             round((c + 1) * sheet.width / 4), round((r + 1) * sheet.height / count)))
+        crops = [sheet.crop((round(c * sheet.width / 4), bounds[r],
+                             round((c + 1) * sheet.width / 4), bounds[r + 1]))
                  for c in range(4)]
         boxes = []
         for im in crops:
             alpha = np.array(im)[:, :, 3] >= 128
             ys, xs = np.where(alpha)
             assert len(xs), 'empty generated pose'
+            assert not (alpha[0].any() or alpha[-1].any() or alpha[:, 0].any() or alpha[:, -1].any()), f'clipped pose: {path.name}, row {r}'
             boxes.append((int(xs.min()), int(ys.min()), int(xs.max()) + 1, int(ys.max()) + 1))
         width = max(max(im.width / 2 - b[0], b[2] - im.width / 2) * 2 for im, b in zip(crops, boxes))
         top = min(b[1] for b in boxes)
@@ -92,8 +96,15 @@ def atlas_rows(path, count):
             canvas = Image.new('RGBA', (88, 88))
             canvas.paste(im.resize((w, h), Image.Resampling.NEAREST),
                          (44 - round(im.width / 2 * scale), 84 - round(foot * scale)))
-            frames.append(indexed(canvas, (88, 88), True))
-        result.append(frames)
+            frames.append(np.array(canvas))
+        # One restrained palette for all four poses: no per-frame color drift.
+        joined = np.concatenate(frames, axis=1)
+        mask = joined[:, :, 3] >= 128
+        joined[~mask, :3] = 0
+        palette = Image.fromarray(joined[:, :, :3]).quantize(colors=96, method=Image.Quantize.MEDIANCUT,
+                                                         dither=Image.Dither.NONE).convert('RGB')
+        joined = np.dstack((np.array(palette), np.where(mask, 255, 0).astype(np.uint8)))
+        result.append([joined[:, c*88:(c+1)*88] for c in range(4)])
     return result
 
 
@@ -102,25 +113,24 @@ def main():
     ap.add_argument('--check', action='store_true')
     args = ap.parse_args()
     e = Emitter()
-    env = Image.open(SOURCE / 'environments.png')
+    env = Image.open(PRISM / 'environments.png')
     assert env.width == env.height * 2, 'environment atlas must contain two squares'
-    scenes = [e.sprite(f'ln_scene_{i}', indexed(env.crop((i * env.height, 0, (i + 1) * env.height, env.height)), (233, 233)))
+    scenes = [e.sprite(f'ln_scene_{i}', indexed(env.crop((i * env.height, 0, (i + 1) * env.height, env.height)), (466, 466)))
               for i in range(2)]
-    actors = Image.open(SOURCE / 'actors.png')
-    assert actors.width % 4 == 0 and actors.height % 3 == 0
-    w, h = actors.width // 4, actors.height // 3
-    assert w == h, 'actor cells must have a common square anchor grid'
+    heroes = atlas_rows(PRISM / 'loadouts.png', 3)
+    layout = json.loads((PRISM / 'layout.json').read_text())
+    enemies = atlas_rows(PRISM / 'enemies.png', 7, layout['enemies_row_bounds'])
     rows = []
-    for r in range(3):
+    for r, frames in enumerate([heroes[0], enemies[0], enemies[1]]):
         cells = []
         for c in range(4):
-            crop = actors.crop((c * w, r * h, (c + 1) * w, (r + 1) * h))
-            cells.append(e.sprite(f'ln_actor_{r}_{c}', indexed(crop, (88, 88), True)))
+            cells.append(e.sprite(f'ln_actor_{r}_{c}', frames[c]))
         rows.append('    {' + ','.join(cells) + '}')
     loadouts = []
     bestiary = []
-    for name, count, destination in [('loadouts', 3, loadouts), ('bestiary', 5, bestiary)]:
-        for r, frames in enumerate(atlas_rows(SOURCE / f'{name}.png', count)):
+    for name, atlas, destination in [('loadouts', heroes, loadouts),
+                                     ('bestiary', [enemies[i] for i in [3, 4, 5, 6, 2]], bestiary)]:
+        for r, frames in enumerate(atlas):
             cells = [e.sprite(f'ln_{name}_{r}_{c}', pixels) for c, pixels in enumerate(frames)]
             destination.append('    {' + ','.join(cells) + '}')
     relics = Image.open(SOURCE / 'relics.png')
@@ -144,14 +154,18 @@ def main():
               'const wf_sprite ln_bestiary[5][4] = {\n' + ',\n'.join(bestiary) + '\n};\n')
     manifest = {'source_hashes': {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
                                  for p in sorted(SOURCE.glob('*.png'))},
+                'active_prism_sources': {str(p.relative_to(SOURCE)): hashlib.sha256(p.read_bytes()).hexdigest()
+                                         for p in sorted(PRISM.iterdir()) if p.suffix in ('.png', '.json')},
                 'font_hashes': {p.name: hashlib.sha256(p.read_bytes()).hexdigest()
                                 for p in sorted((ROOT / 'assets/lantern/fonts').glob('*.ttf'))},
                 'source_tool': 'OpenAI ImageGen', 'runtime_format': '8-bit indexed RGB565; binary alpha',
-                'backgrounds': {'count': 2, 'grid': [233, 233], 'display_scale': 2},
+                'backgrounds': {'count': 2, 'grid': [466, 466], 'display_scale': 1},
                 'actors': {'original': 3, 'loadouts': 3, 'additional_enemies': 5, 'frames_each': 4, 'grid': [88, 88], 'display_scale': 2},
                 'relics': {'count': 6, 'grid': [88, 88], 'display_scale': 2},
-                'transforms': ['equal-cell extraction', 'nearest-neighbor grid resampling',
-                               'alpha threshold 128', '240-color palette without dithering', 'RGB565 encoding'],
+                'transforms': ['explicit transparent-gutter row boundaries', 'reject clipped source poses',
+                               'shared scale and foot anchor per row', 'nearest-neighbor grid resampling',
+                               '96-color shared actor-row palette; 240-color backgrounds/relics',
+                               'alpha threshold 128', 'RGB565 encoding'],
                 'status': 'Imported static art; run the native UI smoke check for integration evidence'}
     outputs = {OUTPUT / 'lantern_art.h': header, OUTPUT / 'lantern_art.c': source,
                ROOT / 'assets/lantern/manifest.json': json.dumps(manifest, indent=2) + '\n'}

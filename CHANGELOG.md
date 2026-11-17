@@ -1,5 +1,13 @@
 # Note di versione
 
+## 0.4.0-preview.1 — 17 novembre 2026
+
+- Nuove sorgenti per borgo, arena, tre eroi e sette specie nemiche; composizione meno rumorosa dietro le sagome, palette condivise fra pose, fondali nativi 466×466 e ombre di contatto. Ricerca e confronto documentati in `docs/ART-CLARITY.md`.
+- Corretto il cerchio bloccato con aggiornamenti oltre 100 ms. Touch e BOOT giudicano il tempo dell'evento; BOOT agisce alla pressione. Input scaduti e preparazione non attivano la fase seguente.
+- Clock continuo, ripresa prima dei timer, protezione dagli input di risveglio e debounce del rilascio. Salvataggi lenti non consumano la nuova fase; commit falliti mantengono lo stato da salvare e vengono ritentati.
+- Bersagli separati; cache con descrittori stabili; correzione dei toast pendenti. Dialoghi scorrevoli entro il display, pulsante Chiudi e tutte le 42 specie di gemme.
+- 49 catture native con 432 salvataggi e tre nuove catture del cerchio; regressioni e sanitizer superati. Formato salvataggi v4 e partizioni invariati. Il nuovo firmware deve ancora essere collaudato fisicamente.
+
 ## 0.3.0-preview.2 — 17 novembre 2026
 
 - Le ricompense continuano a offrire due reliquie anche a tre slot: confronto degli effetti e sostituzione esplicita di una reliquia posseduta.

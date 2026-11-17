@@ -515,6 +515,11 @@ void duel_tick(void) { battle_tick(); }
 
 bool battle_key(int key) {
     /* BOOT acts as "tap" during timing phases: handy with gloves or wet fingers. */
+    if (key == WF_KEY_BOOT_DOWN) {
+        if (B.phase == PH_RING) { on_ring_tap(NULL); return true; }
+        if (B.phase == PH_PARRY) { on_parry_tap(NULL); return true; }
+        return false;
+    }
     if (key != WF_KEY_BOOT_SHORT) return B.phase != PH_END;
     if (B.phase == PH_RING) { on_ring_tap(NULL); return true; }
     if (B.phase == PH_PARRY) { on_parry_tap(NULL); return true; }

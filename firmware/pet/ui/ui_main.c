@@ -33,7 +33,9 @@ void wf_ui_flush_save(void) {
     static uint8_t buf[WF_SAVE_BYTES];
     static uint32_t seq;
     size_t n = wf_save_encode(&ui.g, ++seq, buf, sizeof buf);
-    if (n) wf_platform_save(buf, n);
+    if (!n || !wf_platform_save(buf, n)) {
+        ui.dirty = true; save_due_s = now_s() + 3; return;
+    }
     ui.dirty = false;
     save_due_s = 0;
     ui.last_save_s = now_s();

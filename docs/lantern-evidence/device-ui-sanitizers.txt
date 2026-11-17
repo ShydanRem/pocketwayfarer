@@ -1,0 +1,10 @@
+120ms frames: shrinking circle 430 -> 262 -> 162px, then normal parry/impact/choice progression: passed
+touch and BOOT press before app tick: cached620 +80ms judges actual700ms PERFECT for both: passed
+expired timing press is consumed once, never applied to the next phase or converted into pause: passed
+80ms save excluded from new phase; 20s sleep preserves elapsed; early BOOT in650ms readiness ignored: passed
+physical key registers activity; paused/route/reward surfaces allow idle-off without immediate re-sleep: passed
+failed durable commit preserves dirty state and retries successfully after3s: passed
+toast address reuse deletes no unrelated widgets; all220 icon/scale entries retain descriptors; scene frees all image bytes: passed
+44 item dialogs: 176 action targets scrolled and clicked; 67 off-panel clicks rejected: passed
+all42 gem species plus Close: final species reached by touch scrolling and socketed: passed
+device UI regressions: 3 native timing captures; no physical latency claim

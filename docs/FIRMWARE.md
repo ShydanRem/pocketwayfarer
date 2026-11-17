@@ -55,8 +55,8 @@ dal tempo della fase e non introducono timer di regole separati.
 |---|---|
 | App | partizione `factory` da 6 MB |
 | Salvataggio | partizione NVS `wf_nvs` (256 KB), un blob versionato con CRC32 (2808 byte per l’RPG v4, header incluso), scritto in modo atomico da NVS |
-| Grafica | sprite indicizzati 8 bit in flash, espansi in PSRAM (RGB565 + alfa) e liberati al cambio schermata. HD-2D: fondali 233×233 a 2×, attori 88×88 a 1×/2×/3×; nel classico l'eroe resta composto da livelli ritagliati |
-| Binario | RPG con Lanternbound ~2,84 MiB (53% libero nei 6 MiB della partizione), compagno ~1,6 MB |
+| Grafica | sprite indicizzati 8 bit in flash, espansi in PSRAM (RGB565 + alfa) e liberati al cambio schermata. HD-2D: fondali 466×466 a 1×, attori 88×88 a 1×/2×; nel classico l'eroe resta composto da livelli ritagliati |
+| Binario | RPG con Lanternbound ~3,14 MiB (48% libero nei 6 MiB della partizione); dati esatti in [firmware.json](lantern-evidence/firmware.json). Il compagno è una build alternativa |
 | Rendering | LVGL a buffer parziale (466×48 righe, DMA interna), lettura touch ogni 10 ms per i minigiochi di timing |
 
 ## Tempo
@@ -67,6 +67,8 @@ usa `esp_timer`, che continua a contare in light sleep. Se l'RTC non risponde
 il tempo riparte dall'accensione (la simulazione resta coerente finché il
 dispositivo non viene spento del tutto). L'ora del giorno (giorno/tramonto/notte)
 si corregge dal Diario senza toccare la simulazione.
+
+Il clock LVGL legge continuamente i millisecondi di `esp_timer`, anche durante lo spegnimento del pannello. Prima del rendering si aggiorna la simulazione; touch e BOOT aggiornano inoltre il timing all'istante dell'evento. BOOT usa il fronte di pressione nei minigiochi. Il risveglio richiede un rilascio prima di accettare nuovi comandi. [Audit e regressioni](DEVICE-AUDIT-2026-11-17.md).
 
 ## Energia
 

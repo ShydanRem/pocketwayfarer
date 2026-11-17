@@ -1,0 +1,5 @@
+2026-11-17 — 0.4.0-preview.1
+Command: SDL_VIDEODRIVER=dummy SDL_RENDER_DRIVER=software build/host/cmake/play_lantern --save build/clarity-desktop-smoke.bin --smoke
+Exit status: 0
+Native desktop closed cleanly
+This is a headless native launch/save/close smoke, not a new manual interaction pass or hardware test.

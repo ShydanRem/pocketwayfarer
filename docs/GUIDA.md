@@ -19,7 +19,7 @@ L’anteprima del cammino mostra i nemici prima di entrare. La spedizione segue 
 | Abilità | Apre offensiva da 6 PM e supporto da 5 PM. Le mosse troppo costose sono disabilitate. |
 | Guardia | Recupera fino a 4 PM e dimezza i danni del turno nemico successivo. |
 | Tocca sull’onda | Durante la parata, tocca quando l’onda raggiunge il cerchio centrale. |
-| BOOT | Durante attacco/parata vale come tocco di timing; fuori dal timing torna indietro o mette in pausa secondo la schermata. |
+| BOOT | Durante attacco/parata giudica il timing alla pressione iniziale. Nella scelta di battaglia mette in pausa; nei menu torna indietro al rilascio. |
 | II | Mette in pausa anche durante l’anello e la parata. |
 | PWR | Salva e spegne/riaccende lo schermo. Non è il comando di reset della scheda. |
 

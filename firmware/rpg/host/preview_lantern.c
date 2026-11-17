@@ -39,10 +39,11 @@ void wf_platform_big_free(void *p) {
     }
     assert(0);
 }
-void wf_platform_save(const void *data, size_t n) {
+bool wf_platform_save(const void *data, size_t n) {
     assert(n <= sizeof saved);
     memcpy(saved, data, n); saved_len = n; saves++;
     rpg_game back; assert(rpg_save_decode(saved, n, &back));
+    return true;
 }
 void wf_platform_brightness(int p) { (void)p; }
 void wf_platform_radio(bool on) { (void)on; }
@@ -100,9 +101,37 @@ static void check_buttons(lv_obj_t *o) {
     }
     for (uint32_t i = 0; i < lv_obj_get_child_count(o); i++) check_buttons(lv_obj_get_child(o, (int)i));
 }
+static void check_hero_clearance(const char *name) {
+    bool title = R.screen == R_TITLE;
+    bool town = R.screen == R_TOWN;
+    bool battle = R.screen == R_LANTERN && R.g.lantern.state >= LN_CHOOSE && R.g.lantern.state <= LN_IMPACT;
+    if (!title && !town && !battle) return;
+    lv_obj_t *screen = lv_screen_active();
+    bool found = false;
+    for (unsigned i = 0; i < lv_obj_get_child_count(screen); i++) {
+        lv_obj_t *o = lv_obj_get_child(screen, (int)i);
+        if (!lv_obj_check_type(o, &lv_image_class) || lv_obj_get_width(o) != 176) continue;
+        lv_area_t a; lv_obj_get_coords(o, &a);
+        int cx = (a.x1+a.x2+1)/2;
+        if (cx < (title ? 230 : town ? 145 : 105) || cx > (title ? 236 : town ? 175 : 150)) continue;
+        const lv_image_dsc_t *image = lv_image_get_src(o);
+        assert(image->header.cf == LV_COLOR_FORMAT_RGB565A8);
+        const uint8_t *alpha = image->data + image->header.stride * image->header.h;
+        for (unsigned y = 0; y < image->header.h; y++) for (unsigned x = 0; x < image->header.w; x++) {
+            if (!alpha[y*image->header.w+x]) continue;
+            /* Test actual expanded sprite pixels against the rendered HUD,
+             * rather than its padded transparent canvas. Feet used to fail. */
+            assert(a.y1+(int)y > (title ? 137 : 106) && a.y1+(int)y < (title ? 287 : town ? 279 : 285));
+        }
+        found = true;
+    }
+    /* Town subpages share R_TOWN but intentionally have no hero. */
+    if (title || !strcmp(name, "borgo") || !strcmp(name, "village-english") || !strcmp(name, "combattimento")) assert(found);
+}
 static void shot(const char *name) {
     lv_obj_update_layout(lv_screen_active());
     if (R.screen != R_DUNGEON) check_buttons(lv_screen_active());
+    check_hero_clearance(name);
     lv_refr_now(NULL);
     memcpy(incremental_fb, fb, sizeof fb);
     lv_obj_invalidate(lv_screen_active());
@@ -282,7 +311,9 @@ int main(int argc, char **argv) {
     press("Pontile"); assert(R.g.lantern.state == LN_CHOOSE); run(100); shot("combattimento");
     /* Living enemy selection is exercised through a real touch on its sprite. */
     click(362, 230); assert(R.g.lantern.target == 1);
-    click(230, 195); assert(R.g.lantern.target == 0);
+    click(278, 196); assert(R.g.lantern.target == 0); /* previously intercepted by right foe's transparent margin */
+    click(370, 236); assert(R.g.lantern.target == 1);
+    click(270, 220); assert(R.g.lantern.target == 0);
     press("II"); assert(R.g.lantern.paused);
     click(410, 220); /* sprite edge outside the pause card */
     assert(R.g.lantern.target == 0);
@@ -402,7 +433,7 @@ int main(int argc, char **argv) {
     assert(!R.g.coach.disabled && !R.g.coach.learned && R.g.gold == profile_gold);
     press("Torna"); press("PARTI"); press(">"); /* Predone -> Sentinella */
     assert(R.g.lantern.archetype == LN_SENTINEL); press("Parti"); press("Sentiero");
-    assert(find(lv_screen_active(), TX(ln_coach_text(LNT_ATTACK)))); shot("guida-primo-attacco");
+    assert(find(lv_screen_active(), TX(ln_coach_caption(LNT_ATTACK)))); shot("guida-primo-attacco");
     press("Attacco"); shot("guida-timing-in-gioco"); judge_at(WF_Q_MISS);
     assert(!(R.g.coach.learned & LNC_ATTACK));
     defend_once(true);
@@ -410,7 +441,7 @@ int main(int argc, char **argv) {
     press("Attacco"); judge_at(WF_Q_GOOD);
     assert(R.g.coach.learned & LNC_ATTACK); run(100); shot("fendente-impatto");
     defend_once(false);
-    assert(find(lv_screen_active(), TX(ln_coach_text(LNT_RESONANCE)))); shot("guida-risonanza"); press("OK");
+    assert(find(lv_screen_active(), TX(ln_coach_caption(LNT_RESONANCE)))); shot("guida-risonanza"); press("OK");
     press("Guardia"); defend_once(false);
     assert(R.g.lantern.resonance == 3); shot("risonanza-pronta");
     press("Abilità");
@@ -427,7 +458,7 @@ int main(int argc, char **argv) {
     run(350); assert(R.g.lantern.hp == frozen.hp && R.g.lantern.sp == frozen.sp && R.g.lantern.rng == frozen.rng);
     return_after_hit();
     press("PARTI"); press(">"); press("Parti"); press("Sentiero");
-    assert(R.g.lantern.archetype == LN_MAGE && !find(lv_screen_active(), TX(ln_coach_text(LNT_ATTACK))));
+    assert(R.g.lantern.archetype == LN_MAGE && !find(lv_screen_active(), TX(ln_coach_caption(LNT_ATTACK))));
     shot("seconda-spedizione-senza-guida"); press("Abilità"); press("Brace\n6 PM"); judge_at(WF_Q_PERFECT);
     run(100); shot("brace-impatto"); return_after_hit();
     press("PARTI"); press(">"); press("Parti"); press("Sentiero");
@@ -439,7 +470,7 @@ int main(int argc, char **argv) {
     run(100); shot("impatto-movimento-ridotto"); return_after_hit();
     press("..."); press("Opzioni"); press("Ripeti guida"); press("Italiano / English"); shot("options-guidance-english"); press("Back");
     press("DEPART"); press("Depart"); press("Trail");
-    assert(find(lv_screen_active(), TX(ln_coach_text(LNT_ATTACK)))); shot("first-fight-guidance-english");
+    assert(find(lv_screen_active(), TX(ln_coach_caption(LNT_ATTACK)))); shot("first-fight-guidance-english");
     press("II"); press("Abandon"); press("Village");
     relic_exchange_ui();
     press("Return"); press("Village");

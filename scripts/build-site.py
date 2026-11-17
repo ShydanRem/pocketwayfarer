@@ -40,7 +40,7 @@ def manual_html():
         for original, alias in aliases.items():
             rendered = re.sub(r'href="' + re.escape(original) + r'(?:#[^"]*)?"', 'href="' + alias + '"', rendered)
         rendered = rendered.replace('id="installazione-manuale"', 'id="manuale"').replace('id="la-porta-usb-non-compare"', 'id="connessione"')
-        rendered = re.sub(r'href="(FIRMWARE|LANTERNBOUND|ONBOARDING-FEEDBACK)\.md(?:#[^"]*)?"', lambda m: 'href="downloads/' + m[1] + '.md"', rendered)
+        rendered = re.sub(r'href="(FIRMWARE|LANTERNBOUND|ONBOARDING-FEEDBACK|ART-CLARITY|DEVICE-AUDIT-2026-11-17)\.md(?:#[^"]*)?"', lambda m: 'href="downloads/' + m[1] + '.md"', rendered)
         rendered = rendered.replace('<table>', '<div class="table-wrap"><table>').replace('</table>', '</table></div>')
         def image_figure(match):
             tag = match[1]
@@ -84,7 +84,7 @@ def main():
     fonts = output / 'assets/fonts'; fonts.mkdir(parents=True, exist_ok=True)
     shutil.copyfile(ROOT / 'assets/lantern/fonts/title.ttf', fonts / 'title.ttf')
     shutil.copyfile(ROOT / 'assets/lantern/fonts/LICENSE.txt', fonts / 'LICENSE.txt')
-    for name in ['INSTALLAZIONE.md', 'GUIDA.md', 'SALVATAGGI.md', 'RISOLUZIONE-PROBLEMI.md', 'SVILUPPO.md', 'PUBBLICAZIONE.md', 'FIRMWARE.md', 'LANTERNBOUND.md', 'ONBOARDING-FEEDBACK.md']:
+    for name in ['INSTALLAZIONE.md', 'GUIDA.md', 'SALVATAGGI.md', 'RISOLUZIONE-PROBLEMI.md', 'SVILUPPO.md', 'PUBBLICAZIONE.md', 'FIRMWARE.md', 'LANTERNBOUND.md', 'ONBOARDING-FEEDBACK.md', 'ART-CLARITY.md', 'DEVICE-AUDIT-2026-11-17.md']:
         dest = output / 'downloads' / name
         dest.parent.mkdir(parents=True, exist_ok=True)
         shutil.copyfile(ROOT / 'docs' / name, dest)

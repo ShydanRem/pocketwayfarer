@@ -6,8 +6,11 @@
 #include <stdint.h>
 
 void board_init(void);
-/* lv_tick + lv_timer_handler (skipped while the panel is off). */
+/* LVGL timers/input/rendering (skipped while the panel is off).
+ * The LVGL monotonic clock itself runs continuously, including light sleep. */
 void board_tick(void);
+/* Consume the wake contact until a successful no-contact touch sample. */
+void board_input_after_wake(void);
 /* PWR and BOOT levels: -1 unavailable, 0 released, 1 pressed. */
 void board_buttons(int levels[2]);
 bool board_brightness(unsigned percent);

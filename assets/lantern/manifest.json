@@ -6,6 +6,12 @@
     "loadouts.png": "e93a3112570f9898acd2493b5cfc7fe7afc12f75e123b5cd8956938b878900f8",
     "relics.png": "b58592d5cb1aaf4b9c82de5c241b0de0435c79377d7ccedd90d65e9d8ba491bb"
   },
+  "active_prism_sources": {
+    "prism/enemies.png": "e1dfe6279adae5b48e6f40f8660e6143e9f7a47e41a7f13c3996930db4495ac6",
+    "prism/environments.png": "9e3c0126a0390eebe51c4f9fdf0329e15b60ab60ae7e9b0573c3a0fa86d9538f",
+    "prism/layout.json": "6bc4c1f940c86f72d93f2b8338280ab9db668ace59d0ba0411b6bdc8fe89f218",
+    "prism/loadouts.png": "05f4b37fbc52e3768432ac137fa507879243dfcdb7e1e3d30d6ff1ab46bc054b"
+  },
   "font_hashes": {
     "body.ttf": "57f73e11f51999432bf7ab22ce55b6f945d5eca1bf824404cfa9ec2e3718c84e",
     "title.ttf": "aac3f559445d23f0f567a243f91f3f6ad6cb4b5cafa1521a3479fffe0637f0bd"
@@ -15,10 +21,10 @@
   "backgrounds": {
     "count": 2,
     "grid": [
-      233,
-      233
+      466,
+      466
     ],
-    "display_scale": 2
+    "display_scale": 1
   },
   "actors": {
     "original": 3,
@@ -40,10 +46,12 @@
     "display_scale": 2
   },
   "transforms": [
-    "equal-cell extraction",
+    "explicit transparent-gutter row boundaries",
+    "reject clipped source poses",
+    "shared scale and foot anchor per row",
     "nearest-neighbor grid resampling",
+    "96-color shared actor-row palette; 240-color backgrounds/relics",
     "alpha threshold 128",
-    "240-color palette without dithering",
     "RGB565 encoding"
   ],
   "status": "Imported static art; run the native UI smoke check for integration evidence"

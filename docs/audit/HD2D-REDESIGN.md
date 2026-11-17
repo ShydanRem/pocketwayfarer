@@ -1,6 +1,6 @@
 # Pocket Wayfarer — redesign HD-2D da zero
 
-**Aggiornamento:** la prima spedizione nativa è ora implementata. Per schermate effettive, regole, build e controlli vedere [LANTERNBOUND.md](../LANTERNBOUND.md). La tavola e le specifiche sotto documentano la direzione iniziale; non tutto il piano di espansione è già realizzato.
+**Aggiornamento:** specifica storica del 16 novembre. La revisione del 17 novembre è in [ART-CLARITY.md](../ART-CLARITY.md): sostituisce palette, sorgenti e fondali 233×233 con immagini native 466×466. La prima spedizione nativa è ora implementata. Per schermate effettive, regole, build e controlli vedere [LANTERNBOUND.md](../LANTERNBOUND.md). La tavola e le specifiche sotto documentano la direzione iniziale; non tutto il piano di espansione è già realizzato.
 
 Direzione scelta dall'utente il 16 novembre 2026: **pixel art d'autore, altissima qualità, HD-2D**. Questo documento sostituisce il trattamento visivo provvisorio del brief meccanico. Titolo, classi e hardware del gioco esistente restano il punto di partenza; “Lanternbound” è un sottotitolo di lavoro.
 

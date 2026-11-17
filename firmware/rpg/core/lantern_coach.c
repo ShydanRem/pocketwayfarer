@@ -38,3 +38,12 @@ wf_text ln_coach_text(int tip) {
     };
     return text[(unsigned)tip <= LNT_RESONANCE ? tip : LNT_NONE];
 }
+wf_text ln_coach_caption(int tip) {
+    switch (tip) {
+    case LNT_ATTACK: return (wf_text){"Comincia da Attacco", "Start with Attack"};
+    case LNT_GUARD: return (wf_text){"Guardia recupera PM", "Guard restores SP"};
+    case LNT_SKILL: return (wf_text){"6 PM: colpo · 5 PM: aiuto", "6 SP: hit · 5 SP: support"};
+    case LNT_RESONANCE: return (wf_text){"Tre parate: Risonanza", "Three parries: Resonance"};
+    default: return ln_coach_text(tip);
+    }
+}

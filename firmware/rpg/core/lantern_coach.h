@@ -16,3 +16,4 @@ int ln_coach_tip(const ln_coach *c, const rpg_lantern *l, bool skill_menu);
 void ln_coach_observe(ln_coach *c, const rpg_lantern *before, const rpg_lantern *after);
 void ln_coach_ack(ln_coach *c, int tip);
 wf_text ln_coach_text(int tip);
+wf_text ln_coach_caption(int tip); /* compact choice hint; leaves actors visible */

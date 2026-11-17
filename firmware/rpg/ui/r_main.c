@@ -27,7 +27,13 @@ void r_save_now(void) {
     if (!R.loaded) return;
     static uint8_t buf[4096];
     size_t n = rpg_save_encode(&R.g, buf, sizeof buf);
-    if (n) wf_platform_save(buf, n);
+    if (!n || !wf_platform_save(buf, n)) {
+        R.dirty = true; R.save_due_s = r_now() + 3;
+        if (!R.save_failed) kit_toast(TR("Salvataggio fallito. Riprovo.", "Save failed. Retrying."), NULL);
+        R.save_failed = true;
+        return;
+    }
+    R.save_failed = false;
     R.dirty = false;
     R.save_due_s = 0;
     R.last_save_s = r_now();
@@ -434,7 +440,7 @@ void wf_app_tick(void) {
     if (R.loaded && t != R.last_tick_s) {
         R.last_tick_s = t;
         if (rpg_tick(&R.g, t)) R.dirty = true;
-        if (R.dirty && ((R.save_due_s && t >= R.save_due_s) || t - R.last_save_s >= 300)) r_save_now();
+        if (R.dirty && (R.save_due_s ? t >= R.save_due_s : t - R.last_save_s >= 300)) r_save_now();
     }
     switch (R.screen) {
     case R_TOWN: lantern_tick(); break;
@@ -448,6 +454,7 @@ void wf_app_tick(void) {
 }
 
 bool wf_app_key(int key) {
+    if (key >= WF_KEY_BOOT_SHORT && key <= WF_KEY_BOOT_DOWN) lv_display_trigger_activity(NULL);
     if (R.screen == R_LANTERN || R.screen == R_TOWN) return lantern_key(key);
     if (R.screen == R_BATTLE && battle_key(key)) return true;
     if (key == WF_KEY_BOOT_SHORT || key == WF_KEY_BOOT_LONG) {
@@ -466,7 +473,8 @@ bool wf_app_key(int key) {
 void wf_app_link_rx(const uint8_t from[6], const uint8_t *data, size_t len) { (void)from; (void)data; (void)len; }
 void wf_app_flush_save(void) { lantern_suspend(); r_classic_suspend(); if (R.dirty) r_save_now(); }
 bool wf_app_busy(void) { return R.screen == R_BATTLE || R.screen == R_CREATE ||
-    (R.screen == R_LANTERN && ln_active(&R.g.lantern) && !R.g.lantern.paused); }
+    (R.screen == R_LANTERN && R.g.lantern.state >= LN_CHOOSE &&
+     R.g.lantern.state <= LN_IMPACT && !R.g.lantern.paused); }
 void wf_app_wake(void) {
     if (R.screen == R_TOWN_CLASSIC) town_refresh();
     lantern_wake();
