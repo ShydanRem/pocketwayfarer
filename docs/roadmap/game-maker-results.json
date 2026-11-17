@@ -1,0 +1,273 @@
+{
+  "gdd": {
+    "title": "Pocket Wayfarer — Class Production Roadmap",
+    "genre": "existing native turn-based RPG; visual roadmap and class atlas",
+    "platform": "mobile",
+    "markdown": "# Pocket Wayfarer — Class Production Roadmap — Game Design Doc\n**Genre:** existing native turn-based RPG; visual roadmap and class atlas · **Platform:** mobile\n\n## Pitch\npreserve the current playable five-room Lanternbound journey while progressively bringing all40 already-implemented classic classes to the approved readable original2D art direction. The3 Lanternbound loadouts are separate from those40 classes.\nAudience: Build on the EXISTING Pocket Wayfarer native C11/LVGL9.4 game for casual handheld RPG players. Platform enum mobile is only a touch-control proxy for the466x466 Waveshare ESP32-S3 AMOLED Existing victory/defeat/retry conditions remain unchanged, with no extra lives or penalties for browsing.\n\n## Core loop\nExisting game loop remains: choose one of3 Lanternbound loadouts, choose a route, attack with touch/BOOT timing, use one of2 skills or Guard, parry, choose/replace/skip relics, clear5 rooms, defeat the176HP lighthouse boss and return.\n\n## Control map\n- Keyboard/mouse: touch left/right arrows browses40 class cards with wraparound. / Keyboard Space/Enter emulates BOOT in the native desktop host.\n- Touch: Controls: touch buttons at least52px high / touch left/right arrows browses40 class cards with wraparound. / wake contact is consumed and new touch requires release. / Existing game loop remains: choose one of3 Lanternbound loadouts, choose a route, attack with touch/BOOT timing, use one of2 skills or Guard, parry, cho … \\[excerpt; full caller text retained in source\\_sections\\]\n- Action coverage: move: keyboard/mouse not specified, touch not specified; interact: keyboard/mouse not specified, touch stated\n\n## Levels / waves\nNot specified\n\n## Assets — proposed sizes, not requirements\n- sprite: player or primary interactive object; 64×64px (proposed).\n- sprite: objective, obstacle or opponent if required; 48×48px (proposed).\n- UI: button/icon; 48×48px (proposed).\n- UI: background; 390×844px (proposed).\n- sound: optional action and round-end cues, with mute; ≤1 second (proposed).\n\n## HUD / screens\nexisting title/village, new atlas and read-only family/skill dialogs, existing loadout/route/combat/pause/results and classic creation/equipment/job screens. Later milestones separately cover modular player rendering, advanced/master visuals, world/UI unification, content and release gates. Design and Sound: original c … \\[excerpt; full caller text retained in source\\_sections\\]\n\n## Win / loss\natlas is explicit no-fail browsing, not a combat/reward mode. Existing victory/defeat/retry conditions remain unchanged, with no extra lives or penalties for browsing.\n\n## Done when\n1) all40 cards and eight family paths are reachable by real LVGL touch2) all104 class-local skill references and bilingual names come from current core definitions3) only8 base illustrations are marked ready; remaining32 have an explicit family-art label4) browsing/closing/BOOT/PWR cannot mutate the real class, cosmeti … \\[excerpt; full caller text retained in source\\_sections\\]\n\n**Proposed checks:** Verify every stated action using the keyboard/mouse and touch mappings that actually exist. Verify the stated round outcome and restart rules; resolve missing rules before implementation. Preview at 390×844 and at 375px mobile width; verify readable HUD and usable touch controls.\n\n**Limitations:** Deterministic English wording extraction, not semantic interpretation, translation or a tested game. Caller statements remain unverified. Missing mappings are not invented; asset dimensions and tests are labelled proposals. The compact Markdown uses excerpts where needed; source\\_sections preserves the supplied section text.",
+    "sections": {
+      "pitch": {
+        "objective": "preserve the current playable five-room Lanternbound journey while progressively bringing all40 already-implemented classic classes to the approved readable original2D art direction. The3 Lanternbound loadouts are separate from those40 classes.",
+        "audience": "Build on the EXISTING Pocket Wayfarer native C11/LVGL9.4 game for casual handheld RPG players.\nPlatform enum mobile is only a touch-control proxy for the466x466 Waveshare ESP32-S3 AMOLED\nExisting victory/defeat/retry conditions remain unchanged, with no extra lives or penalties for browsing.",
+        "status": "caller statements, not verified"
+      },
+      "core_loop": [
+        "Existing game loop remains: choose one of3 Lanternbound loadouts, choose a route, attack with touch/BOOT timing, use one of2 skills or Guard, parry, choose/replace/skip relics, clear5 rooms, defeat the176HP lighthouse boss and return."
+      ],
+      "controls": {
+        "keyboard": [
+          "touch left/right arrows browses40 class cards with wraparound.",
+          "Keyboard Space/Enter emulates BOOT in the native desktop host."
+        ],
+        "touch": [
+          "Controls: touch buttons at least52px high",
+          "touch left/right arrows browses40 class cards with wraparound.",
+          "wake contact is consumed and new touch requires release.",
+          "Existing game loop remains: choose one of3 Lanternbound loadouts, choose a route, attack with touch/BOOT timing, use one of2 skills or Guard, parry, choose/replace/skip relics, clear5 rooms, defeat the176HP lighthouse boss and return."
+        ],
+        "coverage": [
+          {
+            "action": "move",
+            "keyboard_stated": false,
+            "touch_stated": false
+          },
+          {
+            "action": "interact",
+            "keyboard_stated": false,
+            "touch_stated": true
+          }
+        ],
+        "unavailable_statements": []
+      },
+      "waves": [
+        "Not specified"
+      ],
+      "assets": [
+        {
+          "kind": "sprite",
+          "item": "player or primary interactive object",
+          "width": 64,
+          "height": 64,
+          "status": "proposed, not supplied requirements"
+        },
+        {
+          "kind": "sprite",
+          "item": "objective, obstacle or opponent if required",
+          "width": 48,
+          "height": 48,
+          "status": "proposed, not supplied requirements"
+        },
+        {
+          "kind": "UI",
+          "item": "button/icon",
+          "width": 48,
+          "height": 48,
+          "status": "proposed, not supplied requirements"
+        },
+        {
+          "kind": "UI",
+          "item": "background",
+          "width": 390,
+          "height": 844,
+          "status": "proposed, not supplied requirements"
+        },
+        {
+          "kind": "sound",
+          "item": "optional action and round-end cues, with mute",
+          "duration_seconds": 1,
+          "status": "proposed, not supplied requirements"
+        }
+      ],
+      "hud": "existing title/village, new atlas and read-only family/skill dialogs, existing loadout/route/combat/pause/results and classic creation/equipment/job screens. Later milestones separately cover modular player rendering, advanced/master visuals, world/UI unification, content and release gates.\nDesign and Sound: original colorful JRPG pixel illustrations, cool quiet backgrounds, deliberate silhouettes, native466px review and grayscale checks; no copied commercial assets. No new audio in the first increment; current build has no implemented audio.",
+      "win_loss": "atlas is explicit no-fail browsing, not a combat/reward mode. Existing victory/defeat/retry conditions remain unchanged, with no extra lives or penalties for browsing.",
+      "done_when": "1) all40 cards and eight family paths are reachable by real LVGL touch2) all104 class-local skill references and bilingual names come from current core definitions3) only8 base illustrations are marked ready; remaining32 have an explicit family-art label4) browsing/closing/BOOT/PWR cannot mutate the real class, cosmetics, equipped gear, skills or expedition5) native466x466 controls remain inside the circle and alpha silhouettes avoid labels; import/hash checks, host regressions and ESP32 build pass6) roadmap separately records proposed milestones, physical-device gates and evidence; no future task is marked complete without its proof.",
+      "proposed_tests": [
+        "Verify every stated action using the keyboard/mouse and touch mappings that actually exist.",
+        "Verify the stated round outcome and restart rules; resolve missing rules before implementation.",
+        "Preview at 390×844 and at 375px mobile width; verify readable HUD and usable touch controls."
+      ]
+    },
+    "source_sections": {
+      "introduction": [
+        "Build on the EXISTING Pocket Wayfarer native C11/LVGL9.4 game for casual handheld RPG players. This is a scoped visual-production roadmap and first class-atlas increment, not a new browser game. Platform enum mobile is only a touch-control proxy for the466x466 Waveshare ESP32-S3 AMOLED; no375px phone/browser port is requested."
+      ],
+      "goal": [
+        "preserve the current playable five-room Lanternbound journey while progressively bringing all40 already-implemented classic classes to the approved readable original2D art direction. The3 Lanternbound loadouts are separate from those40 classes."
+      ],
+      "core mechanics": [
+        "",
+        "1. Controls: touch buttons at least52px high; touch left/right arrows browses40 class cards with wraparound. Family opens the five-node existing progression path; selecting a node changes only the displayed card. Skills opens the selected class description and its actual skill names. Close or BOOT release dismisses the modal; Back or BOOT returns to the previous atlas/menu. Keyboard Space/Enter emulates BOOT in the native desktop host. PWR saves/sleeps; wake contact is consumed and new touch requires release.",
+        "2. First delivery: add8 original base-class illustrations in an88x88 logical grid, shown at2x, with source prompts, alpha gutters and import hashes. Advance/master cards clearly label a family illustration until their own art is delivered. No generated representative replaces the saved player avatar. Preserve four races, skin, hair, eyes, face variant and currently visible weapon/offhand/head overlays.",
+        "3. Existing game loop remains: choose one of3 Lanternbound loadouts, choose a route, attack with touch/BOOT timing, use one of2 skills or Guard, parry, choose/replace/skip relics, clear5 rooms, defeat the176HP lighthouse boss and return. Win awards80 total run gold once; defeat loses floor(run gold/4); retry restarts the expedition while retaining profile and collection.",
+        "4. Progression: classic40 class IDs remain stable (8 base,16 advanced,16 master) with104 skills; advanced requires base level20 and job30, master base level45 and job40. Browsing the atlas never changes class, grants skills or bypasses requirements. Do not add combat classes, skills, zones or save-array sizes in this increment.",
+        "5. Pause/restart: preserve existing pause and650ms resume preparation, assisted timing and reduced motion. No combat timers run because a class card was opened from the village; repeated reload retains the real profile. Save formatv4 remains2808 bytes."
+      ],
+      "win/lose": [
+        "atlas is explicit no-fail browsing, not a combat/reward mode. Existing victory/defeat/retry conditions remain unchanged, with no extra lives or penalties for browsing."
+      ],
+      "scoring & progression": [
+        "atlas has no score or reward; show class index1..40, family, rank, main/secondary stats, actual skill list and art coverage. Combat payout and growth are unchanged."
+      ],
+      "screens": [
+        "existing title/village, new atlas and read-only family/skill dialogs, existing loadout/route/combat/pause/results and classic creation/equipment/job screens. Later milestones separately cover modular player rendering, advanced/master visuals, world/UI unification, content and release gates.",
+        "Design and Sound: original colorful JRPG pixel illustrations, cool quiet backgrounds, deliberate silhouettes, native466px review and grayscale checks; no copied commercial assets. No new audio in the first increment; current build has no implemented audio."
+      ],
+      "how it should feel": [
+        "instantly understandable roles through silhouette and equipment, no overlap with labels/HUD, no masked feet. Do not claim measured device latency, FPS, battery or player retention from host checks.",
+        "Build ONLY scope: native class atlas,8 base illustrations, verifiable40-class inventory and detailed ordered roadmap with completion gates. No new engine, login, ads, payments, multiplayer, browser build or silent avatar replacement."
+      ],
+      "done when": [
+        "1) all40 cards and eight family paths are reachable by real LVGL touch2) all104 class-local skill references and bilingual names come from current core definitions3) only8 base illustrations are marked ready; remaining32 have an explicit family-art label4) browsing/closing/BOOT/PWR cannot mutate the real class, cosmetics, equipped gear, skills or expedition5) native466x466 controls remain inside the circle and alpha silhouettes avoid labels; import/hash checks, host regressions and ESP32 build pass6) roadmap separately records proposed milestones, physical-device gates and evidence; no future task is marked complete without its proof."
+      ]
+    },
+    "limitations": [
+      "Deterministic English wording extraction, not semantic interpretation, translation or a tested game.",
+      "Caller statements remain unverified. Missing mappings are not invented; asset dimensions and tests are labelled proposals.",
+      "The compact Markdown uses excerpts where needed; source_sections preserves the supplied section text."
+    ]
+  },
+  "balance": {
+    "genre": "turn-based RPG; no balance changes in this visual increment",
+    "assumptions": [
+      "This is conditional arithmetic, not a playtest, simulation or difficulty guarantee.",
+      "When omitted, the planning horizon is 5 waves and growth is 0%; these are planning defaults, not supplied game facts.",
+      "Growth scales enemy count only; enemy speed stays at its supplied value because no speed-growth rule was supplied.",
+      "Each enemy awards 100 proposed planning points; this is a suggested scoring convention, not a supplied rule.",
+      "Clear-time estimates assume one damage per shot, every shot hits, no reload, no downtime and all enemies require enemy_hp damage."
+    ],
+    "formulas": {
+      "enemy_count": "ceil(spawn_per_wave × (1 + wave_growth_pct / 100)^(wave - 1)); capped at 1000000 for safe planning",
+      "enemy_speed_px_s": "supplied enemy_speed_px_s; no invented speed growth",
+      "estimated_clear_seconds": "enemy_count × enemy_hp / fire_rate_per_s (conditional ideal minimum)",
+      "target_points": "enemy_count × 100 proposed points per enemy",
+      "jump_airtime_seconds": "2 × sqrt(2 × jump_height_px / 980)",
+      "jump_range_px": "player_speed_px_s × jump_airtime_seconds"
+    },
+    "curve": [
+      {
+        "wave_or_level": 1,
+        "enemy_count": null,
+        "enemy_speed_px_s": null,
+        "estimated_clear_seconds": null,
+        "target_points": null
+      },
+      {
+        "wave_or_level": 2,
+        "enemy_count": null,
+        "enemy_speed_px_s": null,
+        "estimated_clear_seconds": null,
+        "target_points": null
+      },
+      {
+        "wave_or_level": 3,
+        "enemy_count": null,
+        "enemy_speed_px_s": null,
+        "estimated_clear_seconds": null,
+        "target_points": null
+      },
+      {
+        "wave_or_level": 4,
+        "enemy_count": null,
+        "enemy_speed_px_s": null,
+        "estimated_clear_seconds": null,
+        "target_points": null
+      },
+      {
+        "wave_or_level": 5,
+        "enemy_count": null,
+        "enemy_speed_px_s": null,
+        "estimated_clear_seconds": null,
+        "target_points": null
+      }
+    ],
+    "jump": {
+      "gravity_px_s2": null,
+      "airtime_seconds": null,
+      "horizontal_range_px": null,
+      "gap_px": null
+    },
+    "unknown_inputs": [
+      "player_speed_px_s",
+      "jump_height_px",
+      "gap_px",
+      "enemy_speed_px_s",
+      "spawn_per_wave",
+      "wave_growth_pct",
+      "lives",
+      "fire_rate_per_s",
+      "level_seconds"
+    ],
+    "feasibility": {
+      "status": "incomplete",
+      "warnings": []
+    },
+    "suggested_fixes": [],
+    "balance_numbers": "Balance numbers (conditional planning):\nenemy_hp: 176\nwaves_or_levels: 5\nPlanning curve: 5 waves; count growth 0% per wave; constant supplied enemy speed.\nProposed scoring: 100 points per enemy, subject to design approval.\nWave 1: enemies unknown, speed unknown px/s, ideal clear unknown s, proposed target unknown points.\nWave 2: enemies unknown, speed unknown px/s, ideal clear unknown s, proposed target unknown points.\nWave 3: enemies unknown, speed unknown px/s, ideal clear unknown s, proposed target unknown points.\nWave 4: enemies unknown, speed unknown px/s, ideal clear unknown s, proposed target unknown points.\nWave 5: enemies unknown, speed unknown px/s, ideal clear unknown s, proposed target unknown points.\nClear estimates assume 1 damage/shot, all shots hit and no reload/downtime. Playtest before treating these numbers as balanced."
+  },
+  "brief_check": {
+    "score": 83,
+    "overall": 83,
+    "scores": {
+      "audience": 100,
+      "measurable_mechanics": 33,
+      "feel": 100,
+      "genre_objective": 100,
+      "controls": 100,
+      "core_loop": 100,
+      "win_loss": 100,
+      "health_respawn": 100,
+      "score_progression": 50,
+      "screens": 75,
+      "visual_audio": 100,
+      "platform_layout": 50,
+      "scope_acceptance": 100
+    },
+    "outcome_mode": "explicit_conditions",
+    "missing": [
+      {
+        "priority": 3,
+        "criterion": "measurable_mechanics",
+        "message": "Missing or unclear measurable mechanics.",
+        "suggestion": "Give each mechanic a target, observable behavior and trigger/result; include concrete numbers.",
+        "question": "Which measurable action, trigger and result defines the main mechanic?"
+      },
+      {
+        "priority": 3,
+        "criterion": "score_progression",
+        "message": "Missing or unclear score progression.",
+        "suggestion": "Define scoring and level/difficulty progression or explicitly limit the prototype to one level.",
+        "question": "How is progress or score shown, and how many levels or difficulty steps are in scope?"
+      },
+      {
+        "priority": 3,
+        "criterion": "screens",
+        "message": "Missing or unclear screens.",
+        "suggestion": "List start/menu, HUD, pause and game-over screens. Restart and local high-score persistence are useful optional details.",
+        "question": "Which menu, score/health display, and game-over/restart screens should be included?"
+      },
+      {
+        "priority": 3,
+        "criterion": "platform_layout",
+        "message": "Missing or unclear platform layout.",
+        "suggestion": "Specify target platform and layout; mobile acceptance should include a 375px-wide screen.",
+        "question": "Should this run in a browser or on mobile, and how should its controls fit the target screen?"
+      },
+      {
+        "priority": 3,
+        "criterion": "vague_adjectives",
+        "message": "Vague adjectives do not define observable behavior.",
+        "suggestion": "Replace vague adjectives with measurable behavior: for example move 220 px/s, jump 140 px, respond within 100 ms, or finish a 60-second round.",
+        "question": "Which measurable speed, jump height, response time or round length should replace the vague wording?"
+      }
+    ],
+    "follow_up_questions": [
+      "Which measurable action, trigger and result defines the main mechanic?",
+      "How is progress or score shown, and how many levels or difficulty steps are in scope?",
+      "Which menu, score/health display, and game-over/restart screens should be included?"
+    ],
+    "limitations": [
+      "English keyword heuristics only; natural wording may be missed and negation may be misread.",
+      "A score measures stated requirements, not feasibility, safety, completeness, code quality or a playable game.",
+      "No model, game execution, translation or network call is performed."
+    ]
+  }
+}

@@ -177,7 +177,7 @@ enum { C_DEPART = 1, C_HERO, C_BAG, C_MORE, C_HOME, C_CLASSIC, C_MAP, C_EQUIP, C
        C_CONTINUE, C_RETREAT, C_EVENT0, C_EVENT1, C_RETRY, C_ASSIST, C_MOTION,
        C_LANGUAGE, C_QUICK, C_CUSTOM, C_COLLECTION, C_ABORT, C_EQUIP_RELIC,
        C_BESTIARY, C_HELP, C_HUNT, C_COLLECT_HUNT, C_TIPS, C_REPLAY_TIPS, C_ACK_TIP,
-       C_REPLACE_RELIC, C_CANCEL_REPLACE, C_SKIP_RELIC };
+       C_REPLACE_RELIC, C_CANCEL_REPLACE, C_SKIP_RELIC, C_CLASSES };
 
 void scr_lantern_title(void) {
     scene(PAGE_TITLE, 0, 50);
@@ -216,8 +216,9 @@ static void menu(void) {
     button(L.root, TR("Collezione", "Collection"), 155, 234, 144, 58, C_COLLECTION, false);
     button(L.root, TR("Opzioni", "Options"), 311, 234, 144, 58, C_OPTIONS, false);
     button(L.root, TR("Come si gioca", "How to play"), 155, 302, 144, 58, C_HELP, false);
-    button(L.root, TR("Classico", "Classic"), 311, 302, 144, 58, C_CLASSIC, false);
-    button(L.root, TR("Torna", "Back"), CX, 387, 156, 56, C_HOME, false);
+    button(L.root, TR("Classi", "Classes"), 311, 302, 144, 58, C_CLASSES, false);
+    button(L.root, TR("Classico", "Classic"), 155, 370, 144, 58, C_CLASSIC, false);
+    button(L.root, TR("Torna", "Back"), 311, 370, 144, 58, C_HOME, false);
 }
 static void loadout(void) {
     scene(PAGE_LOADOUT, 0, 130);
@@ -694,6 +695,7 @@ static void on_click(lv_event_t *e) {
     }
     if (c == C_OPTIONS) { options(); return; }
     if (c == C_CLASSIC) { r_go(R_TOWN_CLASSIC); return; }
+    if (c == C_CLASSES) { r_go(R_CLASS_ATLAS); return; }
     if (c == C_MAP) { world_map(); return; }
     if (c == C_BESTIARY) { L.pick = 0; bestiary(); return; }
     if (c == C_HELP) { L.pick = 0; help(); return; }

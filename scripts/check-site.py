@@ -31,7 +31,7 @@ def check(root):
         doc = Document(path); doc.feed(path.read_text())
         assert doc.lang == 'it' and doc.h1 == 1, f'{path}: language/H1 missing'
         documents[path.resolve()] = doc
-    assert len(documents) == 3, 'Expected landing, manual and notices'
+    assert set(documents) == {(root/name).resolve() for name in ['index.html','guide.html','notices.html','roadmap.html']}, 'Expected landing, manual, roadmap and notices'
     for path, doc in documents.items():
         for link in doc.links:
             url = urlsplit(link)

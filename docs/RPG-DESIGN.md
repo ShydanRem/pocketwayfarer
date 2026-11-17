@@ -1,6 +1,6 @@
 # Pocket Wayfarer — RPG fantasy tascabile
 
-Documento di progettazione (v0.2). È anche la specifica da cui viene scritto
+Documento storico di progettazione (v0.2). La roadmap corrente è [ROADMAP.md](ROADMAP.md); le capacità effettive e le prove sono descritte in [LANTERNBOUND.md](LANTERNBOUND.md). È anche la specifica da cui viene scritto
 `firmware/rpg/`. Il gioco precedente del cucciolo resta nel repository come build
 alternativa (`firmware/pet/`, `-DWF_GAME=pet`).
 
@@ -24,8 +24,8 @@ rende di più).
 
 ## 2. L'eroe
 
-Creazione: nome, razza, aspetto (2 corporature, 5 carnagioni, 6 acconciature,
-8 colori di capelli), classe iniziale, lingua.
+Creazione: nome, razza, aspetto (variante del volto/ciglia, 5 carnagioni, 6 acconciature,
+8 colori di capelli e 4 colori occhi), classe iniziale, lingua.
 
 ### Razze (estetica + piccoli bonus)
 
@@ -49,7 +49,7 @@ separato e dà 1 punto abilità per livello.
 | DEF / MDEF | armature + VIT / armature + INT/2 + VIT/2 |
 | PV / PM | per classe e livello, ×(1 + VIT%) / ×(1 + INT%) |
 | Critico | FOR(tuna)/3 + DES/10 % (+ ogni timing PERFETTO è critico) |
-| Schivata | AGI/4 % (max 30%) contro gli attacchi nemici, prima della parata |
+| Schivata | AGI/4 % (max 35%) contro gli attacchi nemici, prima della parata |
 | Rapidità | AGI dà una probabilità di **doppia azione** nel turno |
 | Precisione | DES allarga la finestra dell'anello |
 | Fortuna | bottino migliore, più gemme d'anima |
@@ -68,7 +68,7 @@ Regalo giornaliero con serie di giorni, 3 missioni al giorno (stessa logica dell
 
 ## 3. Classi: 8 di base, 16 avanzate, 16 maestre (40)
 
-Cambio classe dal Maestro di classe in città:
+Cambio classe da **Classico → Eroe → Classe** (nel concept, il Maestro di classe):
 - gradino 2: liv. classe 30 e liv. base 20, si sceglie uno dei due rami;
 - gradino 3: liv. classe 40 nel gradino 2 e liv. base 45.
 
@@ -89,7 +89,7 @@ abilità 1–5. Le abilità dei gradini precedenti restano.
 Le abilità sono costruite da un vocabolario comune (danno singolo, multicolpo,
 ad area, cura, potenziamento, indebolimento, risucchio, evocazione, passiva)
 con elemento, potenza, costo in PM e ricarica in turni. Elenco completo in
-`firmware/rpg/core/classes.c`.
+`firmware/rpg/core/data.c`.
 
 Elementi: Neutro, Fuoco, Acqua, Terra, Vento, Sacro, Oscuro (tabella dei
 vantaggi stile RO). Stati: Ustione, Veleno, Gelo, Stordimento, Sanguinamento,

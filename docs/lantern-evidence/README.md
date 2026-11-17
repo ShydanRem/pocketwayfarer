@@ -1,5 +1,7 @@
 # Verification evidence — 2026-11-16–17
 
+These logs describe the 0.4.0 clarity increment; current R1 atlas evidence is under [roadmap/evidence](../roadmap/evidence/).
+
 Current implementation: [LANTERNBOUND.md](../LANTERNBOUND.md). New corrections: [device audit](../DEVICE-AUDIT-2026-11-17.md) and [art clarity research](../ART-CLARITY.md). Firmware metadata describes the local ESP-IDF build; CI builds its own exact downloadable package from the published commit.
 
 - `model.txt`: 600 deterministic expeditions, 52,393 save/resume snapshots and 51,509 rule transitions; all seven enemies encountered. Includes all 20 full relic loadouts and both swap/skip policies, plus 24 no-relic wins.

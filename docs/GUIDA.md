@@ -91,3 +91,11 @@ Il menu **…** contiene Mappa, Bestiario, Collezione, Opzioni, Come si gioca e 
 **Classico** apre il precedente RPG con creazione dettagliata, 40 classi, inventario, bottega, forgia, campi, dungeon e caccia offline. Le sue regole sono diverse da Lanternbound; la grafica di tutte le sue schermate non è ancora stata ridisegnata. Legami/ESP-NOW nell’RPG non è una funzione di gioco completata. Nessun suono viene promesso nella preview corrente.
 
 Per installare: [guida USB](INSTALLAZIONE.md). Per proteggere il profilo: [salvataggi](SALVATAGGI.md).
+
+## Le classi classiche, in un atlante
+
+Da **Borgo → … → Classi** puoi sfogliare tutte le 40 classi, consultarne abilità e percorso di evoluzione. Le otto basi hanno nuove illustrazioni; le evoluzioni indicano chiaramente quando mostrano il ritratto della famiglia. Sono rappresentanti della classe, non sostituzioni del tuo personaggio personalizzato.
+
+![Arciere nell’atlante nativo](img/classes/03-classe-02.png)
+
+Le frecce scorrono le schede; **Percorso** apre i cinque nodi della famiglia, selezionabili dopo lo scorrimento. **Abilità** mostra i dati della classe. **Chiudi** resta fisso sotto il dettaglio; BOOT chiude prima il dettaglio e poi torna al borgo. Consultare non assegna oggetti, abilità o livelli e non cambia classe: il passaggio resta disponibile da **Classico → Eroe → Classe** con i requisiti previsti.

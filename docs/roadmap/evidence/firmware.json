@@ -1,0 +1,17 @@
+{
+  "date": "2026-11-17",
+  "milestone": "R1-class-atlas",
+  "app_version": "0.4.1-preview.1",
+  "target": "ESP32-S3",
+  "idf_version": "5.5.1",
+  "bytes": 3358976,
+  "sha256": "c351484b56e52b44eb83896fbcbc1d5594617db0235f1e19439825b0700968fd",
+  "app_partition_bytes": 6291456,
+  "save_version": 4,
+  "save_bytes": 2808,
+  "physical_device_tested": false,
+  "atlas_native_captures": 17,
+  "class_cards_bilingual": 80,
+  "base_illustrations": 8,
+  "new_modular_avatars": 0
+}
