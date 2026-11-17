@@ -7,9 +7,12 @@ set(CONFIG_LV_USE_THORVG_INTERNAL OFF CACHE BOOL "" FORCE)
 set(LV_BUILD_CONF_PATH "${CMAKE_CURRENT_LIST_DIR}/../common/lv_conf.h" CACHE PATH "" FORCE)
 add_subdirectory(../.deps/lvgl lvgl)
 
-set(COMMON ../common/rng.c ../common/timing.c)
+set(COMMON ../common/rng.c ../common/timing.c ../common/device_input.c)
 file(GLOB COMMON_UI ../common/ui/*.c ../common/ui/fonts/*.c)
 set(COMMON_INC ../common ../common/ui)
+add_executable(test_device_input test_device_input.c ../common/device_input.c)
+target_include_directories(test_device_input PRIVATE ../common)
+target_compile_options(test_device_input PRIVATE -Wall -Wextra -Werror -UNDEBUG)
 
 # ---- Companion game (v0.1) ----
 file(GLOB PET_CORE ../pet/core/*.c)
@@ -46,6 +49,10 @@ if(RPG_UI)
   target_include_directories(preview_lantern PRIVATE ../rpg/core ../rpg/ui ${COMMON_INC})
   target_compile_options(preview_lantern PRIVATE -Wall -Wextra -Werror -Wno-unused-parameter -UNDEBUG)
   target_link_libraries(preview_lantern lvgl m)
+  add_executable(test_device_ui ../rpg/host/test_device_ui.c ${RPG_CORE} ${RPG_UI} ${COMMON} ${COMMON_UI})
+  target_include_directories(test_device_ui PRIVATE ../rpg/core ../rpg/ui ${COMMON_INC})
+  target_compile_options(test_device_ui PRIVATE -Wall -Wextra -Werror -Wno-unused-parameter -UNDEBUG)
+  target_link_libraries(test_device_ui lvgl m)
   # Optional interactive host. Headers are acquired with scripts/desktop-deps.py;
   # firmware and repeatable headless checks do not depend on SDL.
   set(SDL2_HEADER_DIR "${CMAKE_CURRENT_LIST_DIR}/../../build/desktop-deps/include")

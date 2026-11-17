@@ -18,10 +18,11 @@ uint32_t wf_platform_now_s(void) { return fake_s; }
 uint32_t wf_platform_random(void) { rnd = rnd * 1664525u + 1013904223u; return rnd >> 3; }
 void *wf_platform_big_alloc(size_t n) { return malloc(n); }
 void wf_platform_big_free(void *p) { free(p); }
-void wf_platform_save(const void *data, size_t len) {
+bool wf_platform_save(const void *data, size_t len) {
     rpg_game back;
     if (!rpg_save_decode(data, len, &back)) { fprintf(stderr, "save roundtrip failed\n"); exit(1); }
     saves++;
+    return true;
 }
 void wf_platform_brightness(int p) { (void)p; }
 void wf_platform_radio(bool on) { (void)on; }

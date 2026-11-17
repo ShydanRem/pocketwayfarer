@@ -3,6 +3,7 @@
  * Pins and the CO5300 init sequence are the ones verified on hardware there.
  * Additions: PCF85063 RTC (read; written only when its clock is invalid). */
 #include "board.h"
+#include "device_input.h"
 #include <string.h>
 #include "lvgl.h"
 #include "esp_lcd_co5300.h"
@@ -27,7 +28,9 @@ static esp_lcd_panel_handle_t panel;
 static esp_lcd_touch_handle_t touch;
 static SemaphoreHandle_t flushed;
 static bool transfer_pending, panel_off;
-static int64_t last_tick;
+static lv_indev_t *pointer_indev;
+static wf_pointer_state pointer_state;
+static uint32_t board_clock_ms(void) { return (uint32_t)(esp_timer_get_time() / 1000); }
 static i2c_master_bus_handle_t i2c;
 static i2c_master_dev_handle_t expander, rtc;
 static bool pwr_ready, rtc_valid;
@@ -76,13 +79,14 @@ static void round_area(lv_event_t *e) {
 static void read_touch(lv_indev_t *indev, lv_indev_data_t *data) {
     esp_lcd_touch_point_data_t p = {0};
     uint8_t count = 0;
-    data->state = LV_INDEV_STATE_RELEASED;
-    if (esp_lcd_touch_read_data(touch) != ESP_OK) return;
-    if (esp_lcd_touch_get_data(touch, &p, &count, 1) == ESP_OK && count && p.x < RES && p.y < RES) {
-        data->state = LV_INDEV_STATE_PRESSED;
-        data->point.x = p.x;
-        data->point.y = p.y;
-    }
+    bool valid = esp_lcd_touch_read_data(touch) == ESP_OK &&
+                 esp_lcd_touch_get_data(touch, &p, &count, 1) == ESP_OK;
+    bool contact = count && p.x < RES && p.y < RES;
+    if (count && !contact) valid = false;
+    data->state = wf_pointer_sample(&pointer_state, valid, contact, p.x, p.y) ?
+                  LV_INDEV_STATE_PRESSED : LV_INDEV_STATE_RELEASED;
+    data->point.x = pointer_state.x;
+    data->point.y = pointer_state.y;
 }
 
 static esp_err_t expander_read(uint8_t reg, uint8_t *v) {
@@ -198,6 +202,9 @@ void board_init(void) {
     rtc_init();
 
     lv_init();
+    /* Callbacks must see actual time even during a long render or while the
+     * panel is off. A loop-fed tick freezes both touch judgment and wake. */
+    lv_tick_set_cb(board_clock_ms);
     lv_display_t *d = lv_display_create(RES, RES);
     uint8_t *buf = heap_caps_malloc(RES * LINES * 2, MALLOC_CAP_DMA | MALLOC_CAP_INTERNAL);
     assert(d && buf);
@@ -207,17 +214,19 @@ void board_init(void) {
     lv_display_set_flush_wait_cb(d, flush_wait);
     lv_display_add_event_cb(d, round_area, LV_EVENT_INVALIDATE_AREA, NULL);
     lv_indev_t *in = lv_indev_create();
+    pointer_indev = in;
     lv_indev_set_type(in, LV_INDEV_TYPE_POINTER);
     lv_indev_set_read_cb(in, read_touch);
     /* Timing minigames want low input latency. */
     lv_timer_set_period(lv_indev_get_read_timer(in), 10);
-    last_tick = esp_timer_get_time() / 1000;
 }
 
+void board_input_after_wake(void) {
+    wf_pointer_after_wake(&pointer_state);
+    lv_indev_reset(pointer_indev, NULL);
+    lv_indev_wait_release(pointer_indev);
+}
 void board_tick(void) {
-    int64_t now = esp_timer_get_time() / 1000;
-    lv_tick_inc((uint32_t)(now - last_tick));
-    last_tick = now;
     if (!panel_off) lv_timer_handler();
 }
 

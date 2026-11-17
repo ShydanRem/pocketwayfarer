@@ -17,7 +17,7 @@ typedef struct {
     bool loaded;
     int screen;
     uint32_t last_tick_s, last_save_s, save_due_s;
-    bool dirty;
+    bool dirty, save_failed;
     /* context */
     int zone;
     int shop_tab;

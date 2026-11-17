@@ -1,0 +1,29 @@
+[ 94%] Built target lvgl
+[ 94%] Building C object CMakeFiles/play_lantern.dir/workspace/pocketwayfarer/firmware/common/ui/kit.c.o
+[ 94%] Building C object CMakeFiles/play_lantern.dir/workspace/pocketwayfarer/firmware/common/ui/fx.c.o
+[ 94%] Building C object CMakeFiles/play_lantern.dir/workspace/pocketwayfarer/firmware/common/ui/ring.c.o
+[ 94%] Building C object CMakeFiles/play_lantern.dir/workspace/pocketwayfarer/firmware/rpg/core/battle.c.o
+[ 94%] Building C object CMakeFiles/play_lantern.dir/workspace/pocketwayfarer/firmware/rpg/core/data.c.o
+[ 94%] Building C object CMakeFiles/play_lantern.dir/workspace/pocketwayfarer/firmware/rpg/core/hero.c.o
+[ 94%] Building C object CMakeFiles/play_lantern.dir/workspace/pocketwayfarer/firmware/rpg/core/items.c.o
+[ 96%] Building C object CMakeFiles/play_lantern.dir/workspace/pocketwayfarer/firmware/rpg/core/lantern.c.o
+[ 96%] Building C object CMakeFiles/play_lantern.dir/workspace/pocketwayfarer/firmware/rpg/core/lantern_coach.c.o
+[ 96%] Building C object CMakeFiles/play_lantern.dir/workspace/pocketwayfarer/firmware/rpg/core/world.c.o
+[ 96%] Building C object CMakeFiles/play_lantern.dir/workspace/pocketwayfarer/firmware/rpg/core/save.c.o
+[ 96%] Building C object CMakeFiles/play_lantern.dir/workspace/pocketwayfarer/firmware/rpg/host/desktop.c.o
+[ 96%] Building C object CMakeFiles/play_lantern.dir/workspace/pocketwayfarer/firmware/rpg/ui/art/lantern_art.c.o
+[ 96%] Building C object CMakeFiles/play_lantern.dir/workspace/pocketwayfarer/firmware/rpg/ui/art/lantern_font_body.c.o
+[ 96%] Building C object CMakeFiles/play_lantern.dir/workspace/pocketwayfarer/firmware/rpg/ui/art/lantern_font_title.c.o
+[ 97%] Building C object CMakeFiles/play_lantern.dir/workspace/pocketwayfarer/firmware/rpg/ui/art/rpg_art.c.o
+[ 97%] Building C object CMakeFiles/play_lantern.dir/workspace/pocketwayfarer/firmware/rpg/ui/hero_gfx.c.o
+[ 97%] Building C object CMakeFiles/play_lantern.dir/workspace/pocketwayfarer/firmware/rpg/ui/r_battle.c.o
+[ 97%] Building C object CMakeFiles/play_lantern.dir/workspace/pocketwayfarer/firmware/rpg/ui/r_common.c.o
+[ 97%] Building C object CMakeFiles/play_lantern.dir/workspace/pocketwayfarer/firmware/rpg/ui/r_hero.c.o
+[ 97%] Building C object CMakeFiles/play_lantern.dir/workspace/pocketwayfarer/firmware/rpg/ui/r_items.c.o
+[ 97%] Building C object CMakeFiles/play_lantern.dir/workspace/pocketwayfarer/firmware/rpg/ui/r_lantern.c.o
+[ 98%] Building C object CMakeFiles/play_lantern.dir/workspace/pocketwayfarer/firmware/rpg/ui/r_lantern_fx.c.o
+[ 98%] Building C object CMakeFiles/play_lantern.dir/workspace/pocketwayfarer/firmware/rpg/ui/r_main.c.o
+[ 98%] Building C object CMakeFiles/play_lantern.dir/workspace/pocketwayfarer/firmware/rpg/ui/r_world.c.o
+[ 98%] Building C object CMakeFiles/play_lantern.dir/workspace/pocketwayfarer/firmware/common/device_input.c.o
+[ 98%] Linking C executable play_lantern
+[100%] Built target play_lantern

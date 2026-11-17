@@ -52,6 +52,16 @@ static void set_info(const char *t) {
     lv_label_set_text(lv_obj_get_child(B.info, 0), t);
     lv_obj_remove_flag(B.info, LV_OBJ_FLAG_HIDDEN);
 }
+static bool waiting_for_input(void) {
+    if (B.suspended) return true;
+    if (B.ready_until) {
+        if ((int32_t)(lv_tick_get() - B.ready_until) < 0) return true;
+        B.ready_until = 0;
+        if (B.phase == PH_RING) set_info(TR("Tocca sull'arco dorato!", "Tap on the golden arc!"));
+        else if (B.phase == PH_PARRY) set_info(TR("Para: tocca quando l'onda arriva!", "Parry: tap when the wave lands!"));
+    }
+    return false;
+}
 
 static void update_vitals(void) {
     r_vitals_update(B.hp_arc, B.sp_arc, B.b.h.hp, B.b.h.st.max_hp, B.b.h.sp, B.b.h.st.max_sp);
@@ -389,7 +399,7 @@ static void do_hero(const rpg_action *a, int q) {
 
 static void on_ring_tap(lv_event_t *e) {
     (void)e;
-    if (B.phase != PH_RING || B.suspended || B.ready_until) return;
+    if (B.phase != PH_RING || waiting_for_input()) return;
     int q = ring_judge(&B.ring);
     ring_close(&B.ring);
     quality_popup(B.scr, q, CX, 110);
@@ -477,7 +487,7 @@ static void on_item_pick(lv_event_t *e) {
 }
 
 static void on_button(lv_event_t *e) {
-    if (B.suspended || B.ready_until) return;
+    if (waiting_for_input()) return;
     int which = (int)(intptr_t)lv_event_get_user_data(e);
     if (B.phase != PH_CHOOSE && which != 5) return;
     rpg_action a = {0};
@@ -509,7 +519,7 @@ static void on_button(lv_event_t *e) {
 }
 
 static void on_foe(lv_event_t *e) {
-    if (B.suspended || B.ready_until) return;
+    if (waiting_for_input()) return;
     int i = (int)(intptr_t)lv_event_get_user_data(e);
     if (B.b.foe[i].hp <= 0) return;
     B.target = i;
@@ -518,7 +528,7 @@ static void on_foe(lv_event_t *e) {
 
 static void on_parry_tap(lv_event_t *e) {
     (void)e;
-    if (B.phase != PH_PARRY || B.suspended || B.ready_until) return;
+    if (B.phase != PH_PARRY || waiting_for_input()) return;
     int q = parry_judge(&B.parry);
     parry_close(&B.parry);
     rpg_battle_foe(&B.b, q);
@@ -595,13 +605,7 @@ void scr_battle(void) {
 
 void battle_tick(void) {
     uint32_t t = lv_tick_get();
-    if (B.suspended) return;
-    if (B.ready_until) {
-        if ((int32_t)(t - B.ready_until) < 0) return;
-        B.ready_until = 0;
-        if (B.phase == PH_RING) set_info(TR("Tocca sull'arco dorato!", "Tap on the golden arc!"));
-        else if (B.phase == PH_PARRY) set_info(TR("Para: tocca quando l'onda arriva!", "Parry: tap when the wave lands!"));
-    }
+    if (waiting_for_input()) return;
     switch (B.phase) {
     case PH_INTRO:
         if (t - B.phase_at > 900) { set_info(NULL); hero_turn(); }
@@ -659,6 +663,12 @@ void battle_tick(void) {
 }
 
 bool battle_key(int key) {
+    if (key == WF_KEY_BOOT_DOWN) {
+        if (waiting_for_input()) return true;
+        if (B.phase == PH_RING) { on_ring_tap(NULL); return true; }
+        if (B.phase == PH_PARRY) { on_parry_tap(NULL); return true; }
+        return false;
+    }
     if (key != WF_KEY_BOOT_SHORT) return B.phase != PH_END;
     if (B.phase == PH_RING) { on_ring_tap(NULL); return true; }
     if (B.phase == PH_PARRY) { on_parry_tap(NULL); return true; }

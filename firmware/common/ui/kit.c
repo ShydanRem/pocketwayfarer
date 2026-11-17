@@ -3,21 +3,21 @@
 #include <stdlib.h>
 #include <string.h>
 #include "kit.h"
+#include "src/misc/cache/instance/lv_image_cache.h"
 
 /* ---- Sprite cache --------------------------------------------------------
  * Art is stored as 8-bit indexed pixels; on first use it is expanded to
- * RGB565 (+A8) at the requested integer scale. Icons stay cached forever;
- * scenes and creatures are released whenever the screen changes. */
-typedef struct {
+ * RGB565 (+A8) at the requested integer scale. Descriptor addresses remain
+ * stable for the whole scene; no live descriptor is ever evicted/reused.
+ * Entries are all released after the old screen and top layer are deleted. */
+typedef struct gfx_entry {
     const wf_sprite *s;
-    uint8_t scale;
-    uint8_t persistent;
+    int scale;
     lv_image_dsc_t dsc;
     void *buf;
+    struct gfx_entry *next;
 } gfx_entry;
-
-#define GFX_SLOTS 160
-static gfx_entry cache[GFX_SLOTS];
+static gfx_entry *cache;
 
 static void expand(const wf_sprite *s, int scale, gfx_entry *e) {
     int w = s->w * scale, h = s->h * scale;
@@ -53,31 +53,23 @@ static void expand(const wf_sprite *s, int scale, gfx_entry *e) {
 }
 
 const lv_image_dsc_t *gfx_sprite(const wf_sprite *s, int scale) {
-    gfx_entry *free_slot = NULL;
-    for (int i = 0; i < GFX_SLOTS; i++) {
-        if (cache[i].s == s && cache[i].scale == scale) return &cache[i].dsc;
-        if (!cache[i].s && !free_slot) free_slot = &cache[i];
-    }
-    if (!free_slot) {
-        /* Should not happen within one screen; recycle the first non-persistent slot. */
-        for (int i = 0; i < GFX_SLOTS && !free_slot; i++)
-            if (!cache[i].persistent) free_slot = &cache[i];
-        wf_platform_big_free(free_slot->buf);
-        free_slot->s = NULL;
-    }
-    expand(s, scale, free_slot);
-    free_slot->s = s;
-    free_slot->scale = (uint8_t)scale;
-    free_slot->persistent = s->w <= 16;
-    return &free_slot->dsc;
+    for (gfx_entry *entry = cache; entry; entry = entry->next)
+        if (entry->s == s && entry->scale == scale) return &entry->dsc;
+    gfx_entry *entry = calloc(1, sizeof *entry);
+    LV_ASSERT_MALLOC(entry);
+    entry->s = s; entry->scale = scale;
+    expand(s, scale, entry);
+    entry->next = cache; cache = entry;
+    return &entry->dsc;
 }
 
 void gfx_release_screen(void) {
-    for (int i = 0; i < GFX_SLOTS; i++) {
-        if (cache[i].s && !cache[i].persistent) {
-            wf_platform_big_free(cache[i].buf);
-            memset(&cache[i], 0, sizeof cache[i]);
-        }
+    while (cache) {
+        gfx_entry *entry = cache;
+        cache = entry->next;
+        lv_image_cache_drop(&entry->dsc);
+        wf_platform_big_free(entry->buf);
+        free(entry);
     }
 }
 
@@ -386,6 +378,9 @@ void kit_burst(lv_obj_t *parent, const wf_sprite *ic, int x, int y, int count) {
 static lv_obj_t *toast_obj;
 static char last_toast[64];
 const char *kit_last_toast(void) { return last_toast; }
+static void toast_deleted(lv_event_t *event) {
+    if (lv_event_get_target(event) == toast_obj) toast_obj = NULL;
+}
 static void toast_gone(lv_anim_t *a) {
     if (a->var == toast_obj) toast_obj = NULL;
     lv_obj_delete_async(a->var);
@@ -394,6 +389,7 @@ static void toast_gone(lv_anim_t *a) {
 void kit_toast(const char *text, const wf_sprite *ic) {
     if (toast_obj && lv_obj_is_valid(toast_obj)) lv_obj_delete(toast_obj);
     lv_obj_t *p = lv_obj_create(lv_layer_top());
+    lv_obj_add_event_cb(p, toast_deleted, LV_EVENT_DELETE, NULL);
     panel_style(p, COL_PANEL, 240);
     lv_obj_set_style_radius(p, LV_RADIUS_CIRCLE, 0);
     lv_obj_set_style_border_color(p, lv_color_hex(COL_GOLD), 0);
@@ -432,12 +428,16 @@ lv_obj_t *kit_dialog(const char *title, const char *body, const wf_sprite *ic) {
     panel_style(p, COL_PANEL, 250);
     lv_obj_set_style_border_color(p, lv_color_hex(COL_GOLD), 0);
     lv_obj_set_style_radius(p, 22, 0);
-    lv_obj_set_width(p, 330);
+    lv_obj_set_width(p, 300);
     lv_obj_set_height(p, LV_SIZE_CONTENT);
+    lv_obj_set_style_max_height(p, 350, 0);
+    lv_obj_set_scroll_dir(p, LV_DIR_VER);
+    lv_obj_set_scrollbar_mode(p, LV_SCROLLBAR_MODE_AUTO);
+    lv_obj_add_flag(p, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_set_style_pad_all(p, 16, 0);
     lv_obj_set_style_pad_row(p, 10, 0);
     lv_obj_set_flex_flow(p, LV_FLEX_FLOW_COLUMN);
-    lv_obj_set_flex_align(p, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
+    lv_obj_set_flex_align(p, LV_FLEX_ALIGN_START, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
     lv_obj_center(p);
     if (ic) {
         lv_obj_t *img = lv_image_create(p);
@@ -447,6 +447,9 @@ lv_obj_t *kit_dialog(const char *title, const char *body, const wf_sprite *ic) {
         lv_obj_t *t = lv_label_create(p);
         lv_obj_set_style_text_font(t, &wf_font_big, 0);
         lv_obj_set_style_text_color(t, lv_color_hex(COL_GOLD), 0);
+        lv_obj_set_width(t, lv_pct(100));
+        lv_obj_set_style_text_align(t, LV_TEXT_ALIGN_CENTER, 0);
+        lv_label_set_long_mode(t, LV_LABEL_LONG_WRAP);
         lv_label_set_text(t, title);
     }
     if (body) {
@@ -454,16 +457,15 @@ lv_obj_t *kit_dialog(const char *title, const char *body, const wf_sprite *ic) {
         lv_obj_set_style_text_font(b, &wf_font_small, 0);
         lv_obj_set_style_text_color(b, lv_color_hex(COL_TEXT), 0);
         lv_obj_set_style_text_align(b, LV_TEXT_ALIGN_CENTER, 0);
-        lv_obj_set_width(b, 290);
+        lv_obj_set_width(b, lv_pct(100));
         lv_label_set_long_mode(b, LV_LABEL_LONG_WRAP);
         lv_label_set_text(b, body);
     }
     lv_obj_t *row = lv_obj_create(p);
     lv_obj_remove_style_all(row);
-    lv_obj_set_size(row, LV_SIZE_CONTENT, LV_SIZE_CONTENT);
+    lv_obj_set_size(row, lv_pct(100), LV_SIZE_CONTENT);
     lv_obj_set_flex_flow(row, LV_FLEX_FLOW_ROW_WRAP);
     lv_obj_set_flex_align(row, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER, LV_FLEX_ALIGN_CENTER);
-    lv_obj_set_style_max_width(row, 298, 0);
     lv_obj_set_style_pad_column(row, 8, 0);
     lv_obj_set_style_pad_row(row, 8, 0);
     lv_obj_set_style_pad_top(row, 4, 0);
@@ -473,7 +475,8 @@ lv_obj_t *kit_dialog(const char *title, const char *body, const wf_sprite *ic) {
 
 lv_obj_t *kit_dialog_button(lv_obj_t *dialog, const char *text, uint32_t color, lv_event_cb_t cb, intptr_t user) {
     lv_obj_t *row = lv_obj_get_user_data(dialog);
-    lv_obj_t *b = kit_text_button(row, text, 0, 0, 0, 50, color, cb, user);
+    lv_obj_t *b = kit_text_button(row, text, 0, 0, 0, 56, color, cb, user);
+    lv_obj_set_ext_click_area(b, 0);
     lv_obj_set_align(b, LV_ALIGN_DEFAULT);
     lv_obj_set_pos(b, 0, 0);
     lv_obj_set_width(b, LV_SIZE_CONTENT);

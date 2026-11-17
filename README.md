@@ -8,7 +8,7 @@ Un RPG fantasy HD-2D per **Waveshare ESP32-S3-Touch-AMOLED-1.75**, con schermo r
 
 **[Installa dal browser](https://shydanrem.github.io/pocketwayfarer/)** · **[Manuale illustrato](docs/GUIDA.md)** · **[Tutta la documentazione](docs/README.md)**
 
-> **0.3.0-preview.2** — UI e regole verificate su PC, firmware compilato per ESP32-S3. Il collaudo sul Pocket fisico non è ancora completato. Il sito viene pubblicato dal workflow GitHub Pages; la configurazione iniziale è descritta in [Pubblicazione](docs/PUBBLICAZIONE.md).
+> **0.4.0-preview.1** — Nuova composizione grafica e correzioni di cerchio, input e risveglio verificate nella UI nativa; firmware compilato per ESP32-S3. Il nuovo build deve ancora essere collaudato sul Pocket fisico. [Ricerca e confronto visivo](docs/ART-CLARITY.md) · [Audit dei difetti](docs/DEVICE-AUDIT-2026-11-17.md).
 
 ## Sul Pocket, in pochi passaggi
 
@@ -43,7 +43,7 @@ La Sentinella protegge e prepara, il Piromante applica bruciatura, il Predone sf
 | Comando | Azione |
 |---|---|
 | Touch | Bersaglio, menu e timing di attacco/parata. |
-| BOOT | Timing; fuori dal minigioco, indietro o pausa secondo la schermata. |
+| BOOT | Timing alla pressione; durante la scelta in battaglia mette in pausa. Nei menu, indietro al rilascio. |
 | II | Pausa anche durante l’anello e la parata. |
 | PWR | Salva e spegne/riaccende lo schermo. |
 
@@ -79,6 +79,6 @@ I difetti dell’audit su incontri interrotti, missioni oro/sociali, morale e bo
 
 ## Verifiche e provenienza
 
-La suite comprende 55.639 controlli RPG, 1.434 del compagno, 600 spedizioni simulate e 49 catture native Lanternbound con 430 salvataggi validati. Include sanitizer, migrazione v1/v2/v3 al formato v4, guida, pause, retry, scambi di reliquie e confronto del rendering aggiornato con quello completo. [Log e limiti](docs/lantern-evidence/README.md). Sono verifiche del codice e dei percorsi esercitati, non misure di autonomia o coinvolgimento dei giocatori.
+La suite comprende 55.639 controlli RPG, 1.434 del compagno, 600 spedizioni simulate e 49 catture native Lanternbound con 432 salvataggi validati. Tre ulteriori catture verificano che il cerchio si restringa anche con aggiornamenti da 120 ms. Include sanitizer, errori di input/salvataggio, cache, dialoghi scorrevoli, migrazione v1/v2/v3 al formato v4, guida, pause, retry e confronto del rendering aggiornato con quello completo. [Log e limiti](docs/lantern-evidence/README.md). Sono verifiche del codice e dei percorsi esercitati, non misure di autonomia o coinvolgimento dei giocatori.
 
 Gli atlas HD-2D originali e i font hanno [sorgenti, prompt e registro](assets/lantern/README.md). [Crediti e licenze dei componenti](THIRD_PARTY.md). L’installazione dal browser si ispira al percorso di [TamaPoke](https://socquique.github.io/TamaPoke/web/) e usa ESP Web Tools; non copia firmware o contenuti del gioco. L’infrastruttura hardware deriva dal lavoro su [PocketD-D](https://github.com/ShydanRem/PocketD-D), senza contenuti o regole D&D.

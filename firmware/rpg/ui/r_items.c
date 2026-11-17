@@ -120,13 +120,11 @@ static void on_gems(lv_event_t *e) {
     (void)e;
     kit_dialog_close(dlg);
     dlg = kit_dialog(TR("Gemme d'anima", "Soul gems"), TR("Scegli la gemma da incastonare", "Pick a gem to socket"), ri(RI_GEM));
-    int shown = 0;
-    for (int sp = 0; sp < SP_COUNT && shown < 6; sp++) {
+    for (int sp = 0; sp < SP_COUNT; sp++) {
         if (!R.g.gems[sp]) continue;
         char b[40];
         snprintf(b, sizeof b, "%.10s x%d", TX(rpg_species(sp)->name), R.g.gems[sp]);
         kit_dialog_button(dlg, b, COL_BTN_ALT, on_socket, sp);
-        shown++;
     }
     kit_dialog_button(dlg, "X", COL_PANEL_HI, close_dlg, 0);
 }
@@ -153,6 +151,7 @@ static void on_bag_item(lv_event_t *e) {
     char sell[32];
     snprintf(sell, sizeof sell, TR("Vendi %lu", "Sell %lu"), (unsigned long)rpg_item_value(it));
     kit_dialog_button(dlg, sell, COL_GOLD, on_sell_item, 0);
+    kit_dialog_button(dlg, TR("Chiudi", "Close"), COL_PANEL_HI, close_dlg, 0);
 }
 
 static void on_use(lv_event_t *e) {

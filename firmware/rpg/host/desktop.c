@@ -30,16 +30,17 @@ void wf_platform_big_free(void *p) { free(p); }
 void wf_platform_brightness(int percent) { (void)percent; }
 void wf_platform_radio(bool on) { (void)on; }
 void wf_platform_link_send(void *c, const uint8_t *p, const uint8_t *d, size_t n) { (void)c; (void)p; (void)d; (void)n; }
-void wf_platform_save(const void *data, size_t n) {
-    if (n > sizeof saved) { fprintf(stderr, "Save exceeds desktop buffer\n"); return; }
+bool wf_platform_save(const void *data, size_t n) {
+    if (n > sizeof saved) { fprintf(stderr, "Save exceeds desktop buffer\n"); return false; }
     char temporary[1024];
-    if (snprintf(temporary, sizeof temporary, "%s.tmp", save_path) >= (int)sizeof temporary) return;
+    if (snprintf(temporary, sizeof temporary, "%s.tmp", save_path) >= (int)sizeof temporary) return false;
     FILE *f = fopen(temporary, "wb");
-    if (!f) { fprintf(stderr, "Cannot open save: %s\n", strerror(errno)); return; }
+    if (!f) { fprintf(stderr, "Cannot open save: %s\n", strerror(errno)); return false; }
     bool ok = fwrite(data, 1, n, f) == n && fflush(f) == 0 && fsync(fileno(f)) == 0;
     if (fclose(f) != 0) ok = false;
-    if (!ok || rename(temporary, save_path) != 0) { fprintf(stderr, "Cannot commit save: %s\n", strerror(errno)); return; }
+    if (!ok || rename(temporary, save_path) != 0) { fprintf(stderr, "Cannot commit save: %s\n", strerror(errno)); return false; }
     memcpy(saved, data, n); saved_len = n;
+    return true;
 }
 static uint32_t ticks(void) { return SDL_GetTicks(); }
 static void flush(lv_display_t *d, const lv_area_t *a, uint8_t *pixels) {

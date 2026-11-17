@@ -263,7 +263,7 @@ bool ln_tap(rpg_lantern *l) {
 bool ln_tick(rpg_lantern *l, unsigned ms) {
     if (l->paused) return false;
     if (l->state != LN_ATTACK && l->state != LN_TELEGRAPH && l->state != LN_PARRY && l->state != LN_IMPACT) return false;
-    l->elapsed_ms = (uint16_t)mini(60000, l->elapsed_ms + (int)(ms > 1000 ? 1000 : ms));
+    l->elapsed_ms = (uint16_t)mini(60000, l->elapsed_ms + (int)(ms > 60000 ? 60000 : ms));
     switch (l->state) {
     case LN_ATTACK: if (l->elapsed_ms >= 2800) { hero_hit(l, WF_Q_MISS); return true; } break;
     case LN_TELEGRAPH: if (l->elapsed_ms >= 650) {

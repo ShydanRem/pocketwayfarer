@@ -6,13 +6,13 @@
 #include "art/lantern_art.h"
 #include "r_lantern_fx.h"
 
-#define INK 0x101820
-#define PANEL 0x14282f
-#define IVORY 0xeee7d6
-#define AMBER 0xe6b461
-#define JADE 0x7ba994
-#define MUTED 0xadbdb4
-#define DANGER 0xd06b5d
+#define INK 0x171c3c
+#define PANEL 0x263658
+#define IVORY 0xfff4dd
+#define AMBER 0xffce78
+#define JADE 0x6de2b6
+#define MUTED 0xc5d7e6
+#define DANGER 0xff8d91
 LV_FONT_DECLARE(ln_font_body)
 LV_FONT_DECLARE(ln_font_title)
 #define BODY (&ln_font_body)
@@ -28,12 +28,13 @@ static struct {
     int coach_tip;
     lv_obj_t *root, *hero, *foes[2], *hp[2], *hp_text[2], *heading, *intent, *resource;
     lv_obj_t *buttons[3], *notice, *arc, *spark, *wave, *catcher, *pause, *guard_circle, *quality;
-    lv_obj_t *coach_panel, *coach_text, *coach_ok, *quality_panel, *damage_panel;
+    lv_obj_t *coach_text, *coach_ok, *quality_panel, *damage_panel;
 } L;
 
 static rpg_lantern *game(void) { return &R.g.lantern; }
 static void show(void);
 static void battle_refresh(void);
+static void advance_battle_clock(void);
 static void on_click(lv_event_t *e);
 static bool battle_state(int s) { return s >= LN_CHOOSE && s <= LN_IMPACT; }
 static const wf_sprite *hero_sprite(int frame) { return &ln_loadouts[game()->archetype % LN_ARCHETYPES][frame & 3]; }
@@ -62,8 +63,13 @@ static lv_obj_t *panel(lv_obj_t *p, int x, int y, int w, int h, int opacity) {
     lv_obj_set_size(o, w, h);
     kit_pos(o, x, y);
     lv_obj_set_style_bg_color(o, lv_color_hex(INK), 0);
+    lv_obj_set_style_bg_grad_color(o, lv_color_hex(PANEL), 0);
+    lv_obj_set_style_bg_grad_dir(o, LV_GRAD_DIR_VER, 0);
     lv_obj_set_style_bg_opa(o, opacity, 0);
     lv_obj_set_style_radius(o, 6, 0);
+    lv_obj_set_style_border_width(o, 1, 0);
+    lv_obj_set_style_border_color(o, lv_color_hex(0x63739b), 0);
+    lv_obj_set_style_border_opa(o, 150, 0);
     lv_obj_remove_flag(o, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_SCROLLABLE);
     return o;
 }
@@ -74,10 +80,16 @@ static lv_obj_t *button(lv_obj_t *p, const char *text, int x, int y, int w, int 
     kit_pos(b, x, y);
     lv_obj_set_style_radius(b, 6, 0);
     lv_obj_set_style_bg_color(b, lv_color_hex(primary ? AMBER : PANEL), 0);
+    lv_obj_set_style_bg_grad_color(b, lv_color_hex(primary ? 0xe9a06d : 0x171e43), 0);
+    lv_obj_set_style_bg_grad_dir(b, LV_GRAD_DIR_VER, 0);
     lv_obj_set_style_bg_opa(b, 250, 0);
     lv_obj_set_style_border_width(b, 1, 0);
-    lv_obj_set_style_border_color(b, lv_color_hex(primary ? IVORY : 0x8b8065), 0);
-    lv_obj_set_style_bg_color(b, lv_color_hex(primary ? 0xc68d46 : 0x35534f), LV_STATE_PRESSED);
+    lv_obj_set_style_border_color(b, lv_color_hex(primary ? IVORY : 0x8995bd), 0);
+    lv_obj_set_style_bg_color(b, lv_color_hex(primary ? 0xd38d65 : 0x475b83), LV_STATE_PRESSED);
+    lv_obj_set_style_shadow_color(b, lv_color_hex(0x070e2c), 0);
+    lv_obj_set_style_shadow_width(b, 5, 0);
+    lv_obj_set_style_shadow_offset_y(b, 2, 0);
+    lv_obj_set_style_shadow_opa(b, 95, 0);
     lv_obj_set_style_border_width(b, 3, LV_STATE_FOCUSED);
     lv_obj_set_style_border_color(b, lv_color_hex(IVORY), LV_STATE_FOCUSED);
     lv_obj_set_style_opa(b, 110, LV_STATE_DISABLED);
@@ -93,6 +105,16 @@ static lv_obj_t *button(lv_obj_t *p, const char *text, int x, int y, int w, int 
     lv_obj_center(t);
     return b;
 }
+static void ground_shadow(int x, int y, int width) {
+    for (int i = 0; i < 2; i++) {
+        lv_obj_t *o = lv_obj_create(L.root); lv_obj_remove_style_all(o);
+        lv_obj_set_size(o, width * (i ? 7 : 10) / 10, i ? 7 : 13);
+        kit_pos(o, x, y); lv_obj_set_style_radius(o, LV_RADIUS_CIRCLE, 0);
+        lv_obj_set_style_bg_color(o, lv_color_hex(0x10132d), 0);
+        lv_obj_set_style_bg_opa(o, i ? 100 : 45, 0);
+        lv_obj_remove_flag(o, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_SCROLLABLE);
+    }
+}
 static void hidden(lv_obj_t *o, bool hide) {
     if (hide) lv_obj_add_flag(o, LV_OBJ_FLAG_HIDDEN);
     else lv_obj_remove_flag(o, LV_OBJ_FLAG_HIDDEN);
@@ -103,7 +125,7 @@ static lv_obj_t *scene(int page, int background, int dim) {
     memset(&L.effects, 0, sizeof L.effects); L.coach_tip = LNT_NONE;
     L.page = page; L.frame = -1;
     L.root = kit_screen(&ln_scenes[background]);
-    if (dim) kit_dim(L.root, dim);
+    if (dim) kit_dim(L.root, dim * 2 / 3);
     /* A single restrained rim, no permanent multicolor gauges. */
     lv_obj_t *rim = lv_obj_create(L.root);
     lv_obj_remove_style_all(rim);
@@ -111,7 +133,7 @@ static lv_obj_t *scene(int page, int background, int dim) {
     lv_obj_center(rim);
     lv_obj_set_style_radius(rim, LV_RADIUS_CIRCLE, 0);
     lv_obj_set_style_border_width(rim, 1, 0);
-    lv_obj_set_style_border_color(rim, lv_color_hex(0x8b8065), 0);
+    lv_obj_set_style_border_color(rim, lv_color_hex(0xb6d7dc), 0);
     lv_obj_set_style_border_opa(rim, 150, 0);
     lv_obj_remove_flag(rim, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_SCROLLABLE);
     L.clock = L.anim_clock = L.visual_clock = lv_tick_get();
@@ -145,6 +167,7 @@ static void changed(void) {
 static void changed_from(const rpg_lantern *before) {
     ln_coach_observe(&R.g.coach, before, game());
     changed();
+    if (before->state != game()->state) L.clock = lv_tick_get();
 }
 
 /* Event codes are private to this screen: no callbacks survive a scene change. */
@@ -175,7 +198,8 @@ void scr_town(void) {
     snprintf(sub, sizeof sub, TR("%lu oro  ·  %u spedizioni", "%lu gold  ·  %u expeditions"),
              (unsigned long)R.g.gold, game()->wins);
     header(TR("Borgo Lanterna", "Lantern Hollow"), sub);
-    L.hero = kit_img(L.root, hero_sprite(0), 2, 160, 222);
+    ground_shadow(160, 275, 70);
+    L.hero = kit_img(L.root, hero_sprite(0), 2, 160, 195);
     if (R.g.hunt.active) button(L.root, TR("Caccia", "Hunt"), 311, 238, 110, 52, C_HUNT, false);
     button(L.root, "...", 347, 146, 52, 52, C_MORE, false);
     button(L.root, TR("Eroe", "Hero"), 169, 306, 116, 54, C_HERO, false);
@@ -350,7 +374,10 @@ static lv_obj_t *bar(int x, int y, int w, uint32_t color) {
 }
 static void timing_tap(lv_event_t *e) {
     (void)e;
-    if (L.ready_ms || game()->paused) return;
+    if (game()->paused) return;
+    int phase = game()->state;
+    advance_battle_clock();
+    if (L.ready_ms || game()->state != phase) return;
     rpg_lantern before = *game();
     if (ln_tap(game())) changed_from(&before);
 }
@@ -366,18 +393,19 @@ static void draw_actor_frames(void) {
         int f = l->state == LN_IMPACT && l->feedback == LN_FEEDBACK_HERO && l->effect_actor == i ? 3
               : ((l->state == LN_TELEGRAPH || l->state == LN_PARRY) && l->acting == i) ||
                 (l->state == LN_IMPACT && l->feedback == LN_FEEDBACK_FOE && l->effect_actor == i) ? 2 : frame;
-        if (L.foes[i]) kit_img_set(L.foes[i], foe_sprite(l->foes[i].kind, f), l->foes[i].kind == LN_BOSS ? 3 : 2);
+        if (L.foes[i]) kit_img_set(L.foes[i], foe_sprite(l->foes[i].kind, f), ln_foe_scale(l));
     }
     if (L.page == PAGE_BATTLE) lantern_fx_update(&L.effects, l, L.hero, L.foes, L.ready_ms != 0);
 }
 static void battle(void) {
     scene(PAGE_BATTLE, 1, 0);
     rpg_lantern *l = game();
-    L.hero = kit_img(L.root, hero_sprite(0), 2, 126, 213);
+    ground_shadow(LN_HERO_X, LN_HERO_Y + 80, 70);
+    L.hero = kit_img(L.root, hero_sprite(0), 2, LN_HERO_X, LN_HERO_Y);
     for (int i = 0; i < l->nfoes; i++) {
-        int x = l->nfoes == 1 ? 316 : 278 + i * 84;
-        int y = l->foes[i].kind == LN_BOSS ? 182 : l->nfoes == 2 ? 196 + i * 22 : 212;
-        L.foes[i] = kit_img(L.root, foe_sprite(l->foes[i].kind, 0), l->foes[i].kind == LN_BOSS ? 3 : 2, x, y);
+        int x = ln_foe_x(l, i), y = ln_foe_y(l, i), scale = ln_foe_scale(l);
+        ground_shadow(x, y + scale*40, scale == 1 ? 46 : 90);
+        L.foes[i] = kit_img(L.root, foe_sprite(l->foes[i].kind, 0), scale, x, y);
         lv_obj_add_flag(L.foes[i], LV_OBJ_FLAG_CLICKABLE);
         lv_obj_add_event_cb(L.foes[i], on_click, LV_EVENT_CLICKED, (void *)(intptr_t)(C_TARGET0 + i));
     }
@@ -394,14 +422,15 @@ static void battle(void) {
     L.buttons[1] = button(L.root, TR("Abilità", "Skills"), 233, 354, 88, 76, C_SKILLS, false);
     L.buttons[2] = button(L.root, TR("Guardia", "Guard"), 330, 354, 88, 76, C_GUARD, false);
     L.resource = label(L.root, "", CX, 410, 272, AMBER, false);
+    lv_obj_t *resource_back = panel(L.root, CX, 411, 296, 34, 245);
+    lv_obj_move_to_index(resource_back, lv_obj_get_index(L.resource));
     L.damage_panel = panel(L.root, CX, 258, 150, 38, 225);
     L.notice = label(L.root, "", CX, 357, 300, IVORY, false);
     L.quality_panel = panel(L.root, 222, 128, 206, 34, 230);
     L.quality = label(L.root, "", 222, 128, 200, AMBER, true);
-    L.coach_panel = panel(L.root, CX, 249, 336, 64, 245);
-    L.coach_text = label(L.root, "", CX, 249, 306, IVORY, false);
-    L.coach_ok = button(L.root, "OK", 366, 249, 48, 48, C_ACK_TIP, false);
-    L.pause = button(L.root, "II", 364, 139, 52, 52, C_PAUSE, false);
+    L.coach_text = label(L.root, "", CX, 47, 270, IVORY, false);
+    L.coach_ok = button(L.root, "OK", CX, 139, 72, 52, C_ACK_TIP, false);
+    L.pause = button(L.root, "II", 364, 139, 64, 64, C_PAUSE, false);
     L.arc = lv_arc_create(L.root);
     lv_obj_remove_style_all(L.arc);
     lv_obj_set_size(L.arc, 436, 436);
@@ -467,12 +496,11 @@ static void battle_refresh(void) {
     bool choose = l->state == LN_CHOOSE && !l->paused && !L.ready_ms;
     L.coach_tip = L.ready_ms ? LNT_NONE : ln_coach_tip(&R.g.coach, l, L.skill_menu != 0);
     bool coaching = choose && L.coach_tip != LNT_NONE;
-    hidden(L.coach_panel, !coaching); hidden(L.coach_text, !coaching);
+    hidden(L.heading, coaching);
+    hidden(L.coach_text, !coaching);
     hidden(L.coach_ok, !coaching || L.coach_tip != LNT_RESONANCE);
     if (coaching) {
-        lv_label_set_text(L.coach_text, TX(ln_coach_text(L.coach_tip)));
-        lv_obj_set_width(L.coach_text, L.coach_tip == LNT_RESONANCE ? 258 : 306);
-        kit_pos(L.coach_text, L.coach_tip == LNT_RESONANCE ? 204 : CX, 249);
+        lv_label_set_text(L.coach_text, TX(ln_coach_caption(L.coach_tip)));
     }
     for (int i = 0; i < 3; i++) hidden(L.buttons[i], !choose);
     for (int i = 0; i < 3; i++) {
@@ -749,18 +777,23 @@ static void on_click(lv_event_t *e) {
     if (success) changed_from(&before);
 }
 
-void lantern_tick(void) {
+static void advance_battle_clock(void) {
     uint32_t now = lv_tick_get(), dt = now - L.clock;
     L.clock = now;
-    if (dt > 100) dt = 0; /* A sleep/wake gap never consumes a timing window. */
     if (L.page == PAGE_BATTLE && !game()->paused) {
         if (L.ready_ms) {
-            L.ready_ms = dt >= L.ready_ms ? 0 : L.ready_ms - dt;
-            if (!L.ready_ms) battle_refresh();
-        } else {
-            rpg_lantern before = *game();
-            if (ln_tick(game(), dt)) changed_from(&before);
+            if (dt < L.ready_ms) { L.ready_ms -= dt; return; }
+            dt -= L.ready_ms; L.ready_ms = 0;
+            battle_refresh();
         }
+        rpg_lantern before = *game();
+        if (ln_tick(game(), dt)) changed_from(&before);
+    }
+}
+void lantern_tick(void) {
+    advance_battle_clock();
+    uint32_t now = lv_tick_get();
+    if (L.page == PAGE_BATTLE && !game()->paused) {
         rpg_lantern *l = game();
         if (L.page == PAGE_BATTLE && !L.ready_ms) {
             if (l->state == LN_ATTACK) {
@@ -779,9 +812,14 @@ void lantern_tick(void) {
     } else if (L.page != PAGE_BATTLE && now - L.anim_clock >= 140 && !game()->paused) { L.anim_clock = now; draw_actor_frames(); }
 }
 bool lantern_key(int key) {
-    if (key != WF_KEY_BOOT_SHORT && key != WF_KEY_BOOT_LONG) return false;
+    if (key != WF_KEY_BOOT_SHORT && key != WF_KEY_BOOT_LONG && key != WF_KEY_BOOT_DOWN) return false;
+    if (key == WF_KEY_BOOT_DOWN && L.page != PAGE_BATTLE) return false;
     if (L.page == PAGE_REPLACE) { L.pick = L.offer_pick; reward(); return true; }
     if (L.page == PAGE_BATTLE) {
+        int phase = game()->state;
+        advance_battle_clock();
+        if (phase != game()->state) return true; /* never apply a stale press to a new phase */
+        if (game()->paused || L.ready_ms) return true;
         rpg_lantern before = *game();
         if (!game()->paused && !L.ready_ms && ln_tap(game())) { changed_from(&before); return true; }
         if (L.skill_menu) { L.skill_menu = 0; battle_refresh(); return true; }

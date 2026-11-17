@@ -32,8 +32,8 @@ void lantern_fx_create(lantern_fx *fx, lv_obj_t *parent, const rpg_lantern *l) {
     lv_obj_set_size(fx->layer, WF_RES, WF_RES); lv_obj_set_pos(fx->layer, 0, 0);
     lv_obj_remove_flag(fx->layer, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_SCROLLABLE);
     for (int i = 0; i < l->nfoes; i++) {
-        fx->foe_x[i] = l->nfoes == 1 ? 316 : 278 + i * 84;
-        fx->foe_y[i] = l->foes[i].kind == LN_BOSS ? 182 : l->nfoes == 2 ? 196 + i * 22 : 212;
+        fx->foe_x[i] = ln_foe_x(l, i);
+        fx->foe_y[i] = ln_foe_y(l, i);
     }
     for (int i = 0; i < 2; i++) {
         fx->slashes[i] = lv_line_create(fx->layer);
@@ -50,8 +50,11 @@ void lantern_fx_create(lantern_fx *fx, lv_obj_t *parent, const rpg_lantern *l) {
         lv_obj_set_style_border_width(fx->pips[i], 1, 0);
         lv_obj_set_style_border_color(fx->pips[i], lv_color_hex(JADE), 0);
     }
-    fx->target = shape(fx->layer, 12, false);
-    lv_obj_set_style_radius(fx->target, 3, 0);
+    fx->target = shape(fx->layer, 64, true);
+    lv_obj_set_size(fx->target, 64, 14);
+    lv_obj_set_style_radius(fx->target, LV_RADIUS_CIRCLE, 0);
+    lv_obj_set_style_border_width(fx->target, 2, 0);
+    lv_obj_set_style_border_color(fx->target, lv_color_hex(IVORY), 0);
 }
 static void ring(lv_obj_t *o, int x, int y, int size, uint32_t color, int opacity) {
     lv_obj_set_size(o, size, size); kit_pos(o, x, y);
@@ -77,7 +80,7 @@ void lantern_fx_update(lantern_fx *fx, const rpg_lantern *l, lv_obj_t *hero, lv_
     bool target_visible = l->nfoes == 2 && l->state == LN_CHOOSE && !l->paused && !preparing;
     visible(fx->target, target_visible);
     if (target_visible) {
-        kit_pos(fx->target, fx->foe_x[l->target], fx->foe_y[l->target] + 53);
+        kit_pos(fx->target, fx->foe_x[l->target], fx->foe_y[l->target] + 40);
         lv_obj_set_style_bg_color(fx->target, lv_color_hex(IVORY), 0);
     }
     int hero_dx = 0, foe_dx[2] = {0, 0};
@@ -98,8 +101,8 @@ void lantern_fx_update(lantern_fx *fx, const rpg_lantern *l, lv_obj_t *hero, lv_
     }
     /* A paused/preparation scene has no moving effects over the pause surface. */
     if (!l->paused && !preparing && impact) {
-        int x = hero_hit || l->feedback == LN_FEEDBACK_HEAL || l->feedback == LN_FEEDBACK_BURN ? fx->foe_x[actor] : 126;
-        int y = hero_hit || l->feedback == LN_FEEDBACK_HEAL || l->feedback == LN_FEEDBACK_BURN ? fx->foe_y[actor] : 213;
+        int x = hero_hit || l->feedback == LN_FEEDBACK_HEAL || l->feedback == LN_FEEDBACK_BURN ? fx->foe_x[actor] : LN_HERO_X;
+        int y = hero_hit || l->feedback == LN_FEEDBACK_HEAL || l->feedback == LN_FEEDBACK_BURN ? fx->foe_y[actor] : LN_HERO_Y;
         int opacity = l->reduced_motion ? 210 : (int)(245 * (1.0f - p * .8f));
         if (hero_hit) {
             if (l->archetype == LN_MAGE) {
@@ -124,9 +127,9 @@ void lantern_fx_update(lantern_fx *fx, const rpg_lantern *l, lv_obj_t *hero, lv_
         }
     } else if (!l->paused && !preparing && l->state == LN_TELEGRAPH && l->acting == 0 &&
                (l->action == LN_GUARD || l->action == LN_SUPPORT) && l->elapsed_ms < 320) {
-        ring(fx->rings[0], 126, 213, l->reduced_motion ? 70 : 56 + l->elapsed_ms / 10, JADE, 180);
+        ring(fx->rings[0], LN_HERO_X, LN_HERO_Y, l->reduced_motion ? 70 : 56 + l->elapsed_ms / 10, JADE, 180);
     }
-    kit_pos(hero, 126 + hero_dx, 213);
+    kit_pos(hero, LN_HERO_X + hero_dx, LN_HERO_Y);
     lv_obj_set_style_image_recolor(hero, lv_color_hex(perfect ? JADE : DANGER), 0);
     lv_obj_set_style_image_recolor_opa(hero, enemy_hit && l->last_damage && !l->paused && !preparing ? l->reduced_motion ? 30 : (int)(70 * (1 - p)) : 0, 0);
     for (int i = 0; i < l->nfoes; i++) if (foes[i]) {

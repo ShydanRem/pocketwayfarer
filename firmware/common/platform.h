@@ -10,13 +10,13 @@ uint32_t wf_platform_now_s(void);          /* wall clock (RTC) seconds */
 uint32_t wf_platform_random(void);
 void *wf_platform_big_alloc(size_t bytes); /* PSRAM on the device */
 void wf_platform_big_free(void *p);
-void wf_platform_save(const void *data, size_t len);
+bool wf_platform_save(const void *data, size_t len); /* true only after durable commit */
 void wf_platform_brightness(int percent);
 void wf_platform_radio(bool on);           /* ESP-NOW on/off */
 void wf_platform_link_send(void *ctx, const uint8_t *peer, const uint8_t *data, size_t len);
 
 /* ---- Implemented by the game (pet/ or rpg/) ------------------------------ */
-enum { WF_KEY_BOOT_SHORT = 0, WF_KEY_BOOT_LONG, WF_KEY_PWR_SHORT };
+enum { WF_KEY_BOOT_SHORT = 0, WF_KEY_BOOT_LONG, WF_KEY_PWR_SHORT, WF_KEY_BOOT_DOWN };
 const char *wf_app_save_key(void);            /* NVS key */
 size_t wf_app_save_max(void);
 /* `save` NULL (or invalid) starts a new game. */

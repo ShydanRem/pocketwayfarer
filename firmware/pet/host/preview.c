@@ -26,10 +26,11 @@ uint32_t wf_platform_random(void) { rnd = rnd * 1664525u + 1013904223u; return r
 void *wf_platform_big_alloc(size_t n) { return malloc(n); }
 void wf_platform_big_free(void *p) { free(p); }
 static int saves;
-void wf_platform_save(const void *data, size_t len) {
+bool wf_platform_save(const void *data, size_t len) {
     wf_game back;
     if (!wf_save_decode(data, len, &back, NULL)) { fprintf(stderr, "save roundtrip failed\n"); exit(1); }
     saves++;
+    return true;
 }
 void wf_platform_brightness(int p) { (void)p; }
 static bool radio;
@@ -218,7 +219,8 @@ int main(int argc, char **argv) {
         if (battle_ring_quality_now() == 3) break;
         run(5);
     }
-    click(233, 233);
+    assert(wf_app_key(WF_KEY_BOOT_DOWN)); /* physical press edge, no release latency */
+    run(140);
     run(250);
     shot("lotta-colpo");
     run(2200);
