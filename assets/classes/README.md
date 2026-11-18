@@ -36,6 +36,8 @@ The generation briefs use the descriptive names Smith/Sorcerer for IDs 20/23; ca
 
 ## R4.1 — exact master IDs 24–31
 
-Eight original representatives generated with OpenAI ImageGen on 2026-11-18: Dragon Knight, Warlord, Archmage, Chronomancer, Beast Lord, Storm Archer, Night Blade and Blade Master. Source `source/master-a.png`, 1774 × 887 RGBA, identity `exec-fca3f64a-0534-46e6-bcdf-c970dde9f98c.png`; exact prompt `source/master-a-prompt.txt`. The approved advanced-A illustration sheet was the only image reference; the prompt defines matching large costume forms for both modular and representative art.
+Eight original representatives generated with OpenAI ImageGen on 2026-11-18: Dragon Knight, Warlord, Archmage, Chronomancer, Beastmaster, Stormbow, Nightblade and Blademaster. Source `source/master-a.png`, 1774 × 887 RGBA, identity `exec-fca3f64a-0534-46e6-bcdf-c970dde9f98c.png`; exact prompt `source/master-a-prompt.txt`. The approved advanced-A illustration sheet was the only image reference; the prompt defines matching large costume forms for both modular and representative art.
 
 The source passed cell-edge alpha and native header/badge containment checks without a repair job. It is retained unaltered, with no local painting. Mechanical import preserves previous batches and registers one common scale/foot baseline for the new eight. Coverage is now **32 exact illustrations**, with explicit family references only for IDs32–39. Source identity, hashes, measured bounds, scale and prompt hash are recorded in `manifest.json`. [R4.1 evidence](../../docs/roadmap/master-a-evidence/README.md) covers all 80 IT/EN cards and 64 native atlas captures; physical testing remains open.
+
+The master generation briefs use descriptive names Beast Lord/Storm Archer/Night Blade/Blade Master for IDs 28–31; canonical English UI names remain Beastmaster/Stormbow/Nightblade/Blademaster from the core table. Exact prompts are retained unaltered.

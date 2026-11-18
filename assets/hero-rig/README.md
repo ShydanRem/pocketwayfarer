@@ -83,8 +83,10 @@ The generation briefs use the descriptive names Smith/Sorcerer for IDs 20/23; ca
 
 ## R4.1 — first master IDs 24–31
 
-Dragon Knight, Warlord, Archmage, Chronomancer, Beast Lord, Storm Archer, Night Blade and Blade Master were generated on 2026-11-18. Exact `master-a-outfits-prompt.txt` and `master-a-hats-prompt.txt` are retained. Each uses the corresponding approved advanced-A sheet as registration/world reference. Original PNGs are retained unaltered; imports use the same neck/hand/foot registration and semantic palettes. No local painting, missing-part reconstruction or commercial artwork is included.
+Dragon Knight, Warlord, Archmage, Chronomancer, Beastmaster, Stormbow, Nightblade and Blademaster were generated on 2026-11-18. Exact `master-a-outfits-prompt.txt` and `master-a-hats-prompt.txt` are retained. Each uses the corresponding approved advanced-A sheet as registration/world reference. Original PNGs are retained unaltered; imports use the same neck/hand/foot registration and semantic palettes. No local painting, missing-part reconstruction or commercial artwork is included.
 
 Coverage is 32 exact costumes/default hats, with master family metadata 0–3 and zero-based tier2. The last eight masters remain explicit legacy fallbacks. The 245,760 cosmetic combinations and 1,200 sibling checks include the four new pairs; the previous Alchemist regression stays active. [R4.1 evidence](../../docs/roadmap/master-a-evidence/README.md) records native scenes, promotion paths, sanitizers and limits. These are still preliminary parametric poses, not final animation strips.
 
 Native QA found that rectangular attack-arm motion sliced the continuous capes of IDs24/30. `layout.json` now records `rigid_arm_classes` for those two only, emitted as `rig_rigid_arms`. Their attack/guard/hit translate the connected costume coherently above logical row78, with matching held-item grips and planted soles. No PNG pixels are reconstructed or painted; this deliberately simpler provisional pose avoids a visual tear until R7 introduces actual limb/cape masks.
+
+The master generation briefs use descriptive names Beast Lord/Storm Archer/Night Blade/Blade Master for IDs 28–31; canonical English UI names remain Beastmaster/Stormbow/Nightblade/Blademaster from the core table. Exact prompts are retained unaltered.
