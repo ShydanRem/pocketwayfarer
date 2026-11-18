@@ -1,0 +1,13 @@
+Create EIGHT ORIGINAL modular JRPG HEADWEAR parts for Pocket Wayfarer. Use the first reference for exact pixel style, adult head geometry, registration and three-quarter RIGHT camera; the second reference supplies the new costumes and class order. Transparent RGBA PNG, exactly4columns by2rows of equal square cells, wide2:1. HEADWEAR ONLY, no heads, faces, hair, eyes, ears, skin, bodies, weapons, background, floor, shadows, labels or grid. Face openings are TRUE transparent alpha, never painted black or skin. The same head fits all eight: crown near x50%,y20%, eye level y58%, tiny separate MAGENTA neck registration dot at x50%,y85%. Keep every part within70%cellwidth and its own cell with generous transparent gutters. Nothing crosses the eyes or mouth. Deliberate crisp pixel clusters, indigo contour, restrained ivory highlights, no blur/glow/noisy microdetail. No copied commercial designs or real religious insignia.
+
+Exact row-major order:
+TOP1 PALADIN: compact polished ivory open-face helmet with rose/navy neck rim and one small gold fictional sun-lantern brow badge; entirely transparent open face, no visor or tall plume.
+TOP2 PRIEST: a thin warm-gold fillet with two short soft ivory cloth tabs behind the temples, one small amber lantern clasp, no mitre or large crown, transparent hair/face space.
+TOP3 CHAMPION: broad navy/bronze cloth forehead band with one large simple knot and two very short saffron binding ends behind left temple; no horns, helmet or hair.
+TOP4 MYSTIC: light pale-jade forehead wrap with one asymmetric indigo folded tail kept behind the head, small brass central knot; face/hair space transparent, no scarf across mouth.
+BOTTOM5 SMITH: heavy compact iron/brass work goggles raised onto forehead, dark empty frame edges with two small teal glass lenses at y35%, one thick leather strap; eyes below y58% fully unobstructed.
+BOTTOM6 ALCHEMIST: finer round brass goggles raised onto forehead with three small amber/teal/violet lens accents and a cream leather strap, no mask or gas tube; transparent face, no head.
+BOTTOM7 NECROMANCER: broad midnight-indigo open-face hood with a segmented bone-ivory RIB rim and lavender lining, symmetric shape, no skull face or skeleton; transparent face opening.
+BOTTOM8 SORCERER: narrow asymmetric black-violet open-face hood, sharp oblique brow outline and one short split lavender rear tip; no mask, no glowing eyes, no face.
+
+Maintain the exact same head size, orientation, neck-dot baseline and pixel density for all8. Keep every hood/strap/feather/cloth edge and marker complete within its own cell. Source magenta body markers are not part of this headwear sheet: only the separate neck registration dots are magenta. Real alpha transparency, not a checkerboard image.

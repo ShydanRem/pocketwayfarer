@@ -94,7 +94,7 @@ Per installare: [guida USB](INSTALLAZIONE.md). Per proteggere il profilo: [salva
 
 ## Le classi classiche, in un atlante
 
-Da **Borgo → … → Classi** puoi sfogliare tutte le 40 classi, consultarne abilità e percorso di evoluzione. Le otto basi e le prime otto avanzate hanno illustrazioni specifiche; le altre 24 classi indicano chiaramente quando mostrano il ritratto della famiglia. Sono rappresentanti della classe, non sostituzioni del tuo personaggio personalizzato.
+Da **Borgo → … → Classi** puoi sfogliare tutte le 40 classi, consultarne abilità e percorso di evoluzione. Le otto basi e tutte le sedici avanzate hanno illustrazioni specifiche; le sedici maestre indicano chiaramente quando mostrano il ritratto della famiglia. Sono rappresentanti della classe, non sostituzioni del tuo personaggio personalizzato.
 
 ![Arciere nell’atlante nativo](img/classes/03-classe-02.png)
 
@@ -102,8 +102,10 @@ Le frecce scorrono le schede; **Percorso** apre i cinque nodi della famiglia, se
 
 ## Il tuo personaggio nel Classico
 
-Le otto classi base e le prime otto avanzate usano nuovi avatar modulari: scegli razza, carnagione, capelli, occhi e volto nella creazione. Arma, mano secondaria e testa mostrano gli oggetti equipaggiati; senza un oggetto alla testa appare il copricapo della classe. Torso, piedi e accessori influiscono sulle statistiche ma non hanno ancora livelli grafici separati.
+Le otto classi base e tutte le sedici avanzate usano nuovi avatar modulari: scegli razza, carnagione, capelli, occhi e volto nella creazione. Arma, mano secondaria e testa mostrano gli oggetti equipaggiati; senza un oggetto alla testa appare il copricapo della classe. Torso, piedi e accessori influiscono sulle statistiche ma non hanno ancora livelli grafici separati.
 
-Le altre otto avanzate e le sedici maestre mantengono per ora il trattamento precedente; non perdi i dati estetici passando di classe. L'illustrazione nell'atlante resta un rappresentante separato. Le pose del nuovo avatar sono preliminari; **Movimento ridotto** mantiene la posa di riposo.
+Le sedici maestre mantengono per ora il trattamento precedente; non perdi i dati estetici passando di classe. L'illustrazione nell'atlante resta un rappresentante separato. Le pose del nuovo avatar sono preliminari; **Movimento ridotto** mantiene la posa di riposo.
 
 Le prime avanzate sono Cavaliere, Berserker, Elementalista, Arcanista, Ramingo, Cecchino, Assassino e Duellante. Il passaggio continua a richiedere livello 20 e classe base 30. Puoi confrontare le due vie da **Classico → Eroe → Classe**, senza cambiare classe finché non confermi **Diventa!**.
+
+Sono aggiornate anche le altre quattro famiglie: Paladino/Sacerdote, Campione/Mistico, Fabbro/Alchimista e Negromante/Stregone. Le ampolle sulla cintura dell’Alchimista sono decorazioni del costume: non indicano quante pozioni possiedi. I requisiti delle promozioni restano invariati.

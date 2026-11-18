@@ -22,4 +22,14 @@ Eight additional original representatives generated with OpenAI ImageGen on 2026
 
 Initial `exec-4a4fe69d-521e-4d59-b554-7f5c83c7901f.png` had a semi-opaque white background (alpha 132–252) and was rejected, retained as `source/rejected/advanced-a-white.png`. ImageGen repaired alpha; no local painting or background reconstruction was used. The final import validates transparent cell edges and thresholds at 128.
 
-The importer now emits 16 exact-ID illustrations, preserving the original base batch and using a shared scale within each eight-class batch. IDs 16–39 explicitly use a family reference. `manifest.json` lists both sheets, class IDs, bounds, scale, source hashes and prompt hashes. [Native R3.1 evidence](../../docs/roadmap/advanced-a-evidence/README.md) covers all 80IT/EN cards, 33 captures and no change to the personalized hero.
+At R3.1 the importer emitted 16 exact-ID illustrations, preserving the original base batch and using a shared scale within each eight-class batch. At that baseline, IDs 16–39 used a family reference. `manifest.json` lists both sheets, class IDs, bounds, scale, source hashes and prompt hashes. [Native R3.1 evidence](../../docs/roadmap/advanced-a-evidence/README.md) covers all 80IT/EN cards, 33 captures and no change to the personalized hero.
+
+## R3.2 — exact advanced IDs 16–23
+
+Eight original illustrations generated with OpenAI ImageGen on 2026-11-18: Paladin, Priest, Champion, Mystic, Blacksmith, Alchemist, Necromancer, Warlock. Final source `source/advanced-b.png`, 1774 × 887 RGBA, identity `exec-b96271a7-b2d7-4116-9dba-ad5845a01c6a.png`. Creation and layout-repair prompts are retained. References were the approved first advanced illustrations and the new costume/headwear sheets.
+
+Initial `exec-61a00576-43e8-47f0-90b4-68920c36db0c.png` passed the binary transparent-edge test but placed figures too close to cell borders. It was rejected for insufficient gutters, retained unaltered as `source/rejected/advanced-b-tight-gutters.png`. ImageGen regenerated a more generous layout with complete silhouettes; the importer does not reconstruct or paint missing art locally.
+
+There are now 24 exact-ID portraits, preserving each existing batch's scale and geometry. Only master IDs 24–39 use the explicit family reference. Source/prompt hashes, identities, bounds and batch scales are in `manifest.json`. [R3.2 evidence](../../docs/roadmap/advanced-b-evidence/README.md) covers 80 IT/EN cards, 49 native captures and the unchanged player profile.
+
+The generation briefs use the descriptive names Smith/Sorcerer for IDs 20/23; canonical UI names are Blacksmith/Warlock from the existing core table. Exact prompts remain unaltered.

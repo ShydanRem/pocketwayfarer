@@ -1,1 +1,21 @@
-{"hats_column_bounds":[0,396,908,1328,1774],"note":"Shared transparent gutters measured across both rows; source columns are not uniform."}
+{
+  "hats_column_bounds": [
+    0,
+    396,
+    908,
+    1328,
+    1774
+  ],
+  "note": "Shared transparent gutters measured across both rows; source columns are not uniform.",
+  "fixed_palette_regions": {
+    "rig_costume_21": [
+      [
+        36,
+        45,
+        55,
+        64
+      ]
+    ]
+  },
+  "fixed_palette_note": "Alchemist decorative flask belt uses fixed costume colors, including purple shades similar to the magenta skin marker; coordinates are logical half-open rectangles."
+}

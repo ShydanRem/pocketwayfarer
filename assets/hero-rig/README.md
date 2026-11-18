@@ -1,4 +1,4 @@
-# Modular player rig — R2 and R3.1
+# Modular player rig — bases and advanced classes
 
 Original component sheets generated with OpenAI ImageGen on 2026-11-17 (bases) and 2026-11-18 (R3.1). The
 unaltered RGBA sources and exact prompts are retained under `source/`. This is
@@ -16,6 +16,8 @@ pixel RPGs without including their characters, sprites or trademarks as assets.
 | `hats.png` | `exec-f4f9811d-6ac5-494c-8e2b-15c50c3270ec.png` | 1774 × 887; 4 columns × 2 rows |
 | `advanced-a-outfits.png` | `exec-cf2f6ff0-215e-4707-ad48-e6d7bc4ea9b9.png` | 1774 × 887; 4 × 2 costumes, IDs 8–15 |
 | `advanced-a-hats.png` | `exec-7607961a-bc90-4e06-8222-7557c6171fa1.png` | 1774 × 887; 4 × 2 headwear, IDs 8–15 |
+| `advanced-b-outfits.png` | `exec-382386fd-5a1b-46eb-8193-b46382e491ea.png` | 1774 × 887; 4 × 2 costumes, IDs 16–23 |
+| `advanced-b-hats.png` | `exec-6466ddd8-1a85-4142-8cf7-6ef7a29d62e3.png` | 1774 × 887; 4 × 2 headwear, IDs 16–23 |
 
 Costume/default-hat order is exact base class ID: Warrior, Mage, Archer, Rogue,
 Cleric, Monk, Artificer, Occultist. Heads use Human, Elf, Dwarf, Beastkin, each
@@ -63,8 +65,16 @@ python3 scripts/build_hero_rig.py --check
 
 `manifest.json` records hashes, transforms, hand mounts and canvas geometry.
 Source conversion alone is not acceptance: see the native-renderer tests and
-[R2 evidence](../../docs/roadmap/rig-evidence/README.md). The remaining eight advanced and sixteen master classes retain the explicit
-legacy fallback until their own exact-ID costumes pass the R3.2/R4 gates. This rig does not change save v4, class mechanics or Lanternbound's
+[R2 evidence](../../docs/roadmap/rig-evidence/README.md). All sixteen advanced classes are now admitted. The sixteen master classes retain
+the explicit legacy fallback until their own exact-ID costumes pass R4. This rig does not change save v4, class mechanics or Lanternbound's
 three separate loadouts.
 
 R3.1 appends Knight, Berserker, Elementalist, Arcanist, Ranger, Sniper, Assassin and Duelist in exact ID order 8–15. Generated `HERO_RIG_CLASS_COUNT`, family and zero-based tier metadata validate each look before admission. The common heads, hair and owned gear stay shared; no save array is enlarged. [R3.1 evidence](../../docs/roadmap/advanced-a-evidence/README.md) records silhouette comparisons under identical helmets, native views and actual touch promotions.
+
+## R3.2 — IDs 16–23 and fixed decorative color
+
+The third sheets append Paladin, Priest, Champion, Mystic, Blacksmith, Alchemist, Necromancer and Warlock, generated on 2026-11-18. The common cosmetic and gear layers remain shared. No save array, family or class rule is added. [R3.2 evidence](../../docs/roadmap/advanced-b-evidence/README.md) records the 24-class matrix and all 16 advanced touch promotions in both languages.
+
+The Alchemist's purple flask glass shared a quantized RGB565 color with technical magenta hand shadows. Seven waist pixels incorrectly received the skin role. `source/layout.json` now marks the logical half-open flask-belt rectangle `[36,45,55,64]` as fixed decoration. Palette identity is `(RGB565, semantic_role)`, so equal colors in hands and glass can retain different behavior. This changes role/index metadata only; no PNG pixel is painted or removed. The test changes all five skin tones and checks 1,444 waist pixels; the previous palette fails 28 checks.
+
+The generation briefs use the descriptive names Smith/Sorcerer for IDs 20/23; canonical UI names are Blacksmith/Warlock from the existing core table. Exact prompts remain unaltered.

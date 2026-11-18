@@ -24,7 +24,15 @@
     12,
     13,
     14,
-    15
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
   ],
   "class_families": [
     0,
@@ -42,7 +50,15 @@
     2,
     2,
     3,
-    3
+    3,
+    4,
+    4,
+    5,
+    5,
+    6,
+    6,
+    7,
+    7
   ],
   "class_tiers": [
     0,
@@ -53,6 +69,14 @@
     0,
     0,
     0,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
+    1,
     1,
     1,
     1,
@@ -192,6 +216,70 @@
         110.1820895522388
       ],
       "scale": 0.16623089108155048
+    },
+    {
+      "component": "costume16",
+      "anchor": [
+        226.36329588014982,
+        106.82397003745318
+      ],
+      "scale": 0.16291950246421028
+    },
+    {
+      "component": "costume17",
+      "anchor": [
+        225.70882352941177,
+        109.45
+      ],
+      "scale": 0.16427104722792607
+    },
+    {
+      "component": "costume18",
+      "anchor": [
+        227.0921875,
+        109.1640625
+      ],
+      "scale": 0.16412279620268772
+    },
+    {
+      "component": "costume19",
+      "anchor": [
+        227.13855421686748,
+        109.30271084337349
+      ],
+      "scale": 0.16419464826641683
+    },
+    {
+      "component": "costume20",
+      "anchor": [
+        227.43270622286542,
+        108.26917510853835
+      ],
+      "scale": 0.16263680556184199
+    },
+    {
+      "component": "costume21",
+      "anchor": [
+        225.9873617693523,
+        106.27646129541864
+      ],
+      "scale": 0.1616294543115428
+    },
+    {
+      "component": "costume22",
+      "anchor": [
+        226.46367851622875,
+        106.26275115919628
+      ],
+      "scale": 0.16162256682231319
+    },
+    {
+      "component": "costume23",
+      "anchor": [
+        227.95104895104896,
+        107.61538461538461
+      ],
+      "scale": 0.16230492196878754
     }
   ],
   "hand_mounts": [
@@ -354,6 +442,86 @@
         56,
         55
       ]
+    ],
+    [
+      [
+        33,
+        56
+      ],
+      [
+        57,
+        55
+      ]
+    ],
+    [
+      [
+        32,
+        56
+      ],
+      [
+        57,
+        56
+      ]
+    ],
+    [
+      [
+        31,
+        56
+      ],
+      [
+        57,
+        55
+      ]
+    ],
+    [
+      [
+        31,
+        56
+      ],
+      [
+        57,
+        55
+      ]
+    ],
+    [
+      [
+        32,
+        56
+      ],
+      [
+        57,
+        55
+      ]
+    ],
+    [
+      [
+        32,
+        56
+      ],
+      [
+        56,
+        55
+      ]
+    ],
+    [
+      [
+        32,
+        56
+      ],
+      [
+        57,
+        55
+      ]
+    ],
+    [
+      [
+        32,
+        56
+      ],
+      [
+        57,
+        54
+      ]
     ]
   ],
   "sources": {
@@ -361,6 +529,10 @@
     "advanced-a-hats.png": "daadaf3c9d8a7ad56164d59e7424e3838b77db13a92ae470257f0d9b2abc8d70",
     "advanced-a-outfits-prompt.txt": "14ad64dbdec304ff97b83d50632eb461be3537b6b219ca2d2703de66d39a4485",
     "advanced-a-outfits.png": "c7d08eaa3efd791c0b3dcbd824300002ecdcae6ca46735e0d19fc5028aac1d0b",
+    "advanced-b-hats-prompt.txt": "5ba913380abcd7f9a6813398e4d93c70b0066ead1c15a279c134df8a3f7c7f78",
+    "advanced-b-hats.png": "13e9a44b58ec2361504ad91266302d3e28387f85b3662ff4bb30f3039414d739",
+    "advanced-b-outfits-prompt.txt": "f3ab1eceabe330650796fd6f2d30622aeb04446949a68894d3027cfb027adc9f",
+    "advanced-b-outfits.png": "388be47e2c70b29d213c1f8d9d7514773068125e8e1476b7a10e5652b2128c35",
     "gear-prompt.txt": "5ceed86a3b3f2ce14157f4fadd2bb1e9d84770d68c53f74dbe68b64733c8c5b2",
     "gear.png": "97e352d636cf19557a3d0595fd58ddeba7f82a2f39176e21b88f66c55738ccc7",
     "hair-prompt.txt": "a97bdd77e99be4675f97f6637cc82673d6f62fb0a3253d1bdc385760cc063b0b",
@@ -369,7 +541,7 @@
     "hats.png": "de86755b799e8c3b1b128151bd388b1f5c551c02ca94380444c1567b7d27afa7",
     "heads-prompt.txt": "3f0ddc953050ffdad6c4fc0a3732a03b902117509ff31de56a38ee8b80c1b948",
     "heads.png": "7b9d2a3b3baa97f9d7dd88108fdebf7ff1eecd117f18311d2ed9e026da43e3f7",
-    "layout.json": "eb242a9459233ae7e8c13edc87f3125d2157e751b853d32bb2b6e1bd0cec3f0b",
+    "layout.json": "31dae21dcb98c2c1107c47a1275d3248dcd7c24b3e19231ecc967c5062e4f46d",
     "outfits-prompt.txt": "d1cad56d90b97d7cc0d3de316cf11779979e8b733a0784cb9a3bd52a0b0d3fe1",
     "outfits.png": "1a3722d356c27b387ed83ee586a97d95e4deac385e94b3ad8052f9cadbd74b6e"
   },
@@ -379,7 +551,8 @@
     "alpha128",
     "palette112",
     "RGB565",
-    "semantic palette channels"
+    "semantic palette channels",
+    "fixed decorative palette regions; palette identity includes role"
   ],
   "semantic_roles": {
     "0": "original",

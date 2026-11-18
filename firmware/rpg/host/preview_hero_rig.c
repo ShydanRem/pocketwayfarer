@@ -190,7 +190,7 @@ static void class_mapping(void) {
     puts("40 exact class IDs, explicit advanced/master fallback, size presets and save v4 roundtrips passed");
 }
 static void large_vitals(void) {
-    const int classes[]={8,10,31};
+    const int classes[]={8,10,16,17,23,31};
     for(int lang=0;lang<2;lang++)for(unsigned i=0;i<sizeof classes/sizeof classes[0];i++) {
         int cls=classes[i];profile(cls==31?15:cls,RACE_HUMAN,1,0,1);
         if(cls==31){R.g.hero.level=45;R.g.hero.job_level=40;assert(rpg_change_class(&R.g,cls));}

@@ -13,6 +13,7 @@ typedef struct { uint16_t rgb[PIXELS]; uint8_t alpha[PIXELS]; } image;
 static unsigned failures, frames, comparisons, layers_checked, full_cosmetics, joint_rows;
 static unsigned sibling_checks, minimum_sibling_alpha = PIXELS;
 static unsigned minimum_foot = GRID, maximum_foot;
+static unsigned decorative_checks;
 
 #define CHECK(condition, ...) do { if (!(condition)) { \
     if (failures < 24) { fprintf(stderr, "FAIL: "); fprintf(stderr, __VA_ARGS__); fputc('\n', stderr); } \
@@ -84,9 +85,9 @@ static void metadata(void) {
     _Static_assert(IT_SWORD == 0 && IT_KNUCKLE == 6 && IT_SCYTHE == 8,"weapon indices changed");
     _Static_assert(IT_SHIELD == 9 && IT_QUIVER == 10 && IT_TOME == 11 && IT_CHARM == 12,"off-hand indices changed");
     _Static_assert(IT_HELM == 13 && IT_HOOD == 14 && IT_CIRCLET == 15,"head indices changed");
-    _Static_assert(HERO_RIG_CLASS_COUNT == 16,"update the explicit class metadata contract for the next batch");
+    _Static_assert(HERO_RIG_CLASS_COUNT == 24,"update the explicit class metadata contract for the next batch");
     for (unsigned f = 0; f < HERO_RIG_CLASS_COUNT; f++) {
-        /* Freeze core IDs: bases0..7; advanced siblings8/9,10/11,12/13,14/15. */
+        /* Freeze core IDs: bases0..7, then advanced siblings8/9 through22/23. */
         unsigned expected_family = f < FAM_COUNT ? f : (f-FAM_COUNT)/2;
         unsigned expected_tier = f < FAM_COUNT ? 0 : 1;
         CHECK(rig_class_families[f] == expected_family && rig_class_tiers[f] == expected_tier,
@@ -192,7 +193,9 @@ static void visible_channels(void) {
 
 static void sibling_identity(void) {
     image first, second;
-    static const uint8_t siblings[][2] = {{8,9},{10,11},{12,13},{14,15}};
+    static const uint8_t siblings[][2] = {
+        {8,9},{10,11},{12,13},{14,15},{16,17},{18,19},{20,21},{22,23}
+    };
     for (unsigned pair = 0; pair < sizeof siblings/sizeof siblings[0]; pair++)
     for (unsigned race = 0; race < RACE_COUNT; race++)
     for (unsigned tier = 0; tier < RPG_TIERS; tier++)
@@ -244,6 +247,21 @@ static void equipment(void) {
     }
 }
 
+static void fixed_decorations(void) {
+    /* The Alchemist's flask belt is clothing, not exposed skin. Purple glass
+     * can share RGB565 with hand shadows without inheriting their skin tint. */
+    image baseline, changed;hero_look l=bare_look(21,RACE_HUMAN);
+    compose(&l,HX_IDLE,HP_IDLE,&baseline);
+    for(unsigned skin=1;skin<5;skin++) {
+        l.skin=(uint8_t)skin;compose(&l,HX_IDLE,HP_IDLE,&changed);
+        for(unsigned y=45;y<64;y++)for(unsigned x=36;x<55;x++) {
+            unsigned p=y*GRID+x;decorative_checks++;
+            CHECK(baseline.alpha[p]==changed.alpha[p] && baseline.rgb[p]==changed.rgb[p],
+                  "decorative flask belt follows skin=%u at %u,%u",skin,x,y);
+        }
+    }
+}
+
 static void full(void) {
     image frame;
     for (unsigned f = 0; f < HERO_RIG_CLASS_COUNT; f++) for (unsigned r = 0; r < RACE_COUNT; r++)
@@ -261,10 +279,10 @@ static void full(void) {
 int main(int argc,char **argv) {
     bool exhaustive = argc == 2 && !strcmp(argv[1],"--full");
     if (argc > 1 && !exhaustive) { fprintf(stderr,"usage: %s [--full]\n",argv[0]); return 2; }
-    metadata(); geometry(); joint_continuity(); visible_channels(); sibling_identity(); equipment();
+    metadata(); geometry(); joint_continuity(); visible_channels(); sibling_identity(); equipment(); fixed_decorations();
     if (exhaustive) full();
-    printf("hero rig: layers=%u frames=%u comparisons=%u joint_rows=%u full_cosmetics=%u sibling_checks=%u min_sibling_alpha=%u foot_rows=%u..%u failures=%u\n",
+    printf("hero rig: layers=%u frames=%u comparisons=%u joint_rows=%u full_cosmetics=%u sibling_checks=%u min_sibling_alpha=%u decorative_checks=%u foot_rows=%u..%u failures=%u\n",
            layers_checked,frames,comparisons,joint_rows,full_cosmetics,sibling_checks,minimum_sibling_alpha,
-           minimum_foot,maximum_foot,failures);
+           decorative_checks,minimum_foot,maximum_foot,failures);
     return failures ? 1 : 0;
 }

@@ -15,3 +15,5 @@ La pubblicazione verifica quattro documenti HTML, moduli JavaScript, due immagin
 Questi controlli non misurano precisione fisica del touch, latenza, autonomia, consumo, stabilità prolungata o divertimento. La roadmap mantiene il gate hardware separato.
 
 Nota storica: i log sopra descrivono la consegna originale. La directory delle immagini viene ampliata dalle versioni successive; lo stato corrente e i nuovi conteggi sono nelle [prove R3.1](../advanced-a-evidence/README.md).
+
+Aggiornamento storico: la directory delle immagini è ora ampliata da R3.2; i log sopra restano relativi alla loro consegna. [Stato e prove correnti](../advanced-b-evidence/README.md).

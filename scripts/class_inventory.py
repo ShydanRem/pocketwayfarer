@@ -15,7 +15,7 @@ def inventory():
     art=(ROOT/'firmware/rpg/ui/art/class_art.h').read_text()
     rig_count=int(re.search(r'#define HERO_RIG_CLASS_COUNT (\d+)',rig)[1])
     art_count=int(re.search(r'#define CLASS_ART_COUNT (\d+)',art)[1])
-    assert rig_count==art_count==16, 'Review admitted class coverage'
+    assert rig_count==art_count==24, 'Review admitted class coverage'
     data=(ROOT/'firmware/rpg/core/data.c').read_text().split('class_names[RPG_CLASS_COUNT] = {',1)[1].split('\n};',1)[0]
     names=re.findall(r'\{T\("([^"]+)", "([^"]+)"\), T',data)
     assert len(names)==40, 'Review roadmap when the class schema changes'
@@ -29,7 +29,7 @@ def inventory():
         writer.writerow([c,it,en,family,tier,parent,'base' if c<8 else 'A' if c%2==0 else 'B',
                          'base_imported' if c<8 else 'specific_imported' if c<art_count else 'explicit_family_reference',
                          'modular_exact_class' if c<rig_count else 'legacy_family_tier',
-                         'R5' if c<rig_count else 'R3.2' if c<24 else 'R4'])
+                         'R5' if c<rig_count else 'R4'])
     return out.getvalue()
 
 

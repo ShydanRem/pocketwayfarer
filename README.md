@@ -10,7 +10,7 @@ Un RPG fantasy HD-2D per **Waveshare ESP32-S3-Touch-AMOLED-1.75**, con schermo r
 
 **[Roadmap operativa](docs/ROADMAP.md)** · [Stato del lotto attivo](docs/roadmap/STATUS.md) · [Direzione artistica delle 40 classi](docs/CLASS-ART-BIBLE.md)
 
-> **0.6.0-preview.1** — Otto nuove avanzate: 16/40 avatar modulari e 16 illustrazioni specifiche, con aspetto personale e oggetti conservati. Footer della battaglia corretto anche con valori grandi. [Roadmap](docs/ROADMAP.md) · [Prove R3.1](docs/roadmap/advanced-a-evidence/README.md). Il collaudo fisico resta aperto.
+> **0.6.0-preview.2** — Completata la nuova grafica di tutte le sedici avanzate: 24/40 avatar modulari e illustrazioni specifiche, con aspetto personale e oggetti conservati. Le sedici maestre sono il prossimo blocco. [Roadmap](docs/ROADMAP.md) · [Prove R3.2](docs/roadmap/advanced-b-evidence/README.md). Collaudo fisico ancora aperto.
 
 ## Sul Pocket, in pochi passaggi
 
@@ -42,7 +42,7 @@ La Sentinella protegge e prepara, il Piromante applica bruciatura, il Predone sf
 
 Da **… → Classi** consulti anche le 40 classi classiche, le loro abilità e i percorsi di evoluzione. Le otto basi hanno nuove illustrazioni; le evoluzioni indicano quando mostrano il ritratto della famiglia. L'atlante non cambia il tuo eroe e resta distinto dai tre assetti della spedizione.
 
-Nel Classico, le otto basi e le prime otto avanzate usano i nuovi avatar modulari: razza, pelle, capelli, occhi, volto e oggetti restano quelli del tuo eroe. Le altre 24 classi conservano temporaneamente la grafica precedente. La tavola seguente mostra il renderer LVGL in uno studio di verifica, non un nuovo luogo giocabile.
+Nel Classico, le otto basi e tutte le sedici avanzate usano i nuovi avatar modulari: razza, pelle, capelli, occhi, volto e oggetti restano quelli del tuo eroe. Le sedici maestre conservano temporaneamente la grafica precedente. La tavola seguente mostra il renderer LVGL in uno studio di verifica, non un nuovo luogo giocabile.
 
 ![Otto avatar base nel renderer nativo](docs/img/hero_rig/otto-avatar-base.png)
 
@@ -98,3 +98,9 @@ Le prime otto avanzate ora hanno anche una propria illustrazione nell’atlante 
 ![Otto avatar avanzati nel renderer nativo](docs/img/hero_rig/otto-avatar-avanzate-a.png)
 
 R3.1 verifica 122.880 combinazioni estetiche e promozioni touch IT/EN con equipaggiamento conservato. [Prove e limiti](docs/roadmap/advanced-a-evidence/README.md).
+
+R3.2 completa Paladino, Sacerdote, Campione, Mistico, Fabbro, Alchimista, Negromante e Stregone.
+
+![Secondo lotto di avatar avanzati, renderer nativo](docs/img/hero_rig/otto-avatar-avanzate-b.png)
+
+Verificati 184.320 combinazioni estetiche, 32 promozioni touch IT/EN e 512 catture native. La cintura decorativa dell’Alchimista conserva il proprio colore cambiando carnagione. [Prove R3.2](docs/roadmap/advanced-b-evidence/README.md).
