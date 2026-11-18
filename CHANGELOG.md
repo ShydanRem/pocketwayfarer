@@ -1,5 +1,13 @@
 # Note di versione
 
+## 0.6.0-preview.2 — 18 novembre 2026
+
+- Completato R3: tutte le sedici avanzate hanno costumi modulari, copricapi default e illustrazioni specifiche. Il secondo lotto aggiunge Paladino, Sacerdote, Campione, Mistico, Fabbro, Alchimista, Negromante e Stregone. Copertura totale: **24/40 avatar e illustrazioni**, con le sedici maestre ancora in fallback esplicito.
+- Aspetto, oggetti realmente equipaggiati, regole delle classi e salvataggi v4 conservati. I rami restano distinguibili anche sotto lo stesso elmo, senza arma o mano secondaria.
+- Corretta la cintura dell'Alchimista: alcune ombre dell'ampolla viola ereditavano il colore della pelle. La palette ora distingue colore e ruolo semantico; una regione decorativa resta fissa senza alterare il PNG sorgente. Regressione di 1.444 confronti; l'asset precedente produce 28 errori attesi.
+- Verificati 184.320 combinazioni estetiche, 270.909 composizioni, 800 confronti dei fratelli e 512 catture native: 415 rig, 49 atlante, 48 promozioni. Trentadue promozioni touch IT/EN, 64 soglie respinte e 32 roundtrip dei salvataggi.
+- Firmware locale 3,42 MiB su 6 MiB; documentazione e installer aggiornati. Pose ancora preliminari e collaudo fisico aperto. [Prove R3.2](docs/roadmap/advanced-b-evidence/README.md).
+
 ## 0.6.0-preview.1 — 18 novembre 2026
 
 - R3.1: Cavaliere, Berserker, Elementalista, Arcanista, Ramingo, Cecchino, Assassino e Duellante hanno costumi modulari e illustrazioni specifiche. Copertura reale: 16/40 avatar e 16/40 illustrazioni; le altre 24 classi restano esplicitamente nel trattamento precedente.

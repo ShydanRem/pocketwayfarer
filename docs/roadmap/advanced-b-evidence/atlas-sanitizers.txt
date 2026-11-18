@@ -1,0 +1,3 @@
+class atlas:80 bilingual cards,208 local skill references,16 family paths, wraparound, scrolled nodes, touch/BOOT close and PWR hooks: passed
+read-only: real class,cosmetics,equipment,skills,expedition and expected time simulation unchanged; no atlas save/reward: passed
+class atlas:49 native captures; image buffers peak620168 bytes; twenty-four illustrations,16 explicit family references

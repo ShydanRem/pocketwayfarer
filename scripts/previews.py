@@ -35,7 +35,7 @@ if shots:
     sheet.save(dst / 'galleria.png')
     if dst.name == 'hero_rig':
         all_classes=sorted(dst.glob('*-studio-??-0-0.png'),key=lambda p:int(p.stem.split('-')[2]))
-        for name,first in [('base',0),('avanzate-a',8)]:
+        for name,first in [('base',0),('avanzate-a',8),('avanzate-b',16)]:
             base=[p for p in all_classes if first<=int(p.stem.split('-')[2])<first+8]
             if len(base)!=8:continue
             overview=Image.new('RGBA',(1960,980),(16,24,32,255))
@@ -50,12 +50,13 @@ if shots:
             for i,p in enumerate(base):
                 overview.alpha_composite(Image.open(p).convert('RGBA'), ((i%4)*490+12,(i//4)*490+12))
             overview.save(dst / 'otto-classi-base.png')
-        advanced=sorted(p for p in dst.glob('*-classe-??.png') if 8<=int(p.stem[-2:])<16)
-        if len(advanced)==8:
+        for name,first in [('a',8),('b',16)]:
+            advanced=sorted(p for p in dst.glob('*-classe-??.png') if first<=int(p.stem[-2:])<first+8)
+            if len(advanced)!=8:continue
             overview=Image.new('RGBA',(1960,980),(16,24,32,255))
             for i,p in enumerate(advanced):
                 overview.alpha_composite(Image.open(p).convert('RGBA'),((i%4)*490+12,(i//4)*490+12))
-            overview.save(dst/'otto-classi-avanzate-a.png')
+            overview.save(dst/f'otto-classi-avanzate-{name}.png')
     if dst.name == 'lantern':
         # Native-size proof of the three representative screens; no concept art.
         names = ['02-borgo', '05-combattimento', '10-reliquia']

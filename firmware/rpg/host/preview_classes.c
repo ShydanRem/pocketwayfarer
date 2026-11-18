@@ -95,6 +95,6 @@ int main(int argc,char **argv) {
     wf_lang=0;
     puts("class atlas:80 bilingual cards,208 local skill references,16 family paths, wraparound, scrolled nodes, touch/BOOT close and PWR hooks: passed");
     puts("read-only: real class,cosmetics,equipment,skills,expedition and expected time simulation unchanged; no atlas save/reward: passed");
-    printf("class atlas:%d native captures; image buffers peak%zu bytes; sixteen illustrations,24 explicit family references\n",shots,peak_image_bytes);
+    printf("class atlas:%d native captures; image buffers peak%zu bytes; twenty-four illustrations,16 explicit family references\n",shots,peak_image_bytes);
     return 0;
 }

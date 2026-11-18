@@ -55,10 +55,10 @@ python3 scripts/build_lantern_art.py --check
 python3 scripts/build_hero_rig.py --check
 ```
 
-Il rig aggiunge `test_hero_rig --full` (122.880 combinazioni estetiche),
-`test_hero_cache` e `preview_hero_rig` (281 catture) e `preview_promotions` (24 catture). La suite li esegue
+Il rig aggiunge `test_hero_rig --full` (184.320 combinazioni estetiche),
+`test_hero_cache` e `preview_hero_rig` (415 catture) e `preview_promotions` (48 catture). La suite li esegue
 automaticamente; dettagli e configurazione sanitizer nelle
-[prove R3.1](roadmap/advanced-a-evidence/README.md). Le scene Studio del rig sono
+[prove R3.2](roadmap/advanced-b-evidence/README.md). Le scene Studio del rig sono
 strumenti di verifica del renderer, non nuove schermate giocabili.
 
 Mantieni insieme sorgenti, prompt, licenze e manifest. Non sovrascrivere gli originali per correggere un difetto dell’importatore.

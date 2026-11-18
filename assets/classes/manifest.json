@@ -1,7 +1,7 @@
 {
   "tool": "OpenAI ImageGen",
   "role": "Exact-class representative illustrations, separate from the customizable player avatar",
-  "count": 16,
+  "count": 24,
   "class_ids": [
     0,
     1,
@@ -18,7 +18,15 @@
     12,
     13,
     14,
-    15
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+    23
   ],
   "batches": [
     {
@@ -153,6 +161,73 @@
       "shared_scale": 0.18536585365853658,
       "source_identity": "exec-5103872b-f962-4f88-bf6e-a6227f49a34e.png",
       "rejected_initial_identity": "exec-4a4fe69d-521e-4d59-b554-7f5c83c7901f.png"
+    },
+    {
+      "source": "assets/classes/source/advanced-b.png",
+      "sha256": "1650e6115d1bbd668a1d5735fef1e0313790e37434bcadb19ceae8c1573c1900",
+      "class_ids": [
+        16,
+        17,
+        18,
+        19,
+        20,
+        21,
+        22,
+        23
+      ],
+      "source_cell_bounds": [
+        [
+          142,
+          81,
+          355,
+          381
+        ],
+        [
+          132,
+          84,
+          325,
+          382
+        ],
+        [
+          130,
+          83,
+          304,
+          381
+        ],
+        [
+          108,
+          83,
+          307,
+          381
+        ],
+        [
+          168,
+          77,
+          356,
+          351
+        ],
+        [
+          130,
+          74,
+          325,
+          351
+        ],
+        [
+          111,
+          75,
+          325,
+          350
+        ],
+        [
+          101,
+          75,
+          305,
+          351
+        ]
+      ],
+      "shared_scale": 0.24675324675324675,
+      "source_identity": "exec-b96271a7-b2d7-4116-9dba-ad5845a01c6a.png",
+      "rejected_initial_identity": "exec-61a00576-43e8-47f0-90b4-68920c36db0c.png"
     }
   ],
   "grid": [
@@ -163,6 +238,8 @@
   "prompt_sha256": {
     "advanced-a-alpha-repair-prompt.txt": "8b3a58158cc439d8c9a6e96bdffd66f687c2f5123152ba0bde6d434b2a9da003",
     "advanced-a-prompt.txt": "0abfbfa4d665c6c88a7c003c3caf79fa4c13706db6ba7096bd489fb40f6d6640",
+    "advanced-b-layout-repair-prompt.txt": "568359961c8e8e4adf3ba245d02dfba3a68f8c220263f87c43ab8d1c2c68f6a0",
+    "advanced-b-prompt.txt": "5c02519ded7a9a5b763381e44b64e0f62803db3cd42d994e0220fc89e7f40d1d",
     "base-classes-prompt.txt": "53c5a3d473418e0df42e2c044fa3fd420cd980e5902596503de4c6511ddd7c75"
   },
   "transforms": [

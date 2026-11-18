@@ -1,0 +1,25 @@
+hero rig: layers=104 frames=86589 comparisons=88148 joint_rows=18240 full_cosmetics=0 sibling_checks=800 min_sibling_alpha=119 decorative_checks=1444 foot_rows=83..84 failures=28
+FAIL: decorative flask belt follows skin=1 at 50,53
+FAIL: decorative flask belt follows skin=1 at 51,53
+FAIL: decorative flask belt follows skin=1 at 52,53
+FAIL: decorative flask belt follows skin=1 at 53,53
+FAIL: decorative flask belt follows skin=1 at 50,54
+FAIL: decorative flask belt follows skin=1 at 51,54
+FAIL: decorative flask belt follows skin=1 at 52,54
+FAIL: decorative flask belt follows skin=2 at 50,53
+FAIL: decorative flask belt follows skin=2 at 51,53
+FAIL: decorative flask belt follows skin=2 at 52,53
+FAIL: decorative flask belt follows skin=2 at 53,53
+FAIL: decorative flask belt follows skin=2 at 50,54
+FAIL: decorative flask belt follows skin=2 at 51,54
+FAIL: decorative flask belt follows skin=2 at 52,54
+FAIL: decorative flask belt follows skin=3 at 50,53
+FAIL: decorative flask belt follows skin=3 at 51,53
+FAIL: decorative flask belt follows skin=3 at 52,53
+FAIL: decorative flask belt follows skin=3 at 53,53
+FAIL: decorative flask belt follows skin=3 at 50,54
+FAIL: decorative flask belt follows skin=3 at 51,54
+FAIL: decorative flask belt follows skin=3 at 52,54
+FAIL: decorative flask belt follows skin=4 at 50,53
+FAIL: decorative flask belt follows skin=4 at 51,53
+FAIL: decorative flask belt follows skin=4 at 52,53

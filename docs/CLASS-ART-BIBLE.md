@@ -54,7 +54,22 @@ Non estendere semplicemente il canvas 48→88 mantenendo scale e coordinate attu
 | 14 | Assassino | Cappa corta spezzata a tre punte; torso chiuso e polpacci fasciati |
 | 15 | Duellante | Giacca chiara aperta; mezza cappa e singola falda lunga |
 
-Costumi e illustrazioni specifici sono separati. I 400 confronti dei fratelli con lo stesso elmo conservano almeno 143 pixel di sagoma distinti sotto la testa; la revisione nativa in grigio verifica le firme sopra. Le altre otto avanzate e tutte le maestre restano nei lotti successivi. Le pose parametriche condivise non vengono conteggiate come animazioni finali.
+Costumi e illustrazioni specifici sono separati. I 400 confronti dei fratelli con lo stesso elmo conservano almeno 143 pixel di sagoma distinti sotto la testa; la revisione nativa in grigio verifica le firme sopra. Alla consegna R3.1 le altre otto avanzate e tutte le maestre erano ancora nei lotti successivi. Le pose parametriche condivise non vengono conteggiate come animazioni finali.
+
+## R3.2 — sedici avanzate completate
+
+| ID | Classe | Due firme sotto lo stesso elmo |
+|---|---|---|
+| 16 | Paladino | Piastre protettive sovrapposte; tabarro largo e rettangolare |
+| 17 | Sacerdote | Stole lunghe e verticali; maniche morbide e pendenti |
+| 18 | Campione | Fasce/guanti compatti e protetti; placche larghe su fianchi e gambe |
+| 19 | Mistico | Sciarpa lunga a due falde; veste leggera e asimmetrica |
+| 20 | Fabbro | Grembiule lungo con pannello ferrato; guanti e stivali massicci |
+| 21 | Alchimista | Cintura con grandi ampolle; giacca corta aperta e polsini morbidi |
+| 22 | Negromante | Colletto ampio a costole; fronte chiuso con grandi fasce orizzontali |
+| 23 | Stregone | Spalle oblique; falde laterali aperte e spezzate |
+
+Ora sono ammessi gli ID 0–23: otto basi e tutte le sedici avanzate. Le sedici maestre restano in fallback fino a R4. I colori delle decorazioni non seguono la pelle: il layout registra la regione fissa della cintura dell'Alchimista e la palette distingue RGB565 e ruolo anche quando condividono la stessa tinta. Le ampolle sono parte del costume, non quantità di consumabili.
 
 ## Checklist di produzione
 

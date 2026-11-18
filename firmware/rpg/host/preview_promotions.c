@@ -18,7 +18,7 @@ static uint64_t fingerprint(const lv_image_dsc_t *image) {
     return h;
 }
 static void seed_profile(int family,int language) {
-    rpg_new_hero h={0};h.cls=(uint8_t)family;h.race=(uint8_t)family;h.skin=4;
+    rpg_new_hero h={0};h.cls=(uint8_t)family;h.race=(uint8_t)(family%RACE_COUNT);h.skin=4;
     h.hair=5;h.hair_color=7;h.eyes=3;h.body=1;h.lang=(uint8_t)language;
     rpg_game_new(&R.g,&h,seconds,177);R.loaded=true;wf_lang=(uint8_t)language;
     rpg_item helm={.type=IT_HELM,.tier=2,.level=1};assert(rpg_can_equip(&R.g,&helm));
@@ -51,7 +51,7 @@ int main(int argc,char **argv) {
     lv_indev_t *input=lv_indev_create();lv_indev_set_type(input,LV_INDEV_TYPE_POINTER);lv_indev_set_read_cb(input,read_touch);
     lv_timer_set_period(lv_indev_get_read_timer(input),10);wf_app_start(NULL,0);
     unsigned promotions=0,rejections=0,reloads=0;
-    for(int lang=0;lang<2;lang++) for(int family=0;family<4;family++) {
+    for(int lang=0;lang<2;lang++) for(int family=0;family<FAM_COUNT;family++) {
         uint64_t sibling[2]={0};
         for(int branch=0;branch<2;branch++) {
             int target=8+family*2+branch;seed_profile(family,lang);
@@ -76,7 +76,7 @@ int main(int argc,char **argv) {
         }
         assert(sibling[0]!=sibling[1]);
     }
-    printf("promotions:%u real touch changes, %u rejected thresholds, %u save v4 hero roundtrips, IT/EN cosmetics/owned gear preserved; 8 sibling comparisons under same helm passed\n",promotions,rejections,reloads);
+    printf("promotions:%u real touch changes, %u rejected thresholds, %u save v4 hero roundtrips, IT/EN cosmetics/owned gear preserved; 16 sibling comparisons under same helm passed\n",promotions,rejections,reloads);
     printf("promotions:%d native captures; peak%zu image bytes; studio views do not change owned equipment\n",shots,peak_image_bytes);
     return 0;
 }
