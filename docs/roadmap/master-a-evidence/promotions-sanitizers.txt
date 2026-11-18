@@ -1,0 +1,3 @@
+promotions:64 real touch changes, 96 rejected thresholds, 64 save v4 hero roundtrips, IT/EN cosmetics/owned gear preserved; 24 sibling comparisons under same helm passed
+masters:16 complete touch paths, direct/wrong-branch rejection, exact8 inherited/battle skills and previous ranks preserved; terminal class/job50 verified
+promotions:104 native captures; peak527240 image bytes; studio views do not change owned equipment

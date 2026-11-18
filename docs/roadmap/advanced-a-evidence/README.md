@@ -67,4 +67,4 @@ autonomia, stabilità prolungata o coinvolgimento dei giocatori.
 Sito, pacchetto, cinque immagini native e download firmware vengono ricostruiti
 e verificati via HTTP dal [workflow pubblico](https://github.com/ShydanRem/pocketwayfarer/actions/workflows/pages.yml).
 
-Aggiornamento storico: la directory delle immagini è ora ampliata da R3.2; i log sopra restano relativi alla loro consegna. [Stato e prove correnti](../advanced-b-evidence/README.md).
+Aggiornamento storico: la directory delle immagini è ora ampliata da R4.1; i log sopra restano relativi alla loro consegna. [Stato e prove correnti](../master-a-evidence/README.md).

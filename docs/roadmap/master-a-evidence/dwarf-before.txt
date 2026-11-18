@@ -1,0 +1,25 @@
+FAIL: feet moved class=24 race=2 expr=0 pose=2
+FAIL: feet moved class=24 race=2 expr=0 pose=3
+FAIL: feet moved class=24 race=2 expr=0 pose=4
+FAIL: feet moved class=24 race=2 expr=1 pose=2
+FAIL: feet moved class=24 race=2 expr=1 pose=3
+FAIL: feet moved class=24 race=2 expr=1 pose=4
+FAIL: feet moved class=24 race=2 expr=2 pose=2
+FAIL: feet moved class=24 race=2 expr=2 pose=3
+FAIL: feet moved class=24 race=2 expr=2 pose=4
+FAIL: feet moved class=24 race=2 expr=3 pose=2
+FAIL: feet moved class=24 race=2 expr=3 pose=3
+FAIL: feet moved class=24 race=2 expr=3 pose=4
+FAIL: feet moved class=24 race=2 expr=0 pose=2
+FAIL: feet moved class=24 race=2 expr=0 pose=3
+FAIL: feet moved class=24 race=2 expr=0 pose=4
+FAIL: feet moved class=24 race=2 expr=1 pose=2
+FAIL: feet moved class=24 race=2 expr=1 pose=3
+FAIL: feet moved class=24 race=2 expr=1 pose=4
+FAIL: feet moved class=24 race=2 expr=2 pose=2
+FAIL: feet moved class=24 race=2 expr=2 pose=3
+FAIL: feet moved class=24 race=2 expr=2 pose=4
+FAIL: feet moved class=24 race=2 expr=3 pose=2
+FAIL: feet moved class=24 race=2 expr=3 pose=3
+FAIL: feet moved class=24 race=2 expr=3 pose=4
+hero rig: layers=120 frames=361485 comparisons=117792 joint_rows=24320 full_cosmetics=245760 sibling_checks=1200 min_sibling_alpha=119 decorative_checks=1444 cape_checks=3036 min_cape_opaque=178 foot_rows=83..84 failures=720

@@ -22,7 +22,11 @@ static void profile(int cls,int race,int skin,int hair,int color) {
     rpg_game_new(&R.g,&h,seconds,177);R.loaded=true;R.g.auto_battle=0;
     if(cls>=FAM_COUNT) {
         R.g.hero.level=20;R.g.hero.job_level=30;
-        assert(rpg_change_class(&R.g,cls));
+        assert(rpg_change_class(&R.g,cls>=24?rpg_class_parent(cls):cls));
+        if(cls>=24) {
+            R.g.hero.level=45;R.g.hero.job_level=40;
+            assert(rpg_change_class(&R.g,cls));
+        }
     }
     before=R.g;
 }
@@ -190,10 +194,9 @@ static void class_mapping(void) {
     puts("40 exact class IDs, explicit advanced/master fallback, size presets and save v4 roundtrips passed");
 }
 static void large_vitals(void) {
-    const int classes[]={8,10,16,17,23,31};
+    const int classes[]={8,10,16,17,23,24,25,26,27,28,29,30,31,39};
     for(int lang=0;lang<2;lang++)for(unsigned i=0;i<sizeof classes/sizeof classes[0];i++) {
-        int cls=classes[i];profile(cls==31?15:cls,RACE_HUMAN,1,0,1);
-        if(cls==31){R.g.hero.level=45;R.g.hero.job_level=40;assert(rpg_change_class(&R.g,cls));}
+        int cls=classes[i];profile(cls,RACE_HUMAN,1,0,1);
         R.g.hero.level=99;for(int s=0;s<ST_COUNT;s++)R.g.hero.stat[s]=99;
         wf_lang=(uint8_t)lang;R.g.lang=(uint8_t)lang;
         rpg_stats st;rpg_stats_get(&R.g,&st);R.g.hero.hp=st.max_hp;R.g.hero.sp=st.max_sp;
@@ -202,6 +205,33 @@ static void large_vitals(void) {
         char name[80];snprintf(name,sizeof name,"vitali-grandi-%02d-%s",cls,lang?"en":"it");shot(name);
     }
     wf_lang=0;
+}
+static void master_stats(void) {
+    unsigned checks=0;
+    for(int lang=0;lang<2;lang++)for(int cls=24;cls<32;cls++)for(int level=45;level<=99;level+=54) {
+        profile(cls,RACE_HUMAN,4,5,7);R.g.hero.level=(uint8_t)level;
+        wf_lang=R.g.lang=(uint8_t)lang;r_go(R_HERO);run(30);
+        lv_obj_t *screen=lv_screen_active(),*hero=avatar(screen),*column=NULL;assert(hero);
+        for(unsigned i=0;i<lv_obj_get_child_count(screen);i++) {
+            lv_obj_t *o=lv_obj_get_child(screen,(int)i);
+            if(lv_obj_check_type(o,&lv_label_class) &&
+               !strncmp(lv_label_get_text(o),R.g.hero.name,strlen(R.g.hero.name)) &&
+               strstr(lv_label_get_text(o),TX(rpg_class(cls)->name)))column=o;
+        }
+        assert(column);lv_obj_update_layout(screen);
+        lv_area_t text,actor;lv_obj_get_coords(column,&text);lv_obj_get_coords(hero,&actor);
+        assert(text.x1>=160 && text.x2<=419 && text.x1>actor.x2);
+        assert(lv_obj_get_width(column)==260);
+        /* Four complete unwrapped lines, with the entire text box in the circle. */
+        int line=lv_obj_get_style_text_line_space(column,0);
+        assert(lv_obj_get_height(column)==4*wf_font_small.line_height+3*line);
+        int corners[][2]={{text.x1,text.y1},{text.x2,text.y1},{text.x1,text.y2},{text.x2,text.y2}};
+        for(unsigned i=0;i<4;i++){int x=corners[i][0]-CX,y=corners[i][1]-CY;assert(x*x+y*y<233*233);}
+        controls_clear();checks++;
+        char name[96];snprintf(name,sizeof name,"statistiche-maestra-%02d-%d-%s",cls,level,lang?"en":"it");shot(name);
+    }
+    wf_lang=0;
+    printf("master stats:%u IT/EN level45/99 text columns, four unwrapped lines inside circle and separate from avatar canvas passed\n",checks);
 }
 static void allocation_recovery(void) {
     profile(7,RACE_BEAST,4,5,7);R.screen=R_CLASS_ATLAS;
@@ -232,6 +262,7 @@ int main(int argc,char **argv) {
     }
     for(int race=1;race<RACE_COUNT;race++)studio(0,race,race,4,6,HP_IDLE);
     large_vitals();
+    master_stats();
     changing_look();
     allocation_recovery();
     class_mapping();

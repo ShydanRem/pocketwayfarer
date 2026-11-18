@@ -56,7 +56,12 @@ static void part(const hero_rig_layer *layer,const hero_look *l,int expr,int pos
         int dx=0,dy=0;
         if(kind==0) {
             bool left=x<36 && y>=40 && y<66,right=x>54 && y>=40 && y<66;
-            if(pose==HP_ATTACK && left){dx=6;dy=-5;}
+            if(rig_rigid_arms[l->class_id] && pose!=HP_BREATH) {
+                /* A flattened long cape cannot be cut into a moving arm.
+                 * Translate the connected costume coherently; keep soles fixed. */
+                if(body_y(y,l)<78)dx=pose==HP_ATTACK?2:pose==HP_GUARD?-1:pose==HP_HIT?-2:0;
+            }
+            else if(pose==HP_ATTACK && left){dx=6;dy=-5;}
             else if(pose==HP_GUARD && right){dx=-4;dy=-6;}
             else if(y<64) { dx=pose==HP_ATTACK?2:pose==HP_GUARD?-1:pose==HP_HIT?-2:0;dy=pose==HP_BREATH?-1:0; }
             x=body_x(x,l);y=body_y(y,l);
@@ -103,12 +108,17 @@ unsigned hero_rig_compose(const hero_look *l,int expr,int pose,uint16_t *rgb,uin
     int fam=l->class_id,hc=l->hair_color%8,race=l->race%RACE_COUNT;
     int left_x=body_x(rig_hand_mounts[fam][0][0],l),left_y=body_y(rig_hand_mounts[fam][0][1],l);
     int right_x=body_x(rig_hand_mounts[fam][1][0],l),right_y=body_y(rig_hand_mounts[fam][1][1],l);
-    if(pose==HP_ATTACK){left_x+=6;left_y-=5;}
-    if(pose==HP_GUARD){right_x-=4;right_y-=6;}
+    if(rig_rigid_arms[fam]) {
+        int dx=pose==HP_ATTACK?2:pose==HP_GUARD?-1:pose==HP_HIT?-2:0;
+        left_x+=dx;right_x+=dx;
+    } else {
+        if(pose==HP_ATTACK){left_x+=6;left_y-=5;}
+        if(pose==HP_GUARD){right_x-=4;right_y-=6;}
+        if(pose==HP_ATTACK)right_x+=2;
+        if(pose==HP_GUARD)left_x--;
+        if(pose==HP_HIT){left_x-=2;right_x-=2;}
+    }
     if(pose==HP_BREATH){left_y--;right_y--;}
-    if(pose==HP_ATTACK)right_x+=2;
-    if(pose==HP_GUARD)left_x--;
-    if(pose==HP_HIT){left_x-=2;right_x-=2;}
     if(race==RACE_BEAST) legacy_part(&rpg_tail[hc],30,40,52,72,120,0,rgb,alpha);
     if(l->off==IT_QUIVER) {
         int back_x=body_x(rig_hand_mounts[fam][1][0],l)+(pose==HP_ATTACK?2:pose==HP_GUARD?-1:pose==HP_HIT?-2:0);

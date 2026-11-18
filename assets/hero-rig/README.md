@@ -1,4 +1,4 @@
-# Modular player rig — bases and advanced classes
+# Modular player rig — bases, advanced and first master classes
 
 Original component sheets generated with OpenAI ImageGen on 2026-11-17 (bases) and 2026-11-18 (R3.1). The
 unaltered RGBA sources and exact prompts are retained under `source/`. This is
@@ -18,6 +18,8 @@ pixel RPGs without including their characters, sprites or trademarks as assets.
 | `advanced-a-hats.png` | `exec-7607961a-bc90-4e06-8222-7557c6171fa1.png` | 1774 × 887; 4 × 2 headwear, IDs 8–15 |
 | `advanced-b-outfits.png` | `exec-382386fd-5a1b-46eb-8193-b46382e491ea.png` | 1774 × 887; 4 × 2 costumes, IDs 16–23 |
 | `advanced-b-hats.png` | `exec-6466ddd8-1a85-4142-8cf7-6ef7a29d62e3.png` | 1774 × 887; 4 × 2 headwear, IDs 16–23 |
+| `master-a-outfits.png` | `exec-748732ce-2318-4395-b3ea-aea551554c8b.png` | 1774 × 887; 4 × 2 costumes, IDs 24–31 |
+| `master-a-hats.png` | `exec-229f6d10-a5f4-454f-9dae-194654200c30.png` | 1774 × 887; 4 × 2 headwear, IDs 24–31 |
 
 Costume/default-hat order is exact base class ID: Warrior, Mage, Archer, Rogue,
 Cleric, Monk, Artificer, Occultist. Heads use Human, Elf, Dwarf, Beastkin, each
@@ -65,8 +67,8 @@ python3 scripts/build_hero_rig.py --check
 
 `manifest.json` records hashes, transforms, hand mounts and canvas geometry.
 Source conversion alone is not acceptance: see the native-renderer tests and
-[R2 evidence](../../docs/roadmap/rig-evidence/README.md). All sixteen advanced classes are now admitted. The sixteen master classes retain
-the explicit legacy fallback until their own exact-ID costumes pass R4. This rig does not change save v4, class mechanics or Lanternbound's
+[R2 evidence](../../docs/roadmap/rig-evidence/README.md). All sixteen advanced classes and the first eight masters are now admitted. The remaining eight master classes retain
+the explicit legacy fallback until their own exact-ID costumes pass R4.2. This rig does not change save v4, class mechanics or Lanternbound's
 three separate loadouts.
 
 R3.1 appends Knight, Berserker, Elementalist, Arcanist, Ranger, Sniper, Assassin and Duelist in exact ID order 8–15. Generated `HERO_RIG_CLASS_COUNT`, family and zero-based tier metadata validate each look before admission. The common heads, hair and owned gear stay shared; no save array is enlarged. [R3.1 evidence](../../docs/roadmap/advanced-a-evidence/README.md) records silhouette comparisons under identical helmets, native views and actual touch promotions.
@@ -78,3 +80,11 @@ The third sheets append Paladin, Priest, Champion, Mystic, Blacksmith, Alchemist
 The Alchemist's purple flask glass shared a quantized RGB565 color with technical magenta hand shadows. Seven waist pixels incorrectly received the skin role. `source/layout.json` now marks the logical half-open flask-belt rectangle `[36,45,55,64]` as fixed decoration. Palette identity is `(RGB565, semantic_role)`, so equal colors in hands and glass can retain different behavior. This changes role/index metadata only; no PNG pixel is painted or removed. The test changes all five skin tones and checks 1,444 waist pixels; the previous palette fails 28 checks.
 
 The generation briefs use the descriptive names Smith/Sorcerer for IDs 20/23; canonical UI names are Blacksmith/Warlock from the existing core table. Exact prompts remain unaltered.
+
+## R4.1 — first master IDs 24–31
+
+Dragon Knight, Warlord, Archmage, Chronomancer, Beast Lord, Storm Archer, Night Blade and Blade Master were generated on 2026-11-18. Exact `master-a-outfits-prompt.txt` and `master-a-hats-prompt.txt` are retained. Each uses the corresponding approved advanced-A sheet as registration/world reference. Original PNGs are retained unaltered; imports use the same neck/hand/foot registration and semantic palettes. No local painting, missing-part reconstruction or commercial artwork is included.
+
+Coverage is 32 exact costumes/default hats, with master family metadata 0–3 and zero-based tier2. The last eight masters remain explicit legacy fallbacks. The 245,760 cosmetic combinations and 1,200 sibling checks include the four new pairs; the previous Alchemist regression stays active. [R4.1 evidence](../../docs/roadmap/master-a-evidence/README.md) records native scenes, promotion paths, sanitizers and limits. These are still preliminary parametric poses, not final animation strips.
+
+Native QA found that rectangular attack-arm motion sliced the continuous capes of IDs24/30. `layout.json` now records `rigid_arm_classes` for those two only, emitted as `rig_rigid_arms`. Their attack/guard/hit translate the connected costume coherently above logical row78, with matching held-item grips and planted soles. No PNG pixels are reconstructed or painted; this deliberately simpler provisional pose avoids a visual tear until R7 introduces actual limb/cape masks.

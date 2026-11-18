@@ -37,7 +37,9 @@ void scr_hero(void) {
     char buf[160];
     snprintf(buf, sizeof buf, "%s\n%s\n%s  Lv %d\n%s %d/%d", g->hero.name, TX(rpg_race(g->hero.race)->name),
              TX(rpg_class(g->hero.cls)->name), g->hero.level, TR("Classe", "Job"), g->hero.job_level, rpg_job_max(g->hero.cls));
-    lv_obj_t *t = kit_label(s, &wf_font_small, COL_TEXT, buf, 258, 160);
+    /* Fixed text column keeps long master-class names out of the avatar. */
+    lv_obj_t *t = kit_label(s, &wf_font_small, COL_TEXT, buf, 290, 160);
+    lv_obj_set_width(t, 260);
     lv_obj_set_style_text_align(t, LV_TEXT_ALIGN_LEFT, 0);
     snprintf(buf, sizeof buf, "PE %lu/%lu", (unsigned long)g->hero.xp, (unsigned long)rpg_xp_next(g->hero.level));
     kit_bar(s, 290, 214, 150, 12, COL_XP, (int)(g->hero.xp * 100 / rpg_xp_next(g->hero.level)), 100);

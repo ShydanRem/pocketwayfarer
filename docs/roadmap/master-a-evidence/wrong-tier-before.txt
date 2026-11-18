@@ -1,0 +1,17 @@
+FAIL: admitted exact class rejected class=24
+FAIL: wrong UI tier admitted class=24 tier=1
+FAIL: admitted exact class rejected class=25
+FAIL: wrong UI tier admitted class=25 tier=1
+FAIL: admitted exact class rejected class=26
+FAIL: wrong UI tier admitted class=26 tier=1
+FAIL: admitted exact class rejected class=27
+FAIL: wrong UI tier admitted class=27 tier=1
+FAIL: admitted exact class rejected class=28
+FAIL: wrong UI tier admitted class=28 tier=1
+FAIL: admitted exact class rejected class=29
+FAIL: wrong UI tier admitted class=29 tier=1
+FAIL: admitted exact class rejected class=30
+FAIL: wrong UI tier admitted class=30 tier=1
+FAIL: admitted exact class rejected class=31
+FAIL: wrong UI tier admitted class=31 tier=1
+metadata mutation failures=16
