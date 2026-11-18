@@ -10,6 +10,12 @@ Un lotto è completato quando entra nel gioco, supera i controlli pertinenti e d
 
 ## Stato reale di partenza
 
+**Avanzamento R2 / 0.5.0-preview.1:** le otto basi ora hanno avatar modulari nel Classico, oltre alle illustrazioni dell'atlante. Personalizzazione, oggetti visibili e salvataggi v4 conservati; 147 catture native e 61.440 combinazioni estetiche verificate. Le 32 evoluzioni restano nel renderer precedente. [Prove R2 e limiti](roadmap/rig-evidence/README.md).
+
+![Otto avatar base: studio del renderer LVGL, non nuovo luogo giocabile](img/hero_rig/otto-avatar-base.png)
+
+La tabella seguente conserva la baseline da cui è partito il piano.
+
 | Area | Già presente | Lavoro rimanente |
 |---|---|---|
 | Lanternbound | Tre assetti, cinque stanze, sei reliquie, sette nemici, eventi, guida, IT/EN, pausa/ripresa | Varietà e rifinitura da valutare con giocatori; non confondere i tre assetti con le classi classiche |
@@ -29,7 +35,7 @@ Il primo incremento della roadmap aggiunge **otto illustrazioni base nell'atlant
 |---|---|---|---|
 | R0 — baseline e collaudo | `0.4.0-preview.1` | Preservare le correzioni; raccogliere misure fisiche quando possibile | Regressioni sempre verdi; collaudo fisico registrato separatamente, senza dedurlo dai test PC |
 | **R1 — atlante e otto classi base / 0.4.1-preview** | R0 host | Otto illustrazioni, 40 schede, abilità e alberi consultabili; roadmap e registro | 80 schede IT/EN, 16 percorsi di famiglia e input reali verificati; eroe/salvataggio invariati; firmware e sito verificati |
-| R2 — avatar modulare e otto basi / 0.5-preview | R1 | Prototipo del nuovo rig, poi otto costumi base nel mondo | Personalizzazione e canali equipaggiamento preservati; nessuna sagoma tagliata nelle schermate reali |
+| **R2 — avatar modulare e otto basi / 0.5-preview: completato su host** | R1 | Otto costumi base nel mondo, rig e canali estetici/equipaggiamento | Catture reali, continuità, cache e sanitizer verificati; collaudo fisico separato |
 | R3 — sedici avanzate / 0.6-preview | R2 | Due lotti da otto, con rami A/B distinti | Ogni ramo riconoscibile anche in grigio e con copricapo equipaggiato; regole di classe invariate |
 | R4 — sedici maestre / 0.7-preview | R3 | Due lotti da otto, con identità propria | 40/40 identità modulari e relativo materiale di presentazione, senza riempitivi conteggiati come completati |
 | R5 — mondo e interfaccia / 0.8-preview | R2; R3/R4 per relativo abito | Creazione, eroe, classi, equipaggiamento, città, campi/dungeon e mostri coerenti | Percorso completo in italiano/inglese, controlli circolari raggiungibili e immagini confrontate sul renderer |
@@ -60,6 +66,8 @@ Il mapping deve usare l'**ID classe esatto**, derivato da `hero.cls` in memoria 
 **R2.2 — otto basi.** Dopo l'approvazione tecnica del rig, produrre otto costumi e le pose necessarie. Idle/respiro, attacco e difesa/colpito devono mantenere scala e piedi; espressioni e pose sono stati distinti. Integrare creazione, statistiche, cambio classe, equipaggiamento, città, campo/dungeon e battaglia nello stesso lotto.
 
 **Accettazione:** nessuna perdita di dati estetici o sovrapposizione con HUD; salvataggio v4 leggibile; classe scelta e oggetti reali rappresentati correttamente; prove cache/sanitizer, misure di memoria e build entro budget. La promozione di classe continua a usare i requisiti del core.
+
+**Esito R2:** gli otto ID 0–7 usano il rig 88×88, con preset 44/88/176 pixel. Le cinque pose sono trasformazioni parametriche dei componenti, non strisce di animazione finale. Il refresh di arma/mano secondaria/testa è stato anticipato da R5 perché i vecchi oggetti non reggevano il nuovo corpo; nessuno slot aggiunto. Torso/piedi/accessori restano solo statistici. In revisione sono stati corretti un giunto aperto durante il respiro, livelli nemici coperti dai comandi e falce davanti al volto. Le maschere dedicate per gli arti e la rifinitura delle transizioni restano R7.
 
 ## R3 e R4 — copertura completa delle classi
 

@@ -24,6 +24,7 @@ SCREENS = {
     'confronto-reliquie': '47-confronto-reliquie',
 }
 CLASS_SCREENS = {'classi': 'otto-classi-base', 'arciere': '03-classe-02'}
+RIG_SCREENS = {'avatar-base': 'otto-avatar-base'}
 
 
 def manual_html():
@@ -68,6 +69,7 @@ def roadmap_html():
         return 'href="https://github.com/ShydanRem/pocketwayfarer/blob/'+commit+'/'+resolved.relative_to(ROOT).as_posix()+'"'
     body=re.sub(r'href="([^"]+)"',source_link,body)
     body=body.replace('src="img/classes/otto-classi-base.png"','src="assets/screens/classi.png" loading="lazy"')
+    body=body.replace('src="img/hero_rig/otto-avatar-base.png"','src="assets/screens/avatar-base.png" loading="lazy"')
     return body.replace('<table>','<div class="table-wrap"><table>').replace('</table>','</table></div>')
 
 
@@ -102,6 +104,10 @@ def main():
         images[name + '.png'] = dict(source=original.relative_to(ROOT).as_posix(), sha256=hashlib.sha256(original.read_bytes()).hexdigest())
     for name,source in CLASS_SCREENS.items():
         original=ROOT/'docs/img/classes'/(source+'.png')
+        shutil.copyfile(original,screens/(name+'.png'))
+        images[name+'.png']=dict(source=original.relative_to(ROOT).as_posix(),sha256=hashlib.sha256(original.read_bytes()).hexdigest())
+    for name,source in RIG_SCREENS.items():
+        original=ROOT/'docs/img/hero_rig'/(source+'.png')
         shutil.copyfile(original,screens/(name+'.png'))
         images[name+'.png']=dict(source=original.relative_to(ROOT).as_posix(),sha256=hashlib.sha256(original.read_bytes()).hexdigest())
     fonts = output / 'assets/fonts'; fonts.mkdir(parents=True, exist_ok=True)

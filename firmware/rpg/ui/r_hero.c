@@ -179,6 +179,7 @@ void scr_class(void) {
             int x = n == 1 ? CX : CX - 80 + i * 160;
             hero_look nl = l;
             nl.tier = (uint8_t)(rpg_class_tier(next[i]) - 1);
+            nl.class_id = (uint8_t)next[i];
             lv_obj_t *b = kit_round_button(s, NULL, NULL, x, 330, 96, rpg_can_change_class(g, next[i]) ? COL_BTN_OK : COL_PANEL_HI,
                                            on_pick, next[i]);
             lv_obj_t *img = lv_image_create(b);

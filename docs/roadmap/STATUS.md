@@ -1,6 +1,6 @@
 # Registro di avanzamento
 
-Aggiornamento: 17 novembre 2026. Baseline pubblica prima del lotto: `0.4.0-preview.1`, commit `d6f7f97e4d3cbb2bda94c8d34fcb62a3f2ed1560`.
+Aggiornamento: 18 novembre 2026. Consegna corrente: `0.5.0-preview.1`.
 
 ## Consegna R1 — atlante delle classi, 0.4.1-preview.1
 
@@ -17,11 +17,29 @@ Aggiornamento: 17 novembre 2026. Baseline pubblica prima del lotto: `0.4.0-previ
 | Regole delle classi classiche | 40/40 già presenti nel core |
 | Illustrazioni base R1 | 8/8 importate, mostrate e verificate nell'atlante |
 | Illustrazioni specifiche delle evoluzioni | 0/32; etichetta di riferimento familiare esplicita |
-| Nuovi avatar modulari classici | 0/40; sistema precedente mantenuto |
-| Aspetti legacy distinti per famiglia/grado | 24 combinazioni; rami fratelli condivisi |
+| Nuovi avatar modulari classici | **8/40**, le otto basi; personalizzazione e oggetti conservati |
+| Fallback legacy delle evoluzioni | 32 classi, 16 combinazioni famiglia/grado; rami fratelli condivisi fino a R3/R4 |
 | Assetti Lanternbound nel nuovo trattamento | 3/3; sistema separato |
 | Nuovo collaudo sul Pocket | Aperto |
 
-## Prossimo lotto: R2.0
+## Consegna R2 — rig e otto basi, 0.5.0-preview.1
 
-**R2.0:** prototipo del rig e mapping per ID classe esatto, con Guerriero e Mago. Prima risolvere ancoraggi, canali estetici, cache e layout in una scena completa; poi produrre gli otto costumi base. Nessuna produzione di sedici evoluzioni prima che il rig sia verificato.
+**R2.0 completato:** prototipo Guerriero/Mago, chiave classe esatta, preset 44/88/176 pixel e cache con proprietà dei widget. Revisione indipendente prima dell'ammissione delle altre sei basi.
+
+**R2.1 completato:** tutti i canali estetici conservati, quattro espressioni e cinque pose distinte; 61.440 combinazioni estetiche, 16 tipi di equipaggiamento/cinque fasce, save v4 e fallback delle 32 evoluzioni verificati. Torso/piedi/accessori restano statistici.
+
+**R2.2 completato su host:** otto costumi nel renderer delle schermate reali. Creazione IT/EN, schede, borgo, equip, dungeon e formazioni fino a tre nemici/boss/élite Lv99; 147 catture, test di continuità e ASan/UBSan superati. Picco immagini 788.618 byte; firmware locale 3,26 MiB su 6 MiB. [Prove e limiti R2](rig-evidence/README.md).
+
+**Variazione motivata:** i tre canali visibili di equipaggiamento sono stati anticipati da R5 perché gli oggetti legacy non erano coerenti con il nuovo corpo. Nessuna nuova meccanica, famiglia, struttura persistente o modifica degli ID. Animazione definitiva con maschere degli arti resta R7; ambienti/mostri/UI restanti R5. Gate hardware aperto.
+
+## Prossimo lotto: R3.1 — otto avanzate
+
+Ordine vincolante: Cavaliere (8), Berserker (9), Elementalista (10), Arcanista (11), Ramingo (12), Cecchino (13), Assassino (14), Duellante (15).
+
+1. Fissare due firme di forma per ramo nella bibbia; verificare che restino sotto un casco equipaggiato.
+2. Produrre costume/default headgear modulari e illustrazione specifica per ciascun ID; mantenere gli ancoraggi del rig accettato.
+3. Provare subito un'intera scena per i due rami della stessa famiglia: niente ammissione basata solo sul foglio sorgente.
+4. Estendere test/registro, compatibilità cosmetica e gear, catture IT/EN/grigio, promozione effettiva e save v4 senza cambiare i requisiti del core.
+5. Chiudere il lotto con build e budget misurati, poi R3.2: Paladino/Sacerdote, Campione/Mistico, Fabbro/Alchimista, Negromante/Stregone (ID16–23).
+
+Le 16 maestre e le 32 illustrazioni specifiche delle evoluzioni non sono ancora completate. Non si salta a R4 prima dell'accettazione delle avanzate.

@@ -1,0 +1,25 @@
+hero rig: layers=72 frames=28328 comparisons=29052 joint_rows=6080 full_cosmetics=0 foot_rows=83..84 failures=32
+FAIL: transparent torso/leg seam class=0 race=0 pose=1 row=63
+FAIL: transparent torso/leg seam class=0 race=1 pose=1 row=63
+FAIL: transparent torso/leg seam class=0 race=2 pose=1 row=66
+FAIL: transparent torso/leg seam class=0 race=3 pose=1 row=63
+FAIL: transparent torso/leg seam class=1 race=0 pose=1 row=63
+FAIL: transparent torso/leg seam class=1 race=1 pose=1 row=63
+FAIL: transparent torso/leg seam class=1 race=2 pose=1 row=66
+FAIL: transparent torso/leg seam class=1 race=3 pose=1 row=63
+FAIL: transparent torso/leg seam class=2 race=0 pose=1 row=63
+FAIL: transparent torso/leg seam class=2 race=1 pose=1 row=63
+FAIL: transparent torso/leg seam class=2 race=2 pose=1 row=66
+FAIL: transparent torso/leg seam class=2 race=3 pose=1 row=63
+FAIL: transparent torso/leg seam class=3 race=0 pose=1 row=63
+FAIL: transparent torso/leg seam class=3 race=1 pose=1 row=63
+FAIL: transparent torso/leg seam class=3 race=2 pose=1 row=66
+FAIL: transparent torso/leg seam class=3 race=3 pose=1 row=63
+FAIL: transparent torso/leg seam class=4 race=0 pose=1 row=63
+FAIL: transparent torso/leg seam class=4 race=1 pose=1 row=63
+FAIL: transparent torso/leg seam class=4 race=2 pose=1 row=66
+FAIL: transparent torso/leg seam class=4 race=3 pose=1 row=63
+FAIL: transparent torso/leg seam class=5 race=0 pose=1 row=63
+FAIL: transparent torso/leg seam class=5 race=1 pose=1 row=63
+FAIL: transparent torso/leg seam class=5 race=2 pose=1 row=66
+FAIL: transparent torso/leg seam class=5 race=3 pose=1 row=63

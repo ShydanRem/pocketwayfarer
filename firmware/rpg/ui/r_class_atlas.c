@@ -95,7 +95,7 @@ void scr_class_atlas(void) {
     char subtitle[80];
     snprintf(subtitle,sizeof subtitle,"%d/40  ·  %s %d",selected+1,TR("Grado","Tier"),rpg_class_tier(selected));
     text(s,subtitle,101,280,false,0xc5d7e6);
-    /* This const image is deliberately NOT a hero_obj / six-slot avatar LRU. */
+    /* Representative illustration, separate from the customizable avatar. */
     kit_img(s,&class_portraits[rpg_class_family(selected)],2,CX,197);
     button(s,"<",80,210,56,PREV);button(s,">",386,210,56,NEXT);
     lv_obj_t *badge=lv_obj_create(s);lv_obj_remove_style_all(badge);lv_obj_set_size(badge,294,28);kit_pos(badge,CX,293);

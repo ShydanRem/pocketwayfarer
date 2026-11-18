@@ -22,8 +22,9 @@ def inventory():
         tier=1 if c<8 else 2 if c<24 else 3
         parent=-1 if c<8 else family if c<24 else c-16
         writer.writerow([c,it,en,family,tier,parent,'base' if c<8 else 'A' if c%2==0 else 'B',
-                         'base_imported' if c<8 else 'explicit_family_reference','legacy_family_tier',
-                         'R2' if c<8 else 'R3' if c<24 else 'R4'])
+                         'base_imported' if c<8 else 'explicit_family_reference',
+                         'modular_exact_class' if c<8 else 'legacy_family_tier',
+                         'R5' if c<8 else 'R3' if c<24 else 'R4'])
     return out.getvalue()
 
 

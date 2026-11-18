@@ -18,6 +18,14 @@ typedef struct gfx_entry {
     struct gfx_entry *next;
 } gfx_entry;
 static gfx_entry *cache;
+typedef struct cleanup_entry { void (*fn)(void); struct cleanup_entry *next; } cleanup_entry;
+static cleanup_entry *cleanups;
+void gfx_on_scene_release(void (*fn)(void)) {
+    for (cleanup_entry *e = cleanups; e; e = e->next) if (e->fn == fn) return;
+    cleanup_entry *e = malloc(sizeof *e);
+    LV_ASSERT_MALLOC(e);
+    e->fn = fn; e->next = cleanups; cleanups = e;
+}
 
 static void expand(const wf_sprite *s, int scale, gfx_entry *e) {
     int w = s->w * scale, h = s->h * scale;
@@ -71,6 +79,7 @@ void gfx_release_screen(void) {
         wf_platform_big_free(entry->buf);
         free(entry);
     }
+    for (cleanup_entry *e = cleanups; e; e = e->next) e->fn();
 }
 
 

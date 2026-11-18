@@ -10,7 +10,7 @@ Un RPG fantasy HD-2D per **Waveshare ESP32-S3-Touch-AMOLED-1.75**, con schermo r
 
 **[Roadmap operativa](docs/ROADMAP.md)** · [Stato del lotto attivo](docs/roadmap/STATUS.md) · [Direzione artistica delle 40 classi](docs/CLASS-ART-BIBLE.md)
 
-> **0.4.1-preview.1** — Atlante delle 40 classi, otto nuove illustrazioni base e roadmap operativa. Include le correzioni di cerchio, input e risveglio. UI verificata su PC e firmware compilato per ESP32-S3; il nuovo build deve ancora essere collaudato sul Pocket fisico. [Roadmap](docs/ROADMAP.md) · [Ricerca grafica](docs/ART-CLARITY.md) · [Audit dei difetti](docs/DEVICE-AUDIT-2026-11-17.md).
+> **0.5.0-preview.1** — Otto avatar modulari per le classi base, con aspetto personale e oggetti equipaggiati; atlante delle 40 classi e roadmap operativa. Include le correzioni di cerchio, input e risveglio. UI verificata su PC e firmware compilato per ESP32-S3; il nuovo build deve ancora essere collaudato sul Pocket fisico. [Roadmap](docs/ROADMAP.md) · [Prove del rig](docs/roadmap/rig-evidence/README.md).
 
 ## Sul Pocket, in pochi passaggi
 
@@ -41,6 +41,10 @@ Il pacchetto include firmware, grafica e font: non servono compilazione, microSD
 La Sentinella protegge e prepara, il Piromante applica bruciatura, il Predone sfrutta la Preparazione. Affondi, rinculo, parata perfetta ed effetti distinti rispettano pausa e movimento ridotto. Nel borgo trovi mappa, bestiario, collezione e opzioni IT/EN.
 
 Da **… → Classi** consulti anche le 40 classi classiche, le loro abilità e i percorsi di evoluzione. Le otto basi hanno nuove illustrazioni; le evoluzioni indicano quando mostrano il ritratto della famiglia. L'atlante non cambia il tuo eroe e resta distinto dai tre assetti della spedizione.
+
+Nel Classico, le otto basi usano anche i nuovi avatar modulari: razza, pelle, capelli, occhi, volto e oggetti restano quelli del tuo eroe. Le 32 evoluzioni conservano temporaneamente la grafica precedente. La tavola seguente mostra il renderer LVGL in uno studio di verifica, non un nuovo luogo giocabile.
+
+![Otto avatar base nel renderer nativo](docs/img/hero_rig/otto-avatar-base.png)
 
 ## Controlli essenziali
 
@@ -86,3 +90,5 @@ I difetti dell’audit su incontri interrotti, missioni oro/sociali, morale e bo
 La suite comprende 55.639 controlli RPG, 1.434 del compagno, 600 spedizioni simulate e 49 catture native Lanternbound con 432 salvataggi validati. Tre ulteriori catture verificano il cerchio con frame da 120 ms. L'atlante aggiunge 80 schede IT/EN e 17 catture, con 208 riferimenti alle abilità e 16 percorsi verificati. Include sanitizer, errori di input/salvataggio, cache, dialoghi, migrazione v1/v2/v3 e confronto del rendering aggiornato con quello completo. [Log e limiti](docs/lantern-evidence/README.md), [prove R1](docs/roadmap/evidence/README.md). Sono verifiche del codice e dei percorsi esercitati, non misure di autonomia o coinvolgimento dei giocatori.
 
 Gli atlas HD-2D originali e i font hanno [sorgenti, prompt e registro](assets/lantern/README.md). [Crediti e licenze dei componenti](THIRD_PARTY.md). L’installazione dal browser si ispira al percorso di [TamaPoke](https://socquique.github.io/TamaPoke/web/) e usa ESP Web Tools; non copia firmware o contenuti del gioco. L’infrastruttura hardware deriva dal lavoro su [PocketD-D](https://github.com/ShydanRem/PocketD-D), senza contenuti o regole D&D.
+
+R2 aggiunge 61.440 combinazioni estetiche, 89.768 composizioni, 147 catture native e prove di continuità/cache con sanitizer. [Prove e limiti R2](docs/roadmap/rig-evidence/README.md) · [Sorgenti del rig](assets/hero-rig/README.md).

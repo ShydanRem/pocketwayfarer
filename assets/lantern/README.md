@@ -21,7 +21,7 @@ Enemy rows are not equally tall. `source/prism/layout.json` records row boundari
 
 ## Retained historical sources
 
-The five original atlases remain unchanged under `source/`: `environments.png` (`exec-f932f43c-0eaf-4502-ba85-43d41fa58164.png`), `actors.png` (`exec-92d3614e-be85-4976-bbed-c69fe97c7c52.png`), `loadouts.png` (`exec-edea722c-2502-4dcb-a968-a4153bcf5ee6.png`), `bestiary.png` (`exec-1cb4119f-5c42-4925-bb72-d4b115a76af7.png`) and the still-active relics. Their hashes remain in `manifest.json`; active replacement hashes are under `active_prism_sources`. They are provenance/history, not all active game imagery. The classic game's 40 classes and paper-doll combinations retain their prior artwork.
+The five original atlases remain unchanged under `source/`: `environments.png` (`exec-f932f43c-0eaf-4502-ba85-43d41fa58164.png`), `actors.png` (`exec-92d3614e-be85-4976-bbed-c69fe97c7c52.png`), `loadouts.png` (`exec-edea722c-2502-4dcb-a968-a4153bcf5ee6.png`), `bestiary.png` (`exec-1cb4119f-5c42-4925-bb72-d4b115a76af7.png`) and the still-active relics. Their hashes remain in `manifest.json`; active replacement hashes are under `active_prism_sources`. They are provenance/history, not all active game imagery. This describes the 0.4 baseline. R2 subsequently replaces the eight classic base avatars with the [modular hero rig](../hero-rig/README.md); advanced/master avatars retain the legacy renderer.
 
 ## Fonts, checks and limits
 
