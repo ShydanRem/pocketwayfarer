@@ -1,0 +1,1 @@
+hero rig: layers=88 frames=180336 comparisons=58568 joint_rows=12160 full_cosmetics=122880 sibling_checks=400 min_sibling_alpha=143 foot_rows=83..84 failures=0

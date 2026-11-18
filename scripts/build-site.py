@@ -23,8 +23,8 @@ SCREENS = {
     'assetti-e-guardiano': 'assetti-e-guardiano',
     'confronto-reliquie': '47-confronto-reliquie',
 }
-CLASS_SCREENS = {'classi': 'otto-classi-base', 'arciere': '03-classe-02'}
-RIG_SCREENS = {'avatar-base': 'otto-avatar-base'}
+CLASS_SCREENS = {'classi': 'otto-classi-base', 'arciere': '03-classe-02', 'classi-avanzate-a':'otto-classi-avanzate-a'}
+RIG_SCREENS = {'avatar-base': 'otto-avatar-base', 'avatar-avanzate-a':'otto-avatar-avanzate-a'}
 
 
 def manual_html():
@@ -70,6 +70,8 @@ def roadmap_html():
     body=re.sub(r'href="([^"]+)"',source_link,body)
     body=body.replace('src="img/classes/otto-classi-base.png"','src="assets/screens/classi.png" loading="lazy"')
     body=body.replace('src="img/hero_rig/otto-avatar-base.png"','src="assets/screens/avatar-base.png" loading="lazy"')
+    body=body.replace('src="img/hero_rig/otto-avatar-avanzate-a.png"','src="assets/screens/avatar-avanzate-a.png" loading="lazy"')
+    body=body.replace('src="img/classes/otto-classi-avanzate-a.png"','src="assets/screens/classi-avanzate-a.png" loading="lazy"')
     return body.replace('<table>','<div class="table-wrap"><table>').replace('</table>','</table></div>')
 
 

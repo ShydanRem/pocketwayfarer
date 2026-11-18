@@ -55,12 +55,12 @@ def check(base, commit):
         data, mime = get(name)
         assert data and 'javascript' in mime, name + ': invalid module response'
     source_root=Path(__file__).resolve().parents[1]
-    for name,source in [('borgo','docs/img/lantern/02-borgo.png'),('classi','docs/img/classes/otto-classi-base.png'),('avatar-base','docs/img/hero_rig/otto-avatar-base.png')]:
+    for name,source in [('borgo','docs/img/lantern/02-borgo.png'),('classi','docs/img/classes/otto-classi-base.png'),('avatar-base','docs/img/hero_rig/otto-avatar-base.png'),('avatar-avanzate-a','docs/img/hero_rig/otto-avatar-avanzate-a.png'),('classi-avanzate-a','docs/img/classes/otto-classi-avanzate-a.png')]:
         data,mime=get('assets/screens/'+name+'.png')
         assert data.startswith(b'\x89PNG\r\n\x1a\n') and 'image/png' in mime, 'Missing native screenshot'
         assert hashlib.sha256(data).digest()==hashlib.sha256((source_root/source).read_bytes()).digest(), 'Stale native screenshot'
     print(f'Public site passed: {base}, commit {commit}, {release["version"]}; '
-          '4 HTML documents, JavaScript modules, 3 exact native screenshots, 3 firmware SHA-256 hashes and complete ZIP')
+          '4 HTML documents, JavaScript modules, 5 exact native screenshots, 3 firmware SHA-256 hashes and complete ZIP')
 
 
 if __name__ == '__main__':

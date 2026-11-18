@@ -1,0 +1,23 @@
+ESP Web Tools 10.5.2: 26 local files verified
+Firmware 0.6.0-preview.1: 3 verified parts, 3504752 app bytes, save partition excluded
+Static site ready: /workspace/pocketwayfarer/build/site
+Site: 4 accessible HTML documents, local links/anchors/assets/modules, complete ZIP and 3 firmware hashes passed
+.........
+----------------------------------------------------------------------
+Ran 9 tests in 0.241s
+
+OK
+Firmware 0.6.0-preview.1: 3 verified parts, 3504752 app bytes, save partition excluded
+✔ actual packaged firmware verifies chip, embedded version, all hashes and save layout (28.310862ms)
+✔ unsupported board, version/path injection, missing parts, overlaps and wrong layout fail before flashing (1.172393ms)
+✔ truncated or modified bytes are rejected even if the HTTP request succeeded (5.165878ms)
+✔ self-consistent hashes cannot hide a wrong chip, app version or save partition table (72.863137ms)
+✔ manifest uses verified Blob bytes, correct offsets, erase opt-in and no Wi-Fi provisioning (67.540878ms)
+ℹ tests 5
+ℹ suites 0
+ℹ pass 5
+ℹ fail 0
+ℹ cancelled 0
+ℹ skipped 0
+ℹ todo 0
+ℹ duration_ms 254.608529

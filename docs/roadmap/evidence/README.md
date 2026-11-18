@@ -13,3 +13,5 @@ Le 17 [catture native](../../img/classes/galleria.png) includono otto basi, evol
 La pubblicazione verifica quattro documenti HTML, moduli JavaScript, due immagini native contro i file sorgenti, tre hash firmware e ZIP completo via HTTP. Il risultato effettivo è nel [workflow di build e pubblicazione](https://github.com/ShydanRem/pocketwayfarer/actions/workflows/pages.yml); il file `release.json` dell'installer identifica commit e versione distribuiti.
 
 Questi controlli non misurano precisione fisica del touch, latenza, autonomia, consumo, stabilità prolungata o divertimento. La roadmap mantiene il gate hardware separato.
+
+Nota storica: i log sopra descrivono la consegna originale. La directory delle immagini viene ampliata dalle versioni successive; lo stato corrente e i nuovi conteggi sono nelle [prove R3.1](../advanced-a-evidence/README.md).

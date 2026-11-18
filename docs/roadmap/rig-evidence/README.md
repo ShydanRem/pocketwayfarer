@@ -65,3 +65,5 @@ consumi, autonomia o stabilità prolungata sul Pocket. Sorgenti, prompt, hash e
 ordine dei componenti: [registro del rig](../../../assets/hero-rig/README.md).
 Installer e download sono ricostruiti e controllati via HTTP dal
 [workflow](https://github.com/ShydanRem/pocketwayfarer/actions/workflows/pages.yml).
+
+Nota storica: i log sopra descrivono la consegna originale. La directory delle immagini viene ampliata dalle versioni successive; lo stato corrente e i nuovi conteggi sono nelle [prove R3.1](../advanced-a-evidence/README.md).

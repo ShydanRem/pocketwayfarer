@@ -68,7 +68,7 @@ static bool waiting_for_input(void) {
 static void update_vitals(void) {
     r_vitals_update(B.hp_arc, B.sp_arc, B.b.h.hp, B.b.h.st.max_hp, B.b.h.sp, B.b.h.st.max_sp);
     char buf[48];
-    snprintf(buf, sizeof buf, "%s %ld/%ld · %s %ld", TR("PV", "HP"), (long)B.b.h.hp, (long)B.b.h.st.max_hp, TR("PM", "SP"), (long)B.b.h.sp);
+    snprintf(buf, sizeof buf, "%s %ld/%ld\n%s %ld", TR("PV", "HP"), (long)B.b.h.hp, (long)B.b.h.st.max_hp, TR("PM", "SP"), (long)B.b.h.sp);
     lv_label_set_text(B.vitals, buf);
 }
 
@@ -553,12 +553,12 @@ void scr_battle(void) {
     hero_look_from_game(&B.look, &R.g);
     bool modern=hero_uses_rig(&B.look);B.hero_y=modern?344:352;
     static const int xs[3][3] = {{CX, 0, 0}, {140, 326, 0}, {112, CX, 354}};
-    static const int feet_old[3][3] = {{292, 0, 0}, {290, 290, 0}, {296, 272, 296}};
-    static const int feet_new[3][3] = {{210, 0, 0}, {220,220,0}, {228,204,228}};
-    const int (*feet)[3]=modern?feet_new:feet_old;
+    /* The separated battle layout also applies to legacy costume fallbacks:
+     * their old single-foe bar crossed the player's weapon/body at y300. */
+    static const int feet[3][3] = {{210, 0, 0}, {220,220,0}, {228,204,228}};
     for (int i = 0; i < n; i++) {
         const rpg_foe *f = &B.b.foe[i];
-        B.scale[i] = modern?2:n >= 2 && !f->boss ? 2 : 3;
+        B.scale[i] = 2;
         B.foe_x[i] = xs[n - 1][i];
         int sh = rpg_monsters[f->species][0].h * B.scale[i];
         B.foe_y[i] = feet[n - 1][i] - sh / 2 + 4;
@@ -580,7 +580,10 @@ void scr_battle(void) {
     B.avatar_phase=-1;
     if(!modern)kit_bob(B.hero, 3, 1500);
     r_vitals_arcs(B.scr, &B.hp_arc, &B.sp_arc);
-    B.vitals = kit_label(B.scr, &wf_font_small, COL_TEXT, "", CX, 446);
+    B.vitals = kit_label(B.scr, &wf_font_small, COL_TEXT, "", CX, 444);
+    /* Two compact 14px ink rows fit the circular footer even when HP/SP grow.
+     * A single long line at y446 clipped the three-digit advanced profiles. */
+    lv_obj_set_style_text_line_space(B.vitals,-8,0);
     B.marker = kit_img(B.scr, ri(RI_STAR), 2, 0, 0);
     kit_bob(B.marker, 5, 600);
     static const struct { int icon, x, y, size; uint32_t color; } btn[6] = {
@@ -588,9 +591,9 @@ void scr_battle(void) {
         {RI_SHIELD, 374, 280, 66, 0x3a7ae8}, {RI_RUN, 66, 196, 48, COL_PANEL_HI}, {RI_AUTO, 400, 196, 48, COL_PANEL_HI},
     };
     for (int i = 0; i < 6; i++) {
-        int x=modern && i==1?108:modern && i==2?358:btn[i].x;
+        int x=i==1?108:i==2?358:btn[i].x;
         /* Leave levels attached to their targets, including elite Lv99. */
-        bool side=modern && (i==0 || i==3);
+        bool side=i==0 || i==3;
         B.buttons[i] = kit_round_button(B.scr, ri(btn[i].icon), NULL, x, side?302:btn[i].y, side?60:btn[i].size, btn[i].color, on_button, i);
         lv_obj_set_style_bg_color(B.buttons[i], lv_color_lighten(lv_color_hex(btn[i].color), 40), 0);
     }

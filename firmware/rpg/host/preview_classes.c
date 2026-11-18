@@ -2,6 +2,7 @@
 #define main gameplay_preview_main
 #include "preview_lantern.c"
 #undef main
+#include "art/class_art.h"
 
 static void assert_button_bounds(lv_obj_t *o) {
     lv_area_t a,b;lv_obj_get_coords(o,&a);lv_obj_get_coords(lv_obj_get_child(o,0),&b);
@@ -16,7 +17,7 @@ static void click_visible(lv_obj_t *o) {
 }
 static void assert_card(int c) {
     assert(R.screen==R_CLASS_ATLAS && find(lv_screen_active(),TX(rpg_class(c)->name)));
-    assert(find(lv_screen_active(),c<8?TR("Illustrazione di classe","Class illustration"):TR("Ritratto della famiglia","Family illustration")));
+    assert(find(lv_screen_active(),c<CLASS_ART_COUNT?TR("Illustrazione di classe","Class illustration"):TR("Ritratto della famiglia","Family illustration")));
     char counter[80];snprintf(counter,sizeof counter,"%d/40  ·  %s %d",c+1,TR("Grado","Tier"),rpg_class_tier(c));
     assert(find(lv_screen_active(),counter));
     lv_obj_update_layout(lv_screen_active());
@@ -50,10 +51,10 @@ int main(int argc,char **argv) {
         wf_lang=language;press("...");press(TR("Classi","Classes"));
         for(int c=0;c<RPG_CLASS_COUNT;c++) {
             assert_card(c);
-            if(!language && (c<8 || c==24 || c==39)) {
+            if(!language && (c<CLASS_ART_COUNT || c==24 || c==39)) {
                 char name[80];snprintf(name,sizeof name,"classe-%02d",c);shot(name);
             }
-            if(language && (c==2 || c==4 || c==6 || c==7 || c==28)) {
+            if(language && (c==2 || c==4 || c==6 || c==7 || c==28 || (c>=8 && c<CLASS_ART_COUNT))) {
                 char name[80];snprintf(name,sizeof name,"class-%02d-english",c);shot(name);
             }
             press(TR("Abilità","Skills"));
@@ -94,6 +95,6 @@ int main(int argc,char **argv) {
     wf_lang=0;
     puts("class atlas:80 bilingual cards,208 local skill references,16 family paths, wraparound, scrolled nodes, touch/BOOT close and PWR hooks: passed");
     puts("read-only: real class,cosmetics,equipment,skills,expedition and expected time simulation unchanged; no atlas save/reward: passed");
-    printf("class atlas:%d native captures; image buffers peak%zu bytes; eight illustrations,32 explicit family references\n",shots,peak_image_bytes);
+    printf("class atlas:%d native captures; image buffers peak%zu bytes; sixteen illustrations,24 explicit family references\n",shots,peak_image_bytes);
     return 0;
 }

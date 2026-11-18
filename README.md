@@ -10,7 +10,7 @@ Un RPG fantasy HD-2D per **Waveshare ESP32-S3-Touch-AMOLED-1.75**, con schermo r
 
 **[Roadmap operativa](docs/ROADMAP.md)** · [Stato del lotto attivo](docs/roadmap/STATUS.md) · [Direzione artistica delle 40 classi](docs/CLASS-ART-BIBLE.md)
 
-> **0.5.0-preview.1** — Otto avatar modulari per le classi base, con aspetto personale e oggetti equipaggiati; atlante delle 40 classi e roadmap operativa. Include le correzioni di cerchio, input e risveglio. UI verificata su PC e firmware compilato per ESP32-S3; il nuovo build deve ancora essere collaudato sul Pocket fisico. [Roadmap](docs/ROADMAP.md) · [Prove del rig](docs/roadmap/rig-evidence/README.md).
+> **0.6.0-preview.1** — Otto nuove avanzate: 16/40 avatar modulari e 16 illustrazioni specifiche, con aspetto personale e oggetti conservati. Footer della battaglia corretto anche con valori grandi. [Roadmap](docs/ROADMAP.md) · [Prove R3.1](docs/roadmap/advanced-a-evidence/README.md). Il collaudo fisico resta aperto.
 
 ## Sul Pocket, in pochi passaggi
 
@@ -42,7 +42,7 @@ La Sentinella protegge e prepara, il Piromante applica bruciatura, il Predone sf
 
 Da **… → Classi** consulti anche le 40 classi classiche, le loro abilità e i percorsi di evoluzione. Le otto basi hanno nuove illustrazioni; le evoluzioni indicano quando mostrano il ritratto della famiglia. L'atlante non cambia il tuo eroe e resta distinto dai tre assetti della spedizione.
 
-Nel Classico, le otto basi usano anche i nuovi avatar modulari: razza, pelle, capelli, occhi, volto e oggetti restano quelli del tuo eroe. Le 32 evoluzioni conservano temporaneamente la grafica precedente. La tavola seguente mostra il renderer LVGL in uno studio di verifica, non un nuovo luogo giocabile.
+Nel Classico, le otto basi e le prime otto avanzate usano i nuovi avatar modulari: razza, pelle, capelli, occhi, volto e oggetti restano quelli del tuo eroe. Le altre 24 classi conservano temporaneamente la grafica precedente. La tavola seguente mostra il renderer LVGL in uno studio di verifica, non un nuovo luogo giocabile.
 
 ![Otto avatar base nel renderer nativo](docs/img/hero_rig/otto-avatar-base.png)
 
@@ -92,3 +92,9 @@ La suite comprende 55.639 controlli RPG, 1.434 del compagno, 600 spedizioni simu
 Gli atlas HD-2D originali e i font hanno [sorgenti, prompt e registro](assets/lantern/README.md). [Crediti e licenze dei componenti](THIRD_PARTY.md). L’installazione dal browser si ispira al percorso di [TamaPoke](https://socquique.github.io/TamaPoke/web/) e usa ESP Web Tools; non copia firmware o contenuti del gioco. L’infrastruttura hardware deriva dal lavoro su [PocketD-D](https://github.com/ShydanRem/PocketD-D), senza contenuti o regole D&D.
 
 R2 aggiunge 61.440 combinazioni estetiche, 89.768 composizioni, 147 catture native e prove di continuità/cache con sanitizer. [Prove e limiti R2](docs/roadmap/rig-evidence/README.md) · [Sorgenti del rig](assets/hero-rig/README.md).
+
+Le prime otto avanzate ora hanno anche una propria illustrazione nell’atlante e un costume personale distinto dal ramo fratello.
+
+![Otto avatar avanzati nel renderer nativo](docs/img/hero_rig/otto-avatar-avanzate-a.png)
+
+R3.1 verifica 122.880 combinazioni estetiche e promozioni touch IT/EN con equipaggiamento conservato. [Prove e limiti](docs/roadmap/advanced-a-evidence/README.md).

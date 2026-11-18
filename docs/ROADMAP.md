@@ -10,6 +10,10 @@ Un lotto è completato quando entra nel gioco, supera i controlli pertinenti e d
 
 ## Stato reale di partenza
 
+**Consegna R3.1 /0.6.0-preview.1:**16/40 avatar modulari e16 illustrazioni specifiche: otto basi più Cavaliere, Berserker, Elementalista, Arcanista, Ramingo, Cecchino, Assassino e Duellante. Le altre24 classi restano nel trattamento precedente. R3.1 è chiuso; R3.2 completa le altre otto avanzate. [Prove R3.1](roadmap/advanced-a-evidence/README.md).
+
+![Prime otto avanzate: studio nativo del rig, non nuova scena giocabile](img/hero_rig/otto-avatar-avanzate-a.png)
+
 **Avanzamento R2 / 0.5.0-preview.1:** le otto basi ora hanno avatar modulari nel Classico, oltre alle illustrazioni dell'atlante. Personalizzazione, oggetti visibili e salvataggi v4 conservati; 147 catture native e 61.440 combinazioni estetiche verificate. Le 32 evoluzioni restano nel renderer precedente. [Prove R2 e limiti](roadmap/rig-evidence/README.md).
 
 ![Otto avatar base: studio del renderer LVGL, non nuovo luogo giocabile](img/hero_rig/otto-avatar-base.png)
@@ -36,7 +40,7 @@ Il primo incremento della roadmap aggiunge **otto illustrazioni base nell'atlant
 | R0 — baseline e collaudo | `0.4.0-preview.1` | Preservare le correzioni; raccogliere misure fisiche quando possibile | Regressioni sempre verdi; collaudo fisico registrato separatamente, senza dedurlo dai test PC |
 | **R1 — atlante e otto classi base / 0.4.1-preview** | R0 host | Otto illustrazioni, 40 schede, abilità e alberi consultabili; roadmap e registro | 80 schede IT/EN, 16 percorsi di famiglia e input reali verificati; eroe/salvataggio invariati; firmware e sito verificati |
 | **R2 — avatar modulare e otto basi / 0.5-preview: completato su host** | R1 | Otto costumi base nel mondo, rig e canali estetici/equipaggiamento | Catture reali, continuità, cache e sanitizer verificati; collaudo fisico separato |
-| R3 — sedici avanzate / 0.6-preview | R2 | Due lotti da otto, con rami A/B distinti | Ogni ramo riconoscibile anche in grigio e con copricapo equipaggiato; regole di classe invariate |
+| R3 — sedici avanzate / 0.6-preview: R3.1 verificato, R3.2 aperto | R2 | Due lotti da otto, con rami A/B distinti | Ogni ramo riconoscibile anche in grigio e con copricapo equipaggiato; regole di classe invariate |
 | R4 — sedici maestre / 0.7-preview | R3 | Due lotti da otto, con identità propria | 40/40 identità modulari e relativo materiale di presentazione, senza riempitivi conteggiati come completati |
 | R5 — mondo e interfaccia / 0.8-preview | R2; R3/R4 per relativo abito | Creazione, eroe, classi, equipaggiamento, città, campi/dungeon e mostri coerenti | Percorso completo in italiano/inglese, controlli circolari raggiungibili e immagini confrontate sul renderer |
 | R6 — varietà e progressione / 0.9-preview | R4 + parte giocabile R5 | Scelte di percorso, nemici, eventi e ricompense rifinite | Difficoltà simulata e provata da persone; nuove strutture persistenti solo con migrazione esplicita |

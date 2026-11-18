@@ -1,0 +1,8 @@
+asset,origin,source,license_or_terms,modifications,verification
+outfits,OpenAI ImageGen,source/outfits.png,Applicable generation-tool terms; no stock license asserted,Registered nearest-neighbor; semantic RGB565 palette; alpha128,Deterministic import and native rig tests; physical-device test pending
+heads,OpenAI ImageGen,source/heads.png,Applicable generation-tool terms; no stock license asserted,Registered nearest-neighbor; semantic RGB565 palette; alpha128,Deterministic import and native rig tests; physical-device test pending
+hair,OpenAI ImageGen,source/hair.png,Applicable generation-tool terms; no stock license asserted,Registered nearest-neighbor; semantic RGB565 palette; alpha128,Deterministic import and native rig tests; physical-device test pending
+gear,OpenAI ImageGen,source/gear.png,Applicable generation-tool terms; no stock license asserted,Registered nearest-neighbor; semantic RGB565 palette; alpha128,Deterministic import and native rig tests; physical-device test pending
+hats,OpenAI ImageGen,source/hats.png,Applicable generation-tool terms; no stock license asserted,Registered nearest-neighbor; semantic RGB565 palette; alpha128,Deterministic import and native rig tests; physical-device test pending
+advanced-a-outfits,OpenAI ImageGen,source/advanced-a-outfits.png,Applicable generation-tool terms; no stock license asserted,Registered nearest-neighbor; semantic RGB565 palette; alpha128,Deterministic import and native rig tests; physical-device test pending
+advanced-a-hats,OpenAI ImageGen,source/advanced-a-hats.png,Applicable generation-tool terms; no stock license asserted,Registered nearest-neighbor; semantic RGB565 palette; alpha128,Deterministic import and native rig tests; physical-device test pending

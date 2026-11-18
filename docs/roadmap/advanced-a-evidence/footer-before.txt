@@ -1,0 +1,9 @@
+PV 428/428 · PM 65 center_y446 clipped_opaque_glyph_pixels=29
+PV 428/428 · PM 65 center_y440 clipped_opaque_glyph_pixels=0
+PV 428/428 · PM 65 center_y434 clipped_opaque_glyph_pixels=0
+PV 245/245 · PM 167 center_y446 clipped_opaque_glyph_pixels=29
+PV 245/245 · PM 167 center_y440 clipped_opaque_glyph_pixels=4
+PV 245/245 · PM 167 center_y434 clipped_opaque_glyph_pixels=0
+PV 89/89 · PM 17 center_y446 clipped_opaque_glyph_pixels=0
+PV 89/89 · PM 17 center_y440 clipped_opaque_glyph_pixels=0
+PV 89/89 · PM 17 center_y434 clipped_opaque_glyph_pixels=0

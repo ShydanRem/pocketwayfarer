@@ -1,6 +1,6 @@
 /* Pure 88x88 rig properties; no platform, save, LVGL runtime or screenshot stubs.
- * --full additionally visits all 7680 cosmetics for each of the eight candidate
- * base classes; raw renderer coverage does not itself admit a class to the UI. */
+ * --full additionally visits all 7680 cosmetics for each candidate class;
+ * raw renderer coverage does not itself admit a class to the UI. */
 #include <stdbool.h>
 #include <stdint.h>
 #include <stdio.h>
@@ -11,15 +11,17 @@
 enum { GRID = 88, PIXELS = GRID * GRID, NO_HAT = 0xfe, EMPTY = 0xff };
 typedef struct { uint16_t rgb[PIXELS]; uint8_t alpha[PIXELS]; } image;
 static unsigned failures, frames, comparisons, layers_checked, full_cosmetics, joint_rows;
+static unsigned sibling_checks, minimum_sibling_alpha = PIXELS;
 static unsigned minimum_foot = GRID, maximum_foot;
 
 #define CHECK(condition, ...) do { if (!(condition)) { \
     if (failures < 24) { fprintf(stderr, "FAIL: "); fprintf(stderr, __VA_ARGS__); fputc('\n', stderr); } \
     failures++; } } while (0)
 
-static hero_look bare_look(unsigned family, unsigned race) {
+static hero_look bare_look(unsigned class_id, unsigned race) {
     hero_look l = {0};
-    l.class_id = l.fam = (uint8_t)family; l.race = (uint8_t)race;
+    l.class_id = (uint8_t)class_id; l.fam = rig_class_families[class_id];
+    l.tier = rig_class_tiers[class_id]; l.race = (uint8_t)race;
     l.weapon = l.off = EMPTY; l.head = NO_HAT;
     return l;
 }
@@ -82,7 +84,13 @@ static void metadata(void) {
     _Static_assert(IT_SWORD == 0 && IT_KNUCKLE == 6 && IT_SCYTHE == 8,"weapon indices changed");
     _Static_assert(IT_SHIELD == 9 && IT_QUIVER == 10 && IT_TOME == 11 && IT_CHARM == 12,"off-hand indices changed");
     _Static_assert(IT_HELM == 13 && IT_HOOD == 14 && IT_CIRCLET == 15,"head indices changed");
-    for (unsigned f = 0; f < FAM_COUNT; f++) {
+    _Static_assert(HERO_RIG_CLASS_COUNT == 16,"update the explicit class metadata contract for the next batch");
+    for (unsigned f = 0; f < HERO_RIG_CLASS_COUNT; f++) {
+        /* Freeze core IDs: bases0..7; advanced siblings8/9,10/11,12/13,14/15. */
+        unsigned expected_family = f < FAM_COUNT ? f : (f-FAM_COUNT)/2;
+        unsigned expected_tier = f < FAM_COUNT ? 0 : 1;
+        CHECK(rig_class_families[f] == expected_family && rig_class_tiers[f] == expected_tier,
+              "metadata disagrees with core IDs class=%u family=%u tier=%u",f,rig_class_families[f],rig_class_tiers[f]);
         check_layer(&rig_costumes[f],3); check_layer(&rig_hats[f],3);
         for (unsigned hand = 0; hand < 2; hand++)
             CHECK(rig_hand_mounts[f][hand][0] > 0 && rig_hand_mounts[f][hand][0] < GRID &&
@@ -97,7 +105,7 @@ static void metadata(void) {
 
 static void geometry(void) {
     image idle, frame, repeat;
-    for (unsigned f = 0; f < FAM_COUNT; f++) for (unsigned r = 0; r < RACE_COUNT; r++)
+    for (unsigned f = 0; f < HERO_RIG_CLASS_COUNT; f++) for (unsigned r = 0; r < RACE_COUNT; r++)
     for (unsigned skin = 0; skin < 5; skin++) for (unsigned body = 0; body < 2; body++)
     for (unsigned expression = 0; expression < 4; expression++) {
         hero_look l = bare_look(f,r);
@@ -124,7 +132,7 @@ static bool occupied_body_row(const image *im,unsigned y) {
 
 static void joint_continuity(void) {
     image idle, frame;
-    for (unsigned f = 0; f < FAM_COUNT; f++) for (unsigned r = 0; r < RACE_COUNT; r++) {
+    for (unsigned f = 0; f < HERO_RIG_CLASS_COUNT; f++) for (unsigned r = 0; r < RACE_COUNT; r++) {
         hero_look l = bare_look(f,r); /* No weapon/offhand/hat to hide the seam. */
         compose(&l,HX_IDLE,HP_IDLE,&idle);
         for (int pose = HP_IDLE; pose < HP_COUNT; pose++) {
@@ -142,10 +150,10 @@ static void joint_continuity(void) {
 }
 
 static void visible_channels(void) {
-    image variants[8], baseline, changed;
+    image variants[HERO_RIG_CLASS_COUNT], baseline, changed;
     static const char *names[] = {"skin","hair style","hair color","eyes","lashes"};
     static const unsigned counts[] = {5,6,8,4,2};
-    for (unsigned f = 0; f < FAM_COUNT; f++) for (unsigned r = 0; r < RACE_COUNT; r++) {
+    for (unsigned f = 0; f < HERO_RIG_CLASS_COUNT; f++) for (unsigned r = 0; r < RACE_COUNT; r++) {
         for (unsigned channel = 0; channel < 5; channel++) {
             for (unsigned value = 0; value < counts[channel]; value++) {
                 hero_look l = bare_look(f,r); /* idle/open face, no class hat/gear */
@@ -175,16 +183,43 @@ static void visible_channels(void) {
         }
     }
     /* Different class IDs must select different costumes even without a hat. */
-    for (unsigned f = 0; f < FAM_COUNT; f++) {
+    for (unsigned f = 0; f < HERO_RIG_CLASS_COUNT; f++) {
         hero_look l = bare_look(f,RACE_HUMAN); compose(&l,HX_IDLE,HP_IDLE,&variants[f]);
         for (unsigned prior = 0; prior < f; prior++)
             CHECK(differs(&variants[prior],&variants[f],35,78),"costumes indistinguishable class=%u/%u",prior,f);
     }
 }
 
+static void sibling_identity(void) {
+    image first, second;
+    static const uint8_t siblings[][2] = {{8,9},{10,11},{12,13},{14,15}};
+    for (unsigned pair = 0; pair < sizeof siblings/sizeof siblings[0]; pair++)
+    for (unsigned race = 0; race < RACE_COUNT; race++)
+    for (unsigned tier = 0; tier < RPG_TIERS; tier++)
+    for (int pose = HP_IDLE; pose < HP_COUNT; pose++) {
+        hero_look a = bare_look(siblings[pair][0],race);
+        hero_look b = bare_look(siblings[pair][1],race);
+        a.head = b.head = IT_HELM; a.head_tier = b.head_tier = (uint8_t)tier;
+        a.skin = b.skin = (uint8_t)(race%5); a.hair_color = b.hair_color = 2;
+        compose(&a,HX_IDLE,pose,&first); compose(&b,HX_IDLE,pose,&second);
+        CHECK(a.fam == b.fam && a.tier == b.tier,"siblings assigned different family/tier");
+        CHECK(differs(&first,&second,35,78),"siblings share costume below helmet class=%u/%u race=%u pose=%d",
+              a.class_id,b.class_id,race,pose);
+        unsigned alpha_pixels = 0;
+        for (unsigned y = 35; y < 78; y++) for (unsigned x = 0; x < GRID; x++)
+            if (first.alpha[y*GRID+x] != second.alpha[y*GRID+x]) alpha_pixels++;
+        /* Require a body-outline difference beyond a handful of edge pixels.
+         * Shared owned helmet and absent hand gear cannot supply branch identity. */
+        CHECK(alpha_pixels >= 16,"siblings lack distinct silhouette class=%u/%u race=%u pose=%d alpha_pixels=%u",
+              a.class_id,b.class_id,race,pose,alpha_pixels);
+        if (alpha_pixels < minimum_sibling_alpha) minimum_sibling_alpha = alpha_pixels;
+        sibling_checks++;
+    }
+}
+
 static void equipment(void) {
     image bare, frame, tiers[RPG_TIERS];
-    for (unsigned f = 0; f < FAM_COUNT; f++) for (unsigned r = 0; r < RACE_COUNT; r++) {
+    for (unsigned f = 0; f < HERO_RIG_CLASS_COUNT; f++) for (unsigned r = 0; r < RACE_COUNT; r++) {
         hero_look l = bare_look(f,r); compose(&l,HX_IDLE,HP_IDLE,&bare);
         for (unsigned item = IT_SWORD; item <= IT_CIRCLET; item++) {
             for (unsigned tier = 0; tier < RPG_TIERS; tier++) {
@@ -211,7 +246,7 @@ static void equipment(void) {
 
 static void full(void) {
     image frame;
-    for (unsigned f = 0; f < FAM_COUNT; f++) for (unsigned r = 0; r < RACE_COUNT; r++)
+    for (unsigned f = 0; f < HERO_RIG_CLASS_COUNT; f++) for (unsigned r = 0; r < RACE_COUNT; r++)
     for (unsigned skin = 0; skin < 5; skin++) for (unsigned hair = 0; hair < 6; hair++)
     for (unsigned color = 0; color < 8; color++) for (unsigned eyes = 0; eyes < 4; eyes++)
     for (unsigned body = 0; body < 2; body++) {
@@ -220,15 +255,16 @@ static void full(void) {
         l.eyes = (uint8_t)eyes; l.body = (uint8_t)body;
         compose(&l,HX_IDLE,HP_IDLE,&frame); full_cosmetics++;
     }
-    CHECK(full_cosmetics == FAM_COUNT*7680,"incomplete cosmetics enumeration: %u",full_cosmetics);
+    CHECK(full_cosmetics == HERO_RIG_CLASS_COUNT*7680,"incomplete cosmetics enumeration: %u",full_cosmetics);
 }
 
 int main(int argc,char **argv) {
     bool exhaustive = argc == 2 && !strcmp(argv[1],"--full");
     if (argc > 1 && !exhaustive) { fprintf(stderr,"usage: %s [--full]\n",argv[0]); return 2; }
-    metadata(); geometry(); joint_continuity(); visible_channels(); equipment();
+    metadata(); geometry(); joint_continuity(); visible_channels(); sibling_identity(); equipment();
     if (exhaustive) full();
-    printf("hero rig: layers=%u frames=%u comparisons=%u joint_rows=%u full_cosmetics=%u foot_rows=%u..%u failures=%u\n",
-           layers_checked,frames,comparisons,joint_rows,full_cosmetics,minimum_foot,maximum_foot,failures);
+    printf("hero rig: layers=%u frames=%u comparisons=%u joint_rows=%u full_cosmetics=%u sibling_checks=%u min_sibling_alpha=%u foot_rows=%u..%u failures=%u\n",
+           layers_checked,frames,comparisons,joint_rows,full_cosmetics,sibling_checks,minimum_sibling_alpha,
+           minimum_foot,maximum_foot,failures);
     return failures ? 1 : 0;
 }

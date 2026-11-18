@@ -12,7 +12,10 @@ static const uint32_t eye_colors[4]={0x6a3a1a,0x3a7ad8,0x3a9a4a,0x8a4ad8};
 static const uint32_t metal_colors[5]={0xc88a4a,0x9aa0b0,0xc8d0e0,0x9ad8e8,0xf4e0a0};
 static const uint32_t wood_colors[5]={0xa8703a,0xc89a5a,0x8a4a2a,0x4a3a3a,0xd8d8ff};
 
-bool hero_uses_rig(const hero_look *l) { return l->class_id<FAM_COUNT && l->fam==l->class_id && !l->tier; }
+bool hero_uses_rig(const hero_look *l) {
+    return l->class_id<HERO_RIG_CLASS_COUNT && l->fam==rig_class_families[l->class_id] &&
+           l->tier==rig_class_tiers[l->class_id];
+}
 int hero_size(const hero_look *l,int preset) {
     if(preset<1) preset=1;
     if(preset>3) preset=3;

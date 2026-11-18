@@ -1,5 +1,13 @@
 # Note di versione
 
+## 0.6.0-preview.1 — 18 novembre 2026
+
+- R3.1: Cavaliere, Berserker, Elementalista, Arcanista, Ramingo, Cecchino, Assassino e Duellante hanno costumi modulari e illustrazioni specifiche. Copertura reale: 16/40 avatar e 16/40 illustrazioni; le altre 24 classi restano esplicitamente nel trattamento precedente.
+- Mapping per ID esatto con metadata famiglia/grado; aspetto, equipaggiamento e salvataggi v4 conservati. Rami fratelli distinguibili sotto lo stesso elmo, senza dipendere dal colore o dall'arma.
+- Verifiche dedicate: 122.880 combinazioni estetiche, 180.336 composizioni, 400 confronti di sagoma dei fratelli; 281 catture del rig, 33 dell'atlante e 24 delle promozioni. Sedici promozioni touch IT/EN, 32 soglie respinte e 16 salvataggi riletti.
+- Corretto il footer della battaglia che tagliava PV/PM a tre cifre: due righe leggibili, con 71.556 pixel di glifi verificati dentro il cerchio e sotto i piedi. Layout nemici/comandi separato anche per i costumi legacy, la cui barra del nemico singolo attraversava l'eroe.
+- Suite, sanitizer e build ESP32-S3 verificati; pacchetto e documentazione aggiornati. Pose ancora parametriche preliminari e collaudo fisico aperto. [Prove R3.1](docs/roadmap/advanced-a-evidence/README.md).
+
 ## 0.5.0-preview.1 — 18 novembre 2026
 
 - Nuovi avatar modulari per tutte le otto classi base classiche: costumi distinti, quattro razze, cinque carnagioni, sei capelli/otto colori, occhi e variante del volto conservati. Mapping per ID classe esatto, senza cambiare save v4 o regole delle classi.

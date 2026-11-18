@@ -1,0 +1,2 @@
+promotions:16 real touch changes, 32 rejected thresholds, 16 save v4 hero roundtrips, IT/EN cosmetics/owned gear preserved; 8 sibling comparisons under same helm passed
+promotions:24 native captures; peak527240 image bytes; studio views do not change owned equipment
