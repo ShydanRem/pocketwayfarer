@@ -1,0 +1,17 @@
+{
+  "date": "2026-11-18",
+  "milestone": "R2-modular-base-avatars",
+  "app_version": "0.5.0-preview.1",
+  "target": "ESP32-S3",
+  "idf_version": "5.5.1",
+  "bytes": 3419904,
+  "sha256": "5eed6a758ea82b8e51142be18578cd5c88553b586322c6967a92507e2dc24416",
+  "app_partition_bytes": 6291456,
+  "save_version": 4,
+  "save_bytes": 2808,
+  "physical_device_tested": false,
+  "native_captures": 147,
+  "new_modular_avatars": 8,
+  "cosmetic_combinations": 61440,
+  "peak_host_image_bytes": 788618
+}

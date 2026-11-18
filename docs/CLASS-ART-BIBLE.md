@@ -39,6 +39,8 @@ Definire e provare l'ordine: cappa/oggetti posteriori → corpo → volto → ab
 
 Non estendere semplicemente il canvas 48→88 mantenendo scale e coordinate attuali. Prima una scena completa con due famiglie, poi il lotto da otto. Nessun descrittore di immagine mostrato deve essere sovrascritto da una cache. Le versioni legacy si rimuovono solo quando il percorso sostitutivo copre i chiamanti e supera le regressioni.
 
+**Contratto R2 implementato:** canvas 88×88, preset mondo 176, scheda 88, mappa 44 pixel. Costume esatto per ID base; testa/volto, capelli, pelle e occhi indipendenti. Copricapo posseduto sostituisce quello della classe. Arma/mano secondaria/testa sono i tre canali visibili; torso, piedi e accessori non introducono livelli grafici nuovi. La falce viene composta davanti all'abito ma dietro testa/capelli per conservare il volto in attacco. Quiver solidale al torso. Respiro con overlap al giunto della vita; piedi fermi nelle cinque pose parametriche. Le animazioni finali con maschere specifiche degli arti restano R7. [Sorgenti e trasformazioni](../assets/hero-rig/README.md).
+
 ## Checklist per accettare un lotto
 
 - Sorgenti, prompt, identità del generatore e trasformazioni registrati.

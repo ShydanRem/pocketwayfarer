@@ -102,7 +102,7 @@ static const uint8_t start_off[FAM_COUNT] = {IT_SHIELD, IT_TOME, IT_QUIVER, IT_C
 static void draft_look(hero_look *l) {
     memset(l, 0, sizeof *l);
     l->race = draft.race; l->skin = draft.skin; l->eyes = draft.eyes; l->hair = draft.hair;
-    l->hair_color = draft.hair_color; l->body = draft.body; l->fam = draft.cls; l->tier = 0;
+    l->hair_color = draft.hair_color; l->body = draft.body; l->fam = draft.cls; l->tier = 0; l->class_id = draft.cls;
     l->weapon = start_weapon[draft.cls]; l->off = start_off[draft.cls]; l->head = 0xff;
 }
 
@@ -209,6 +209,8 @@ void scr_create(void) {
 }
 
 void create_tick(void) {
+    static uint32_t pose_at;
+    if(lv_tick_get()-pose_at>=700) { pose_at=lv_tick_get();hero_obj_pose(c_hero,(pose_at/700)&1?HP_BREATH:HP_IDLE); }
     if ((int32_t)(lv_tick_get() - c_blink) < 0) return;
     hero_look l;
     draft_look(&l);
@@ -357,8 +359,8 @@ void scr_town_classic(void) {
     hero_look l;
     hero_look_from_game(&l, &R.g);
     fx_shadow(s, CX, 352, 90);
-    t_hero = hero_obj(s, &l, HX_IDLE, 3, CX, 286);
-    kit_bob(t_hero, 3, 1500);
+    t_hero = hero_obj(s, &l, HX_IDLE, 3, CX, 352-hero_foot_offset(&l,3));
+    if(!hero_uses_rig(&l))kit_bob(t_hero, 3, 1500);
     /* Hub buttons around the hero. */
     static const struct { int icon; wf_text name; int screen; int x, y; uint32_t color; } hub[] = {
         {RI_MAP, {"Mappa", "Map"}, R_MAP, 92, 196, 0x3aba6a},
@@ -391,6 +393,8 @@ void scr_town_classic(void) {
 
 void town_tick(void) {
     uint32_t t = lv_tick_get();
+    static uint32_t pose_at;
+    if(t-pose_at>=700) { pose_at=t;hero_obj_pose(t_hero,(t/700)&1?HP_BREATH:HP_IDLE); }
     if ((int32_t)(t - t_blink) >= 0) {
         hero_look l;
         hero_look_from_game(&l, &R.g);

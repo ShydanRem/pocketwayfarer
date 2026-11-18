@@ -1,0 +1,1 @@
+hero cache: 40 stable pinned descriptors,1000 bounded live swaps,shared refs,pin promotion,copied keys,allocation failure,scene cleanup and fresh render: passed

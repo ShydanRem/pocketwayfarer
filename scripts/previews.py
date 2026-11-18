@@ -4,6 +4,7 @@
   python3 scripts/previews.py <ppm_dir> <png_dir>
 """
 import sys
+import re
 from pathlib import Path
 
 from PIL import Image, ImageDraw
@@ -14,10 +15,10 @@ mask = Image.new('L', (466, 466), 0)
 ImageDraw.Draw(mask).ellipse((0, 0, 465, 465), fill=255)
 shots = []
 stems = {p.stem for p in src.glob('*.ppm')}
-for old in dst.glob('[0-9][0-9]-*.png'):
-    if old.stem not in stems:
+for old in dst.glob('*.png'):
+    if re.match(r'^\d+-',old.name) and old.stem not in stems:
         old.unlink()
-for ppm in sorted(src.glob('*.ppm')):
+for ppm in sorted(src.glob('*.ppm'),key=lambda p:int(p.stem.split('-')[0])):
     im = Image.open(ppm).convert('RGB')
     out = Image.new('RGBA', (466, 466), (0, 0, 0, 0))
     out.paste(im, (0, 0), mask)
@@ -32,6 +33,14 @@ if shots:
     for i, s in enumerate(shots):
         sheet.alpha_composite(s.resize((tile - 10, tile - 10), Image.LANCZOS), ((i % cols) * tile + 5, (i // cols) * tile + 5))
     sheet.save(dst / 'galleria.png')
+    if dst.name == 'hero_rig':
+        base=sorted(dst.glob('*-studio-??-0-0.png'),key=lambda p:int(p.stem.split('-')[2]))
+        if len(base)==8:
+            overview=Image.new('RGBA',(1960,980),(16,24,32,255))
+            for i,p in enumerate(base):
+                overview.alpha_composite(Image.open(p).convert('RGBA'),((i%4)*490+12,(i//4)*490+12))
+            overview.save(dst/'otto-avatar-base.png')
+            overview.convert('LA').convert('RGBA').save(dst/'otto-avatar-grigio.png')
     if dst.name == 'classes':
         base = sorted(p for p in dst.glob('*-classe-??.png') if int(p.stem[-2:]) < 8)
         if len(base) == 8:

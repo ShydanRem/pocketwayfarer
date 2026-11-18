@@ -99,3 +99,9 @@ Da **Borgo → … → Classi** puoi sfogliare tutte le 40 classi, consultarne a
 ![Arciere nell’atlante nativo](img/classes/03-classe-02.png)
 
 Le frecce scorrono le schede; **Percorso** apre i cinque nodi della famiglia, selezionabili dopo lo scorrimento. **Abilità** mostra i dati della classe. **Chiudi** resta fisso sotto il dettaglio; BOOT chiude prima il dettaglio e poi torna al borgo. Consultare non assegna oggetti, abilità o livelli e non cambia classe: il passaggio resta disponibile da **Classico → Eroe → Classe** con i requisiti previsti.
+
+## Il tuo personaggio nel Classico
+
+Le otto classi base usano nuovi avatar modulari: scegli razza, carnagione, capelli, occhi e volto nella creazione. Arma, mano secondaria e testa mostrano gli oggetti equipaggiati; senza un oggetto alla testa appare il copricapo della classe. Torso, piedi e accessori influiscono sulle statistiche ma non hanno ancora livelli grafici separati.
+
+Le 32 evoluzioni mantengono per ora il trattamento precedente; non perdi i dati estetici passando di classe. L'illustrazione nell'atlante resta un rappresentante separato. Le pose del nuovo avatar sono preliminari; **Movimento ridotto** mantiene la posa di riposo.

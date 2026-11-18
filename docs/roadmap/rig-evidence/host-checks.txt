@@ -1,0 +1,43 @@
+art: up to date
+rpg art: up to date
+lantern art: 52 assets up to date
+class art: eight base illustrations up to date
+hero rig:8 costumes,32 heads,6 hairstyles up to date
+class ledger:40 IDs,8 families,16 advanced and16 master paths checked
+device input: wake guards, I2C failures, press-edge timing, debounce, long press and tick wrap: passed
+rpg: 55639 checks passed
+relic exchange: all 20 three-slot loadouts, both offers, owned/unowned targets, atomic failures, skip and save/reload: passed
+coach/feedback: actual learning, miss/retry, opt-out, exact actor/damage, resonance and burn: passed
+lantern miss: 0/24 0/24 0/24
+lantern good: 20/24 16/24 15/24
+lantern great: 24/24 24/24 24/24
+lantern perfect: 24/24 24/24 24/24
+600 runs: baseline, all starting relics x loadouts x eight seeds x skip/replace, and 24 no-relic wins; all bestiary entries: passed
+lantern: 52393 save/resume snapshots, 51509 rule transitions passed
+morale: minute updates and offline hour agree (98/98)
+gold: fractional payouts survive reload, accumulate and saturate safely
+quests: unavailable social goals excluded and existing unclaimed goals repaired
+classic fight: interrupted transaction restores consumables, vitals and actual parent room
+boss: v3 transaction and v2 orphan migration both leave the encounter reachable
+idle haul: full bag rejects atomically, gear remains claimable and cannot be claimed twice
+v2 run migration and equipped blueprint/bestiary persistence: passed
+v3 migration: exact profile/run retained; v4 coaching and effects roundtrip: passed
+reliability: all audit regressions passed
+core: 1434 checks passed
+hero cache: 40 stable pinned descriptors,1000 bounded live swaps,shared refs,pin promotion,copied keys,allocation failure,scene cleanup and fresh render: passed
+hero rig: layers=72 frames=89768 comparisons=29052 joint_rows=6080 full_cosmetics=61440 foot_rows=83..84 failures=0
+120ms frames: shrinking circle 430 -> 262 -> 162px, then normal parry/impact/choice progression: passed
+touch and BOOT press before app tick: cached620 +80ms judges actual700ms PERFECT for both: passed
+expired timing press is consumed once, never applied to the next phase or converted into pause: passed
+80ms save excluded from new phase; 20s sleep preserves elapsed; early BOOT in650ms readiness ignored: passed
+physical key registers activity; paused/route/reward surfaces allow idle-off without immediate re-sleep: passed
+failed durable commit preserves dirty state and retries successfully after3s: passed
+toast address reuse deletes no unrelated widgets; all220 icon/scale entries retain descriptors; scene frees all image bytes: passed
+44 item dialogs: 176 action targets scrolled and clicked; 67 off-panel clicks rejected: passed
+all42 gem species plus Close: final species reached by touch scrolling and socketed: passed
+device UI regressions: 3 native timing captures; no physical latency claim
+34 previews -> build/qa-r2/rpg
+27 previews -> build/qa-r2/pet
+49 previews -> build/qa-r2/lantern
+17 previews -> build/qa-r2/classes
+147 previews -> build/qa-r2/hero_rig

@@ -61,17 +61,20 @@ void scr_equip(void) {
     hero_look l;
     hero_look_from_game(&l, &R.g);
     hero_obj(s, &l, HX_IDLE, 3, CX, 222);
-    static const int pos[SLOT_COUNT][2] = {{96, 230}, {370, 230}, {CX, 96}, {150, 336}, {316, 336}, {130, 130}, {336, 130}};
+    const int lower=hero_uses_rig(&l)?344:336,left=hero_uses_rig(&l)?110:130,right=hero_uses_rig(&l)?356:336;
+    const int pos[SLOT_COUNT][2] = {{96, 230}, {370, 230}, {CX, 96}, {150, lower}, {316, lower}, {left, 130}, {right, 130}};
     for (int i = 0; i < SLOT_COUNT; i++) {
         item_button(s, &R.g.hero.equip[i], pos[i][0], pos[i][1], 66, on_slot, i);
-        if (rpg_item_empty(&R.g.hero.equip[i]))
-            kit_label(s, &wf_font_small, COL_DIM, TX(slot_names[i]), pos[i][0], pos[i][1]);
+        if (rpg_item_empty(&R.g.hero.equip[i])) {
+            lv_obj_t *caption=kit_label(s, &wf_font_small, COL_DIM, TX(slot_names[i]), pos[i][0], pos[i][1]);
+            lv_obj_set_width(caption,58);lv_label_set_long_mode(caption,LV_LABEL_LONG_WRAP);kit_pos(caption,pos[i][0],pos[i][1]);
+        }
     }
     rpg_stats st;
     rpg_stats_get(&R.g, &st);
     char buf[64];
     snprintf(buf, sizeof buf, "ATK %ld · MATK %ld · %s %ld", (long)st.atk, (long)st.matk, TR("DIF", "DEF"), (long)st.def);
-    kit_label(s, &wf_font_small, COL_ENERGY, buf, CX, 380);
+    kit_label(s, &wf_font_small, COL_ENERGY, buf, CX, hero_uses_rig(&l)?392:380);
     kit_text_button(s, TR("Zaino", "Bag"), CX + 62, 428, 110, 44, COL_BTN, on_go, R_BAG);
     kit_round_button(s, ri(RI_BACK), NULL, CX - 50, 428, 48, COL_PANEL_HI, on_go, R_TOWN);
 }

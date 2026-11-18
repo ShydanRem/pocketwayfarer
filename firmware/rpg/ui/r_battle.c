@@ -14,7 +14,7 @@ static struct {
     int phase, after;
     uint32_t phase_at, next_ev_at;
     int ev_index;
-    int target;
+    int target,hero_y;
     rpg_action pending;
     bool skill_ring;
     lv_obj_t *scr, *foe_img[RPG_MAX_FOES], *foe_bar[RPG_MAX_FOES], *foe_lbl[RPG_MAX_FOES], *marker;
@@ -25,10 +25,12 @@ static struct {
     hero_look look;
     uint32_t suspended_at, ready_until;
     bool suspended;
+    int avatar_phase;
+    uint32_t avatar_clock;
 } B;
 
 #define HERO_X CX
-#define HERO_Y 352
+#define HERO_Y (B.hero_y)
 
 void r_start_battle(const rpg_foe *foes, int n, bool dungeon, bool boss) {
     rpg_classic_begin(&R.g);
@@ -144,6 +146,7 @@ static int play(const rpg_event *e) {
     case EV_HIT:
     case EV_CRIT_HIT:
         if (e->actor < 0 || e->actor == 3) {
+            if(e->actor<0)hero_obj_set_pose(B.hero,&B.look,HX_IDLE,3,HP_ATTACK);
             lv_obj_t *t = B.foe_img[e->target];
             lunge(e->actor == 3 && B.summon ? B.summon : B.hero, (B.foe_x[e->target] - HERO_X) / 4, -40);
             fx_sparks(B.scr, tx(e->target), ty(e->target) + 10, e->kind == EV_CRIT_HIT ? 0xffd060 : 0xfff0d0,
@@ -172,7 +175,7 @@ static int play(const rpg_event *e) {
         lv_obj_set_style_image_recolor(B.hero, lv_color_hex(0xff4a4a), 0);
         kit_flash(B.hero, 0xff4a4a, 260);
         kit_shake(B.hero, 6);
-        hero_face(HX_HURT, 0);
+        hero_obj_set_pose(B.hero,&B.look,e->quality==3?HX_IDLE:HX_HURT,3,e->quality==3?HP_GUARD:HP_HIT);
         snprintf(buf, sizeof buf, "-%ld", (long)e->value);
         kit_float_text(B.scr, buf, e->value ? COL_BAD : COL_ENERGY, &wf_font_big, HERO_X + 40, HERO_Y - 70);
         if (e->quality == 3) kit_float_text(B.scr, TR("Parata perfetta!", "Perfect parry!"), COL_GOLD, &wf_font_small, HERO_X, HERO_Y - 110);
@@ -252,6 +255,7 @@ static int play(const rpg_event *e) {
         if (!B.b.h.summon_turns && B.summon) fade_out(B.summon);
         return 380;
     case EV_GUARD:
+        hero_obj_set_pose(B.hero,&B.look,HX_IDLE,3,HP_GUARD);
         kit_burst(B.scr, ri(RI_SHIELD), HERO_X, HERO_Y - 30, 2);
         update_vitals();
         return 300;
@@ -546,11 +550,15 @@ void scr_battle(void) {
     B.skill_layer = NULL;
     B.end_dlg = B.item_dlg = NULL;
     int n = B.b.nfoes;
+    hero_look_from_game(&B.look, &R.g);
+    bool modern=hero_uses_rig(&B.look);B.hero_y=modern?344:352;
     static const int xs[3][3] = {{CX, 0, 0}, {140, 326, 0}, {112, CX, 354}};
-    static const int feet[3][3] = {{292, 0, 0}, {290, 290, 0}, {296, 272, 296}};
+    static const int feet_old[3][3] = {{292, 0, 0}, {290, 290, 0}, {296, 272, 296}};
+    static const int feet_new[3][3] = {{210, 0, 0}, {220,220,0}, {228,204,228}};
+    const int (*feet)[3]=modern?feet_new:feet_old;
     for (int i = 0; i < n; i++) {
         const rpg_foe *f = &B.b.foe[i];
-        B.scale[i] = n >= 2 && !f->boss ? 2 : 3;
+        B.scale[i] = modern?2:n >= 2 && !f->boss ? 2 : 3;
         B.foe_x[i] = xs[n - 1][i];
         int sh = rpg_monsters[f->species][0].h * B.scale[i];
         B.foe_y[i] = feet[n - 1][i] - sh / 2 + 4;
@@ -567,10 +575,10 @@ void scr_battle(void) {
         snprintf(buf, sizeof buf, "%sLv%d", f->elite ? "\xe2\x98\x85" : "", f->level);
         B.foe_lbl[i] = kit_label(B.scr, &wf_font_small, f->elite ? COL_GOLD : COL_TEXT, buf, B.foe_x[i], by + 18);
     }
-    hero_look_from_game(&B.look, &R.g);
-    fx_shadow(B.scr, HERO_X, HERO_Y + 66, 90);
+    fx_shadow(B.scr, HERO_X, HERO_Y + hero_foot_offset(&B.look,3), 90);
     B.hero = hero_obj(B.scr, &B.look, HX_IDLE, 3, HERO_X, HERO_Y);
-    kit_bob(B.hero, 3, 1500);
+    B.avatar_phase=-1;
+    if(!modern)kit_bob(B.hero, 3, 1500);
     r_vitals_arcs(B.scr, &B.hp_arc, &B.sp_arc);
     B.vitals = kit_label(B.scr, &wf_font_small, COL_TEXT, "", CX, 446);
     B.marker = kit_img(B.scr, ri(RI_STAR), 2, 0, 0);
@@ -580,7 +588,10 @@ void scr_battle(void) {
         {RI_SHIELD, 374, 280, 66, 0x3a7ae8}, {RI_RUN, 66, 196, 48, COL_PANEL_HI}, {RI_AUTO, 400, 196, 48, COL_PANEL_HI},
     };
     for (int i = 0; i < 6; i++) {
-        B.buttons[i] = kit_round_button(B.scr, ri(btn[i].icon), NULL, btn[i].x, btn[i].y, btn[i].size, btn[i].color, on_button, i);
+        int x=modern && i==1?108:modern && i==2?358:btn[i].x;
+        /* Leave levels attached to their targets, including elite Lv99. */
+        bool side=modern && (i==0 || i==3);
+        B.buttons[i] = kit_round_button(B.scr, ri(btn[i].icon), NULL, x, side?302:btn[i].y, side?60:btn[i].size, btn[i].color, on_button, i);
         lv_obj_set_style_bg_color(B.buttons[i], lv_color_lighten(lv_color_hex(btn[i].color), 40), 0);
     }
     if (B.boss || B.dungeon) {
@@ -606,6 +617,13 @@ void scr_battle(void) {
 void battle_tick(void) {
     uint32_t t = lv_tick_get();
     if (waiting_for_input()) return;
+    if(B.phase==PH_CHOOSE || B.phase==PH_RING || B.phase==PH_PARRY) {
+        uint32_t clock=t/700;
+        if(B.avatar_phase!=B.phase || (B.phase==PH_CHOOSE && B.avatar_clock!=clock))
+            hero_obj_pose(B.hero,B.phase==PH_RING?HP_ATTACK:B.phase==PH_PARRY?HP_GUARD:clock&1?HP_BREATH:HP_IDLE);
+        B.avatar_clock=clock;
+    }
+    B.avatar_phase=B.phase;
     switch (B.phase) {
     case PH_INTRO:
         if (t - B.phase_at > 900) { set_info(NULL); hero_turn(); }
@@ -680,6 +698,7 @@ bool battle_key(int key) {
 int rpg_battle_ring_quality_now(void) { return B.phase == PH_RING ? ring_judge(&B.ring) : -1; }
 int rpg_battle_parry_quality_now(void) { return B.phase == PH_PARRY ? parry_judge(&B.parry) : -1; }
 int rpg_battle_phase(void) { return B.phase; }
+int rpg_battle_target_now(void) { return B.target; }
 
 void r_classic_suspend(void) {
     if (R.screen != R_BATTLE || B.suspended) return;

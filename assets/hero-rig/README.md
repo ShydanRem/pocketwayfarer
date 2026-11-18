@@ -1,0 +1,67 @@
+# Modular player rig — R2
+
+Original component sheets generated with OpenAI ImageGen on 2026-11-17. The
+unaltered RGBA sources and exact prompts are retained under `source/`. This is
+generated artwork, not hand-drawn production or extracted commercial game art.
+Use is recorded under the generation tool's applicable terms; no independent
+stock-library license is asserted. The project takes direction from illustrated
+pixel RPGs without including their characters, sprites or trademarks as assets.
+
+| File | Generation identity | Layout |
+|---|---|---|
+| `outfits.png` | `exec-7fa961ed-3196-4435-bb9d-2b4ef7f2a087.png` | 1774×887; 4 columns × 2 rows, headless costumes |
+| `heads.png` | `exec-1967ed7e-d830-4a19-aa32-dc382ff98aef.png` | 887×1774; 4 expressions × 8 race/face rows |
+| `hair.png` | `exec-029b93b6-4fec-4e39-a1c8-87cf2c812533.png` | 1536×1024; 3 columns × 2 rows |
+| `gear.png` | `exec-d34e40af-3545-4232-8158-694d6c41a30e.png` | 1254×1254; 4 columns × 4 rows |
+| `hats.png` | `exec-f4f9811d-6ac5-494c-8e2b-15c50c3270ec.png` | 1774×887; 4 columns × 2 rows |
+
+Costume/default-hat order is exact base class ID: Warrior, Mage, Archer, Rogue,
+Cleric, Monk, Artificer, Occultist. Heads use Human, Elf, Dwarf, Beastkin, each
+with standard/long-lash variants; columns are idle, blink, hurt, happy. Hair is
+short, spiky, long, ponytail, bob, braids. Eye, skin and hair colors come from
+the saved cosmetic channels. Expressions and component poses are independent.
+
+Gear follows the **actual `IT_*` enum**, not legacy offhand-relative indices:
+sword, axe, staff, bow, dagger, mace, knuckles, hammer, scythe, shield, quiver,
+tome, charm, helmet, hood, circlet. The five owned tiers tint metal and leather
+channels. The knuckle pair is separated mechanically into left/right mounts.
+Class hats are defaults; equipped headgear replaces them. Torso, feet and the
+two accessory slots still affect game statistics without separate visual
+layers. They are not claimed as completed visual channels.
+
+`scripts/build_hero_rig.py` performs deterministic import only: transparent cell
+validation, registration from technical magenta neck/grip markers, one nearest
+neighbor affine resample, alpha threshold 128, cropped indexed RGB565 palettes
+(112 quantization colors plus transparent entry) and semantic palette roles.
+The 88×88 rig uses neck `(44,32)` and nominal feet row 84; dwarf compression
+preserves the feet while moving the neck. Head and hair scales are shared.
+The hat sheet's uneven transparent gutters are measured in `source/layout.json`;
+the source is not cropped across opaque pixels. Local peg removal is restricted
+to the registration marker so purple fabric/gems remain intact.
+
+Palette roles: original, skin, iris, hair/fur, tier metal, tier leather/wood.
+Magenta skin on the source costumes is a technical recolor channel, not a
+visible runtime color. The Beastkin tail reuses the existing legacy component;
+the rest of the visible rig and gear comes from these new sheets. Hair is
+drawn behind the head and again above its front cutoff to preserve long styles.
+
+Idle, breath, attack, guard and hit use **parametric component offsets** on the
+registered costumes. These are not five separately authored full-body animation
+strips. Feet stay fixed; quivers follow the torso rather than the shield hand.
+Reduced motion forces the idle pose. Animation polish remains R7.
+
+The scythe is composited after clothing and before the head/hair so its crescent
+cannot hide the player's expression during attack. Other held items keep their
+foreground order. This is a renderer occlusion rule; the source PNG is intact.
+
+```sh
+python3 scripts/build_hero_rig.py
+python3 scripts/build_hero_rig.py --check
+```
+
+`manifest.json` records hashes, transforms, hand mounts and canvas geometry.
+Source conversion alone is not acceptance: see the native-renderer tests and
+[R2 evidence](../../docs/roadmap/rig-evidence/README.md). Advanced/master classes
+retain the explicit legacy fallback until their own exact-ID costumes pass the
+R3/R4 gates. This rig does not change save v4, class mechanics or Lanternbound's
+three separate loadouts.

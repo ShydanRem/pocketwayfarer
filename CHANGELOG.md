@@ -1,5 +1,13 @@
 # Note di versione
 
+## 0.5.0-preview.1 — 18 novembre 2026
+
+- Nuovi avatar modulari per tutte le otto classi base classiche: costumi distinti, quattro razze, cinque carnagioni, sei capelli/otto colori, occhi e variante del volto conservati. Mapping per ID classe esatto, senza cambiare save v4 o regole delle classi.
+- Armi, mano secondaria e copricapi coerenti con il rig e con gli oggetti realmente posseduti; cinque fasce di materiale. Gli altri slot restano statistici. Le 32 evoluzioni mantengono il renderer precedente fino ai lotti R3/R4.
+- Pose parametriche separate dalle espressioni: riposo/respiro, attacco, guardia e colpito. Movimento ridotto rispettato. Non sono ancora animazioni finali con maschere dedicate degli arti.
+- Cache con descrittori stabili e proprietà legata ai widget; nessuna crescita continua durante 1.000 cambi d'aspetto. Layout aggiornato in creazione, borgo, equipaggiamento e battaglia; livelli dei nemici e volto dell'Occultista non vengono coperti da comandi/falce.
+- 61.440 combinazioni estetiche, 89.768 composizioni e 147 catture native verificate, con controlli di continuità, input sui bersagli, salvataggi, pausa/ripresa e confronto del rendering. Dettagli e limiti nelle [prove R2](docs/roadmap/rig-evidence/README.md). Collaudo fisico ancora aperto.
+
 ## 0.4.1-preview.1 — 17 novembre 2026
 
 - Atlante consultabile da Borgo → … → Classi: 40 schede IT/EN, abilità proprie delle classi e otto alberi di evoluzione con nodi selezionabili.

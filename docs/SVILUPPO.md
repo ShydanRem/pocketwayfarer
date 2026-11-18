@@ -12,6 +12,7 @@ Il gioco principale è C11 con UI LVGL 9.4. Il target firmware è ESP32-S3; l’
 | `firmware/common/` | Toolkit, rendering, timing e interfaccia verso l’hardware. |
 | `firmware/main/` | Display, touch, tasti, RTC, NVS e ciclo ESP-IDF. |
 | `assets/lantern/` | Sorgenti grafici, prompt, font, licenze e manifest degli asset. |
+| `assets/hero-rig/` | Rig modulare classico: sorgenti, prompt, ancoraggi, palette semantiche e oggetti visibili. |
 | `web/` | Sito, manuale HTML e installer con ESP Web Tools distribuito e verificato localmente con il sito. |
 | `scripts/` | Importazione asset, test, packaging firmware e sito. |
 | `docs/` | Manuali correnti, evidenze e audit storici separati. |
@@ -51,7 +52,14 @@ Per rigenerare intenzionalmente i dati HD-2D:
 ```sh
 python3 scripts/build_lantern_art.py
 python3 scripts/build_lantern_art.py --check
+python3 scripts/build_hero_rig.py --check
 ```
+
+Il rig aggiunge `test_hero_rig --full` (61.440 combinazioni estetiche),
+`test_hero_cache` e `preview_hero_rig` (147 catture). La suite li esegue
+automaticamente; dettagli e configurazione sanitizer nelle
+[prove R2](roadmap/rig-evidence/README.md). Le scene Studio del rig sono
+strumenti di verifica del renderer, non nuove schermate giocabili.
 
 Mantieni insieme sorgenti, prompt, licenze e manifest. Non sovrascrivere gli originali per correggere un difetto dell’importatore.
 

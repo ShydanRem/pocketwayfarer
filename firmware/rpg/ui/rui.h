@@ -42,16 +42,22 @@ lv_obj_t *r_scene(int scene);
 /* Hero picture --------------------------------------------------------------- */
 typedef struct {
     uint8_t race, skin, eyes, hair, hair_color, body;
-    uint8_t fam, tier;
+    uint8_t fam, tier, class_id; /* exact transient UI key; never serialized */
     uint8_t weapon, weapon_tier;      /* IT_* weapon or 0xff */
     uint8_t off, off_tier;            /* IT_* off-hand or 0xff */
     uint8_t head, head_tier;          /* IT_* head item or 0xff */
 } hero_look;
 enum { HX_IDLE, HX_BLINK, HX_HURT, HX_HAPPY };
+enum { HP_IDLE, HP_BREATH, HP_ATTACK, HP_GUARD, HP_HIT, HP_COUNT };
+bool hero_uses_rig(const hero_look *l);
+int hero_size(const hero_look *l, int preset);
+int hero_foot_offset(const hero_look *l, int preset);
 void hero_look_from_game(hero_look *l, const rpg_game *g);
 const lv_image_dsc_t *hero_image(const hero_look *l, int expr, int scale);
 lv_obj_t *hero_obj(lv_obj_t *parent, const hero_look *l, int expr, int scale, int x, int y);
 void hero_obj_set(lv_obj_t *img, const hero_look *l, int expr, int scale);
+void hero_obj_set_pose(lv_obj_t *img, const hero_look *l, int expr, int preset, int pose);
+void hero_obj_pose(lv_obj_t *img, int pose);
 
 /* Shared bits --------------------------------------------------------------- */
 uint32_t rarity_color(int r);

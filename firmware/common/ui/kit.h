@@ -36,6 +36,7 @@ LV_FONT_DECLARE(wf_font_huge)
 /* ---- Kit ------------------------------------------------------------------ */
 const lv_image_dsc_t *gfx_sprite(const wf_sprite *s, int scale);
 void gfx_release_screen(void);      /* after old widgets are deleted: frees all scene expansions */
+void gfx_on_scene_release(void (*cleanup)(void)); /* register once; duplicates ignored */
 /* New active screen with an optional full-screen scene (156x156 art shown at 3x). */
 lv_obj_t *kit_screen(const wf_sprite *scene);
 lv_obj_t *kit_img(lv_obj_t *parent, const wf_sprite *s, int scale, int x, int y);

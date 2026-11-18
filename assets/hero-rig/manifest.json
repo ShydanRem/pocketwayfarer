@@ -1,0 +1,191 @@
+{
+  "grid": [
+    88,
+    88
+  ],
+  "feet": 84,
+  "neck": [
+    44,
+    32
+  ],
+  "heads_scale": 0.09819855657214298,
+  "hair_scale": 0.05705061499600003,
+  "body_transforms": [
+    {
+      "component": "costume0",
+      "anchor": [
+        225.24766355140187,
+        109.51168224299066
+      ],
+      "scale": 0.16856391962615408
+    },
+    {
+      "component": "costume1",
+      "anchor": [
+        226.125,
+        111.61475409836065
+      ],
+      "scale": 0.16972096631798603
+    },
+    {
+      "component": "costume2",
+      "anchor": [
+        224.33898305084745,
+        108.8547215496368
+      ],
+      "scale": 0.16820570658771744
+    },
+    {
+      "component": "costume3",
+      "anchor": [
+        225.80516431924883,
+        108.99765258215963
+      ],
+      "scale": 0.16828351122421847
+    },
+    {
+      "component": "costume4",
+      "anchor": [
+        225.4159779614325,
+        106.62809917355372
+      ],
+      "scale": 0.1670028665463425
+    },
+    {
+      "component": "costume5",
+      "anchor": [
+        224.75647668393782,
+        111.30569948186529
+      ],
+      "scale": 0.16954993918097042
+    },
+    {
+      "component": "costume6",
+      "anchor": [
+        225.6863354037267,
+        105.972049689441
+      ],
+      "scale": 0.16665173728265306
+    },
+    {
+      "component": "costume7",
+      "anchor": [
+        225.76385542168674,
+        107.38795180722892
+      ],
+      "scale": 0.16741140693849685
+    }
+  ],
+  "hand_mounts": [
+    [
+      [
+        33,
+        56
+      ],
+      [
+        56,
+        55
+      ]
+    ],
+    [
+      [
+        32,
+        56
+      ],
+      [
+        56,
+        55
+      ]
+    ],
+    [
+      [
+        32,
+        56
+      ],
+      [
+        56,
+        55
+      ]
+    ],
+    [
+      [
+        32,
+        56
+      ],
+      [
+        56,
+        55
+      ]
+    ],
+    [
+      [
+        32,
+        56
+      ],
+      [
+        56,
+        55
+      ]
+    ],
+    [
+      [
+        32,
+        55
+      ],
+      [
+        56,
+        55
+      ]
+    ],
+    [
+      [
+        32,
+        56
+      ],
+      [
+        56,
+        55
+      ]
+    ],
+    [
+      [
+        32,
+        56
+      ],
+      [
+        56,
+        55
+      ]
+    ]
+  ],
+  "sources": {
+    "gear-prompt.txt": "5ceed86a3b3f2ce14157f4fadd2bb1e9d84770d68c53f74dbe68b64733c8c5b2",
+    "gear.png": "97e352d636cf19557a3d0595fd58ddeba7f82a2f39176e21b88f66c55738ccc7",
+    "hair-prompt.txt": "a97bdd77e99be4675f97f6637cc82673d6f62fb0a3253d1bdc385760cc063b0b",
+    "hair.png": "8f9de24c752fe7b4767fd899fdadcd82320a208802ee502f23821ae74f8466fb",
+    "hats-prompt.txt": "40f3b35b6d7e3f53161b539436edd25610d962a9b18c70379038403ea9dce2e2",
+    "hats.png": "de86755b799e8c3b1b128151bd388b1f5c551c02ca94380444c1567b7d27afa7",
+    "heads-prompt.txt": "3f0ddc953050ffdad6c4fc0a3732a03b902117509ff31de56a38ee8b80c1b948",
+    "heads.png": "7b9d2a3b3baa97f9d7dd88108fdebf7ff1eecd117f18311d2ed9e026da43e3f7",
+    "layout.json": "eb242a9459233ae7e8c13edc87f3125d2157e751b853d32bb2b6e1bd0cec3f0b",
+    "outfits-prompt.txt": "d1cad56d90b97d7cc0d3de316cf11779979e8b733a0784cb9a3bd52a0b0d3fe1",
+    "outfits.png": "1a3722d356c27b387ed83ee586a97d95e4deac385e94b3ad8052f9cadbd74b6e"
+  },
+  "transforms": [
+    "registration pegs",
+    "inverse affine nearest-neighbor",
+    "alpha128",
+    "palette112",
+    "RGB565",
+    "semantic palette channels"
+  ],
+  "semantic_roles": {
+    "0": "original",
+    "1": "skin",
+    "2": "iris",
+    "3": "hair/fur",
+    "4": "metal tier",
+    "5": "wood/leather tier"
+  },
+  "physical_device_tested": false
+}
