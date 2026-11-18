@@ -1,6 +1,6 @@
-# Modular player rig — R2
+# Modular player rig — R2 and R3.1
 
-Original component sheets generated with OpenAI ImageGen on 2026-11-17. The
+Original component sheets generated with OpenAI ImageGen on 2026-11-17 (bases) and 2026-11-18 (R3.1). The
 unaltered RGBA sources and exact prompts are retained under `source/`. This is
 generated artwork, not hand-drawn production or extracted commercial game art.
 Use is recorded under the generation tool's applicable terms; no independent
@@ -9,11 +9,13 @@ pixel RPGs without including their characters, sprites or trademarks as assets.
 
 | File | Generation identity | Layout |
 |---|---|---|
-| `outfits.png` | `exec-7fa961ed-3196-4435-bb9d-2b4ef7f2a087.png` | 1774×887; 4 columns × 2 rows, headless costumes |
-| `heads.png` | `exec-1967ed7e-d830-4a19-aa32-dc382ff98aef.png` | 887×1774; 4 expressions × 8 race/face rows |
-| `hair.png` | `exec-029b93b6-4fec-4e39-a1c8-87cf2c812533.png` | 1536×1024; 3 columns × 2 rows |
-| `gear.png` | `exec-d34e40af-3545-4232-8158-694d6c41a30e.png` | 1254×1254; 4 columns × 4 rows |
-| `hats.png` | `exec-f4f9811d-6ac5-494c-8e2b-15c50c3270ec.png` | 1774×887; 4 columns × 2 rows |
+| `outfits.png` | `exec-7fa961ed-3196-4435-bb9d-2b4ef7f2a087.png` | 1774 × 887; 4 columns × 2 rows, headless costumes |
+| `heads.png` | `exec-1967ed7e-d830-4a19-aa32-dc382ff98aef.png` | 887 × 1774; 4 expressions × 8 race/face rows |
+| `hair.png` | `exec-029b93b6-4fec-4e39-a1c8-87cf2c812533.png` | 1536 × 1024; 3 columns × 2 rows |
+| `gear.png` | `exec-d34e40af-3545-4232-8158-694d6c41a30e.png` | 1254 × 1254; 4 columns × 4 rows |
+| `hats.png` | `exec-f4f9811d-6ac5-494c-8e2b-15c50c3270ec.png` | 1774 × 887; 4 columns × 2 rows |
+| `advanced-a-outfits.png` | `exec-cf2f6ff0-215e-4707-ad48-e6d7bc4ea9b9.png` | 1774 × 887; 4 × 2 costumes, IDs 8–15 |
+| `advanced-a-hats.png` | `exec-7607961a-bc90-4e06-8222-7557c6171fa1.png` | 1774 × 887; 4 × 2 headwear, IDs 8–15 |
 
 Costume/default-hat order is exact base class ID: Warrior, Mage, Archer, Rogue,
 Cleric, Monk, Artificer, Occultist. Heads use Human, Elf, Dwarf, Beastkin, each
@@ -33,7 +35,7 @@ layers. They are not claimed as completed visual channels.
 validation, registration from technical magenta neck/grip markers, one nearest
 neighbor affine resample, alpha threshold 128, cropped indexed RGB565 palettes
 (112 quantization colors plus transparent entry) and semantic palette roles.
-The 88×88 rig uses neck `(44,32)` and nominal feet row 84; dwarf compression
+The 88 × 88 rig uses neck `(44, 32)` and nominal feet row 84; dwarf compression
 preserves the feet while moving the neck. Head and hair scales are shared.
 The hat sheet's uneven transparent gutters are measured in `source/layout.json`;
 the source is not cropped across opaque pixels. Local peg removal is restricted
@@ -61,7 +63,8 @@ python3 scripts/build_hero_rig.py --check
 
 `manifest.json` records hashes, transforms, hand mounts and canvas geometry.
 Source conversion alone is not acceptance: see the native-renderer tests and
-[R2 evidence](../../docs/roadmap/rig-evidence/README.md). Advanced/master classes
-retain the explicit legacy fallback until their own exact-ID costumes pass the
-R3/R4 gates. This rig does not change save v4, class mechanics or Lanternbound's
+[R2 evidence](../../docs/roadmap/rig-evidence/README.md). The remaining eight advanced and sixteen master classes retain the explicit
+legacy fallback until their own exact-ID costumes pass the R3.2/R4 gates. This rig does not change save v4, class mechanics or Lanternbound's
 three separate loadouts.
+
+R3.1 appends Knight, Berserker, Elementalist, Arcanist, Ranger, Sniper, Assassin and Duelist in exact ID order 8–15. Generated `HERO_RIG_CLASS_COUNT`, family and zero-based tier metadata validate each look before admission. The common heads, hair and owned gear stay shared; no save array is enlarged. [R3.1 evidence](../../docs/roadmap/advanced-a-evidence/README.md) records silhouette comparisons under identical helmets, native views and actual touch promotions.

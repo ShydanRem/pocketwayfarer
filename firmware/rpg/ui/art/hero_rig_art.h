@@ -3,10 +3,13 @@
 #include "sprite.h"
 #include "rpg.h"
 typedef struct { wf_sprite s; int16_t x,y; const uint8_t *roles; } hero_rig_layer;
-extern const hero_rig_layer rig_costumes[FAM_COUNT];
+#define HERO_RIG_CLASS_COUNT 16
+extern const uint8_t rig_class_families[HERO_RIG_CLASS_COUNT];
+extern const uint8_t rig_class_tiers[HERO_RIG_CLASS_COUNT];
+extern const hero_rig_layer rig_costumes[HERO_RIG_CLASS_COUNT];
 extern const hero_rig_layer rig_heads[RACE_COUNT][2][4];
 extern const hero_rig_layer rig_hair[6];
-extern const uint8_t rig_hand_mounts[FAM_COUNT][2][2];
-extern const hero_rig_layer rig_hats[FAM_COUNT];
+extern const uint8_t rig_hand_mounts[HERO_RIG_CLASS_COUNT][2][2];
+extern const hero_rig_layer rig_hats[HERO_RIG_CLASS_COUNT];
 extern const hero_rig_layer rig_gear[16];
 extern const hero_rig_layer rig_knuckles[2];

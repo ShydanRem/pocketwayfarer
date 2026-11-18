@@ -1,6 +1,6 @@
 # Registro di avanzamento
 
-Aggiornamento: 18 novembre 2026. Consegna corrente: `0.5.0-preview.1`.
+Aggiornamento: 18 novembre 2026. Consegna corrente: `0.6.0-preview.1`.
 
 ## Consegna R1 — atlante delle classi, 0.4.1-preview.1
 
@@ -16,9 +16,9 @@ Aggiornamento: 18 novembre 2026. Consegna corrente: `0.5.0-preview.1`.
 |---|---|
 | Regole delle classi classiche | 40/40 già presenti nel core |
 | Illustrazioni base R1 | 8/8 importate, mostrate e verificate nell'atlante |
-| Illustrazioni specifiche delle evoluzioni | 0/32; etichetta di riferimento familiare esplicita |
-| Nuovi avatar modulari classici | **8/40**, le otto basi; personalizzazione e oggetti conservati |
-| Fallback legacy delle evoluzioni | 32 classi, 16 combinazioni famiglia/grado; rami fratelli condivisi fino a R3/R4 |
+| Illustrazioni specifiche delle evoluzioni | **8/32**, ID 8–15; le altre 24 esplicitano il riferimento familiare |
+| Nuovi avatar modulari classici | **16/40**, otto basi e prime otto avanzate; aspetto e oggetti conservati |
+| Fallback legacy delle evoluzioni | 24 classi, 12 combinazioni famiglia/grado; otto avanzate e sedici maestre ancora da rifare |
 | Assetti Lanternbound nel nuovo trattamento | 3/3; sistema separato |
 | Nuovo collaudo sul Pocket | Aperto |
 
@@ -28,18 +28,26 @@ Aggiornamento: 18 novembre 2026. Consegna corrente: `0.5.0-preview.1`.
 
 **R2.1 completato:** tutti i canali estetici conservati, quattro espressioni e cinque pose distinte; 61.440 combinazioni estetiche, 16 tipi di equipaggiamento/cinque fasce, save v4 e fallback delle 32 evoluzioni verificati. Torso/piedi/accessori restano statistici.
 
-**R2.2 completato su host:** otto costumi nel renderer delle schermate reali. Creazione IT/EN, schede, borgo, equip, dungeon e formazioni fino a tre nemici/boss/élite Lv99; 147 catture, test di continuità e ASan/UBSan superati. Picco immagini 788.618 byte; firmware locale 3,26 MiB su 6 MiB. [Prove e limiti R2](rig-evidence/README.md).
+**R2.2 completato su host:** otto costumi nel renderer delle schermate reali. Creazione IT/EN, schede, borgo, equip, dungeon e formazioni fino a tre nemici/boss/élite Lv99; 147 catture, test di continuità e ASan/UBSan superati. Picco immagini 788.618 byte; firmware locale 3, 26 MiB su 6 MiB. [Prove e limiti R2](rig-evidence/README.md).
 
 **Variazione motivata:** i tre canali visibili di equipaggiamento sono stati anticipati da R5 perché gli oggetti legacy non erano coerenti con il nuovo corpo. Nessuna nuova meccanica, famiglia, struttura persistente o modifica degli ID. Animazione definitiva con maschere degli arti resta R7; ambienti/mostri/UI restanti R5. Gate hardware aperto.
 
-## Prossimo lotto: R3.1 — otto avanzate
+## Consegna R3.1 — prime otto avanzate, 0.6.0-preview.1
 
-Ordine vincolante: Cavaliere (8), Berserker (9), Elementalista (10), Arcanista (11), Ramingo (12), Cecchino (13), Assassino (14), Duellante (15).
+**Completato su host:** Cavaliere(8), Berserker(9), Elementalista(10), Arcanista(11), Ramingo(12), Cecchino(13), Assassino(14), Duellante(15). Ogni ID ha costume/default headwear e illustrazione specifica; nessuna nuova regola o cambio degli ID. Le altre 24 classi mantengono il fallback esplicito.
 
-1. Fissare due firme di forma per ramo nella bibbia; verificare che restino sotto un casco equipaggiato.
-2. Produrre costume/default headgear modulari e illustrazione specifica per ciascun ID; mantenere gli ancoraggi del rig accettato.
-3. Provare subito un'intera scena per i due rami della stessa famiglia: niente ammissione basata solo sul foglio sorgente.
-4. Estendere test/registro, compatibilità cosmetica e gear, catture IT/EN/grigio, promozione effettiva e save v4 senza cambiare i requisiti del core.
-5. Chiudere il lotto con build e budget misurati, poi R3.2: Paladino/Sacerdote, Campione/Mistico, Fabbro/Alchimista, Negromante/Stregone (ID16–23).
+**Accettazione:** 122.880 combinazioni estetiche, 180.336 composizioni e 400 confronti dei fratelli con elmo identico (minimo 143 pixel alfa distinti sotto la testa); ASan/UBSan superati. Catture native: 281 del rig, 33 dell'atlante, 24 delle promozioni. Sedici promozioni touch IT/EN, 32 tentativi sotto soglia respinti e 16 roundtrip v4, con aspetto ed equipaggiamento invariati rispetto al core. Revisione indipendente colore/grigio, pose, HUD e promozioni superata.
 
-Le 16 maestre e le 32 illustrazioni specifiche delle evoluzioni non sono ancora completate. Non si salta a R4 prima dell'accettazione delle avanzate.
+**Correzioni necessarie:** footer della battaglia su due righe per evitare il taglio dei valori a tre cifre; 71.556 pixel opachi dei glifi verificati dentro il cerchio e sotto i piedi, anche con profili livello 99 IT/EN. Layout nemici/comandi separato applicato anche ai costumi legacy: la vecchia barra del nemico singolo attraversava arma/corpo. Il rig rimane 16/40, non si contano nuovi avatar da questa correzione.
+
+**Budget:** firmware locale 3.504.752 byte /3, 34 MiB su 6 MiB, picco buffer immagini rig 788.618 byte. [Prove R3.1](advanced-a-evidence/README.md). Posa finale/maschere degli arti restano R7 e il collaudo fisico resta aperto.
+
+## Prossimo lotto: R3.2 — altre otto avanzate
+
+Ordine: Paladino(16), Sacerdote(17), Campione(18), Mistico(19), Fabbro(20), Alchimista(21), Negromante(22), Stregone(23). Obiettivo di consegna: `0.6.0-preview.2`, completando le 16 avanzate prima di R4.
+
+1. Applicare le due firme per ramo della bibbia: protezioni/tabarro contro stola verticale; fasce/protezioni contro sciarpa e linee leggere; grembiule ferrato contro fiale/tasche; colletto a costole contro spalle oblique e falde scure.
+2. Produrre costume, copricapo default e illustrazione per ciascun ID sullo stesso rig, senza cambiare famiglie, salvataggi o oggetti realmente posseduti.
+3. Provare subito le due vie di ogni famiglia nella scena completa, in grigio e sotto lo stesso elmo; correggere eventuali problemi prima dell'ammissione.
+4. Estendere matrice cosmetica/equipaggiamento, promozioni touch IT/EN, salvataggi, cache e screenshot. Registrare memoria/flash e completare la pubblicazione verificata.
+5. Solo dopo l'accettazione delle 16 avanzate iniziare R4.1 con le prime otto maestre. Le16 maestre non sono ancora completate.

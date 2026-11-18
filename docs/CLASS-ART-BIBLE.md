@@ -41,7 +41,22 @@ Non estendere semplicemente il canvas 48→88 mantenendo scale e coordinate attu
 
 **Contratto R2 implementato:** canvas 88×88, preset mondo 176, scheda 88, mappa 44 pixel. Costume esatto per ID base; testa/volto, capelli, pelle e occhi indipendenti. Copricapo posseduto sostituisce quello della classe. Arma/mano secondaria/testa sono i tre canali visibili; torso, piedi e accessori non introducono livelli grafici nuovi. La falce viene composta davanti all'abito ma dietro testa/capelli per conservare il volto in attacco. Quiver solidale al torso. Respiro con overlap al giunto della vita; piedi fermi nelle cinque pose parametriche. Le animazioni finali con maschere specifiche degli arti restano R7. [Sorgenti e trasformazioni](../assets/hero-rig/README.md).
 
-## Checklist per accettare un lotto
+## R3.1 — otto avanzate ammesse
+
+| ID | Classe | Due firme sotto un elmo identico |
+|---|---|---|
+| 8 | Cavaliere | Spalle chiuse a piastre sovrapposte; tabarro lungo rettangolare |
+| 9 | Berserker | Braccia aperte e spalla in pelliccia; fasce diagonali e falde irregolari |
+| 10 | Elementalista | Polsini larghi a cristallo; pannelli triangolari svasati |
+| 11 | Arcanista | Lapelli geometrici e imbracatura diagonale; doppie falde dritte e strette |
+| 12 | Ramingo | Cappa frastagliata asimmetrica; stivali e gambali robusti |
+| 13 | Cecchino | Cappotto lineare stretto; lungo bracciale e stivali aderenti |
+| 14 | Assassino | Cappa corta spezzata a tre punte; torso chiuso e polpacci fasciati |
+| 15 | Duellante | Giacca chiara aperta; mezza cappa e singola falda lunga |
+
+Costumi e illustrazioni specifici sono separati. I 400 confronti dei fratelli con lo stesso elmo conservano almeno 143 pixel di sagoma distinti sotto la testa; la revisione nativa in grigio verifica le firme sopra. Le altre otto avanzate e tutte le maestre restano nei lotti successivi. Le pose parametriche condivise non vengono conteggiate come animazioni finali.
+
+## Checklist di produzione
 
 - Sorgenti, prompt, identità del generatore e trasformazioni registrati.
 - Contorni delle celle puliti, niente armi tagliate o fondi residui.

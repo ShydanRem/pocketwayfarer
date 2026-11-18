@@ -1,67 +1,172 @@
 {
-  "source": "assets/classes/source/base-classes.png",
-  "sha256": "6e8e55f56edfeaf438387030b52147ca2e23f1c79b1e7d7cd9e37f7d7c43b3a7",
   "tool": "OpenAI ImageGen",
-  "source_identity": "exec-ee986e68-ed60-45bf-ae12-58e2a8490899.png",
-  "role": "Eight representative base-class illustrations; not the customizable player avatar",
-  "count": 8,
+  "role": "Exact-class representative illustrations, separate from the customizable player avatar",
+  "count": 16,
+  "class_ids": [
+    0,
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15
+  ],
+  "batches": [
+    {
+      "source": "assets/classes/source/base-classes.png",
+      "sha256": "6e8e55f56edfeaf438387030b52147ca2e23f1c79b1e7d7cd9e37f7d7c43b3a7",
+      "class_ids": [
+        0,
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "source_cell_bounds": [
+        [
+          74,
+          36,
+          363,
+          407
+        ],
+        [
+          97,
+          34,
+          355,
+          407
+        ],
+        [
+          100,
+          34,
+          356,
+          407
+        ],
+        [
+          84,
+          55,
+          377,
+          407
+        ],
+        [
+          75,
+          34,
+          351,
+          410
+        ],
+        [
+          103,
+          51,
+          331,
+          410
+        ],
+        [
+          78,
+          47,
+          364,
+          409
+        ],
+        [
+          84,
+          34,
+          383,
+          411
+        ]
+      ],
+      "shared_scale": 0.20159151193633953,
+      "source_identity": "exec-ee986e68-ed60-45bf-ae12-58e2a8490899.png"
+    },
+    {
+      "source": "assets/classes/source/advanced-a.png",
+      "sha256": "3eeb610c30c5e1f6d118ade9af2436ce6afbaf69dd3b8b84338b259066fdb155",
+      "class_ids": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        15
+      ],
+      "source_cell_bounds": [
+        [
+          67,
+          23,
+          363,
+          428
+        ],
+        [
+          95,
+          23,
+          393,
+          428
+        ],
+        [
+          81,
+          18,
+          351,
+          427
+        ],
+        [
+          100,
+          19,
+          362,
+          428
+        ],
+        [
+          98,
+          25,
+          353,
+          424
+        ],
+        [
+          98,
+          33,
+          339,
+          424
+        ],
+        [
+          85,
+          26,
+          369,
+          424
+        ],
+        [
+          84,
+          20,
+          360,
+          424
+        ]
+      ],
+      "shared_scale": 0.18536585365853658,
+      "source_identity": "exec-5103872b-f962-4f88-bf6e-a6227f49a34e.png",
+      "rejected_initial_identity": "exec-4a4fe69d-521e-4d59-b554-7f5c83c7901f.png"
+    }
+  ],
   "grid": [
     88,
     88
   ],
   "display_scale": 2,
-  "source_cell_bounds": [
-    [
-      74,
-      36,
-      363,
-      407
-    ],
-    [
-      97,
-      34,
-      355,
-      407
-    ],
-    [
-      100,
-      34,
-      356,
-      407
-    ],
-    [
-      84,
-      55,
-      377,
-      407
-    ],
-    [
-      75,
-      34,
-      351,
-      410
-    ],
-    [
-      103,
-      51,
-      331,
-      410
-    ],
-    [
-      78,
-      47,
-      364,
-      409
-    ],
-    [
-      84,
-      34,
-      383,
-      411
-    ]
-  ],
+  "prompt_sha256": {
+    "advanced-a-alpha-repair-prompt.txt": "8b3a58158cc439d8c9a6e96bdffd66f687c2f5123152ba0bde6d434b2a9da003",
+    "advanced-a-prompt.txt": "0abfbfa4d665c6c88a7c003c3caf79fa4c13706db6ba7096bd489fb40f6d6640",
+    "base-classes-prompt.txt": "53c5a3d473418e0df42e2c044fa3fd420cd980e5902596503de4c6511ddd7c75"
+  },
   "transforms": [
-    "shared scale across all eight classes",
+    "shared scale within each eight-class batch",
     "foot anchor84",
     "nearest-neighbor",
     "alpha threshold128",

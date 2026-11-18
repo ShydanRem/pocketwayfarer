@@ -96,11 +96,11 @@ void scr_class_atlas(void) {
     snprintf(subtitle,sizeof subtitle,"%d/40  ·  %s %d",selected+1,TR("Grado","Tier"),rpg_class_tier(selected));
     text(s,subtitle,101,280,false,0xc5d7e6);
     /* Representative illustration, separate from the customizable avatar. */
-    kit_img(s,&class_portraits[rpg_class_family(selected)],2,CX,197);
+    kit_img(s,&class_portraits[selected<CLASS_ART_COUNT?selected:rpg_class_family(selected)],2,CX,197);
     button(s,"<",80,210,56,PREV);button(s,">",386,210,56,NEXT);
     lv_obj_t *badge=lv_obj_create(s);lv_obj_remove_style_all(badge);lv_obj_set_size(badge,294,28);kit_pos(badge,CX,293);
     lv_obj_set_style_bg_color(badge,lv_color_hex(0x171c3c),0);lv_obj_set_style_bg_opa(badge,235,0);lv_obj_set_style_radius(badge,6,0);
-    text(s,selected<8?TR("Illustrazione di classe","Class illustration"):TR("Ritratto della famiglia","Family illustration"),293,286,false,0xffce78);
+    text(s,selected<CLASS_ART_COUNT?TR("Illustrazione di classe","Class illustration"):TR("Ritratto della famiglia","Family illustration"),293,286,false,0xffce78);
     const rpg_class_info *ci=rpg_class(selected);
     snprintf(subtitle,sizeof subtitle,"%s  ·  %s",TX(rpg_stat_name(ci->main_stat)),TX(rpg_stat_name(ci->second_stat)));
     text(s,subtitle,319,260,false,0xfff4dd);

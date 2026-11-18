@@ -1,0 +1,28 @@
+case0 label=116x40 y424..463
+  line0 'PV 428/428' ink(175,428)..(288,441) pixels500 clipped0
+  line1 'PM 65' ink(205,444)..(258,457) pixels260 clipped0
+  total clipped_pixels=0 pixels_at_or_above_foot425=0 first_ink_y=428 clearance_from_foot=3
+case1 label=116x40 y424..463
+  line0 'PV 245/245' ink(175,428)..(288,441) pixels500 clipped0
+  line1 'PM 167' ink(201,444)..(262,457) pixels276 clipped0
+  total clipped_pixels=0 pixels_at_or_above_foot425=0 first_ink_y=428 clearance_from_foot=3
+case2 label=116x40 y424..463
+  line0 'HP 999/999' ink(175,428)..(288,441) pixels516 clipped0
+  line1 'SP 999' ink(199,444)..(264,457) pixels300 clipped0
+  total clipped_pixels=0 pixels_at_or_above_foot425=0 first_ink_y=428 clearance_from_foot=3
+case3 label=140x40 y424..463
+  line0 'PV 9999/9999' ink(163,428)..(300,441) pixels620 clipped0
+  line1 'PM 9999' ink(193,444)..(270,457) pixels372 clipped0
+  total clipped_pixels=0 pixels_at_or_above_foot425=0 first_ink_y=428 clearance_from_foot=3
+case4 label=164x40 y424..463
+  line0 'HP 99999/99999' ink(151,428)..(312,441) pixels756 clipped0
+  line1 'SP 99999' ink(187,444)..(276,457) pixels420 clipped0
+  total clipped_pixels=0 pixels_at_or_above_foot425=0 first_ink_y=428 clearance_from_foot=3
+case5 label=188x40 y424..463
+  line0 'PV 999999/999999' ink(139,428)..(324,441) pixels860 clipped0
+  line1 'PM 99999' ink(187,444)..(276,457) pixels432 clipped0
+  total clipped_pixels=0 pixels_at_or_above_foot425=0 first_ink_y=428 clearance_from_foot=3
+case6 label=188x40 y424..463
+  line0 'HP 999999/999999' ink(139,428)..(324,441) pixels876 clipped0
+  line1 'SP 999999' ink(181,444)..(282,457) pixels480 clipped0
+  total clipped_pixels=0 pixels_at_or_above_foot425=0 first_ink_y=428 clearance_from_foot=3

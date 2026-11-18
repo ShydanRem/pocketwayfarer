@@ -7,17 +7,24 @@
 #undef wf_platform_big_alloc
 #include "hero_rig.h"
 #include "art/lantern_art.h"
+#include "art/hero_rig_art.h"
 extern int rpg_battle_target_now(void);
 
 static rpg_game before;
 static bool fail_avatar_alloc;
+static unsigned footer_ink_pixels;
 void *wf_platform_big_alloc(size_t n) {
     if(fail_avatar_alloc){fail_avatar_alloc=false;return NULL;}
     return inherited_big_alloc(n);
 }
 static void profile(int cls,int race,int skin,int hair,int color) {
-    rpg_new_hero h={0};h.cls=(uint8_t)cls;h.race=(uint8_t)race;h.skin=(uint8_t)skin;h.hair=(uint8_t)hair;h.hair_color=(uint8_t)color;
-    rpg_game_new(&R.g,&h,seconds,177);R.loaded=true;R.g.auto_battle=0;before=R.g;
+    rpg_new_hero h={0};h.cls=(uint8_t)rpg_class_family(cls);h.race=(uint8_t)race;h.skin=(uint8_t)skin;h.hair=(uint8_t)hair;h.hair_color=(uint8_t)color;
+    rpg_game_new(&R.g,&h,seconds,177);R.loaded=true;R.g.auto_battle=0;
+    if(cls>=FAM_COUNT) {
+        R.g.hero.level=20;R.g.hero.job_level=30;
+        assert(rpg_change_class(&R.g,cls));
+    }
+    before=R.g;
 }
 static lv_obj_t *avatar(lv_obj_t *root) {
     for(unsigned i=0;i<lv_obj_get_child_count(root);i++) {
@@ -26,11 +33,46 @@ static lv_obj_t *avatar(lv_obj_t *root) {
     }
     return NULL;
 }
+static void footer_ink(lv_obj_t *label,int hero_bottom) {
+    const char *text=lv_label_get_text(label);
+    const lv_font_t *font=lv_obj_get_style_text_font(label,0);
+    int letter_space=lv_obj_get_style_text_letter_space(label,0);
+    int line_space=lv_obj_get_style_text_line_space(label,0);
+    lv_area_t area;lv_obj_get_coords(label,&area);int row=0;
+    while(*text) {
+        const char *end=strchr(text,'\n');size_t n=end?(size_t)(end-text):strlen(text);
+        char line[64];assert(n<sizeof line);memcpy(line,text,n);line[n]=0;
+        lv_point_t size;lv_text_get_size(&size,line,font,letter_space,0,1000,LV_TEXT_FLAG_NONE);
+        int x=area.x1+(lv_obj_get_width(label)-size.x)/2;
+        int y=area.y1+row*(font->line_height+line_space);
+        for(size_t i=0;i<n;i++) {
+            lv_font_glyph_dsc_t g={0};assert(lv_font_get_glyph_dsc(font,&g,(unsigned char)line[i],(unsigned char)line[i+1]));
+            g.req_raw_bitmap=1;const uint8_t *bits=lv_font_get_bitmap_fmt_txt(&g,NULL);
+            for(int gy=0;gy<g.box_h;gy++)for(int gx=0;gx<g.box_w;gx++) {
+                int bit=gy*g.box_w+gx;if(!bits || !(bits[bit/8]&(128>>(bit%8))))continue;
+                int sx=x+g.ofs_x+gx,sy=y+font->line_height-font->base_line-g.box_h-g.ofs_y+gy;
+                int dx=sx-CX,dy=sy-CY;
+                assert(dx*dx+dy*dy<232*232 && sy>hero_bottom);footer_ink_pixels++;
+            }
+            x+=g.adv_w+letter_space;
+        }
+        if(!end)break;
+        text=end+1;row++;
+    }
+}
 static void controls_clear(void) {
     lv_obj_t *s=lv_screen_active(),*hero=avatar(s);assert(hero);
     lv_obj_update_layout(s);lv_area_t ha;lv_obj_get_coords(hero,&ha);
     const lv_image_dsc_t *d=lv_image_get_src(hero);
     const uint8_t *a=d->data+d->header.stride*d->header.h;
+    int hero_bottom=ha.y1;
+    for(int y=0;y<(int)d->header.h;y++)for(int x=0;x<(int)d->header.w;x++)if(a[y*d->header.w+x])hero_bottom=ha.y1+y;
+    if(R.screen==R_BATTLE)for(unsigned i=0;i<lv_obj_get_child_count(s);i++) {
+        lv_obj_t *label=lv_obj_get_child(s,(int)i);
+        if(!lv_obj_check_type(label,&lv_label_class))continue;
+        const char *text=lv_label_get_text(label);
+        if(!strncmp(text,"PV ",3) || !strncmp(text,"HP ",3))footer_ink(label,hero_bottom);
+    }
     unsigned checks=0;
     for(unsigned i=0;i<lv_obj_get_child_count(s);i++) {
         lv_obj_t *o=lv_obj_get_child(s,(int)i);
@@ -139,13 +181,27 @@ static void class_mapping(void) {
     for(int cls=0;cls<RPG_CLASS_COUNT;cls++) {
         profile(rpg_class_family(cls),0,1,0,1);R.g.hero.cls=(uint8_t)cls;
         hero_look look;hero_look_from_game(&look,&R.g);
-        assert(look.class_id==cls && hero_uses_rig(&look)==(cls<FAM_COUNT));
+        assert(look.class_id==cls && hero_uses_rig(&look)==(cls<HERO_RIG_CLASS_COUNT));
         for(int preset=1;preset<=3;preset++)
-            assert(hero_size(&look,preset)==(cls<FAM_COUNT?(preset==3?176:preset==2?88:44):48*preset));
+            assert(hero_size(&look,preset)==(cls<HERO_RIG_CLASS_COUNT?(preset==3?176:preset==2?88:44):48*preset));
         r_save_now();rpg_game decoded;assert(rpg_save_decode(saved,saved_len,&decoded));
         assert(decoded.hero.cls==cls && decoded.hero.hair_color==R.g.hero.hair_color);
     }
     puts("40 exact class IDs, explicit advanced/master fallback, size presets and save v4 roundtrips passed");
+}
+static void large_vitals(void) {
+    const int classes[]={8,10,31};
+    for(int lang=0;lang<2;lang++)for(unsigned i=0;i<sizeof classes/sizeof classes[0];i++) {
+        int cls=classes[i];profile(cls==31?15:cls,RACE_HUMAN,1,0,1);
+        if(cls==31){R.g.hero.level=45;R.g.hero.job_level=40;assert(rpg_change_class(&R.g,cls));}
+        R.g.hero.level=99;for(int s=0;s<ST_COUNT;s++)R.g.hero.stat[s]=99;
+        wf_lang=(uint8_t)lang;R.g.lang=(uint8_t)lang;
+        rpg_stats st;rpg_stats_get(&R.g,&st);R.g.hero.hp=st.max_hp;R.g.hero.sp=st.max_sp;
+        rpg_foe foe;rpg_foe_make(&foe,SP_GHOST,99,true);
+        r_start_battle(&foe,1,false,false);run(1300);controls_clear();
+        char name[80];snprintf(name,sizeof name,"vitali-grandi-%02d-%s",cls,lang?"en":"it");shot(name);
+    }
+    wf_lang=0;
 }
 static void allocation_recovery(void) {
     profile(7,RACE_BEAST,4,5,7);R.screen=R_CLASS_ATLAS;
@@ -170,14 +226,16 @@ int main(int argc,char **argv) {
     lv_indev_t *input=lv_indev_create();lv_indev_set_type(input,LV_INDEV_TYPE_POINTER);lv_indev_set_read_cb(input,read_touch);
     lv_timer_set_period(lv_indev_get_read_timer(input),10);wf_app_start(NULL,0);
     creation();
-    for(int cls=0;cls<FAM_COUNT;cls++) {
+    for(int cls=0;cls<HERO_RIG_CLASS_COUNT;cls++) {
         for(int pose=0;pose<HP_COUNT;pose++)studio(cls,RACE_HUMAN,1,0,1,pose);
         actual_views(cls);
     }
     for(int race=1;race<RACE_COUNT;race++)studio(0,race,race,4,6,HP_IDLE);
+    large_vitals();
     changing_look();
     allocation_recovery();
     class_mapping();
+    printf("battle footer:%u actual opaque glyph pixels inside circle and below avatar; level99 rig and legacy stress passed\n",footer_ink_pixels);
     printf("hero rig native:%d screenshots,actual creation-adjacent classic views,formations,save/wake,full/incremental render and control separation passed;peak%zu image bytes\n",shots,peak_image_bytes);
     return 0;
 }

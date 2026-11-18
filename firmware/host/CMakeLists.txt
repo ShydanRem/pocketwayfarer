@@ -69,6 +69,10 @@ if(RPG_UI)
   target_include_directories(preview_hero_rig PRIVATE ../rpg/core ../rpg/ui ${COMMON_INC})
   target_compile_options(preview_hero_rig PRIVATE -Wall -Wextra -Werror -Wno-unused-parameter -UNDEBUG)
   target_link_libraries(preview_hero_rig lvgl m)
+  add_executable(preview_promotions ../rpg/host/preview_promotions.c ${RPG_CORE} ${RPG_UI} ${COMMON} ${COMMON_UI})
+  target_include_directories(preview_promotions PRIVATE ../rpg/core ../rpg/ui ${COMMON_INC})
+  target_compile_options(preview_promotions PRIVATE -Wall -Wextra -Werror -Wno-unused-parameter -UNDEBUG)
+  target_link_libraries(preview_promotions lvgl m)
   # Optional interactive host. Headers are acquired with scripts/desktop-deps.py;
   # firmware and repeatable headless checks do not depend on SDL.
   set(SDL2_HEADER_DIR "${CMAKE_CURRENT_LIST_DIR}/../../build/desktop-deps/include")
