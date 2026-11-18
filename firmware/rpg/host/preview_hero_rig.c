@@ -1,13 +1,20 @@
 /* Native component studio + actual classic screens. The studio is test-only;
  * product screens below exercise the same avatar, controls and cache ownership. */
 #define main gameplay_preview_main
+#define wf_platform_big_alloc inherited_big_alloc
 #include "preview_lantern.c"
 #undef main
+#undef wf_platform_big_alloc
 #include "hero_rig.h"
 #include "art/lantern_art.h"
 extern int rpg_battle_target_now(void);
 
 static rpg_game before;
+static bool fail_avatar_alloc;
+void *wf_platform_big_alloc(size_t n) {
+    if(fail_avatar_alloc){fail_avatar_alloc=false;return NULL;}
+    return inherited_big_alloc(n);
+}
 static void profile(int cls,int race,int skin,int hair,int color) {
     rpg_new_hero h={0};h.cls=(uint8_t)cls;h.race=(uint8_t)race;h.skin=(uint8_t)skin;h.hair=(uint8_t)hair;h.hair_color=(uint8_t)color;
     rpg_game_new(&R.g,&h,seconds,177);R.loaded=true;R.g.auto_battle=0;before=R.g;
@@ -140,6 +147,22 @@ static void class_mapping(void) {
     }
     puts("40 exact class IDs, explicit advanced/master fallback, size presets and save v4 roundtrips passed");
 }
+static void allocation_recovery(void) {
+    profile(7,RACE_BEAST,4,5,7);R.screen=R_CLASS_ATLAS;
+    lv_obj_t *s=kit_screen(NULL);hero_look look;hero_look_from_game(&look,&R.g);
+    fail_avatar_alloc=true;
+    lv_obj_t *o=hero_obj(s,&look,HX_IDLE,3,CX,CY);assert(!lv_image_get_src(o));
+    hero_obj_pose(o,HP_GUARD);assert(lv_image_get_src(o));
+    lv_obj_t *reference=hero_obj(s,&look,HX_IDLE,3,CX,CY);
+    hero_obj_set_pose(reference,&look,HX_IDLE,3,HP_GUARD);
+    const void *expected=lv_image_get_src(reference);assert(lv_image_get_src(o)==expected);
+    hero_look other=look;other.hair=(uint8_t)((look.hair+1)%6);
+    fail_avatar_alloc=true;hero_obj_set_pose(o,&other,HX_HAPPY,3,HP_ATTACK);
+    assert(lv_image_get_src(o)==expected);
+    hero_obj_pose(o,HP_GUARD);assert(lv_image_get_src(o)==expected);
+    kit_screen(NULL);
+    puts("avatar allocation failure: initial retry keeps intended hero; live failure retains matching image/key: passed");
+}
 int main(int argc,char **argv) {
     assert(argc==2);dest=argv[1];setvbuf(stdout,NULL,_IOLBF,0);
     lv_init();lv_tick_set_cb(tick);lv_display_t *display=lv_display_create(WF_RES,WF_RES);
@@ -153,6 +176,7 @@ int main(int argc,char **argv) {
     }
     for(int race=1;race<RACE_COUNT;race++)studio(0,race,race,4,6,HP_IDLE);
     changing_look();
+    allocation_recovery();
     class_mapping();
     printf("hero rig native:%d screenshots,actual creation-adjacent classic views,formations,save/wake,full/incremental render and control separation passed;peak%zu image bytes\n",shots,peak_image_bytes);
     return 0;

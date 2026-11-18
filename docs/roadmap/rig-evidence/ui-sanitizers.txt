@@ -1,3 +1,4 @@
 real avatar widget:1000 cosmetic/pose swaps retain one buffer; scene deletes all avatar bytes; persistent FX baseline71106: passed
+avatar allocation failure: initial retry keeps intended hero; live failure retains matching image/key: passed
 40 exact class IDs, explicit advanced/master fallback, size presets and save v4 roundtrips passed
 hero rig native:147 screenshots,actual creation-adjacent classic views,formations,save/wake,full/incremental render and control separation passed;peak788618 image bytes

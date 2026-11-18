@@ -115,7 +115,12 @@ void hero_obj_set_pose(lv_obj_t *img,const hero_look *l,int expr,int preset,int 
     hero_view *view=lv_obj_get_user_data(img);LV_ASSERT_NULL(view);
     render_key key=key_for(l,expr,preset,pose);int size=hero_size(l,preset);
     const lv_image_dsc_t *image=hero_cache_acquire(&key,sizeof key,size,size,render,&key);
-    if(!image)return;
+    if(!image) {
+        /* A new widget must retry its intended hero after allocation failure.
+         * An existing image instead retains both its source and matching key. */
+        if(!view->image)view->key=key;
+        return;
+    }
     const lv_image_dsc_t *old=view->image;
     lv_image_set_src(img,image);view->image=image;view->key=key;
     hero_cache_unref(old);
