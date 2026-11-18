@@ -46,9 +46,9 @@ precedente. Catture livello 99 verificano entrambe le correzioni.
 ## Revisione e fonti
 
 Revisione indipendente di 40 pose avanzate, equip/borgo, colore/grigio, formazioni,
-atlante e 24 promozioni: nessun blocco residuo. Le tre ulteriori catture EN dello
-stress sono aggiuntive rispetto alla revisione visiva; passano le stesse
-proprietà automatiche e il probe indipendente dei glifi IT/EN.
+atlante e 24 promozioni: nessun blocco residuo. Anche le tre catture EN dello stress finale sono state riesaminate: footer
+completo, piedi separati e barra del nemico libera nel fallback legacy. Passano
+le stesse proprietà automatiche e il probe indipendente dei glifi IT/EN.
 
 ![Illustrazioni specifiche delle otto avanzate nell'atlante](../../img/classes/otto-classi-avanzate-a.png)
 
