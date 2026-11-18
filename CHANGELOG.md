@@ -1,5 +1,14 @@
 # Note di versione
 
+## 0.7.0-preview.1 — 18 novembre 2026
+
+- R4.1: costumi modulari, copricapi default e illustrazioni specifiche per Cavaliere del Drago, Signore della Guerra, Arcimago, Cronomante, Signore delle Bestie, Arco della Tempesta, Lama Notturna e Maestro di Lame. Copertura reale **32/40**, con le altre otto maestre ancora in fallback esplicito.
+- Metadata maestri con grado UI 2, aspetto e oggetti posseduti conservati, nessuna nuova famiglia o struttura persistente. Save v4 invariato.
+- Corretta la colonna Statistiche dei nomi lunghi: 32 prove IT/EN ai livelli 45 e 99 verificano quattro righe complete dentro il cerchio e separate dall'avatar.
+- Corretti gli strappi delle cappe lunghe del Drago e della Lama Notturna: posa preliminare con costume connesso e prese degli oggetti coerenti. Le maschere articolate definitive restano R7.
+- 245.760 combinazioni estetiche e 1.200 confronti dei rami sotto lo stesso elmo; 759 catture native. Sessantaquattro promozioni touch e riletture v4, 96 soglie respinte; 16 percorsi base → avanzata → maestra verificano gli otto ID delle abilità anche in battaglia, rank precedenti, salto diretto/ramo errato rifiutati e termine della via a job 50.
+- Firmware locale ~3,51 MiB su 6 MiB; sito, documentazione e prove aggiornati. Pose ancora preliminari e collaudo fisico aperto. [Prove R4.1](docs/roadmap/master-a-evidence/README.md).
+
 ## 0.6.0-preview.2 — 18 novembre 2026
 
 - Completato R3: tutte le sedici avanzate hanno costumi modulari, copricapi default e illustrazioni specifiche. Il secondo lotto aggiunge Paladino, Sacerdote, Campione, Mistico, Fabbro, Alchimista, Negromante e Stregone. Copertura totale: **24/40 avatar e illustrazioni**, con le sedici maestre ancora in fallback esplicito.

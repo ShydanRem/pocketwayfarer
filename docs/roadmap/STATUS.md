@@ -1,6 +1,6 @@
 # Registro di avanzamento
 
-Aggiornamento: 18 novembre 2026. Consegna corrente: `0.6.0-preview.2`.
+Aggiornamento: 18 novembre 2026. Consegna corrente: `0.7.0-preview.1`.
 
 ## Consegna R1 — atlante delle classi, 0.4.1-preview.1
 
@@ -16,9 +16,9 @@ Aggiornamento: 18 novembre 2026. Consegna corrente: `0.6.0-preview.2`.
 |---|---|
 | Regole delle classi classiche | 40/40 già presenti nel core |
 | Illustrazioni base R1 | 8/8 importate, mostrate e verificate nell'atlante |
-| Illustrazioni specifiche delle evoluzioni | **16/32**, tutte le avanzate; le sedici maestre esplicitano il riferimento familiare |
-| Nuovi avatar modulari classici | **24/40**, otto basi e tutte le sedici avanzate; aspetto e oggetti conservati |
-| Fallback legacy delle evoluzioni | 16 maestre, otto combinazioni famiglia/grado; rami fratelli ancora condivisi fino a R4 |
+| Illustrazioni specifiche delle evoluzioni | **24/32**, tutte le avanzate e otto maestre; le altre otto esplicitano il riferimento familiare |
+| Nuovi avatar modulari classici | **32/40**, otto basi, sedici avanzate e otto maestre; aspetto e oggetti conservati |
+| Fallback legacy delle evoluzioni | 8 maestre, quattro combinazioni famiglia/grado; rami fratelli ancora condivisi fino a R4.2 |
 | Assetti Lanternbound nel nuovo trattamento | 3/3; sistema separato |
 | Nuovo collaudo sul Pocket | Aperto |
 
@@ -52,12 +52,22 @@ Aggiornamento: 18 novembre 2026. Consegna corrente: `0.6.0-preview.2`.
 
 **Budget:** firmware locale 3.590.432 byte / 3,42 MiB su 6 MiB; picco immagini rig 788.618 byte. [Prove R3.2](advanced-b-evidence/README.md). Animazioni definitive e collaudo fisico rimangono aperti.
 
-## Prossimo lotto: R4.1 — prime otto maestre
+## Consegna R4.1 — prime otto maestre, 0.7.0-preview.1
 
-Ordine: Cavaliere del Drago (24), Signore della Guerra (25), Arcimago (26), Cronomante (27), Signore delle Bestie (28), Arco della Tempesta (29), Lama Notturna (30), Maestro di Lame (31). Obiettivo: `0.7.0-preview.1`; nessuna maestra viene conteggiata prima dell'integrazione e delle prove.
+**Integrati su host:** Cavaliere del Drago (24), Signore della Guerra (25), Arcimago (26), Cronomante (27), Signore delle Bestie (28), Arco della Tempesta (29), Lama Notturna (30), Maestro di Lame (31). Copertura 32/40; le otto maestre 32–39 restano esplicite. Costume, copricapo default e illustrazione specifica; nessuna nuova regola, famiglia o struttura persistente.
 
-1. Definire due firme del costume indipendenti da tinta, copricapo e arma, seguendo la bibbia; produrre costume, copricapo e illustrazione per ogni ID.
-2. Estendere metadata e test al grado UI 2, conservando tutti i canali estetici e gli oggetti posseduti. Non introdurre famiglie o array persistenti nuovi.
-3. Provare il percorso completo base → avanzata → maestra. Verificare le soglie 45/40, il reset job previsto dal core, abilità ereditate, save v4 e ritorno corretto alla schermata.
-4. Catturare nomi lunghi e dialoghi IT/EN, cinque pose, equipaggiamento, battaglie e grigio/same-helmet; correggere il layout prima dell'ammissione se necessario.
-5. Chiudere con matrice cosmetica, sanitizer, memoria/flash e distribuzione verificata. Poi R4.2 completa le altre otto maestre ID 32–39. R5/R7 e gate hardware restano distinti.
+**Accettazione:** 245.760 combinazioni estetiche, 361.485 composizioni, 24.320 controlli di continuità e 1.200 confronti sotto lo stesso elmo. La mutazione tier2→1 viene respinta con 16 errori attesi. Catture: 591 rig, 64 atlante, 104 promozioni, totale 759. Trentadue colonne Statistiche IT/EN ai livelli 45/99 sono dentro il cerchio, senza wrap o invasione del canvas avatar.
+
+**Promozioni:** 64 cambi touch e salvataggi riletti, 96 rifiuti sotto soglia. Includono 16 percorsi completi base → avanzata → maestra IT/EN, soglie 44/40 e 45/39 respinte, salto diretto e ramo errato rifiutati; otto ID delle abilità ereditate confrontati anche in battaglia, rank precedenti conservati, reset job 1/xp 0 e termine della via a job 50.
+
+**Correzioni necessarie:** la colonna Statistiche automatica entrava nel canale avatar con i nomi lunghi. Ora usa 260 px centrati a 290, con tutte le quattro righe dentro il cerchio. Le cappe lunghe di Drago/Lama Notturna evitano il taglio rettangolare del braccio con una posa coerente e prese degli oggetti solidali; le maschere articolate restano R7. [Prove R4.1](master-a-evidence/README.md). Animazione definitiva, R5 e collaudo fisico rimangono aperti.
+
+## Prossimo lotto: R4.2 — ultime otto maestre
+
+Ordine: Templare (32), Ierofante (33), Gran Maestro (34), Asceso (35), Forgiarune (36), Trasmutatore (37), Signore della Morte (38), Evocavuoto (39). Obiettivo: `0.7.0-preview.2`. La copertura 40/40 verrà dichiarata solo dopo integrazione e prove.
+
+1. Due firme per ramo sotto lo stesso elmo, costume/copricapo e illustrazione; stessi ancoraggi e canali estetici, nessuna nuova famiglia o array persistente.
+2. Estendere metadata e matrice al grado UI 2 per le altre quattro famiglie; conservare le regressioni della cintura Alchimista e dei nomi lunghi.
+3. Completare i percorsi touch base → avanzata → maestra per tutti i sedici rami, soglie 45/40, abilità ereditate e salvataggio v4.
+4. Rivedere cinque pose, grigio/same-helmet, equipaggiamento e scene reali IT/EN; nominativi lunghi e dialoghi senza tagli.
+5. Misurare memoria/flash, passare sanitizer e distribuire con download verificati. Poi R5 unifica mondo/UI/mostri; R7 completa animazione/audio. Il collaudo fisico resta separato e necessario per la stabile.

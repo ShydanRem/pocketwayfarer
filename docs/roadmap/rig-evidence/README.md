@@ -68,4 +68,4 @@ Installer e download sono ricostruiti e controllati via HTTP dal
 
 Nota storica: i log sopra descrivono la consegna originale. La directory delle immagini viene ampliata dalle versioni successive; lo stato corrente e i nuovi conteggi sono nelle [prove R3.1](../advanced-a-evidence/README.md).
 
-Aggiornamento storico: la directory delle immagini è ora ampliata da R3.2; i log sopra restano relativi alla loro consegna. [Stato e prove correnti](../advanced-b-evidence/README.md).
+Aggiornamento storico: la directory delle immagini è ora ampliata da R4.1; i log sopra restano relativi alla loro consegna. [Stato e prove correnti](../master-a-evidence/README.md).

@@ -51,7 +51,7 @@ int main(int argc,char **argv) {
         wf_lang=language;press("...");press(TR("Classi","Classes"));
         for(int c=0;c<RPG_CLASS_COUNT;c++) {
             assert_card(c);
-            if(!language && (c<CLASS_ART_COUNT || c==24 || c==39)) {
+            if(!language && (c<CLASS_ART_COUNT || c==32 || c==39)) {
                 char name[80];snprintf(name,sizeof name,"classe-%02d",c);shot(name);
             }
             if(language && (c==2 || c==4 || c==6 || c==7 || c==28 || (c>=8 && c<CLASS_ART_COUNT))) {
@@ -95,6 +95,6 @@ int main(int argc,char **argv) {
     wf_lang=0;
     puts("class atlas:80 bilingual cards,208 local skill references,16 family paths, wraparound, scrolled nodes, touch/BOOT close and PWR hooks: passed");
     puts("read-only: real class,cosmetics,equipment,skills,expedition and expected time simulation unchanged; no atlas save/reward: passed");
-    printf("class atlas:%d native captures; image buffers peak%zu bytes; twenty-four illustrations,16 explicit family references\n",shots,peak_image_bytes);
+    printf("class atlas:%d native captures; image buffers peak%zu bytes; thirty-two illustrations,8 explicit family references\n",shots,peak_image_bytes);
     return 0;
 }

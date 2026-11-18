@@ -1,0 +1,13 @@
+Create EIGHT ORIGINAL master-class JRPG HEADWEAR components for Pocket Wayfarer. Supplied advanced headwear atlas is the exact head proportions, three-quarter RIGHT camera and registration reference. Transparent RGBA PNG, exactly FOUR equal square columns by TWO rows, wide2:1 sheet. HEADWEAR ONLY, no head, face, hair, skin, eyes, ears, body, hands, weapons, text, floor or shadows. All face openings and empty space truly alpha0. Crown near x50%,y20%, empty eye opening near y58%; one tiny separate PURE MAGENTA neck registration dot centered x50%,y85% in EVERY cell. Accessories entirely within their cell, at most70% width with generous gutters. Identical head scale and pose. Keep eyes and lower face fully uncovered. Polished deliberate pixel clusters, indigo contour, warm ivory highlights, large coherent forms, no glow, blur or noisy microdetails. No commercial costume copies. No magenta fabric or ornament, only registration dot.
+
+Exact row-major order:
+TOP1 DRAGON KNIGHT24: compact ivory-steel open-face helmet, one backward-swept stepped teal RIDGE along crown and two small angular temple plates; no horns, wings, visor or face.
+TOP2 WARLORD25: low broad bronze command circlet with one large rectangular ivory brow plate and a SHORT blunt brick-red cloth knot behind left temple; no crown spikes, helmet, face or feather.
+TOP3 ARCHMAGE26: low midnight-blue scholarly bonnet with wide ivory folded band and one large flat eight-point gold fictional star badge near temple, no wizard cone, hovering stars or face.
+TOP4 CHRONOMANCER27: narrow bronze fillet with one small circular teal clock medallion at LEFT temple and a short rigid navy side tab, no digits, gears floating, eyes or hair.
+BOTTOM5 BEAST LORD28: low moss-green open-face cloth hood edged with three LARGE compact ivory triangular fur tufts behind the back rim, no animal ears, animal skull, face or pelt body.
+BOTTOM6 STORM ARCHER29: streamlined ivory/teal open-face hood with a single large angular zigzag seam and narrow swept rear tip, no bird wings, glow, mask or face.
+BOTTOM7 NIGHT BLADE30: close-fitting midnight-indigo open-face hood with a short sharply diagonal rear flap and one thin ivory oblique brow seam; no mask, scarf across mouth, hair or face.
+BOTTOM8 BLADE MASTER31: narrow copper/navy forehead band with ONE compact fan-shaped ivory folded cloth ornament swept backward above left temple; no wide brim, face or giant feather.
+
+Only these eight isolated registered headwear parts. All skin/head/face regions alpha0. The small magenta neck dot is separate and easy to measure, not touching the item. Match the reference cell proportions, dot baseline, deliberate readable pixel scale and fully transparent wide gutters.

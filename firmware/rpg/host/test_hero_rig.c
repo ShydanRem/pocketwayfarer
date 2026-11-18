@@ -14,6 +14,7 @@ static unsigned failures, frames, comparisons, layers_checked, full_cosmetics, j
 static unsigned sibling_checks, minimum_sibling_alpha = PIXELS;
 static unsigned minimum_foot = GRID, maximum_foot;
 static unsigned decorative_checks;
+static unsigned cape_checks, minimum_cape_opaque = PIXELS;
 
 #define CHECK(condition, ...) do { if (!(condition)) { \
     if (failures < 24) { fprintf(stderr, "FAIL: "); fprintf(stderr, __VA_ARGS__); fputc('\n', stderr); } \
@@ -85,13 +86,23 @@ static void metadata(void) {
     _Static_assert(IT_SWORD == 0 && IT_KNUCKLE == 6 && IT_SCYTHE == 8,"weapon indices changed");
     _Static_assert(IT_SHIELD == 9 && IT_QUIVER == 10 && IT_TOME == 11 && IT_CHARM == 12,"off-hand indices changed");
     _Static_assert(IT_HELM == 13 && IT_HOOD == 14 && IT_CIRCLET == 15,"head indices changed");
-    _Static_assert(HERO_RIG_CLASS_COUNT == 24,"update the explicit class metadata contract for the next batch");
+    _Static_assert(HERO_RIG_CLASS_COUNT == 32,"update the explicit class metadata contract for the next batch");
     for (unsigned f = 0; f < HERO_RIG_CLASS_COUNT; f++) {
-        /* Freeze core IDs: bases0..7, then advanced siblings8/9 through22/23. */
-        unsigned expected_family = f < FAM_COUNT ? f : (f-FAM_COUNT)/2;
-        unsigned expected_tier = f < FAM_COUNT ? 0 : 1;
+        /* Freeze core IDs: bases0..7, advanced8..23, masters24..31.
+         * Master IDs restart at family0; their UI tier is2, not1. */
+        unsigned expected_family = f < FAM_COUNT ? f : f < 24 ? (f-8)/2 : (f-24)/2;
+        unsigned expected_tier = f < FAM_COUNT ? 0 : f < 24 ? 1 : 2;
         CHECK(rig_class_families[f] == expected_family && rig_class_tiers[f] == expected_tier,
               "metadata disagrees with core IDs class=%u family=%u tier=%u",f,rig_class_families[f],rig_class_tiers[f]);
+        hero_look admitted = bare_look(f,RACE_HUMAN);
+        CHECK(hero_uses_rig(&admitted),"admitted exact class rejected class=%u",f);
+        admitted.fam = (uint8_t)((expected_family+1)%FAM_COUNT);
+        CHECK(!hero_uses_rig(&admitted),"wrong family admitted class=%u",f);
+        admitted.fam = (uint8_t)expected_family;
+        for (unsigned tier = 0; tier < 3; tier++) if (tier != expected_tier) {
+            admitted.tier = (uint8_t)tier;
+            CHECK(!hero_uses_rig(&admitted),"wrong UI tier admitted class=%u tier=%u",f,tier);
+        }
         check_layer(&rig_costumes[f],3); check_layer(&rig_hats[f],3);
         for (unsigned hand = 0; hand < 2; hand++)
             CHECK(rig_hand_mounts[f][hand][0] > 0 && rig_hand_mounts[f][hand][0] < GRID &&
@@ -194,7 +205,8 @@ static void visible_channels(void) {
 static void sibling_identity(void) {
     image first, second;
     static const uint8_t siblings[][2] = {
-        {8,9},{10,11},{12,13},{14,15},{16,17},{18,19},{20,21},{22,23}
+        {8,9},{10,11},{12,13},{14,15},{16,17},{18,19},{20,21},{22,23},
+        {24,25},{26,27},{28,29},{30,31}
     };
     for (unsigned pair = 0; pair < sizeof siblings/sizeof siblings[0]; pair++)
     for (unsigned race = 0; race < RACE_COUNT; race++)
@@ -262,6 +274,40 @@ static void fixed_decorations(void) {
     }
 }
 
+static void cape_continuity(void) {
+    /* Long left capes must remain intact through the provisional torso lean.
+     * Observe the composed pixels below the arm/neck, without held equipment,
+     * class hat, tail or long hair supplying pixels that could hide a tear. */
+    static const unsigned classes[] = {24,30};
+    static const struct { int pose, dx; } leans[] = {
+        {HP_ATTACK,2},{HP_GUARD,-1},{HP_HIT,-2}
+    };
+    image idle, leaned;
+    CHECK(rig_hair[0].y+rig_hair[0].s.h < 55,
+          "short hair intrudes into cape observation region");
+    CHECK(rig_heads[RACE_HUMAN][0][HX_IDLE].y+rig_heads[RACE_HUMAN][0][HX_IDLE].s.h+1 < 55,
+          "head intrudes into cape observation region");
+    for (unsigned c = 0; c < sizeof classes/sizeof classes[0]; c++) {
+        hero_look l = bare_look(classes[c],RACE_HUMAN);
+        l.hair = 0;
+        compose(&l,HX_IDLE,HP_IDLE,&idle);
+        unsigned opaque = 0;
+        for (unsigned y = 55; y < 77; y++) for (unsigned x = 10; x < 33; x++)
+            if (idle.alpha[y*GRID+x]) opaque++;
+        CHECK(opaque >= 64,"cape observation lacks coverage class=%u opaque=%u",l.class_id,opaque);
+        if (opaque < minimum_cape_opaque) minimum_cape_opaque = opaque;
+        for (unsigned p = 0; p < sizeof leans/sizeof leans[0]; p++) {
+            compose(&l,HX_IDLE,leans[p].pose,&leaned);
+            for (unsigned y = 55; y < 77; y++) for (unsigned x = 10; x < 33; x++) {
+                unsigned from = y*GRID+x, to = (unsigned)((int)from+leans[p].dx);
+                cape_checks++;
+                CHECK(idle.alpha[from] == leaned.alpha[to] && idle.rgb[from] == leaned.rgb[to],
+                      "cape torn/recolored class=%u pose=%d at %u,%u",l.class_id,leans[p].pose,x,y);
+            }
+        }
+    }
+}
+
 static void full(void) {
     image frame;
     for (unsigned f = 0; f < HERO_RIG_CLASS_COUNT; f++) for (unsigned r = 0; r < RACE_COUNT; r++)
@@ -279,10 +325,10 @@ static void full(void) {
 int main(int argc,char **argv) {
     bool exhaustive = argc == 2 && !strcmp(argv[1],"--full");
     if (argc > 1 && !exhaustive) { fprintf(stderr,"usage: %s [--full]\n",argv[0]); return 2; }
-    metadata(); geometry(); joint_continuity(); visible_channels(); sibling_identity(); equipment(); fixed_decorations();
+    metadata(); geometry(); joint_continuity(); visible_channels(); sibling_identity(); equipment(); fixed_decorations(); cape_continuity();
     if (exhaustive) full();
-    printf("hero rig: layers=%u frames=%u comparisons=%u joint_rows=%u full_cosmetics=%u sibling_checks=%u min_sibling_alpha=%u decorative_checks=%u foot_rows=%u..%u failures=%u\n",
+    printf("hero rig: layers=%u frames=%u comparisons=%u joint_rows=%u full_cosmetics=%u sibling_checks=%u min_sibling_alpha=%u decorative_checks=%u cape_checks=%u min_cape_opaque=%u foot_rows=%u..%u failures=%u\n",
            layers_checked,frames,comparisons,joint_rows,full_cosmetics,sibling_checks,minimum_sibling_alpha,
-           decorative_checks,minimum_foot,maximum_foot,failures);
+           decorative_checks,cape_checks,minimum_cape_opaque,minimum_foot,maximum_foot,failures);
     return failures ? 1 : 0;
 }

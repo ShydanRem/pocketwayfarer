@@ -1,0 +1,25 @@
+FAIL: cape torn/recolored class=24 pose=2 at 28,55
+FAIL: cape torn/recolored class=24 pose=2 at 29,55
+FAIL: cape torn/recolored class=24 pose=2 at 30,55
+FAIL: cape torn/recolored class=24 pose=2 at 31,55
+FAIL: cape torn/recolored class=24 pose=2 at 32,55
+FAIL: cape torn/recolored class=24 pose=2 at 28,56
+FAIL: cape torn/recolored class=24 pose=2 at 29,56
+FAIL: cape torn/recolored class=24 pose=2 at 30,56
+FAIL: cape torn/recolored class=24 pose=2 at 31,56
+FAIL: cape torn/recolored class=24 pose=2 at 32,56
+FAIL: cape torn/recolored class=24 pose=2 at 27,57
+FAIL: cape torn/recolored class=24 pose=2 at 28,57
+FAIL: cape torn/recolored class=24 pose=2 at 29,57
+FAIL: cape torn/recolored class=24 pose=2 at 30,57
+FAIL: cape torn/recolored class=24 pose=2 at 31,57
+FAIL: cape torn/recolored class=24 pose=2 at 32,57
+FAIL: cape torn/recolored class=24 pose=2 at 27,58
+FAIL: cape torn/recolored class=24 pose=2 at 29,58
+FAIL: cape torn/recolored class=24 pose=2 at 30,58
+FAIL: cape torn/recolored class=24 pose=2 at 31,58
+FAIL: cape torn/recolored class=24 pose=2 at 32,58
+FAIL: cape torn/recolored class=24 pose=2 at 26,59
+FAIL: cape torn/recolored class=24 pose=2 at 27,59
+FAIL: cape torn/recolored class=24 pose=2 at 28,59
+cape regression: frames=8 cape_checks=3036 min_cape_opaque=178 failures=860

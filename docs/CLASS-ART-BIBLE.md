@@ -69,7 +69,26 @@ Costumi e illustrazioni specifici sono separati. I 400 confronti dei fratelli co
 | 22 | Negromante | Colletto ampio a costole; fronte chiuso con grandi fasce orizzontali |
 | 23 | Stregone | Spalle oblique; falde laterali aperte e spezzate |
 
-Ora sono ammessi gli ID 0–23: otto basi e tutte le sedici avanzate. Le sedici maestre restano in fallback fino a R4. I colori delle decorazioni non seguono la pelle: il layout registra la regione fissa della cintura dell'Alchimista e la palette distingue RGB565 e ruolo anche quando condividono la stessa tinta. Le ampolle sono parte del costume, non quantità di consumabili.
+Alla consegna R3.2 erano ammessi gli ID 0–23: otto basi e tutte le sedici avanzate. I colori delle decorazioni non seguono la pelle: il layout registra la regione fissa della cintura dell'Alchimista e la palette distingue RGB565 e ruolo anche quando condividono la stessa tinta. Le ampolle sono parte del costume, non quantità di consumabili.
+
+## R4.1 — prime otto maestre
+
+| ID | Classe | Due firme sotto lo stesso elmo |
+|---|---|---|
+| 24 | Cavaliere del Drago | Lamelle oblique su torso/fianchi; cappa stretta a due lunghe punte oblique |
+| 25 | Signore della Guerra | Mantello corto largo e squadrato; cintura massiccia e pannelli corti ferrati |
+| 26 | Arcimago | Manto basso largo a stella; gonna triangolare ampia e continua |
+| 27 | Cronomante | Due code strette e rettangolari separate; piastra circolare al fianco e tracolla obliqua |
+| 28 | Signore delle Bestie | Collo in pelliccia a grandi ciuffi su un lato; giacca corta smerlata e ginocchiere pesanti |
+| 29 | Arco della Tempesta | Due lunghe falde spezzate a saetta; grande bracciale angolare su un avambraccio |
+| 30 | Lama Notturna | Cappa lunga con unico taglio diagonale; torso e polpacci fasciati stretti |
+| 31 | Maestro di Lame | Cappa corta larga a ventaglio; due bracciali sovrapposti e giacca chiara aperta |
+
+Sono ammessi gli ID 0–31, con metadata maestri famiglia 0–3/grado UI 2. Le altre otto maestre restano in fallback R4.2. Le firme si verificano anche senza arma e mano secondaria: 1.200 confronti dei fratelli, quattro razze, cinque fasce elmo e cinque pose. La soglia minima di 119 pixel alfa diversi deriva dalla matrice complessiva, non da un voto estetico. La revisione nativa colore/grigio completa il controllo automatico.
+
+Le illustrazioni restano rappresentanti separati dal giocatore. La cresta del Drago, la pelliccia delle Bestie e i dettagli dell'orologio sono decorazioni di costume, senza nuove creature, evocazioni o regole. Le pose restano trasformazioni parametriche preliminari; R7 è distinto.
+
+**Correzione delle cappe lunghe:** il rettangolo del braccio tagliava la cappa in attacco sugli ID 24/30. Per questi due costumi il layout registra braccia rigide: attacco/guardia/colpito traslano l'abito connesso e le prese degli oggetti insieme, mantenendo le suole ferme. Non si ricostruiscono parti del PNG né si dichiara completata l'animazione. Le maschere separate per arti e cappa restano R7; una posa semplice ma continua precede il movimento articolato.
 
 ## Checklist di produzione
 

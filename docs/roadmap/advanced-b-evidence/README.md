@@ -72,3 +72,5 @@ touch, FPS, autonomia, sessioni prolungate o coinvolgimento dei giocatori.
 Il [workflow](https://github.com/ShydanRem/pocketwayfarer/actions/workflows/pages.yml)
 ricostruisce il pacchetto dal commit e controlla via HTTP quattro documenti,
 sette immagini native, tre hash firmware e ZIP completo.
+
+Aggiornamento storico: la directory delle immagini è ora ampliata da R4.1; i log sopra restano relativi alla consegna R3.2. [Stato e prove correnti](../master-a-evidence/README.md).
