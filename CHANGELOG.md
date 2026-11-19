@@ -1,5 +1,12 @@
 # Note di versione
 
+## 0.8.0-preview.4 — 19 novembre 2026
+
+- Ridisegnati Riva di Vetro e Tempio Sommerso, con otto nuove illustrazioni per le specie costiere.
+- Estesi alla seconda regione selezione dei bersagli, pannelli degli intenti e mappa del dungeon con percorsi evidenziati.
+- Importati i due fondali a 233 × 233 dopo un confronto con la versione a 466 × 466 sulle stesse schermate.
+- Verificato il percorso dalla Cripta alla Riva e dal Leviatano al Bosco Sussurrante. Aggiornate guida e roadmap.
+
 ## 0.8.0-preview.3 — 19 novembre 2026
 
 - Nuovo fondale per la Cripta dei Lumi e nuove illustrazioni per Mimic e Re delle Ossa.

@@ -1,0 +1,180 @@
+{
+  "generator": "OpenAI ImageGen",
+  "sha256": {
+    "environments-prompt.txt": "d4af13b005a353958887073882d243f7295edf5343de0c5e9d2b72bf9f388548",
+    "environments.png": "a4988df95ad77f6852c949fc2afa9ce23f17986ff3599ac6c20c8d62fa67b325",
+    "monsters-prompt.txt": "a4cc39d50dc3ef7818d4a8c877683ba0c3bbf9a651ce94f4f271be996023ab90",
+    "monsters.png": "27f5242af4be11908cc1820deadcbe7c2bcf943c2e65f1b8de637ceaec889cf3"
+  },
+  "environment_source_size": [
+    1774,
+    887
+  ],
+  "environment_runtime_size": [
+    233,
+    233
+  ],
+  "environment_display_size": [
+    466,
+    466
+  ],
+  "monster_source_size": [
+    1774,
+    887
+  ],
+  "monsters": [
+    {
+      "species": "SP_CRAB",
+      "runtime_size": [
+        41,
+        30
+      ],
+      "source_cell": [
+        0,
+        0,
+        443,
+        423
+      ],
+      "source_cell_bbox": [
+        23,
+        110,
+        406,
+        387
+      ]
+    },
+    {
+      "species": "SP_JELLY",
+      "runtime_size": [
+        37,
+        40
+      ],
+      "source_cell": [
+        443,
+        0,
+        887,
+        423
+      ],
+      "source_cell_bbox": [
+        56,
+        43,
+        378,
+        395
+      ]
+    },
+    {
+      "species": "SP_BLUE_SLIME",
+      "runtime_size": [
+        48,
+        28
+      ],
+      "source_cell": [
+        887,
+        0,
+        1331,
+        423
+      ],
+      "source_cell_bbox": [
+        3,
+        148,
+        411,
+        387
+      ]
+    },
+    {
+      "species": "SP_GOBLIN",
+      "runtime_size": [
+        45,
+        40
+      ],
+      "source_cell": [
+        1331,
+        0,
+        1774,
+        423
+      ],
+      "source_cell_bbox": [
+        27,
+        34,
+        429,
+        388
+      ]
+    },
+    {
+      "species": "SP_SERPENT",
+      "runtime_size": [
+        51,
+        50
+      ],
+      "source_cell": [
+        0,
+        423,
+        440,
+        887
+      ],
+      "source_cell_bbox": [
+        17,
+        33,
+        425,
+        436
+      ]
+    },
+    {
+      "species": "SP_DEEP_GHOST",
+      "runtime_size": [
+        45,
+        49
+      ],
+      "source_cell": [
+        440,
+        423,
+        839,
+        887
+      ],
+      "source_cell_bbox": [
+        15,
+        38,
+        384,
+        437
+      ]
+    },
+    {
+      "species": "SP_CRAB_KING",
+      "runtime_size": [
+        70,
+        63
+      ],
+      "source_cell": [
+        839,
+        423,
+        1327,
+        887
+      ],
+      "source_cell_bbox": [
+        17,
+        33,
+        469,
+        437
+      ]
+    },
+    {
+      "species": "SP_LEVIATHAN",
+      "runtime_size": [
+        65,
+        64
+      ],
+      "source_cell": [
+        1327,
+        423,
+        1774,
+        887
+      ],
+      "source_cell_bbox": [
+        17,
+        28,
+        432,
+        435
+      ]
+    }
+  ],
+  "conversion": "Nearest-neighbor, indexed RGB565, at most 240 scenery colors, at most 96 monster colors and binary alpha"
+}

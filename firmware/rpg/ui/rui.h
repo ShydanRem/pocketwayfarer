@@ -38,6 +38,7 @@ void r_go(int screen);
 const wf_sprite *ri(int id);
 /* Scene background plus its ambient lights and particles. */
 lv_obj_t *r_scene(int scene);
+bool r_scene_illustrated(int scene);
 
 /* Hero picture --------------------------------------------------------------- */
 typedef struct {

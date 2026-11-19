@@ -10,7 +10,7 @@ Un RPG fantasy HD-2D per **Waveshare ESP32-S3-Touch-AMOLED-1.75**, con schermo r
 
 **[Roadmap operativa](docs/ROADMAP.md)** · [Stato del lotto attivo](docs/roadmap/STATUS.md) · [Direzione artistica delle 40 classi](docs/CLASS-ART-BIBLE.md)
 
-> **0.8.0-preview.3** — Nuova Cripta dei Lumi, con percorsi evidenziati, Mimic e Re delle Ossa. Vincendo al piano 5 si sblocca il checkpoint anche se si torna al borgo. [Catture e prove R5.3](docs/roadmap/crypt-evidence/README.md) · [Roadmap](docs/ROADMAP.md)
+> **0.8.0-preview.4** — Riva di Vetro e Tempio Sommerso ridisegnati, con otto specie costiere tra cui i due boss. I nuovi fondali sono stati confrontati a due risoluzioni sul renderer del Pocket. [Catture e prove R5.4](docs/roadmap/shore-evidence/README.md) · [Roadmap](docs/ROADMAP.md)
 
 ## Sul Pocket, in pochi passaggi
 

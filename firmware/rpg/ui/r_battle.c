@@ -5,6 +5,7 @@
 #include "rui.h"
 #include "art/crypt_art.h"
 #include "art/lumen_art.h"
+#include "art/shore_art.h"
 
 enum { PH_INTRO, PH_CHOOSE, PH_SKILLS, PH_RING, PH_ANIM, PH_TELEGRAPH, PH_PARRY, PH_END };
 enum { AFTER_HERO, AFTER_NEXT_FOE, AFTER_TELEGRAPH, AFTER_FOE, AFTER_ROUND };
@@ -12,7 +13,7 @@ enum { AFTER_HERO, AFTER_NEXT_FOE, AFTER_TELEGRAPH, AFTER_FOE, AFTER_ROUND };
 static struct {
     rpg_battle b;
     rpg_foe start_foes[RPG_MAX_FOES];
-    bool dungeon, boss, lumen;
+    bool dungeon, boss, illustrated;
     int phase, after;
     uint32_t phase_at, next_ev_at;
     int ev_index;
@@ -37,6 +38,7 @@ static struct {
 static const wf_sprite *foe_sprite(int species, bool windup) {
     if (species == SP_MIMIC) return &classic_crypt_mimic;
     if (species == SP_BONE_KING) return &classic_crypt_bone_king;
+    if (classic_shore_monsters[species].px) return &classic_shore_monsters[species];
     const wf_sprite *art = &classic_lumen_monsters[species];
     return art->px ? art : &rpg_monsters[species][windup];
 }
@@ -96,7 +98,7 @@ static void place_marker(void) {
     if (B.target < 0) { lv_obj_add_flag(B.marker, LV_OBJ_FLAG_HIDDEN); return; }
     lv_obj_remove_flag(B.marker, LV_OBJ_FLAG_HIDDEN);
     int h = (int)foe_sprite(B.b.foe[B.target].species, false)->h * B.scale[B.target];
-    if (B.lumen && h > 112)
+    if (B.illustrated && h > 112)
         kit_pos(B.marker, B.foe_x[B.target] - 90, B.foe_y[B.target] - h / 2 + 34);
     else
         kit_pos(B.marker, B.foe_x[B.target], B.foe_y[B.target] - h / 2 - 14);
@@ -368,7 +370,7 @@ static void hero_turn(void) {
         return;
     }
     place_marker();
-    set_info(B.lumen ? TX(rpg_species(B.b.foe[B.target].species)->name) : NULL);
+    set_info(B.illustrated ? TX(rpg_species(B.b.foe[B.target].species)->name) : NULL);
     show_buttons(true);
     phase(PH_CHOOSE);
 }
@@ -389,7 +391,7 @@ static void after_events(void) {
     case AFTER_NEXT_FOE: {
         int i = B.b.acting;
         kit_img_set(B.foe_img[i], foe_sprite(B.b.foe[i].species, true), B.scale[i]);
-        if (B.lumen) {
+        if (B.illustrated) {
             lv_obj_set_style_image_recolor(B.foe_img[i], lv_color_hex(RC_GOLD), 0);
             lv_obj_set_style_image_recolor_opa(B.foe_img[i], 64, 0);
         }
@@ -403,7 +405,7 @@ static void after_events(void) {
     }
     case AFTER_FOE:
         kit_img_set(B.foe_img[B.b.acting], foe_sprite(B.b.foe[B.b.acting].species, false), B.scale[B.b.acting]);
-        if (B.lumen) lv_obj_set_style_image_recolor_opa(B.foe_img[B.b.acting], 0, 0);
+        if (B.illustrated) lv_obj_set_style_image_recolor_opa(B.foe_img[B.b.acting], 0, 0);
         if (rpg_battle_over(&B.b)) finish();
         else next_foe();
         break;
@@ -425,7 +427,7 @@ static void on_ring_tap(lv_event_t *e) {
     if (B.phase != PH_RING || waiting_for_input()) return;
     int q = ring_judge(&B.ring);
     ring_close(&B.ring);
-    if (B.lumen) {
+    if (B.illustrated) {
         lv_obj_set_width(B.info, 258);
         lv_obj_set_width(lv_obj_get_child(B.info, 0), 244);
         kit_pos(B.info, CX, 55);
@@ -457,7 +459,7 @@ static void act(const rpg_action *a) {
     wf_ring_make(&ring, &r, B.b.h.st.timing * 3 + 10, lvl / 2, R.g.hero.morale);
     show_buttons(false);
     set_info(TR("Tocca sull'arco dorato!", "Tap on the golden arc!"));
-    if (B.lumen) {
+    if (B.illustrated) {
         lv_obj_set_width(B.info, 208);
         lv_obj_set_width(lv_obj_get_child(B.info, 0), 196);
         kit_pos(B.info, CX, 95);
@@ -522,7 +524,7 @@ static void on_item_pick(lv_event_t *e) {
 }
 
 static void auto_button_refresh(void) {
-    if (B.lumen) {
+    if (B.illustrated) {
         lv_label_set_text(lv_obj_get_child(B.buttons[5], 0), R.g.auto_battle ? TR("Auto sì", "Auto on") : TR("Auto no", "Auto off"));
         r_character_button_style(B.buttons[5], R.g.auto_battle);
     } else {
@@ -563,12 +565,12 @@ static void on_button(lv_event_t *e) {
 }
 
 static void on_foe(lv_event_t *e) {
-    if ((B.lumen && B.phase != PH_CHOOSE) || waiting_for_input()) return;
+    if ((B.illustrated && B.phase != PH_CHOOSE) || waiting_for_input()) return;
     int i = (int)(intptr_t)lv_event_get_user_data(e);
     if (B.b.foe[i].hp <= 0) return;
     B.target = i;
     place_marker();
-    if (B.lumen) set_info(TX(rpg_species(B.b.foe[i].species)->name));
+    if (B.illustrated) set_info(TX(rpg_species(B.b.foe[i].species)->name));
 }
 
 static void on_parry_tap(lv_event_t *e) {
@@ -576,7 +578,7 @@ static void on_parry_tap(lv_event_t *e) {
     if (B.phase != PH_PARRY || waiting_for_input()) return;
     int q = parry_judge(&B.parry);
     parry_close(&B.parry);
-    if (B.lumen) lv_obj_remove_flag(B.buttons[5], LV_OBJ_FLAG_HIDDEN);
+    if (B.illustrated) lv_obj_remove_flag(B.buttons[5], LV_OBJ_FLAG_HIDDEN);
     rpg_battle_foe(&B.b, q);
     play_events(AFTER_FOE);
 }
@@ -584,8 +586,8 @@ static void on_parry_tap(lv_event_t *e) {
 /* ---- Screen --------------------------------------------------------------------------------- */
 void scr_battle(void) {
     const rpg_zone_info *z = rpg_zone(R.g.run.active && B.dungeon ? R.g.run.zone : R.zone);
-    B.lumen = z->field_scene == 0;
     int scene = B.dungeon ? RS_DUNGEON_CRYPT + z->dungeon_scene : RS_FIELD_MEADOW + z->field_scene;
+    B.illustrated = r_scene_illustrated(scene);
     B.scr = r_scene(scene);
     memset(&B.ring, 0, sizeof B.ring);
     memset(&B.parry, 0, sizeof B.parry);
@@ -610,7 +612,7 @@ void scr_battle(void) {
         B.foe_img[i] = kit_img(B.scr, sprite, B.scale[i], B.foe_x[i], B.foe_y[i]);
         B.foe_hit[i] = NULL;
         lv_obj_t *hit = B.foe_img[i];
-        if (B.lumen) {
+        if (B.illustrated) {
             hit = B.foe_hit[i] = lv_obj_create(B.scr);
             lv_obj_remove_style_all(hit);
             lv_obj_remove_flag(hit, LV_OBJ_FLAG_SCROLLABLE);
@@ -645,7 +647,7 @@ void scr_battle(void) {
         {RI_SHIELD, 374, 280, 66, 0x3a7ae8}, {RI_RUN, 66, 196, 48, COL_PANEL_HI}, {RI_AUTO, 400, 196, 48, COL_PANEL_HI},
     };
     for (int i = 0; i < 6; i++) {
-        if (B.lumen) {
+        if (B.illustrated) {
             static const wf_text names[] = {{"Attacco", "Attack"}, {"Abilità", "Skills"}, {"Zaino", "Bag"},
                                             {"Guardia", "Guard"}, {"Fuga", "Flee"}, {"Auto no", "Auto off"}};
             static const int pos[][2] = {{92,302},{103,366},{363,366},{374,302},{100,103},{366,103}};
@@ -663,12 +665,12 @@ void scr_battle(void) {
         lv_obj_delete(B.buttons[4]);
         B.buttons[4] = NULL;
     }
-    if (B.lumen) auto_button_refresh();
+    if (B.illustrated) auto_button_refresh();
     else if (R.g.auto_battle) {
         lv_obj_set_style_bg_grad_color(B.buttons[5], lv_color_hex(COL_BTN_OK), 0);
         lv_obj_set_style_bg_color(B.buttons[5], lv_color_hex(0x8ae8a0), 0);
     }
-    if (B.lumen) {
+    if (B.illustrated) {
         B.info = r_character_panel(B.scr, CX, 55, 258, 55);
         lv_obj_t *info = r_text(B.info, "", RC_IVORY, &ln_font_body);
         lv_obj_set_width(info, 244);
@@ -740,7 +742,7 @@ void battle_tick(void) {
             const rpg_foe *f = &B.b.foe[B.b.acting];
             wf_parry_make(&p, &r, B.b.h.st.stat[ST_AGI], f->agi, f->boss);
             uint32_t color = B.b.foe_move == FOE_HIT ? 0xff4f7a : 0xff8a3a;
-            if (B.lumen) lv_obj_add_flag(B.buttons[5], LV_OBJ_FLAG_HIDDEN);
+            if (B.illustrated) lv_obj_add_flag(B.buttons[5], LV_OBJ_FLAG_HIDDEN);
             parry_open(&B.parry, B.scr, &p, color, ri(RI_SHIELD), on_parry_tap);
             phase(PH_PARRY);
         }

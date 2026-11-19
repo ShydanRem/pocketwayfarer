@@ -453,7 +453,7 @@ static void crypt_shot(const char *stage) {
     shot(name);
 }
 
-static void crypt_boss_route(int floor) {
+static void stage_boss_floor(int floor) {
     R.g.run.floor = (uint8_t)floor;
     rpg_dungeon_floor(&R.g.run);
     R.g.run.row = RPG_ROWS - 1;
@@ -465,12 +465,12 @@ static void crypt_boss_route(int floor) {
     r_go(R_DUNGEON);
 }
 
-static void crypt_win(void) {
+static void auto_win(void) {
     R.g.auto_battle = 1;
     for (int t = 0; t < 1800 && rpg_battle_phase() != 7; t++) run(20);
     if (R.g.classic.outcome != B_WON)
-        fprintf(stderr, "Crypt floor %d: expected victory, phase %d outcome %d\n",
-                R.g.run.floor, rpg_battle_phase(), R.g.classic.outcome);
+        fprintf(stderr, "Zone %d floor %d: expected victory, phase %d outcome %d\n",
+                R.zone, R.g.run.floor, rpg_battle_phase(), R.g.classic.outcome);
     assert(R.g.classic.active == 2 && R.g.classic.outcome == B_WON);
     assert(find(lv_layer_top(), TR("Vittoria!", "Victory!")));
 }
@@ -539,7 +539,7 @@ static void crypt_flow(void) {
         assert(R.screen == R_BATTLE);
         run(1300);
         assert(find(lv_screen_active(), "Mimic"));
-        crypt_win();
+        auto_win();
         uint32_t loot = R.g.gold;
         assert(loot > gold);
         assert(R.g.run.gold == loot - gold);
@@ -586,11 +586,11 @@ static void crypt_flow(void) {
         /* The route to the boss is generated. The fixture advances past
          * subsequent floors so the actual OS input can check both bosses. */
         R.g.auto_battle = 0;
-        crypt_boss_route(5);
+        stage_boss_floor(5);
         press("Boss");
         run(1300);
         assert(find(lv_screen_active(), TR("Re Gelatino", "Slime King")));
-        crypt_win();
+        auto_win();
         press(TR("Continua", "Continue"));
         press(TR("Città", "Town"));
         assert(R.screen == R_TOWN && rpg_dungeon_checkpoint(&R.g, 0));
@@ -608,14 +608,14 @@ static void crypt_flow(void) {
         rpg_stats_get(&R.g, &stats);
         R.g.hero.hp = stats.max_hp;
         R.g.hero.sp = stats.max_sp;
-        crypt_boss_route(10);
+        stage_boss_floor(10);
         crypt_shot("soglia");
         press("Boss");
         run(1300);
         assert(find(lv_screen_active(), TR("Re delle Ossa", "Bone King")));
         controls_clear();
         crypt_shot("re-delle-ossa");
-        crypt_win();
+        auto_win();
         loot = R.g.gold;
         wf_app_start(saved, saved_len);
         assert(R.screen == R_TOWN && R.g.zone_unlocked == 1 && R.g.best_floor[0] == 10);
@@ -635,6 +635,167 @@ static void crypt_flow(void) {
     }
     wf_lang = 0;
     puts("Crypt: IT/EN touch entrance/locked rooms, mimic retry, exact-once loot, boss checkpoint after leaving, and floor 10 unlock passed");
+}
+
+static void shore_shot(const char *stage) {
+    char name[80];
+    snprintf(name, sizeof name, "shore-%s-%s", stage, wf_lang ? "en" : "it");
+    shot(name);
+}
+
+static void shore_map(void) {
+    r_go(R_MAP);
+    run(120);
+    click(rpg_world_spots[1][0], rpg_world_spots[1][1]);
+}
+
+/* Pick deterministic encounters through the real generator, without
+ * bypassing the field button, stamina cost or monster targeting. */
+static void shore_fight(unsigned mask, int total, rpg_foe *foes) {
+    for (uint32_t seed = 1; seed <= 10000; seed++) {
+        rpg_game sim = R.g;
+        sim.rng_state = seed;
+        int count;
+        assert(rpg_field_encounter(&sim, 1, foes, &count) == RPG_OK);
+        unsigned species = 0;
+        for (int i = 0; i < count; i++) species |= 1u << (foes[i].species - SP_CRAB);
+        if (species != mask || count != total) continue;
+        R.g.rng_state = seed;
+        int stamina = R.g.hero.stamina;
+        press(TR("Combatti", "Fight"));
+        assert(R.screen == R_BATTLE && R.g.hero.stamina == stamina - 1);
+        run(1300);
+        assert(rpg_battle_phase() == 1);
+        controls_clear();
+        return;
+    }
+    assert(!"No coastal encounter found");
+}
+
+static void shore_flow(void) {
+    assert(R.g.zone_unlocked == 1 && R.g.best_floor[0] == RPG_FLOORS && !R.g.run.active);
+    rpg_game unlocked = R.g;
+    for (int lang = 0; lang < 2; lang++) {
+        R.g = unlocked;
+        R.g.lang = wf_lang = (uint8_t)lang;
+        R.g.zone_unlocked = 0;
+        shore_map();
+        assert(R.screen == R_MAP);
+        R.g.zone_unlocked = unlocked.zone_unlocked;
+        R.g.auto_battle = 0;
+        R.g.hero.level = 32;
+        rpg_stats stats;
+        rpg_stats_get(&R.g, &stats);
+        R.g.hero.hp = stats.max_hp;
+        R.g.hero.sp = stats.max_sp;
+        shore_map();
+        assert(R.screen == R_ZONE && R.zone == 1);
+        assert(find(lv_screen_active(), TR("Riva di Vetro", "Glass Shore")));
+        shore_shot("riva");
+
+        rpg_foe foes[RPG_MAX_FOES];
+        shore_fight(0x07, 3, foes);
+        const int points[3][2] = {{78, 190}, {233, 169}, {388, 190}};
+        for (int i = 2; i >= 0; i--) {
+            click(points[i][0], points[i][1]);
+            assert(rpg_battle_target_now() == i);
+            assert(find(lv_screen_active(), TX(rpg_species(foes[i].species)->name)));
+        }
+        shore_shot("trio");
+        press(TR("Attacco", "Attack"));
+        assert(rpg_battle_phase() == 3);
+        for (int t = 0; t < 500 && rpg_battle_ring_quality_now() < 2; t++) run(5);
+        assert(rpg_battle_ring_quality_now() >= 2);
+        if (lang) assert(wf_app_key(WF_KEY_BOOT_DOWN));
+        else click(CX, CY);
+        assert(rpg_battle_phase() != 3);
+        auto_win();
+        press(TR("Continua", "Continue"));
+        assert(R.screen == R_ZONE);
+        R.g.auto_battle = 0;
+        shore_fight(0x08, 1, foes);
+        shore_shot("pirata");
+        auto_win();
+        press(TR("Continua", "Continue"));
+        assert(R.screen == R_ZONE);
+
+        R.g.auto_battle = 0;
+        press(TR("Tempio Sommerso", "Sunken Temple"));
+        assert(R.screen == R_DUNGEON && R.g.run.zone == 1 && R.g.run.floor == 1);
+        assert(find(lv_screen_active(), TR("Tempio Sommerso", "Sunken Temple")));
+        shore_shot("tempio");
+        int col = 0;
+        while (col < RPG_COLS && !rpg_room_reachable(&R.g.run, 0, col)) col++;
+        assert(col < RPG_COLS);
+        R.g.run.rooms[0][col] = ROOM_FIGHT;
+        uint32_t seed;
+        for (seed = 1; seed <= 10000; seed++) {
+            rpg_game sim = R.g;
+            sim.rng_state = seed;
+            int count;
+            assert(rpg_room_enter(&sim, 0, col, foes, &count) == ROOM_FIGHT);
+            if (count == 2 && ((foes[0].species == SP_SERPENT && foes[1].species == SP_DEEP_GHOST) ||
+                               (foes[1].species == SP_SERPENT && foes[0].species == SP_DEEP_GHOST))) break;
+        }
+        assert(seed <= 10000);
+        R.g.rng_state = seed;
+        r_go(R_DUNGEON);
+        run(120);
+        click(131 + 102 * col, 340);
+        assert(R.screen == R_BATTLE && R.g.run.row == 0);
+        run(1300);
+        assert(find(lv_screen_active(), TX(rpg_species(foes[0].species)->name)));
+        controls_clear();
+        shore_shot("serpe-e-annegato");
+        auto_win();
+        press(TR("Continua", "Continue"));
+        assert(R.screen == R_DUNGEON && (R.g.run.cleared[0] & (1u << col)));
+
+        R.g.auto_battle = 0;
+        stage_boss_floor(5);
+        press("Boss");
+        run(1300);
+        assert(find(lv_screen_active(), TR("Granchio corazzato", "Armoured Crab")));
+        controls_clear();
+        shore_shot("granchio-corazzato");
+        auto_win();
+        press(TR("Continua", "Continue"));
+        press(TR("Città", "Town"));
+        assert(R.screen == R_TOWN && rpg_dungeon_checkpoint(&R.g, 1));
+        press("Ok");
+        shore_map();
+        press(TR("Dal piano 6", "From floor 6"));
+        assert(R.screen == R_DUNGEON && R.g.run.zone == 1 && R.g.run.floor == 6);
+        R.g.auto_battle = 0;
+        /* Navigation/recovery fixture. Balance is checked separately using
+         * leveled heroes in the core dungeon simulations. */
+        R.g.hero.level = 65;
+        R.g.hero.stat[ST_VIT] = 99;
+        R.g.hero.stat[ST_AGI] = 80;
+        rpg_stats_get(&R.g, &stats);
+        R.g.hero.hp = stats.max_hp;
+        R.g.hero.sp = stats.max_sp;
+        stage_boss_floor(10);
+        press("Boss");
+        run(1300);
+        assert(find(lv_screen_active(), TR("Leviatano", "Leviathan")));
+        controls_clear();
+        shore_shot("leviatano");
+        auto_win();
+        uint32_t gold = R.g.gold;
+        wf_app_start(saved, saved_len);
+        assert(R.screen == R_TOWN && R.g.zone_unlocked == 2 && R.g.best_floor[1] == 10);
+        assert(!R.g.run.active && R.g.gold == gold && !R.g.classic.active);
+        assert(find(lv_layer_top(), TR("Dungeon completato!", "Dungeon cleared!")));
+        press("Ok");
+        r_go(R_MAP);
+        run(120);
+        click(rpg_world_spots[2][0], rpg_world_spots[2][1]);
+        assert(R.screen == R_ZONE && R.zone == 2);
+        assert(find(lv_screen_active(), TR("Bosco Sussurrante", "Whispering Wood")));
+    }
+    wf_lang = 0;
+    puts("Shore: IT/EN map gating, eight coastal species, trio targeting, touch/BOOT attack, both bosses, checkpoint and Wood unlock passed");
 }
 
 int main(int argc,char **argv) {
@@ -657,6 +818,7 @@ int main(int argc,char **argv) {
     character_flow();
     lumen_flow();
     crypt_flow();
+    shore_flow();
     printf("battle footer:%u actual opaque glyph pixels inside circle and below avatar; level99 all master rig stress passed\n",footer_ink_pixels);
     printf("hero rig native:%d screenshots,actual creation-adjacent classic views,formations,save/wake,full/incremental render and control separation passed;peak%zu image bytes\n",shots,peak_image_bytes);
     return 0;
