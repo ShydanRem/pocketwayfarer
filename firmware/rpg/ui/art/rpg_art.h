@@ -60,9 +60,6 @@ enum {
     RS_COUNT
 };
 
-/* Map spots in screen pixels: five zones, then the town. */
-static const uint16_t rpg_world_spots[6][2] = {{232, 372}, {108, 284}, {132, 128}, {320, 88}, {376, 248}, {232, 220}};
-
 extern const wf_layer rpg_body[RACE_COUNT][5];
 extern const wf_layer rpg_face[4][4][2];
 extern const wf_layer rpg_hair_front[6][8];

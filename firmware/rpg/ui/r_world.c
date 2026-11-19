@@ -9,6 +9,10 @@ static void close_dlg(lv_event_t *e) { (void)e; kit_dialog_close(dlg); dlg = NUL
 static void on_go(lv_event_t *e) { r_go((int)(intptr_t)lv_event_get_user_data(e)); }
 
 /* ---- World map --------------------------------------------------------------------- */
+const uint16_t r_world_spots[RPG_ZONES][2] = {
+    {233, 353}, {92, 289}, {127, 163}, {336, 163}, {374, 289},
+};
+
 static void on_spot(lv_event_t *e) {
     int z = (int)(intptr_t)lv_event_get_user_data(e);
     if (z > R.g.zone_unlocked) {
@@ -23,33 +27,28 @@ static void on_spot(lv_event_t *e) {
 
 void scr_map(void) {
     lv_obj_t *s = r_scene(RS_WORLD);
+    r_character_panel(s, CX, 53, 250, 42);
+    kit_label(s, &ln_font_title, RC_GOLD, TR("Isole Sospese", "Floating Isles"), CX, 53);
     for (int z = 0; z < RPG_ZONES; z++) {
-        int x = rpg_world_spots[z][0], y = rpg_world_spots[z][1];
+        int x = r_world_spots[z][0], y = r_world_spots[z][1];
         bool open = z <= R.g.zone_unlocked;
-        lv_obj_t *hit = lv_obj_create(s);
-        lv_obj_remove_style_all(hit);
-        lv_obj_set_size(hit, 96, 80);
-        kit_pos(hit, x, y);
-        lv_obj_add_flag(hit, LV_OBJ_FLAG_CLICKABLE);
-        lv_obj_add_event_cb(hit, on_spot, LV_EVENT_CLICKED, (void *)(intptr_t)z);
-        char buf[48];
-        snprintf(buf, sizeof buf, "%s", open ? TX(rpg_zone(z)->field_name) : "???");
-        lv_obj_t *p = kit_pill(s, buf, x, y + 40);
-        if (!open) {
-            lv_obj_set_style_opa(p, 170, 0);
-            kit_img(s, ri(RI_LOCK), 2, x, y - 6);
-        } else if (R.g.hunt.active && R.g.hunt.zone == z) {
-            kit_img(s, ri(RI_SWORD), 2, x, y - 30);
+        bool hunting = R.g.hunt.active && R.g.hunt.zone == z;
+        int width = z == 0 ? 176 : 134;
+        lv_obj_t *button = r_character_button(s, TX(rpg_zone(z)->field_name), x, y, width, 52,
+                                               open && z == R.g.zone_unlocked, on_spot, z);
+        lv_obj_t *name = lv_obj_get_child(button, 0);
+        lv_obj_set_width(name, width - 10);
+        lv_obj_set_style_text_align(name, LV_TEXT_ALIGN_CENTER, 0);
+        lv_obj_set_style_text_line_space(name, -5, 0);
+        if (!open) lv_obj_set_style_text_color(name, lv_color_hex(RC_MUTED), 0);
+        int mark = !open ? RI_LOCK : hunting ? RI_SWORD : R.g.best_floor[z] >= RPG_FLOORS ? RI_TROPHY : RI_COUNT;
+        if (mark != RI_COUNT) {
+            r_character_panel(s, x, y - 40, 29, 27);
+            kit_img(s, ri(mark), 1, x, y - 40);
         }
     }
-    kit_label(s, &wf_font_big, COL_GOLD, TR("Isole Sospese", "Floating Isles"), CX, 42);
-    lv_obj_t *town = lv_obj_create(s);
-    lv_obj_remove_style_all(town);
-    lv_obj_set_size(town, 90, 70);
-    kit_pos(town, rpg_world_spots[5][0], rpg_world_spots[5][1]);
-    lv_obj_add_flag(town, LV_OBJ_FLAG_CLICKABLE);
-    lv_obj_add_event_cb(town, on_go, LV_EVENT_CLICKED, (void *)(intptr_t)R_TOWN);
-    kit_pill(s, TR("Borgo Lanterna", "Lantern Hollow"), rpg_world_spots[5][0], rpg_world_spots[5][1] + 36);
+    r_character_button(s, TR("Borgo Lanterna", "Lantern Hollow"), CX, 235, 170, 44, true, on_go, R_TOWN_CLASSIC);
+    r_back(s, R_TOWN_CLASSIC);
 }
 
 /* ---- Zone ---------------------------------------------------------------------------- */
@@ -448,9 +447,9 @@ static void on_claim(lv_event_t *e) {
     if (!gold) return;
     char buf[64];
     snprintf(buf, sizeof buf, TR("+%d oro e %s", "+%d gold and %s"), gold, TX(rpg_consumable(R.g.quests[i].reward)->name));
-    kit_toast(buf, ri(RI_TROPHY));
     r_save_now();
     r_go(R_QUESTS);
+    kit_toast(buf, ri(RI_TROPHY));
 }
 
 static void on_option(lv_event_t *e) {
@@ -465,43 +464,58 @@ static void on_option(lv_event_t *e) {
     r_go(R_QUESTS);
 }
 
+static void on_quest_tab(lv_event_t *e) {
+    R.quest_options = (bool)(intptr_t)lv_event_get_user_data(e);
+    r_go(R_QUESTS);
+}
+
 void scr_quests(void) {
-    lv_obj_t *s = kit_screen(NULL);
-    lv_obj_set_style_bg_color(s, lv_color_hex(0x1e1a14), 0);
-    lv_obj_t *list = r_list(s, CX, 226, 330, 380);
-    lv_obj_set_style_pad_top(list, 30, 0);
-    lv_obj_set_style_pad_bottom(list, 70, 0);
-    r_text(list, TR("Missioni di oggi", "Today's quests"), COL_GOLD, &wf_font_big);
-    char buf[128], q[64];
-    for (int i = 0; i < RPG_QUESTS; i++) {
-        const rpg_quest *qt = &R.g.quests[i];
-        lv_obj_t *row = r_row(list, 64);
-        snprintf(buf, sizeof buf, "%s\n%d/%d · %d %s", rpg_quest_text(qt, q, sizeof q), qt->kind == Q_GOLD ? qt->progress * 50 : qt->progress,
-                 qt->kind == Q_GOLD ? qt->goal * 50 : qt->goal, qt->gold, TR("oro", "gold"));
-        lv_obj_t *t = r_text(row, buf, qt->claimed ? COL_DIM : COL_TEXT, NULL);
-        lv_obj_align(t, LV_ALIGN_LEFT_MID, 10, 0);
-        if (!qt->claimed && qt->progress >= qt->goal) {
-            lv_obj_t *b = kit_text_button(row, TR("Ritira", "Claim"), 0, 0, 76, 40, COL_GOLD, on_claim, i);
-            lv_obj_align(b, LV_ALIGN_RIGHT_MID, -6, 0);
+    lv_obj_t *s = r_character_screen();
+    kit_label(s, &ln_font_title, RC_GOLD, TR("Diario", "Journal"), CX, 45);
+    r_character_button(s, TR("Missioni", "Quests"), CX - 66, 87, 124, 42, !R.quest_options, on_quest_tab, 0);
+    r_character_button(s, TR("Opzioni", "Options"), CX + 66, 87, 124, 42, R.quest_options, on_quest_tab, 1);
+    lv_obj_t *list = r_character_list(s, 255, 276);
+    char buf[128];
+    if (!R.quest_options) {
+        for (int i = 0; i < RPG_QUESTS; i++) {
+            const rpg_quest *q = &R.g.quests[i];
+            int unit = q->kind == Q_GOLD ? 50 : 1;
+            char title[80];
+            rpg_quest_text(q, title, sizeof title);
+            snprintf(buf, sizeof buf, TR("%d/%d  ·  %d oro", "%d/%d  ·  %d gold"),
+                     q->progress * unit, q->goal * unit, q->gold);
+            lv_obj_t *row = r_character_row(list, 68);
+            bool ready = !q->claimed && q->progress >= q->goal;
+            r_character_row_text(row, 12, (ready || q->claimed) ? 192 : 283,
+                                 title, q->claimed ? RC_MUTED : RC_IVORY, buf);
+            if (q->claimed) {
+                lv_obj_t *stamp = r_text(row, TR("Ritirata", "Claimed"), RC_GOLD, &ln_font_body);
+                lv_obj_align(stamp, LV_ALIGN_RIGHT_MID, -14, 0);
+            } else if (ready) {
+                lv_obj_t *b = r_character_button(row, TR("Ritira", "Claim"), 0, 0, 82, 44, true, on_claim, i);
+                lv_obj_align(b, LV_ALIGN_RIGHT_MID, -8, 0);
+            }
+        }
+        snprintf(buf, sizeof buf, TR("Mostri %lu · Boss %lu · Sconfitte %lu\nGiorni di fila: %d", "Monsters %lu · Bosses %lu · Defeats %lu\nDaily streak: %d"),
+                 (unsigned long)R.g.kills, (unsigned long)R.g.bosses, (unsigned long)R.g.deaths, R.g.streak);
+        lv_obj_t *stats = r_text(list, buf, RC_MUTED, &ln_font_body);
+        lv_obj_set_width(stats, lv_pct(100));
+        lv_obj_set_style_text_align(stats, LV_TEXT_ALIGN_CENTER, 0);
+    } else {
+        static const wf_text labels[4] = {
+            {"Lingua", "Language"}, {"Luminosità", "Brightness"},
+            {"Ora del giorno", "Time of day"}, {"AUTO nelle lotte", "AUTO in battles"},
+        };
+        for (int o = 0; o < 4; o++) {
+            lv_obj_t *row = r_character_row(list, 60);
+            if (o == 0) snprintf(buf, sizeof buf, "%s", TR("Italiano", "English"));
+            else if (o == 1) snprintf(buf, sizeof buf, "%d%%", R.g.brightness);
+            else if (o == 2) snprintf(buf, sizeof buf, "%02d:00", r_hour());
+            else snprintf(buf, sizeof buf, "%s", R.g.auto_battle ? TR("Sì", "On") : TR("No", "Off"));
+            r_character_row_text(row, 12, 191, TX(labels[o]), RC_IVORY, buf);
+            lv_obj_t *b = r_character_button(row, TR("Cambia", "Change"), 0, 0, 86, 44, false, on_option, o);
+            lv_obj_align(b, LV_ALIGN_RIGHT_MID, -8, 0);
         }
     }
-    snprintf(buf, sizeof buf, TR("Mostri %lu · Boss %lu · Sconfitte %lu\nGiorni di fila: %d", "Monsters %lu · Bosses %lu · Defeats %lu\nDaily streak: %d"),
-             (unsigned long)R.g.kills, (unsigned long)R.g.bosses, (unsigned long)R.g.deaths, R.g.streak);
-    r_text(list, buf, COL_MOOD, NULL);
-    r_text(list, TR("Opzioni", "Options"), COL_GOLD, &wf_font_big);
-    static const wf_text opts[4] = {{"Lingua: Italiano", "Language: English"}, {"Luminosità", "Brightness"},
-                                    {"Ora del giorno", "Time of day"}, {"AUTO nelle lotte", "AUTO in battles"}};
-    for (int o = 0; o < 4; o++) {
-        lv_obj_t *row = r_row(list, 50);
-        if (o == 1) snprintf(buf, sizeof buf, "%s %d%%", TX(opts[o]), R.g.brightness);
-        else if (o == 2) snprintf(buf, sizeof buf, "%s %02d:00", TX(opts[o]), r_hour());
-        else if (o == 3) snprintf(buf, sizeof buf, "%s: %s", TX(opts[o]), R.g.auto_battle ? TR("sì", "on") : TR("no", "off"));
-        else snprintf(buf, sizeof buf, "%s", TX(opts[o]));
-        lv_obj_t *t = r_text(row, buf, COL_TEXT, NULL);
-        lv_obj_align(t, LV_ALIGN_LEFT_MID, 10, 0);
-        lv_obj_t *b = kit_text_button(row, TR("Cambia", "Change"), 0, 0, 84, 38, COL_PANEL, on_option, o);
-        lv_obj_align(b, LV_ALIGN_RIGHT_MID, -6, 0);
-    }
-    r_text(list, "Pocket Wayfarer v0.2", COL_DIM, NULL);
-    r_back(s, R_TOWN);
+    r_back(s, R_TOWN_CLASSIC);
 }

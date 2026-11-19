@@ -47,11 +47,62 @@ lv_obj_t *r_character_button(lv_obj_t *parent, const char *text, int x, int y, i
     return button;
 }
 
+lv_obj_t *r_character_list(lv_obj_t *parent, int y, int height) {
+    lv_obj_t *list = r_list(parent, CX, y, 320, height);
+    lv_obj_set_style_pad_right(list, 8, 0);
+    lv_obj_set_style_pad_row(list, 8, 0);
+    lv_obj_set_scrollbar_mode(list, LV_SCROLLBAR_MODE_AUTO);
+    lv_obj_set_style_width(list, 3, LV_PART_SCROLLBAR);
+    lv_obj_set_style_bg_color(list, lv_color_hex(RC_GOLD), LV_PART_SCROLLBAR);
+    lv_obj_set_style_bg_opa(list, LV_OPA_70, LV_PART_SCROLLBAR);
+    lv_obj_set_style_radius(list, 2, LV_PART_SCROLLBAR);
+    return list;
+}
+
+lv_obj_t *r_character_row(lv_obj_t *list, int height) {
+    lv_obj_t *row = r_row(list, height);
+    lv_obj_set_style_bg_color(row, lv_color_hex(RC_SURFACE), 0);
+    lv_obj_set_style_bg_opa(row, 246, 0);
+    lv_obj_set_style_border_color(row, lv_color_hex(0x495e62), 0);
+    lv_obj_set_style_border_width(row, 1, 0);
+    lv_obj_set_style_radius(row, 8, 0);
+    return row;
+}
+
+void r_character_row_text(lv_obj_t *row, int left, int width,
+                          const char *title, uint32_t color, const char *detail) {
+    const int line_space = -5;
+    lv_obj_t *column = lv_obj_create(row);
+    lv_obj_remove_style_all(column);
+    lv_obj_remove_flag(column, LV_OBJ_FLAG_CLICKABLE | LV_OBJ_FLAG_SCROLLABLE);
+    lv_obj_set_size(column, width, LV_SIZE_CONTENT);
+    lv_obj_set_flex_flow(column, LV_FLEX_FLOW_COLUMN);
+    lv_obj_set_style_pad_row(column, 2, 0);
+    lv_obj_align(column, LV_ALIGN_LEFT_MID, left, 0);
+    lv_obj_t *name = r_text(column, title, color, &ln_font_body);
+    lv_obj_set_width(name, lv_pct(100));
+    lv_obj_set_style_text_line_space(name, line_space, 0);
+    lv_point_t size;
+    lv_text_get_size(&size, title, &ln_font_body, 0, line_space, width, LV_TEXT_FLAG_NONE);
+    int min_height = size.y + 12;
+    if (detail) {
+        lv_obj_t *caption = r_text(column, detail, RC_MUTED, &ln_font_body);
+        lv_obj_set_width(caption, lv_pct(100));
+        lv_obj_set_style_text_line_space(caption, line_space, 0);
+        lv_text_get_size(&size, detail, &ln_font_body, 0, line_space, width, LV_TEXT_FLAG_NONE);
+        min_height += size.y + 2;
+    }
+    lv_obj_set_style_min_height(row, min_height, 0);
+}
+
 void r_character_dialog_style(lv_obj_t *dialog) {
     lv_obj_t *panel = lv_obj_get_child(dialog, 0);
     lv_obj_set_style_bg_color(panel, lv_color_hex(RC_SURFACE), 0);
     lv_obj_set_style_radius(panel, 10, 0);
     lv_obj_set_style_border_width(panel, 1, 0);
+    lv_obj_set_style_width(panel, 3, LV_PART_SCROLLBAR);
+    lv_obj_set_style_bg_color(panel, lv_color_hex(RC_GOLD), LV_PART_SCROLLBAR);
+    lv_obj_set_style_bg_opa(panel, LV_OPA_70, LV_PART_SCROLLBAR);
     bool title = true;
     for (unsigned i = 0; i < lv_obj_get_child_count(panel); i++) {
         lv_obj_t *child = lv_obj_get_child(panel, (int)i);

@@ -22,6 +22,7 @@ typedef struct {
     int zone;
     int shop_tab;
     int bag_tab;
+    bool quest_options;
     int forge_pick;          /* -1 none, 0..6 equipped slot, 100+ bag index */
     bool battle_dungeon;
     bool shop_in_dungeon;
@@ -74,6 +75,10 @@ void r_character_dialog_style(lv_obj_t *dialog);
 void r_character_button_style(lv_obj_t *button, bool accent);
 lv_obj_t *r_character_button(lv_obj_t *parent, const char *text, int x, int y, int w, int h,
                              bool accent, lv_event_cb_t cb, intptr_t user);
+lv_obj_t *r_character_list(lv_obj_t *parent, int y, int height);
+lv_obj_t *r_character_row(lv_obj_t *list, int height);
+void r_character_row_text(lv_obj_t *row, int left, int width,
+                          const char *title, uint32_t color, const char *detail);
 uint32_t rarity_color(int r);
 const wf_sprite *item_icon(const rpg_item *it);
 lv_obj_t *r_list(lv_obj_t *parent, int x, int y, int w, int h);
@@ -98,6 +103,7 @@ bool lantern_key(int key);
 void lantern_suspend(void);
 void lantern_wake(void);
 void scr_map(void);
+extern const uint16_t r_world_spots[RPG_ZONES][2];
 void scr_zone(void);
 void scr_battle(void);
 void scr_dungeon(void);
@@ -108,6 +114,7 @@ void scr_class_atlas(void);
 bool class_atlas_key(int key);
 void scr_equip(void);
 void scr_bag(void);
+bool r_items_close_dialog(void);
 void scr_shop(void);
 void scr_forge(void);
 void scr_quests(void);

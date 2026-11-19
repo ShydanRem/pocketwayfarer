@@ -51,6 +51,8 @@ if shots:
             ('bosco-classico', 'wood', ('bosco', 'trio', 'regina-ragno')),
             ('brace-classico', 'ember', ('brace', 'trio', 'signore-dei-demoni')),
             ('guglie-classico', 'sky', ('guglie', 'trio', 'drago-stellare')),
+            ('mappa-zaino-classico', 'services', ('mappa', 'zaino', 'dettaglio')),
+            ('servizi-classico', 'services', ('bottega', 'forgia', 'missioni')),
         ]:
             captures = [next(dst.glob(f'*-{prefix}-{part}-it.png'), None) for part in samples]
             if not all(captures):

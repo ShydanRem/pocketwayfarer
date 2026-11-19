@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "rui.h"
+#include "art/classic_ui_art.h"
 #include "art/crypt_art.h"
 #include "art/ember_art.h"
 #include "art/lumen_art.h"
@@ -17,6 +18,7 @@ int r_hour(void) { return (int)((r_now() / 3600u + R.g.hour_offset) % 24u); }
 const wf_sprite *ri(int id) { return &rpg_ui_icons[id]; }
 
 static const wf_sprite *const illustrated_scenes[RS_COUNT] = {
+    [RS_WORLD] = &classic_world_atlas,
     [RS_FIELD_MEADOW] = &classic_lumen_meadow,
     [RS_FIELD_SHORE] = &classic_shore,
     [RS_FIELD_FOREST] = &classic_wood,
@@ -89,7 +91,7 @@ void r_go(int screen) {
 static void on_go(lv_event_t *e) { r_go((int)(intptr_t)lv_event_get_user_data(e)); }
 
 lv_obj_t *r_back(lv_obj_t *parent, int screen) {
-    return kit_round_button(parent, ri(RI_BACK), NULL, CX, 428, 50, COL_PANEL_HI, on_go, screen);
+    return r_character_button(parent, TR("Indietro", "Back"), CX, 423, 136, 44, false, on_go, screen);
 }
 
 /* ---- Title ----------------------------------------------------------------------- */
@@ -486,11 +488,14 @@ bool wf_app_key(int key) {
     if (key == WF_KEY_BOOT_SHORT || key == WF_KEY_BOOT_LONG) {
         if (!R.loaded) return false;
         if (R.screen == R_DUNGEON || R.screen == R_BATTLE || R.screen == R_TOWN) return true;
+        if ((R.screen == R_BAG || R.screen == R_EQUIP || R.screen == R_SHOP) && r_items_close_dialog()) return true;
         if (R.screen == R_SKILLS || R.screen == R_CLASS) r_go(R_HERO);
         else if (R.screen == R_HERO || R.screen == R_EQUIP) r_go(R_TOWN_CLASSIC);
         else if (R.screen == R_BAG) r_go(R_EQUIP);
         else if (R.screen == R_ZONE) r_go(R_MAP);
         else if (R.screen == R_SHOP && R.shop_in_dungeon) r_go(R_DUNGEON);
+        else if (R.screen == R_MAP || R.screen == R_SHOP || R.screen == R_FORGE || R.screen == R_QUESTS)
+            r_go(R_TOWN_CLASSIC);
         else r_go(R_TOWN);
         return true;
     }

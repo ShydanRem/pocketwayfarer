@@ -11,5 +11,20 @@
     466,
     466
   ],
-  "import": "Nearest-neighbor, 240 colors without dithering, indexed RGB565"
+  "import": "Nearest-neighbor, 240 colors without dithering, indexed RGB565",
+  "world_atlas": {
+    "source": "source/world.png",
+    "generator": "OpenAI ImageGen",
+    "sha256": "3425ba4795f40dc6d2d4abca0e3faed8fb504ed15997f674c129fca6501466a2",
+    "prompt_sha256": "909d6c8d74a3d0f32b3bb308bcd2c1bc96adfca05575543fe08793089ea9e43b",
+    "source_size": [
+      1254,
+      1254
+    ],
+    "runtime_size": [
+      233,
+      233
+    ],
+    "import": "Nearest-neighbor, 240 colors without dithering, indexed RGB565"
+  }
 }

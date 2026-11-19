@@ -115,9 +115,6 @@ def build():
          'typedef struct { wf_sprite s; int8_t x, y; } wf_layer;', '',
          'enum {'] + [f'    RI_{n.upper()},' for n, _ in I.UI] + ['    RI_COUNT', '};', 'enum {'] + \
         [f'    RS_{n.upper()},' for n, _, _m in scenes] + ['    RS_COUNT', '};', '',
-                                                     '/* Map spots in screen pixels: five zones, then the town. */',
-                                                     'static const uint16_t rpg_world_spots[6][2] = {' +
-                                                     ', '.join(f'{{{x * 2}, {y * 2}}}' for x, y in hd2d.ISLANDS + [hd2d.TOWN_SPOT]) + '};', '',
                                                      'extern const wf_layer rpg_body[RACE_COUNT][5];',
                                                      'extern const wf_layer rpg_face[4][4][2];',
                                                      'extern const wf_layer rpg_hair_front[6][8];',

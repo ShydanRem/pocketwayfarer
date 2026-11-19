@@ -646,7 +646,7 @@ static void expedition_shot(const char *region, const char *stage) {
 static void map_zone(int zone) {
     r_go(R_MAP);
     run(120);
-    click(rpg_world_spots[zone][0], rpg_world_spots[zone][1]);
+    click(r_world_spots[zone][0], r_world_spots[zone][1]);
 }
 
 /* Pick deterministic encounters through the real generator, without
@@ -922,6 +922,201 @@ static void expedition_flow(int zone, const expedition_example *example) {
     else printf("zone %d unlock passed\n", zone + 1);
 }
 
+static void service_shot(const char *stage) {
+    expedition_shot("services", stage);
+}
+
+static void tap_service_label(lv_obj_t *label) {
+    assert(label);
+    lv_obj_update_layout(lv_screen_active());
+    lv_area_t a;
+    lv_obj_get_coords(label, &a);
+    int x = (a.x1 + a.x2) / 2, y = (a.y1 + a.y2) / 2;
+    assert((x - CX) * (x - CX) + (y - CY) * (y - CY) < CX * CX);
+    click(x, y);
+}
+
+static void check_map_buttons(void) {
+    lv_obj_t *s = lv_screen_active();
+    lv_obj_update_layout(s);
+    for (int zone = 0; zone < RPG_ZONES; zone++) {
+        lv_obj_t *label = find(s, TX(rpg_zone(zone)->field_name));
+        assert(label);
+        lv_area_t text, button;
+        lv_obj_get_coords(label, &text);
+        lv_obj_get_coords(lv_obj_get_parent(label), &button);
+        assert(text.x1 > button.x1 && text.x2 < button.x2 && text.y1 >= button.y1 && text.y2 <= button.y2);
+        int xs[] = {button.x1, button.x2}, ys[] = {button.y1, button.y2};
+        for (int i = 0; i < 2; i++) for (int j = 0; j < 2; j++)
+            assert((xs[i] - CX) * (xs[i] - CX) + (ys[j] - CY) * (ys[j] - CY) < CX * CX);
+    }
+}
+
+static lv_obj_t *service_item_row(lv_obj_t *label) {
+    assert(label);
+    return lv_obj_get_parent(lv_obj_get_parent(label));
+}
+
+static void scroll_service_row(lv_obj_t *row) {
+    lv_obj_t *list = lv_obj_get_parent(row);
+    lv_area_t a, bounds;
+    lv_obj_update_layout(lv_screen_active());
+    lv_obj_get_coords(list, &bounds);
+    for (int attempts = 0; attempts < 24; attempts++) {
+        lv_obj_get_coords(row, &a);
+        if (a.y1 >= bounds.y1 && a.y2 <= bounds.y2) return;
+        tx = CX;
+        ty = a.y1 < bounds.y1 ? bounds.y1 + 36 : bounds.y2 - 35;
+        int dy = a.y1 < bounds.y1 ? 14 : -14;
+        down = 1;
+        run(30);
+        for (int i = 0; i < 10; i++) { ty += dy; run(20); }
+        down = 0;
+        run(490);
+    }
+    assert(!"Scrollable service row did not become visible");
+}
+
+static void service_flow(void) {
+    for (int lang = 0; lang < 2; lang++) {
+        profile(FAM_WARRIOR, RACE_HUMAN, 1, 0, 1);
+        R.g.lang = wf_lang = (uint8_t)lang;
+        R.g.hero.level = 55;
+        R.g.gold = 25000;
+        R.g.zone_unlocked = 1;
+        R.g.best_floor[0] = RPG_FLOORS;
+        R.g.quests[0] = (rpg_quest){.kind=Q_FORGE, .goal=1, .gold=85, .reward=CO_BREAD};
+        R.g.quests[1] = (rpg_quest){.kind=Q_ROOMS, .goal=15, .progress=3, .gold=78, .reward=CO_ETHER};
+        R.g.quests[2] = (rpg_quest){.kind=Q_KILL, .goal=10, .progress=8, .gold=52, .reward=CO_POTION};
+        R.bag_tab = R.shop_tab = 0;
+        R.quest_options = false;
+        R.forge_pick = SLOT_WEAPON;
+        r_go(R_TOWN_CLASSIC);
+        press(TR("Mappa", "Map"));
+        check_map_buttons();
+        service_shot("mappa-bloccata");
+        press(TX(rpg_zone(4)->field_name));
+        char locked[64];
+        snprintf(locked, sizeof locked, TR("Completa %s", "Clear %s"), TX(rpg_zone(3)->dungeon_name));
+        assert(R.screen == R_MAP && !strcmp(kit_last_toast(), locked));
+        R.g.zone_unlocked = RPG_ZONES - 1;
+        for (int i = 0; i < RPG_ZONES - 1; i++) R.g.best_floor[i] = RPG_FLOORS;
+        r_go(R_MAP);
+        service_shot("mappa");
+        for (int i = 0; i < RPG_ZONES; i++) {
+            press(TX(rpg_zone(i)->field_name));
+            assert(R.screen == R_ZONE && R.zone == i);
+            assert(wf_app_key(WF_KEY_BOOT_SHORT) && R.screen == R_MAP);
+        }
+        if (lang) assert(wf_app_key(WF_KEY_BOOT_SHORT));
+        else press(TR("Indietro", "Back"));
+        assert(R.screen == R_TOWN_CLASSIC);
+
+        const rpg_item armor = {.type=IT_PLATE, .tier=2, .level=25, .rarity=RAR_RARE};
+        const rpg_item charm = {.type=IT_CHARM, .tier=3, .level=55, .rarity=RAR_LEGENDARY, .plus=10};
+        for (int i = 0; i < RPG_BAG - 1; i++) assert(rpg_bag_add(&R.g, &armor));
+        assert(rpg_bag_add(&R.g, &charm));
+        click(92, 296);
+        press(TR("Zaino", "Bag"));
+        assert(R.screen == R_BAG);
+        char name[64];
+        rpg_item_name(&charm, name, sizeof name);
+        lv_obj_t *label = find(lv_screen_active(), name);
+        lv_obj_t *row = service_item_row(label);
+        scroll_service_row(row);
+        service_shot("zaino");
+        tap_service_label(label);
+        service_shot("dettaglio");
+        assert(wf_app_key(WF_KEY_BOOT_SHORT) && R.screen == R_BAG);
+        run(70);
+        assert(!find(lv_layer_top(), TR("Equipaggia", "Equip")));
+        tap_service_label(label);
+        lv_obj_t *equip = find(lv_layer_top(), TR("Equipaggia", "Equip"));
+        assert(equip);
+        lv_obj_scroll_to_view_recursive(equip, LV_ANIM_OFF);
+        press(TR("Equipaggia", "Equip"));
+        assert(!memcmp(&R.g.hero.equip[SLOT_OFFHAND], &charm, sizeof charm));
+        assert(rpg_bag_count(&R.g) == RPG_BAG);
+        press(TR("Scorte", "Supplies"));
+        int potions = R.g.cons[CO_POTION];
+        R.g.hero.hp = 20;
+        service_shot("scorte");
+        press(TR("Usa", "Use"));
+        assert(R.g.cons[CO_POTION] == potions - 1 && R.g.hero.hp > 20);
+        assert(wf_app_key(WF_KEY_BOOT_SHORT) && R.screen == R_EQUIP);
+        press(TR("Indietro", "Back"));
+
+        press(TR("Bottega", "Shop"));
+        press(TR("Equip.", "Gear"));
+        rpg_item stock[4];
+        rpg_shop_stock(&R.g, stock);
+        rpg_item_name(&stock[0], name, sizeof name);
+        uint32_t gold = R.g.gold;
+        press(name);
+        press(TR("Compra", "Buy"));
+        assert(R.g.gold == gold && rpg_bag_count(&R.g) == RPG_BAG);
+        assert(!strcmp(kit_last_toast(), rpg_err(RPG_ERR_BAG)));
+        press(TR("Vendi", "Sell"));
+        rpg_item_name(&armor, name, sizeof name);
+        row = service_item_row(find(lv_screen_active(), name));
+        service_shot("vendita");
+        tap_service_label(find(row, TR("Vendi", "Sell")));
+        assert(R.g.gold == gold + rpg_item_value(&armor) && rpg_bag_count(&R.g) == RPG_BAG - 1);
+        press(TR("Equip.", "Gear"));
+        service_shot("bottega");
+        rpg_item_name(&stock[0], name, sizeof name);
+        gold = R.g.gold;
+        press(name);
+        press(TR("Compra", "Buy"));
+        assert(R.g.gold == gold - rpg_item_price(&stock[0]) && rpg_bag_count(&R.g) == RPG_BAG);
+        press(TR("Scorte", "Supplies"));
+        row = service_item_row(find(lv_screen_active(), TX(rpg_consumable(CO_RETURN)->name)));
+        scroll_service_row(row);
+        gold = R.g.gold;
+        int scrolls = R.g.cons[CO_RETURN];
+        int y = lv_obj_get_scroll_y(lv_obj_get_parent(row));
+        service_shot("acquisto");
+        tap_service_label(find(row, TR("Compra", "Buy")));
+        row = service_item_row(find(lv_screen_active(), TX(rpg_consumable(CO_RETURN)->name)));
+        assert(lv_obj_get_scroll_y(lv_obj_get_parent(row)) == y);
+        assert(R.g.cons[CO_RETURN] == scrolls + 1 && R.g.gold == gold - rpg_consumable(CO_RETURN)->price);
+        press(TR("Indietro", "Back"));
+        assert(R.screen == R_TOWN_CLASSIC);
+
+        press(TR("Forgia", "Forge"));
+        gold = R.g.gold;
+        const uint32_t cost = rpg_forge_gold(&R.g.hero.equip[SLOT_WEAPON]);
+        const int ore = R.g.cons[CO_ORE];
+        service_shot("forgia");
+        press(TR("Potenzia", "Upgrade"));
+        assert(R.g.hero.equip[SLOT_WEAPON].plus == 1);
+        assert(R.g.gold == gold - cost && R.g.cons[CO_ORE] == ore - 1);
+        assert(wf_app_key(WF_KEY_BOOT_SHORT) && R.screen == R_TOWN_CLASSIC);
+        press(TR("Missioni", "Quests"));
+        service_shot("missioni");
+        gold = R.g.gold;
+        const int bread = R.g.cons[CO_BREAD];
+        press(TR("Ritira", "Claim"));
+        assert(R.g.quests[0].claimed && R.g.gold == gold + 85 && R.g.cons[CO_BREAD] == bread + 1);
+        gold = R.g.gold;
+        service_shot("ritirata");
+        assert(!find(lv_screen_active(), TR("Ritira", "Claim")));
+        press(TR("Opzioni", "Options"));
+        assert(find(lv_screen_active(), TR("Ora del giorno", "Time of day")));
+        service_shot("opzioni");
+        assert(wf_app_key(WF_KEY_BOOT_SHORT) && R.screen == R_TOWN_CLASSIC);
+
+        wf_app_start(saved, saved_len);
+        assert(R.screen == R_TOWN && R.g.gold == gold && R.g.quests[0].claimed);
+        assert(R.g.hero.equip[SLOT_WEAPON].plus == 1 && R.g.cons[CO_ORE] == ore - 1);
+        assert(R.g.cons[CO_RETURN] == scrolls + 1 && R.g.cons[CO_BREAD] == bread + 1);
+        assert(R.g.cons[CO_POTION] == potions - 1 && rpg_bag_count(&R.g) == RPG_BAG);
+        assert(!memcmp(&R.g.hero.equip[SLOT_OFFHAND], &charm, sizeof charm));
+    }
+    wf_lang = 0;
+    puts("Classic services: IT/EN map, touch scroll to bag slot 40, equip, use, full-bag rejection, sell/buy, forge, claim and v4 reload passed");
+}
+
 int main(int argc,char **argv) {
     assert(argc==2);dest=argv[1];setvbuf(stdout,NULL,_IOLBF,0);
     lv_init();lv_tick_set_cb(tick);lv_display_t *display=lv_display_create(WF_RES,WF_RES);
@@ -962,6 +1157,7 @@ int main(int argc,char **argv) {
     expedition_flow(2, &wood);
     expedition_flow(3, &ember);
     expedition_flow(4, &sky);
+    service_flow();
     printf("battle footer:%u actual opaque glyph pixels inside circle and below avatar; level99 all master rig stress passed\n",footer_ink_pixels);
     printf("hero rig native:%d screenshots,actual creation-adjacent classic views,formations,save/wake,full/incremental render and control separation passed;peak%zu image bytes\n",shots,peak_image_bytes);
     return 0;

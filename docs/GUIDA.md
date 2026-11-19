@@ -148,7 +148,7 @@ Al piano 5 il **Granchio corazzato** apre il checkpoint del piano 6. Al piano 10
 
 ![Bosco, combattimento a tre e Regina Ragno](img/hero_rig/bosco-classico.png)
 
-Dopo il Tempio Sommerso il **Bosco Sussurrante** compare nella parte alta a sinistra della mappa. Gli incontri all’aperto coprono i livelli **20–32**. Da qui puoi entrare nelle **Radici Antiche**. Le etichette delle stanze raggiungibili indicano il tipo di incontro e permettono di riconoscere una trappola dall’icona e dal nome prima di scegliere.
+Dopo il Tempio Sommerso si sblocca il **Bosco Sussurrante** nella parte alta a sinistra della mappa. Gli incontri all’aperto coprono i livelli **20–32**. Da qui puoi entrare nelle **Radici Antiche**. Le etichette delle stanze raggiungibili indicano il tipo di incontro e permettono di riconoscere una trappola dall’icona e dal nome prima di scegliere.
 
 L’**Antico Ceppo** al piano 5 apre il checkpoint del piano 6. La **Regina Ragno** al piano 10 sblocca le **Caverne di Brace**.
 
@@ -167,3 +167,19 @@ Entra nella **Fucina Infernale** dalla schermata delle Caverne. Al piano 5 il **
 Dopo la Fucina Infernale, scegli le **Guglie del Cielo** sul lato destro della mappa. Gli incontri all’aperto coprono i livelli **48–70**. Dalla terrazza delle Guglie puoi entrare nella **Cittadella Celeste**.
 
 Il **Custode Celeste** al piano 5 apre il checkpoint del piano 6. Al piano 10 il **Drago Stellare** chiude la spedizione. **Continua** porta al borgo con il bottino. Puoi tornare alle Guglie dalla mappa e vedere **Record piano 10** sotto l’ingresso della Cittadella.
+
+## Orientarsi e gestire lo zaino
+
+![Mappa delle Isole Sospese, lista dello zaino e dettaglio di un oggetto](img/hero_rig/mappa-zaino-classico.png)
+
+Tocca il nome di un’isola per raggiungerla. Il **lucchetto** segnala una strada chiusa e, toccandola, indica quale dungeon completare. La **spada** indica una caccia in corso. Il **trofeo** indica un dungeon completato. Tocca **Borgo Lanterna** o **Indietro** per tornare al borgo.
+
+Da **Equip → Zaino** vedi nome, livello e rarità degli oggetti, oltre ai posti disponibili. Scorri la lista e tocca una riga per confrontare l’oggetto, equipaggiarlo, usare una gemma o venderlo. **Scorte** mostra le quantità e consente di usare le provviste utilizzabili al borgo. **BOOT** chiude prima la scheda aperta, poi torna a Equip.
+
+## Bottega, forgia e missioni
+
+![Bottega con i prezzi, costo del potenziamento alla forgia e missioni del giorno](img/hero_rig/servizi-classico.png)
+
+- **Bottega.** **Scorte** mostra il prezzo e la quantità posseduta. Apri una riga in **Equip.** per vedere le statistiche prima di acquistare. **Vendi** mostra quanto ottieni per ogni oggetto.
+- **Forgia.** Scegli un oggetto equipaggiato nella striscia in basso. Controlla la probabilità di riuscita, il costo e le risorse disponibili prima di toccare **Potenzia**.
+- **Missioni.** Nel **Diario** trovi soglia, progressi e premio. **Ritira** consegna la ricompensa e segna la missione come ritirata. La scheda **Opzioni** contiene lingua, luminosità, ora e combattimento automatico.

@@ -1,6 +1,6 @@
 # Roadmap di Pocket Wayfarer
 
-**Aggiornata il 19 novembre 2026.** I cinque ambienti di esplorazione e i cinque dungeon del Classico sono ridisegnati. Il [registro di avanzamento](roadmap/STATUS.md) conserva le prove per ogni consegna. Le versioni indicano obiettivi di contenuto.
+**Aggiornata il 19 novembre 2026.** Il redesign del Classico comprende i cinque ambienti di esplorazione, i cinque dungeon, le 42 creature e le interfacce di servizio. Il [registro di avanzamento](roadmap/STATUS.md) conserva le prove per ogni consegna.
 
 ## Obiettivo e regole di avanzamento
 
@@ -9,6 +9,12 @@ Portare il gioco a un'identità coerente: personaggi riconoscibili, mondo leggib
 Un lotto è completato quando entra nel gioco, supera i controlli pertinenti e dispone di catture native. Un atlas generato, un concept o un punteggio del brief non equivalgono a una funzione completata. Si lavora su un solo lotto principale alla volta; correzioni di crash, salvataggi, input o leggibilità hanno precedenza. Il collaudo fisico può procedere in parallelo quando il Pocket è disponibile: non impedisce di produrre e verificare arte su PC, ma resta necessario per la release stabile.
 
 ## Stato reale di partenza
+
+**Consegna R5.8 / 0.8.0-preview.8.** La mappa illustra le Isole Sospese. Zaino e bottega mostrano nomi completi in righe adattabili. Forgia e diario presentano costi, probabilità e premi. Il giro IT/EN copre acquisto, vendita, potenziamento e missione con rilettura del salvataggio. [Catture e prove R5.8](roadmap/services-evidence/README.md)
+
+![Mappa delle Isole Sospese, quarantesimo oggetto nello zaino e scheda dettagli](img/hero_rig/mappa-zaino-classico.png)
+
+![Schermate native di bottega, forgia e missioni](img/hero_rig/servizi-classico.png)
 
 **Consegna R5.7 / 0.8.0-preview.7.** Guglie del Cielo e Cittadella Celeste portano il Classico a **42 creature ridisegnate su 42**. Le prove bilingui coprono il percorso di ingresso, il checkpoint, il Drago Stellare e il rientro al borgo dalla vittoria salvata. [Catture e prove R5.7](roadmap/sky-evidence/README.md)
 
@@ -82,7 +88,7 @@ Il primo incremento della roadmap aggiunge **otto illustrazioni base nell'atlant
 | **R2 — avatar modulare e otto basi / 0.5-preview: completato su host** | R1 | Otto costumi base nel mondo, rig e canali estetici/equipaggiamento | Catture reali, continuità, cache e sanitizer verificati; collaudo fisico separato |
 | R3 — sedici avanzate / 0.6-preview: R3.1 e R3.2 verificati su host | R2 | Due lotti da otto, con rami A/B distinti | Ogni ramo riconoscibile anche in grigio e con copricapo equipaggiato; regole di classe invariate |
 | R4 — sedici maestre / 0.7-preview: R4.1 e R4.2 verificati su host | R3 | Sedici maestre integrate con costumi e illustrazioni propri | 40/40 identità modulari e relativo materiale di presentazione, senza riempitivi conteggiati come completati |
-| R5 — mondo e interfaccia / 0.8-preview. R5.1–R5.7 verificate su host | R2; R3/R4 per relativo abito | Interfaccia del personaggio, borgo, cinque regioni, dungeon e 42 specie del Classico | Percorso completo in italiano e inglese, controlli raggiungibili sul cerchio e catture dal renderer |
+| R5 — mondo e interfaccia / 0.8-preview. Completato su host | R2; R3/R4 per relativo abito | Interfaccia del personaggio e dei servizi, borgo, cinque regioni, dungeon e 42 specie del Classico | Percorsi IT/EN, controlli raggiungibili sul cerchio e catture dal renderer |
 | R6 — varietà e progressione / 0.9-preview | R4 + parte giocabile R5 | Scelte di percorso, nemici, eventi e ricompense rifinite | Difficoltà simulata e provata da persone; nuove strutture persistenti solo con migrazione esplicita |
 | R7 — animazione e audio | Rig R2; hardware audio per suono | Transizioni, effetti per ruolo, feedback e suoni opzionali | Nessun segnale essenziale affidato solo al colore/suono; movimento ridotto e pausa rispettati |
 | R8 — consolidamento / candidata 1.0 | R4–R7 nel perimetro scelto + R0 fisico | Ottimizzazione misurata, lunga sessione, backup/aggiornamento e pacchetto finale | Checklist hardware e rilascio superata; limiti residui dichiarati |
@@ -139,7 +145,7 @@ Gli ID non cambiano. L'avanzata richiede livello base 20 e job 30; la maestra li
 | **R5.5 · completato su host** | Bosco Sussurrante e Radici Antiche. Otto specie, incluso il gruppo di ragni e creature delle radici. Copertura cumulativa 26/42. | Lettura delle sagome scure, trappola e bivio, checkpoint e accesso alle Caverne dopo il riavvio verificati. |
 | **R5.6 · completato su host** | Caverne di Brace e Fucina Infernale. Otto specie, con Drago di cenere e Signore dei Demoni. Copertura 34/42. | Lava e bagliori ai margini. Anello, intento, parata e passaggio alle Guglie verificati. |
 | **R5.7 · completato su host** | Guglie del Cielo e Cittadella Celeste. Ultime otto specie, compresi Custode Celeste e Drago Stellare. Copertura 42/42. | Incontri chiari e scuri sulle terrazze, checkpoint e ritorno con la ricompensa finale verificati. |
-| **R5.8 · prossimo** | Mappa del mondo, zaino, bottega, forgia e missioni. Stessa grammatica di font, pannelli, selezione e ritorno. | In IT/EN nomi lunghi, scorrimento e touch sul cerchio, acquisto, potenziamento, equipaggiamento e consegna di una missione con salvataggio riletto. |
+| **R5.8 · completato su host** | Mappa del mondo, zaino, bottega, forgia e missioni allineati per font, pannelli, selezione e ritorno. | In IT/EN tutte le isole, quarantesimo oggetto via touch, transazioni e missione con salvataggio riletto. |
 
 Da R5.4 a R5.7 i fondali usano 233 × 233 con espansione 2×. Il confronto R5.4 mostra che la risoluzione dimezzata conserva la separazione delle sagome e riduce a un quarto i byte degli indici. Le linee più sottili delle architetture perdono dettaglio. Il registro delle 42 specie usa gli ID effettivi del core e tiene conto di sagome, intenti e bersagli sullo schermo finale. I sette nemici di Lanternbound appartengono a un altro sistema.
 
@@ -149,7 +155,7 @@ Arma, mano secondaria e testa sono i canali grafici dell’equipaggiamento già 
 
 | Passaggio | Esperimento o verifica |
 |---|---|
-| **R6.1 · ritmo** | Registrare da una prima sessione quanto serve per capire la prima scelta di percorso e dove ci si ferma. Confrontare due seed di riferimento a parità di eroe e progressione. |
+| **R6.1 · prossimo, ritmo** | Confrontare due seed di riferimento a parità di eroe e progressione. Registrare il tempo fino alla prima scelta di percorso, le soste e l’esito della spedizione. Confrontare le misure con le osservazioni del primo playtest. |
 | **R6.2 · varietà** | Provare una scelta rischio/ricompensa chiaramente diversa, per esempio una via d’élite che scambia risorse per una ricompensa visibile. Misurare quando i giocatori scelgono ciascuna via e perché. |
 | **R6.3 · ritorno al borgo** | Rendere leggibile cosa si può usare o sbloccare con ciò che si è guadagnato. Osservare se il giocatore inizia un altro viaggio e quale obiettivo si dà. Verificare ricompense e salvataggi dopo interruzione. |
 | **R7 · feedback** | Completare pose di attacco e guardia, impatti per ruolo e opzioni di movimento ridotto. Se il percorso audio dell’hardware è praticabile, aggiungere un set breve con muto e volume. |

@@ -415,9 +415,15 @@ const char *rpg_quest_text(const rpg_quest *q, char *buf, int cap) {
         {"Sconfiggi %d mostri", "Defeat %d monsters"}, {"Esplora %d stanze", "Explore %d rooms"},
         {"Potenzia %d volte alla forgia", "Upgrade %d times at the forge"}, {"Mangia %d volte", "Eat %d times"},
         {"Guadagna %d monete", "Earn %d gold"}, {"Usa %d abilità", "Use %d skills"},
-        {"Sconfiggi %d boss", "Defeat %d boss"}, {"Saluta %d amici", "Greet %d friends"},
+        {"Sconfiggi %d boss", "Defeat %d bosses"}, {"Saluta %d amici", "Greet %d friends"},
     };
-    snprintf(buf, (size_t)cap, TX(t[q->kind % Q_KIND_COUNT]), q->kind == Q_GOLD ? q->goal * 50 : q->goal);
+    const char *format = TX(t[q->kind % Q_KIND_COUNT]);
+    if (q->goal == 1) {
+        if (q->kind == Q_FORGE) format = TR("Potenzia %d volta alla forgia", "Upgrade %d time at the forge");
+        if (q->kind == Q_EAT) format = TR("Mangia %d volta", "Eat %d time");
+        if (q->kind == Q_BOSS) format = TR("Sconfiggi %d boss", "Defeat %d boss");
+    }
+    snprintf(buf, (size_t)cap, format, q->kind == Q_GOLD ? q->goal * 50 : q->goal);
     return buf;
 }
 
