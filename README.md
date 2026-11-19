@@ -10,7 +10,7 @@ Un RPG fantasy HD-2D per **Waveshare ESP32-S3-Touch-AMOLED-1.75**, con schermo r
 
 **[Roadmap operativa](docs/ROADMAP.md)** · [Stato del lotto attivo](docs/roadmap/STATUS.md) · [Direzione artistica delle 40 classi](docs/CLASS-ART-BIBLE.md)
 
-> **0.8.0-preview.1** — Nuova interfaccia del personaggio nel Classico. Creazione, scheda eroe, abilità, classi ed equipaggiamento condividono il trattamento dell’archivio. [Prove R5.1](docs/roadmap/classic-ui-evidence/README.md) · [Roadmap](docs/ROADMAP.md)
+> **0.8.0-preview.2** — Borgo Lanterna e Prati di Lumen ridisegnati nel Classico. Otto mostri con nuove sagome, bersagli più facili da toccare e comandi fuori dalla fascia degli attori. [Catture e prove R5.2](docs/roadmap/lumen-evidence/README.md) · [Roadmap](docs/ROADMAP.md)
 
 ## Sul Pocket, in pochi passaggi
 

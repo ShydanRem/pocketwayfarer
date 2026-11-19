@@ -1,0 +1,15 @@
+{
+  "date": "2026-11-19",
+  "milestone": "R5.2-lumen-classic",
+  "app_version": "0.8.0-preview.2",
+  "target": "ESP32-S3",
+  "idf_version": "5.5.1",
+  "bytes": 4435792,
+  "sha256": "18c31de6b8e57231f8e37b832cb6b07c121d694c4284832ba23ca59253c477ad",
+  "app_partition_bytes": 6291456,
+  "save_version": 4,
+  "save_bytes": 2808,
+  "physical_device_tested": false,
+  "lumen_captures": 15,
+  "classic_species_redesigned": 8
+}

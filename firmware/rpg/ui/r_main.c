@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "rui.h"
+#include "art/lumen_art.h"
 
 rpg_ui_state R;
 
@@ -11,6 +12,7 @@ int r_hour(void) { return (int)((r_now() / 3600u + R.g.hour_offset) % 24u); }
 const wf_sprite *ri(int id) { return &rpg_ui_icons[id]; }
 
 lv_obj_t *r_scene(int scene) {
+    if (scene == RS_FIELD_MEADOW) return kit_screen(&classic_lumen_meadow);
     lv_obj_t *s = kit_screen(&rpg_scenes[scene]);
     const rpg_scene_fx *f = &rpg_scene_fxs[scene];
     fx_scene(s, f->lights, f->nlights, f->particles, f->color, 16);
@@ -344,7 +346,8 @@ static void on_soon(lv_event_t *e) {
 void scr_town_classic(void) {
     if (R.g.run.active) { r_go(R_DUNGEON); return; }
     bool night = r_hour() < 7 || r_hour() >= 20;
-    lv_obj_t *s = r_scene(night ? RS_TOWN_NIGHT : RS_TOWN);
+    lv_obj_t *s = kit_screen(&classic_lumen_town);
+    if (night) kit_dim(s, 74);
     static const uint32_t colors[3] = {COL_HUNGER, 0xffd23f, COL_MOOD};
     static const int icons_[3] = {RI_FOOD, RI_STAMINA, RI_MORALE};
     static const float mids[3] = {226.0f, 270.0f, 314.0f};
@@ -354,42 +357,35 @@ void scr_town_classic(void) {
         kit_img(s, ri(icons_[i]), 2, CX + (int)lroundf(192 * cosf(a)), CY + (int)lroundf(192 * sinf(a)));
     }
     r_vitals_arcs(s, &t_hp, &t_sp);
-    t_info = kit_label(s, &wf_font_small, COL_TEXT, "", CX, 100);
-    lv_obj_set_style_bg_color(t_info, lv_color_hex(COL_PANEL), 0);
-    lv_obj_set_style_bg_opa(t_info, 210, 0);
-    lv_obj_set_style_pad_hor(t_info, 10, 0);
-    lv_obj_set_style_pad_ver(t_info, 4, 0);
-    lv_obj_set_style_radius(t_info, 10, 0);
+    r_character_panel(s, CX, 99, 316, 82);
+    kit_label(s, &ln_font_title, RC_GOLD, TR("Borgo Lanterna", "Lantern Hollow"), CX, 75);
+    t_info = kit_label(s, &ln_font_body, RC_IVORY, "", CX, 110);
+    lv_obj_set_style_text_line_space(t_info, -2, 0);
     hero_look l;
     hero_look_from_game(&l, &R.g);
     fx_shadow(s, CX, 352, 90);
     t_hero = hero_obj(s, &l, HX_IDLE, 3, CX, 352-hero_foot_offset(&l,3));
     if(!hero_uses_rig(&l))kit_bob(t_hero, 3, 1500);
     /* Hub buttons around the hero. */
-    static const struct { int icon; wf_text name; int screen; int x, y; uint32_t color; } hub[] = {
-        {RI_MAP, {"Mappa", "Map"}, R_MAP, 92, 196, 0x3aba6a},
-        {RI_CROWN, {"Eroe", "Hero"}, R_HERO, 374, 196, 0x8a5ae8},
-        {RI_BAG, {"Equip", "Gear"}, R_EQUIP, 92, 296, 0xc8803a},
-        {RI_COIN, {"Bottega", "Shop"}, R_SHOP, 374, 296, 0xd8a03a},
-        {RI_ANVIL, {"Forgia", "Forge"}, R_FORGE, 150, 380, 0x6a6a8a},
-        {RI_BED, {"Locanda", "Inn"}, -1, 316, 380, 0x3a5ae8},
-        {RI_SCROLL, {"Missioni", "Quests"}, R_QUESTS, 233, 410, 0x8a7a5a},
+    static const struct { wf_text name; int screen; int x, y; } hub[] = {
+        {{"Mappa", "Map"}, R_MAP, 92, 196},
+        {{"Eroe", "Hero"}, R_HERO, 374, 196},
+        {{"Equip", "Gear"}, R_EQUIP, 92, 296},
+        {{"Bottega", "Shop"}, R_SHOP, 374, 296},
+        {{"Forgia", "Forge"}, R_FORGE, 150, 380},
+        {{"Locanda", "Inn"}, -1, 316, 380},
+        {{"Missioni", "Quests"}, R_QUESTS, 233, 424},
     };
     for (unsigned i = 0; i < sizeof hub / sizeof hub[0]; i++) {
         lv_event_cb_t cb = hub[i].screen < 0 ? on_inn : on_go;
-        lv_obj_t *b = kit_round_button(s, ri(hub[i].icon), NULL, hub[i].x, hub[i].y, 62, hub[i].color, cb, hub[i].screen);
-        lv_obj_t *cap = kit_label(s, &wf_font_small, COL_TEXT, TX(hub[i].name), hub[i].x, hub[i].y + 42);
-        lv_obj_set_style_bg_color(cap, lv_color_hex(COL_PANEL), 0);
-        lv_obj_set_style_bg_opa(cap, 200, 0);
-        lv_obj_set_style_pad_hor(cap, 4, 0);
-        lv_obj_set_style_radius(cap, 5, 0);
-        if (i == 6) lv_obj_add_flag(cap, LV_OBJ_FLAG_HIDDEN);
-        (void)b;
+        int w = i == 6 ? 118 : 106;
+        r_character_button(s, TX(hub[i].name), hub[i].x, hub[i].y, w, 44, i == 0, cb, hub[i].screen);
     }
-    kit_round_button(s, ri(RI_LINK), NULL, 160, 168, 40, COL_PANEL_HI, on_soon, 0);
-    t_gift = kit_round_button(s, ri(RI_GIFT), NULL, 306, 168, 46, COL_BTN_ALT, on_gift, 0);
-    kit_bob(t_gift, 5, 900);
-    t_hunt = kit_text_button(s, "", CX, 146, 270, 38, COL_BTN_OK, on_collect, 0);
+    lv_obj_t *links = kit_round_button(s, ri(RI_LINK), NULL, 187, 194, 40, COL_PANEL_HI, on_soon, 0);
+    r_character_button_style(links, false);
+    t_gift = kit_round_button(s, ri(RI_GIFT), NULL, 279, 194, 42, COL_BTN_ALT, on_gift, 0);
+    r_character_button_style(t_gift, true);
+    t_hunt = r_character_button(s, "", CX, 156, 316, 32, true, on_collect, 0);
     t_refresh = 0;
     t_blink = lv_tick_get() + 2500;
     town_refresh();

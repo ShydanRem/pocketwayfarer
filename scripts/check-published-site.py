@@ -55,12 +55,28 @@ def check(base, commit):
         data, mime = get(name)
         assert data and 'javascript' in mime, name + ': invalid module response'
     source_root=Path(__file__).resolve().parents[1]
-    for name,source in [('borgo','docs/img/lantern/02-borgo.png'),('classi','docs/img/classes/otto-classi-base.png'),('avatar-base','docs/img/hero_rig/otto-avatar-base.png'),('avatar-avanzate-a','docs/img/hero_rig/otto-avatar-avanzate-a.png'),('classi-avanzate-a','docs/img/classes/otto-classi-avanzate-a.png'),('avatar-avanzate-b','docs/img/hero_rig/otto-avatar-avanzate-b.png'),('classi-avanzate-b','docs/img/classes/otto-classi-avanzate-b.png'),('avatar-maestre-a','docs/img/hero_rig/otto-avatar-maestre-a.png'),('classi-maestre-a','docs/img/classes/otto-classi-maestre-a.png'),('avatar-maestre-b','docs/img/hero_rig/otto-avatar-maestre-b.png'),('classi-maestre-b','docs/img/classes/otto-classi-maestre-b.png'),('interfaccia-classico','docs/img/hero_rig/interfaccia-classico.png')]:
+    screenshots = {
+        'borgo': 'lantern/02-borgo',
+        'classi': 'classes/otto-classi-base',
+        'avatar-base': 'hero_rig/otto-avatar-base',
+        'avatar-avanzate-a': 'hero_rig/otto-avatar-avanzate-a',
+        'classi-avanzate-a': 'classes/otto-classi-avanzate-a',
+        'avatar-avanzate-b': 'hero_rig/otto-avatar-avanzate-b',
+        'classi-avanzate-b': 'classes/otto-classi-avanzate-b',
+        'avatar-maestre-a': 'hero_rig/otto-avatar-maestre-a',
+        'classi-maestre-a': 'classes/otto-classi-maestre-a',
+        'avatar-maestre-b': 'hero_rig/otto-avatar-maestre-b',
+        'classi-maestre-b': 'classes/otto-classi-maestre-b',
+        'interfaccia-classico': 'hero_rig/interfaccia-classico',
+        'lumen-classico': 'hero_rig/lumen-classico',
+    }
+    for name, source in screenshots.items():
         data,mime=get('assets/screens/'+name+'.png')
         assert data.startswith(b'\x89PNG\r\n\x1a\n') and 'image/png' in mime, 'Missing native screenshot'
-        assert hashlib.sha256(data).digest()==hashlib.sha256((source_root/source).read_bytes()).digest(), 'Stale native screenshot'
+        assert data == (source_root / 'docs/img' / (source + '.png')).read_bytes(), 'Stale native screenshot'
     print(f'Public site passed: {base}, commit {commit}, {release["version"]}; '
-          '4 HTML documents, JavaScript modules, 12 exact native screenshots, 3 firmware SHA-256 hashes and complete ZIP')
+          f'4 HTML documents, JavaScript modules, {len(screenshots)} exact native screenshots, '
+          '3 firmware SHA-256 hashes and complete ZIP')
 
 
 if __name__ == '__main__':

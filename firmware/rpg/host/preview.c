@@ -97,7 +97,7 @@ static void play_battle(int max_ms) {
     for (int t = 0; t < max_ms && R.screen == R_BATTLE; t += 20) {
         if (find_text(lv_layer_top(), "Continua") || find_text(lv_layer_top(), "Continue")) break;
         int ph = rpg_battle_phase();
-        if (ph == 1) click(92, 280);                                   /* attack */
+        if (ph == 1) click_text("Attacco");
         else if (rpg_battle_ring_quality_now() >= 2) click(233, 233);
         else if (rpg_battle_parry_quality_now() >= 2) click(233, 233);
         run(20);
@@ -159,7 +159,7 @@ int main(int argc, char **argv) {
     shot("lotta-inizio");
     run(400);
     shot("lotta-scelta");
-    click(92, 280);
+    click_text("Attacco");
     run(300);
     shot("lotta-anello");
     for (int i = 0; i < 400 && rpg_battle_ring_quality_now() != 3; i++) run(5);

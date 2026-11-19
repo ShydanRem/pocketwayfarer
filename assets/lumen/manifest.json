@@ -1,0 +1,128 @@
+{
+  "generator": "OpenAI ImageGen",
+  "sha256": {
+    "environments-prompt.txt": "513a4b8ad680369b46ad0966ba26ed436b08b810425db50dd5226e47c133b2e0",
+    "environments.png": "5c369d499129008e435665fc334a0f13b8739efb4b70a39a4767ab33c3e8e798",
+    "monsters-prompt.txt": "fec173703d914898c290a0c09201fdaaba1e8f456907d5d244365f9b948c7e5e",
+    "monsters.png": "4fb7b48864b37a8004bbd92cb203c174ba2f6600cd2cb179b3e36b5c148a8c87"
+  },
+  "environment_source_size": [
+    1774,
+    887
+  ],
+  "environment_runtime_size": [
+    466,
+    466
+  ],
+  "monster_source_size": [
+    1774,
+    887
+  ],
+  "monsters": [
+    {
+      "species": "SP_SLIME",
+      "runtime_size": [
+        45,
+        27
+      ],
+      "source_cell_bbox": [
+        43,
+        163,
+        403,
+        379
+      ]
+    },
+    {
+      "species": "SP_SHROOM",
+      "runtime_size": [
+        44,
+        42
+      ],
+      "source_cell_bbox": [
+        39,
+        53,
+        400,
+        400
+      ]
+    },
+    {
+      "species": "SP_WOLF",
+      "runtime_size": [
+        47,
+        42
+      ],
+      "source_cell_bbox": [
+        32,
+        48,
+        422,
+        400
+      ]
+    },
+    {
+      "species": "SP_WISP",
+      "runtime_size": [
+        35,
+        45
+      ],
+      "source_cell_bbox": [
+        110,
+        56,
+        364,
+        387
+      ]
+    },
+    {
+      "species": "SP_SKELETON",
+      "runtime_size": [
+        44,
+        43
+      ],
+      "source_cell_bbox": [
+        31,
+        39,
+        392,
+        395
+      ]
+    },
+    {
+      "species": "SP_BAT",
+      "runtime_size": [
+        52,
+        28
+      ],
+      "source_cell_bbox": [
+        13,
+        96,
+        432,
+        323
+      ]
+    },
+    {
+      "species": "SP_GHOST",
+      "runtime_size": [
+        41,
+        45
+      ],
+      "source_cell_bbox": [
+        44,
+        23,
+        390,
+        406
+      ]
+    },
+    {
+      "species": "SP_SLIME_KING",
+      "runtime_size": [
+        77,
+        61
+      ],
+      "source_cell_bbox": [
+        12,
+        42,
+        431,
+        376
+      ]
+    }
+  ],
+  "conversion": "Nearest-neighbor, indexed RGB565, opaque environment palettes at most 240 colors, monster palettes at most 96 colors and alpha threshold 128"
+}

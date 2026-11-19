@@ -1,12 +1,14 @@
 #include <math.h>
 #include <string.h>
 #include "fx.h"
+#include "src/misc/cache/instance/lv_image_cache.h"
 
 /* ---- Generated images ---------------------------------------------------------- */
 typedef struct {
     uint16_t w, h;
     uint32_t color;
     uint8_t kind;           /* 0 glow, 1 shadow */
+    unsigned refs;
     lv_image_dsc_t dsc;
     uint8_t *buf;
 } fx_img;
@@ -14,16 +16,25 @@ typedef struct {
 #define FX_IMGS 32
 static fx_img imgs[FX_IMGS];
 
-static const lv_image_dsc_t *make(int kind, int w, int h, uint32_t color) {
+static fx_img *make(int kind, int w, int h, uint32_t color) {
     for (int i = 0; i < FX_IMGS; i++)
         if (imgs[i].buf && imgs[i].kind == kind && imgs[i].w == w && imgs[i].h == h && imgs[i].color == color)
-            return &imgs[i].dsc;
+            return &imgs[i];
     fx_img *e = NULL;
     for (int i = 0; i < FX_IMGS && !e; i++) if (!imgs[i].buf) e = &imgs[i];
-    if (!e) e = &imgs[(unsigned)(w * 7 + h + color) % FX_IMGS];     /* full: recycle (rare) */
-    if (e->buf) wf_platform_big_free(e->buf);
+    unsigned start = (unsigned)(w * 7 + h + color) % FX_IMGS;
+    for (unsigned i = 0; i < FX_IMGS && !e; i++) {
+        fx_img *candidate = &imgs[(start + i) % FX_IMGS];
+        if (!candidate->refs) e = candidate;
+    }
+    if (!e) return NULL;
+    if (e->buf) {
+        lv_image_cache_drop(&e->dsc);
+        wf_platform_big_free(e->buf);
+    }
     size_t px = (size_t)w * (size_t)h;
     e->buf = wf_platform_big_alloc(px * 3);
+    if (!e->buf) return NULL;
     uint16_t *rgb = (uint16_t *)e->buf;
     uint8_t *a = e->buf + px * 2;
     lv_color_t c = lv_color_hex(color);
@@ -50,13 +61,28 @@ static const lv_image_dsc_t *make(int kind, int w, int h, uint32_t color) {
     e->h = (uint16_t)h;
     e->color = color;
     e->kind = (uint8_t)kind;
-    return &e->dsc;
+    return e;
+}
+
+static void release_image(lv_event_t *event) {
+    fx_img *entry = lv_event_get_user_data(event);
+    entry->refs--;
+}
+
+static void set_image(lv_obj_t *image, int kind, int w, int h, uint32_t color) {
+    fx_img *entry = make(kind, w, h, color);
+    if (!entry) return; /* A full cache can omit a decorative effect. */
+    /* Keep descriptor dimensions and backing pixels stable until LVGL
+     * deletes the last widget using them. */
+    if (!lv_obj_add_event_cb(image, release_image, LV_EVENT_DELETE, entry)) return;
+    entry->refs++;
+    lv_image_set_src(image, &entry->dsc);
 }
 
 lv_obj_t *fx_glow(lv_obj_t *parent, int x, int y, int r, uint32_t color, int opa) {
     if (r < 2) r = 2;
     lv_obj_t *img = lv_image_create(parent);
-    lv_image_set_src(img, make(0, r * 2, r * 2, color));
+    set_image(img, 0, r * 2, r * 2, color);
     lv_obj_set_style_opa(img, (lv_opa_t)opa, 0);
     lv_obj_remove_flag(img, LV_OBJ_FLAG_CLICKABLE);
     kit_pos(img, x, y);
@@ -65,7 +91,7 @@ lv_obj_t *fx_glow(lv_obj_t *parent, int x, int y, int r, uint32_t color, int opa
 
 lv_obj_t *fx_shadow(lv_obj_t *parent, int x, int y, int w) {
     lv_obj_t *img = lv_image_create(parent);
-    lv_image_set_src(img, make(1, w, w / 4 > 4 ? w / 4 : 4, 0));
+    set_image(img, 1, w, w / 4 > 4 ? w / 4 : 4, 0);
     lv_obj_remove_flag(img, LV_OBJ_FLAG_CLICKABLE);
     kit_pos(img, x, y);
     return img;
@@ -161,7 +187,7 @@ void fx_scene(lv_obj_t *scr, const fx_light *lights, int nlights, int kind, uint
             particle *q = &amb.p[i];
             q->size = (uint8_t)(kind == FX_FIREFLY ? 12 : kind == FX_SPARKLE ? 8 : 6 + wf_platform_random() % 5);
             q->obj = lv_image_create(scr);
-            lv_image_set_src(q->obj, make(0, q->size, q->size, color));
+            set_image(q->obj, 0, q->size, q->size, color);
             lv_obj_remove_flag(q->obj, LV_OBJ_FLAG_CLICKABLE);
             respawn(q, kind, true);
         }
@@ -183,7 +209,7 @@ void fx_sparks(lv_obj_t *parent, int x, int y, uint32_t color, int count) {
     for (int i = 0; i < count; i++) {
         int s = 8 + (int)(wf_platform_random() % 8);
         lv_obj_t *img = lv_image_create(parent);
-        lv_image_set_src(img, make(0, s, s, color));
+        set_image(img, 0, s, s, color);
         lv_obj_remove_flag(img, LV_OBJ_FLAG_CLICKABLE);
         kit_pos(img, x, y);
         float a = frand() * 6.283f, d = 26 + frand() * 44;

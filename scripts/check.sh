@@ -8,6 +8,7 @@ python3 scripts/build_art.py --check
 python3 scripts/build_rpg_art.py --check
 python3 scripts/build_lantern_art.py --check
 python3 scripts/build_classic_ui_art.py --check
+python3 scripts/build_lumen_art.py --check
 python3 scripts/build_class_art.py --check
 python3 scripts/build_hero_rig.py --check
 python3 scripts/class_inventory.py --check
