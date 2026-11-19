@@ -1,0 +1,180 @@
+{
+  "generator": "OpenAI ImageGen",
+  "sha256": {
+    "environments-prompt.txt": "1b48b4221156ae7adec471702b7c90fc6535d5b619fe22d9ea270976ac266f27",
+    "environments.png": "5ecf49ce411da1c60d5bdade5b1c4c8fb4879781943a50ca4a38156368c32471",
+    "monsters-prompt.txt": "5c9ec57691b14fa8911e595ed162795e644ffd8718c0f90178040a0aafb4c313",
+    "monsters.png": "2aad67a7d4e8119f9d2359bcd8dfaef255f56aff7d5d15ce3e5dabfa24f75360"
+  },
+  "environment_source_size": [
+    1774,
+    887
+  ],
+  "environment_runtime_size": [
+    233,
+    233
+  ],
+  "environment_display_size": [
+    466,
+    466
+  ],
+  "monster_source_size": [
+    1774,
+    887
+  ],
+  "monsters": [
+    {
+      "species": "SP_STORM_WISP",
+      "runtime_size": [
+        30,
+        33
+      ],
+      "source_cell": [
+        0,
+        0,
+        444,
+        444
+      ],
+      "source_cell_bbox": [
+        93,
+        93,
+        350,
+        375
+      ]
+    },
+    {
+      "species": "SP_GRIFFIN",
+      "runtime_size": [
+        47,
+        46
+      ],
+      "source_cell": [
+        444,
+        0,
+        887,
+        444
+      ],
+      "source_cell_bbox": [
+        29,
+        26,
+        408,
+        399
+      ]
+    },
+    {
+      "species": "SP_CRYSTAL",
+      "runtime_size": [
+        21,
+        46
+      ],
+      "source_cell": [
+        887,
+        0,
+        1330,
+        444
+      ],
+      "source_cell_bbox": [
+        134,
+        46,
+        294,
+        399
+      ]
+    },
+    {
+      "species": "SP_HARPY",
+      "runtime_size": [
+        44,
+        47
+      ],
+      "source_cell": [
+        1330,
+        0,
+        1774,
+        444
+      ],
+      "source_cell_bbox": [
+        42,
+        22,
+        414,
+        415
+      ]
+    },
+    {
+      "species": "SP_SKY_KNIGHT",
+      "runtime_size": [
+        43,
+        45
+      ],
+      "source_cell": [
+        0,
+        444,
+        400,
+        887
+      ],
+      "source_cell_bbox": [
+        44,
+        56,
+        380,
+        404
+      ]
+    },
+    {
+      "species": "SP_CRYSTAL_GOLEM",
+      "runtime_size": [
+        54,
+        43
+      ],
+      "source_cell": [
+        400,
+        444,
+        845,
+        887
+      ],
+      "source_cell_bbox": [
+        22,
+        70,
+        416,
+        385
+      ]
+    },
+    {
+      "species": "SP_GUARDIAN",
+      "runtime_size": [
+        57,
+        66
+      ],
+      "source_cell": [
+        845,
+        444,
+        1228,
+        887
+      ],
+      "source_cell_bbox": [
+        26,
+        17,
+        362,
+        404
+      ]
+    },
+    {
+      "species": "SP_STAR_DRAGON",
+      "runtime_size": [
+        78,
+        58
+      ],
+      "source_cell": [
+        1228,
+        444,
+        1774,
+        887
+      ],
+      "source_cell_bbox": [
+        22,
+        25,
+        528,
+        404
+      ]
+    }
+  ],
+  "conversion": "Nearest-neighbor, indexed RGB565, at most 240 scenery colors, at most 96 monster colors and binary alpha"
+}

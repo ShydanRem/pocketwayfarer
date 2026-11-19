@@ -1,5 +1,12 @@
 # Note di versione
 
+## 0.8.0-preview.7 — 19 novembre 2026
+
+- Ridisegnate Guglie del Cielo e Cittadella Celeste. Nubi all’alba e una basilica astronomica al crepuscolo incorniciano due terrazze libere per il combattimento.
+- Integrate otto specie della quinta regione, inclusi Custode Celeste e Drago Stellare. Il Classico raggiunge 42 specie ridisegnate su 42.
+- La cifra della cura dell’eroe nei combattimenti illustrati compare sotto le barre e i livelli dei nemici.
+- Verificati il checkpoint, la vittoria finale e il rientro al borgo con bottino e record del piano 10, anche riavviando dalla schermata di vittoria.
+
 ## 0.8.0-preview.6 — 19 novembre 2026
 
 - Ridisegnate Caverne di Brace e Fucina Infernale. Lava e riflessi incorniciano la zona di scontro in pietra fredda.

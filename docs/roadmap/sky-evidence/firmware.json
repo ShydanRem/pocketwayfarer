@@ -1,0 +1,15 @@
+{
+  "date": "2026-11-19",
+  "milestone": "R5.7-celestial-citadel",
+  "app_version": "0.8.0-preview.7",
+  "target": "ESP32-S3",
+  "idf_version": "5.5.1",
+  "bytes": 5182192,
+  "sha256": "ba6a3dcee0412301c3f147a88fff23b723b23f88499c8201a2ece68591b16f3d",
+  "app_partition_bytes": 6291456,
+  "save_version": 4,
+  "save_bytes": 2808,
+  "classic_species_redesigned": 42,
+  "sky_captures": 22,
+  "physical_device_tested": false
+}
