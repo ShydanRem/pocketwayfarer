@@ -1,6 +1,6 @@
 # Registro di avanzamento
 
-Aggiornamento: 19 novembre 2026. Consegna corrente `0.8.0-preview.1`.
+Aggiornato il 19 novembre 2026. Consegna corrente `0.8.0-preview.3`. [Roadmap operativa](../ROADMAP.md)
 
 ## Consegna R1 — atlante delle classi, 0.4.1-preview.1
 
@@ -20,6 +20,8 @@ Aggiornamento: 19 novembre 2026. Consegna corrente `0.8.0-preview.1`.
 | Nuovi avatar modulari classici | **40/40**, otto basi, sedici avanzate e sedici maestre |
 | Fallback legacy delle evoluzioni | 0 classi valide |
 | Assetti Lanternbound nel nuovo trattamento | 3/3; sistema separato |
+| Luoghi classici ridisegnati | Borgo, Prati di Lumen, Cripta dei Lumi |
+| Mostri del Classico ridisegnati | **10/42** |
 | Nuovo collaudo sul Pocket | Aperto |
 
 ## Consegna R2 — rig e otto basi, 0.5.0-preview.1
@@ -76,10 +78,14 @@ La preview `0.8.0-preview.1` porta l’archivio nel Classico. Creazione con indi
 
 La preview `0.8.0-preview.2` ridisegna il borgo del Classico e i Prati di Lumen. Le prime **8 specie su 42** usano nuove sagome. I test bilingui seguono il percorso dal borgo all’incontro, selezionano ogni nemico, completano anello e parata, ritirano le ricompense e rileggono il salvataggio. È verificato anche l’ingresso in Cripta dal piano 6. [Catture e prove R5.2](lumen-evidence/README.md)
 
-## Prossimo lotto R5.3 — Cripta e navigazione
+## Consegna R5.3 — Cripta e navigazione
 
-1. Ridisegnare la Cripta dei Lumi e la vista delle stanze, con percorsi raggiungibili, stato di visita e soglie del boss leggibili sul cerchio.
-2. Completare gli incontri rimasti con Mimic e Re delle Ossa e misurare la leggibilità di trappole, tesori, mercante e uscita.
-3. Verificare in IT/EN ingresso normale e dal piano 6, una stanza a scelta, lotta, bottino, ritorno e ripresa dopo lo spegnimento. Proseguire con le regioni successive e le relative specie in lotti di massimo otto.
+La mappa distingue il prossimo passo, la stanza attuale, le stanze visitate e quelle ancora da scoprire. I comandi **Esci** e **Scorte** sono sempre nella stessa posizione. Il Mimic e il Re delle Ossa sono integrati con un nuovo fondale. Se torni al borgo dopo aver battuto il Re Gelatino al piano 5, il record sblocca l’ingresso al piano 6. [Catture e prove R5.3](crypt-evidence/README.md)
 
-Zaino, bottega, forgia, missioni e mappa restano nel perimetro di R5. R6 rifinisce varietà e progressione. R7 comprende animazioni articolate e audio. Il collaudo fisico resta aperto per la stabile.
+## Prossimo lotto R5.4 — Riva di Vetro e Tempio Sommerso
+
+1. Misurare la resa e il costo di un fondale a risoluzione intera e a metà risoluzione. Usare il risultato per il lotto costiero.
+2. Ridisegnare sabbia, vetro marino e rovine sommerse con un’area di gioco neutra. Integrare otto specie della regione, con un profilo distinto per Granchio corazzato e Leviatano.
+3. Verificare in italiano e inglese ingresso dal mondo appena sbloccato, area, dungeon, formazioni fino a tre, due boss e ritorno al borgo. Registrare le catture e il budget del firmware.
+
+Seguono Bosco, Caverne, Guglie e interfacce di servizio nei lotti R5.5–R5.8. Il collaudo fisico può procedere in parallelo e serve per la stabile. [Sequenza e criteri](../ROADMAP.md#r5--unificare-il-resto-del-gioco)

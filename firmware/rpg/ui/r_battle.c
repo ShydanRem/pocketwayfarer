@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "rui.h"
+#include "art/crypt_art.h"
 #include "art/lumen_art.h"
 
 enum { PH_INTRO, PH_CHOOSE, PH_SKILLS, PH_RING, PH_ANIM, PH_TELEGRAPH, PH_PARRY, PH_END };
@@ -34,6 +35,8 @@ static struct {
 #define HERO_Y (B.hero_y)
 
 static const wf_sprite *foe_sprite(int species, bool windup) {
+    if (species == SP_MIMIC) return &classic_crypt_mimic;
+    if (species == SP_BONE_KING) return &classic_crypt_bone_king;
     const wf_sprite *art = &classic_lumen_monsters[species];
     return art->px ? art : &rpg_monsters[species][windup];
 }

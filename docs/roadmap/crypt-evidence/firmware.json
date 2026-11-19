@@ -1,0 +1,15 @@
+{
+  "date": "2026-11-19",
+  "milestone": "R5.3-lantern-crypt",
+  "app_version": "0.8.0-preview.3",
+  "target": "ESP32-S3",
+  "idf_version": "5.5.1",
+  "bytes": 4662128,
+  "sha256": "1925b44b3d11cecc09776b3e3545f2c0cb12e5e1fa14ee4e182fdfee743c5499",
+  "app_partition_bytes": 6291456,
+  "save_version": 4,
+  "save_bytes": 2808,
+  "classic_species_redesigned": 10,
+  "crypt_captures": 12,
+  "physical_device_tested": false
+}

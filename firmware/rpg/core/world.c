@@ -214,7 +214,11 @@ int rpg_dungeon_descend(rpg_game *g) {
 void rpg_dungeon_leave(rpg_game *g, bool defeated) {
     rpg_run *run = &g->run;
     if (!run->active) return;
-    if (run->floor - 1 > g->best_floor[run->zone]) g->best_floor[run->zone] = (uint8_t)(run->floor - 1);
+    int completed = run->floor - 1;
+    if (!defeated && run->row == RPG_ROWS &&
+        (run->rooms[RPG_ROWS][run->col] == ROOM_STAIRS || (run->cleared[RPG_ROWS] & (1u << run->col))))
+        completed = run->floor;
+    if (completed > g->best_floor[run->zone]) g->best_floor[run->zone] = (uint8_t)completed;
     if (defeated) {
         uint32_t lost = run->gold / 2u;
         g->gold = g->gold > lost ? g->gold - lost : 0;

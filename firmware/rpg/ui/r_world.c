@@ -128,11 +128,18 @@ void scr_zone(void) {
 
 /* ---- Dungeon floor ------------------------------------------------------------------------ */
 static lv_obj_t *d_hp, *d_sp;
-static lv_point_precise_t line_pts[24][2];
-static int room_row, room_col;
+static lv_point_precise_t line_pts[RPG_COLS + RPG_ROWS * RPG_COLS * RPG_COLS][2];
 
-static int room_x(int c) { return 140 + c * 93; }
-static int room_y(int r) { return 360 - r * 72; }
+static int room_x(int c, bool crypt) { return crypt ? CX + (c - 1) * 102 : 140 + c * 93; }
+static int room_y(int r, bool crypt) { return crypt ? 340 - r * 58 : 360 - r * 72; }
+
+static bool in_crypt(void) {
+    return R.g.run.active && rpg_zone(R.g.run.zone)->dungeon_scene == 0;
+}
+
+static lv_obj_t *dungeon_dialog(const char *title, const char *body, const wf_sprite *icon) {
+    return in_crypt() ? r_character_dialog(title, body, icon) : kit_dialog(title, body, icon);
+}
 
 static void leave_to_town(const char *title, const char *body, const wf_sprite *icon) {
     r_save_now();
@@ -142,8 +149,6 @@ static void leave_to_town(const char *title, const char *body, const wf_sprite *
 }
 
 static void descend_choice(int leave) {
-    kit_dialog_close(dlg);
-    dlg = NULL;
     if (leave) {
         rpg_dungeon_leave(&R.g, false);
         leave_to_town(TR("Di ritorno", "Back home"), TR("Torni in città con tutto il bottino.", "You return to town with all your loot."), ri(RI_STAIRS));
@@ -160,13 +165,17 @@ static void descend_choice(int leave) {
     r_go(R_DUNGEON);
 }
 
-static void on_descend(lv_event_t *e) { descend_choice((int)(intptr_t)lv_event_get_user_data(e)); }
+static void on_descend(lv_event_t *e) {
+    kit_dialog_close(dlg);
+    dlg = NULL;
+    descend_choice((int)(intptr_t)lv_event_get_user_data(e));
+}
 
 static void stairs_dialog(void) {
     char body[96];
     snprintf(body, sizeof body, TR("Scendi al piano %d o torni in città tenendo il bottino?", "Go down to floor %d or head back to town with your loot?"),
              R.g.run.floor + 1);
-    dlg = kit_dialog(TR("Scale", "Stairs"), body, ri(RI_STAIRS));
+    dlg = dungeon_dialog(TR("Scale", "Stairs"), body, ri(RI_STAIRS));
     kit_dialog_button(dlg, TR("Scendi", "Descend"), COL_BTN_OK, on_descend, 0);
     kit_dialog_button(dlg, TR("Città", "Town"), COL_PANEL_HI, on_descend, 1);
 }
@@ -193,8 +202,8 @@ void r_after_dungeon_battle(int state) {
 
 static void on_room(lv_event_t *e) {
     intptr_t v = (intptr_t)lv_event_get_user_data(e);
-    room_row = (int)(v >> 4);
-    room_col = (int)(v & 15);
+    int room_row = (int)(v >> 4);
+    int room_col = (int)(v & 15);
     rpg_foe foes[RPG_MAX_FOES];
     int n = 0;
     rpg_classic_begin(&R.g);
@@ -216,8 +225,6 @@ static void on_room(lv_event_t *e) {
     rpg_room_result res;
     rpg_room_resolve(&R.g, &res, foes, &n);
     if (n) {   /* mimic! */
-        r_go(R_DUNGEON);
-        kit_toast(TR("Era un mimic!", "It was a mimic!"), ri(RI_SKULL));
         r_start_battle(foes, n, true, false);
         return;
     }
@@ -253,7 +260,7 @@ static void on_room(lv_event_t *e) {
         break;
     }
     }
-    dlg = kit_dialog(title, body, ic);
+    dlg = dungeon_dialog(title, body, ic);
     kit_dialog_button(dlg, TR("Avanti", "Onward"), COL_BTN_OK, close_dlg, 0);
 }
 
@@ -271,7 +278,7 @@ static void on_exit_ask(lv_event_t *e) {
     (void)e;
     char body[96];
     snprintf(body, sizeof body, TR("Usare una pergamena di ritorno? (ne hai %d)", "Use a return scroll? (you have %d)"), R.g.cons[CO_RETURN]);
-    dlg = kit_dialog(TR("Uscire?", "Leave?"), body, &rpg_cons_icons[CO_RETURN]);
+    dlg = dungeon_dialog(TR("Uscire?", "Leave?"), body, &rpg_cons_icons[CO_RETURN]);
     kit_dialog_button(dlg, TR("Esci", "Leave"), COL_BAD, on_exit_run, 0);
     kit_dialog_button(dlg, TR("Resta", "Stay"), COL_PANEL_HI, close_dlg, 0);
 }
@@ -293,11 +300,51 @@ static void on_supplies(lv_event_t *e) {
     char body[96];
     snprintf(body, sizeof body, TR("Pozioni %d · Gran pozioni %d · Eteri %d", "Potions %d · Hi-potions %d · Ethers %d"),
              R.g.cons[CO_POTION], R.g.cons[CO_HIPOTION], R.g.cons[CO_ETHER]);
-    dlg = kit_dialog(TR("Scorte", "Supplies"), body, ri(RI_BAG));
+    dlg = dungeon_dialog(TR("Scorte", "Supplies"), body, ri(RI_BAG));
     kit_dialog_button(dlg, TR("Pozione", "Potion"), COL_BTN_ALT, on_potion, CO_POTION);
     kit_dialog_button(dlg, TR("Gran p.", "Hi-pot."), COL_BTN_ALT, on_potion, CO_HIPOTION);
     kit_dialog_button(dlg, TR("Etere", "Ether"), COL_BTN, on_potion, CO_ETHER);
     kit_dialog_button(dlg, "X", COL_PANEL_HI, close_dlg, 0);
+}
+
+static void crypt_room(lv_obj_t *s, const rpg_run *run, int row, int col) {
+    static const wf_text room_names[ROOM_KIND_COUNT] = {
+        [ROOM_FIGHT] = {"Lotta", "Fight"}, [ROOM_ELITE] = {"Élite", "Elite"},
+        [ROOM_CHEST] = {"Forziere", "Chest"}, [ROOM_TRAP] = {"Trappola", "Trap"},
+        [ROOM_FOUNTAIN] = {"Fontana", "Fountain"}, [ROOM_MERCHANT] = {"Mercante", "Merchant"},
+        [ROOM_EVENT] = {"Evento", "Event"}, [ROOM_BOSS] = {"Boss", "Boss"},
+        [ROOM_STAIRS] = {"Scale", "Stairs"},
+    };
+    int kind = run->rooms[row][col];
+    bool reach = rpg_room_reachable(run, row, col);
+    bool here = run->row == row && run->col == col;
+    bool cleared = (run->cleared[row] >> col) & 1;
+    bool known = row <= run->row + 1 || kind == ROOM_BOSS || kind == ROOM_STAIRS;
+    const char *label = here ? TR("Qui", "Here") : cleared ? TR("Visitata", "Visited") :
+                        known ? TX(room_names[kind]) : "?";
+    int x = room_x(col, true);
+    int y = room_y(row, true);
+    lv_obj_t *tile = r_character_button(s, label, x, y, 86, 46, reach, reach ? on_room : NULL, (row << 4) | col);
+    lv_obj_t *caption = lv_obj_get_child(tile, 0);
+    lv_obj_set_style_text_font(caption, &wf_font_small, 0);
+    if (known) {
+        lv_obj_align(caption, LV_ALIGN_BOTTOM_MID, 0, -2);
+        lv_obj_t *image = lv_image_create(tile);
+        lv_image_set_src(image, gfx_sprite(&rpg_room_icons[kind], 1));
+        lv_obj_align(image, LV_ALIGN_CENTER, 0, -10);
+        lv_obj_remove_flag(image, LV_OBJ_FLAG_CLICKABLE);
+        if (!reach && !here) lv_obj_set_style_image_opa(image, 190, 0);
+    }
+    if (!reach) {
+        lv_obj_remove_flag(tile, LV_OBJ_FLAG_CLICKABLE);
+        lv_obj_set_style_bg_color(tile, lv_color_hex(here ? 0x335a62 : 0x202733), 0);
+        lv_obj_set_style_bg_grad_color(tile, lv_color_hex(here ? 0x1a3439 : 0x151923), 0);
+        lv_obj_set_style_border_color(tile, lv_color_hex(here ? 0x86d9cf : cleared ? 0x537e84 : 0x434958), 0);
+        if (!here) {
+            lv_obj_set_style_opa(tile, known ? 220 : 165, 0);
+            lv_obj_set_style_text_color(caption, lv_color_hex(RC_MUTED), 0);
+        }
+    }
 }
 
 void scr_dungeon(void) {
@@ -305,15 +352,24 @@ void scr_dungeon(void) {
     if (!run->active) { r_go(R_TOWN); return; }
     R.shop_in_dungeon = false;
     const rpg_zone_info *z = rpg_zone(run->zone);
+    bool crypt = z->dungeon_scene == 0;
     lv_obj_t *s = r_scene(RS_DUNGEON_CRYPT + z->dungeon_scene);
-    kit_dim(s, 150);
+    kit_dim(s, crypt ? 96 : 150);
     r_vitals_arcs(s, &d_hp, &d_sp);
     rpg_stats st;
     rpg_stats_get(&R.g, &st);
     r_vitals_update(d_hp, d_sp, R.g.hero.hp, st.max_hp, R.g.hero.sp, st.max_sp);
     char buf[96];
-    snprintf(buf, sizeof buf, "%s · %s %d/%d", TX(z->dungeon_name), TR("Piano", "Floor"), run->floor, RPG_FLOORS);
-    kit_label(s, &wf_font_small, COL_GOLD, buf, CX, 36);
+    if (crypt) {
+        r_character_panel(s, CX, 55, 264, 52);
+        kit_label(s, &ln_font_title, RC_GOLD, TX(z->dungeon_name), CX, 44);
+        snprintf(buf, sizeof buf, TR("Piano %d/%d · %lu oro", "Floor %d/%d · %lu gold"),
+                 run->floor, RPG_FLOORS, (unsigned long)run->gold);
+        kit_label(s, &wf_font_small, RC_IVORY, buf, CX, 68);
+    } else {
+        snprintf(buf, sizeof buf, "%s · %s %d/%d", TX(z->dungeon_name), TR("Piano", "Floor"), run->floor, RPG_FLOORS);
+        kit_label(s, &wf_font_small, COL_GOLD, buf, CX, 36);
+    }
     /* links */
     int nl = 0;
     for (int r = -1; r < RPG_ROWS; r++)
@@ -322,17 +378,19 @@ void scr_dungeon(void) {
             if (r < 0 && c != 1) continue;
             for (int d = 0; d < RPG_COLS; d++) {
                 bool link = r < 0 ? run->rooms[0][d] != 0 : ((run->links[r][c] >> d) & 1);
-                if (!link || nl >= 24) continue;
-                line_pts[nl][0].x = room_x(r < 0 ? 1 : c);
-                line_pts[nl][0].y = r < 0 ? 422 : room_y(r);
-                line_pts[nl][1].x = room_x(d);
-                line_pts[nl][1].y = room_y(r + 1);
+                if (!link) continue;
+                line_pts[nl][0].x = room_x(r < 0 ? 1 : c, crypt);
+                line_pts[nl][0].y = r < 0 ? (crypt ? 397 : 422) : room_y(r, crypt);
+                line_pts[nl][1].x = room_x(d, crypt);
+                line_pts[nl][1].y = room_y(r + 1, crypt);
                 lv_obj_t *ln = lv_line_create(s);
                 lv_line_set_points(ln, line_pts[nl], 2);
                 bool walked = (r < 0 ? run->row >= 0 && run->col == d && run->row == 0 : false) ||
                               (r >= 0 && r < run->row && ((run->cleared[r] >> c) & 1) && ((run->cleared[r + 1] >> d) & 1));
-                lv_obj_set_style_line_color(ln, lv_color_hex(walked ? COL_GOLD : 0x6a6a8a), 0);
-                lv_obj_set_style_line_width(ln, 4, 0);
+                bool next = crypt && r == run->row && (r < 0 || c == run->col);
+                uint32_t color = next ? RC_GOLD : crypt ? (walked ? 0x81c2b9 : 0x4a4a68) : (walked ? COL_GOLD : 0x6a6a8a);
+                lv_obj_set_style_line_color(ln, lv_color_hex(color), 0);
+                lv_obj_set_style_line_width(ln, crypt && !next ? 2 : 4, 0);
                 lv_obj_set_style_line_rounded(ln, true, 0);
                 nl++;
             }
@@ -342,13 +400,17 @@ void scr_dungeon(void) {
         for (int c = 0; c < RPG_COLS; c++) {
             int kind = run->rooms[r][c];
             if (!kind) continue;
+            if (crypt) {
+                crypt_room(s, run, r, c);
+                continue;
+            }
             bool reach = rpg_room_reachable(run, r, c);
             bool here = run->row == r && run->col == c;
             bool cleared = (run->cleared[r] >> c) & 1;
             bool known = r <= run->row + 1 || kind == ROOM_BOSS || kind == ROOM_STAIRS;
             uint32_t color = here ? COL_GOLD : reach ? COL_BTN : cleared ? 0x3a3a4a : COL_PANEL_HI;
             const wf_sprite *ic = known ? &rpg_room_icons[kind] : &rpg_room_icons[ROOM_EVENT];
-            lv_obj_t *b = kit_round_button(s, ic, NULL, room_x(c), room_y(r), kind >= ROOM_BOSS ? 64 : 56, color,
+            lv_obj_t *b = kit_round_button(s, ic, NULL, room_x(c, false), room_y(r, false), kind >= ROOM_BOSS ? 64 : 56, color,
                                            reach ? on_room : NULL, (r << 4) | c);
             if (!known) lv_obj_set_style_image_opa(lv_obj_get_child(b, 0), 90, 0);
             if (cleared && !here) lv_obj_set_style_opa(b, 160, 0);
@@ -357,8 +419,14 @@ void scr_dungeon(void) {
     /* the hero marker */
     hero_look l;
     hero_look_from_game(&l, &R.g);
-    int hx = run->row < 0 ? CX : room_x(run->col), hy = run->row < 0 ? 418 : room_y(run->row) - 34;
+    int hx = crypt || run->row < 0 ? CX : room_x(run->col, false);
+    int hy = crypt ? 398 : run->row < 0 ? 418 : room_y(run->row, false) - 34;
     hero_obj(s, &l, HX_IDLE, 1, hx, hy);
+    if (crypt) {
+        r_character_button(s, TR("Esci", "Exit"), 136, 397, 100, 42, false, on_exit_ask, 0);
+        r_character_button(s, TR("Scorte", "Supplies"), 330, 397, 100, 42, false, on_supplies, 0);
+        return;
+    }
     kit_round_button(s, &rpg_cons_icons[CO_RETURN], NULL, 52, 210, 52, COL_PANEL_HI, on_exit_ask, 0);
     kit_round_button(s, ri(RI_BAG), NULL, 414, 210, 52, COL_PANEL_HI, on_supplies, 0);
     snprintf(buf, sizeof buf, "%lu", (unsigned long)run->gold);

@@ -69,6 +69,7 @@ def check(base, commit):
         'classi-maestre-b': 'classes/otto-classi-maestre-b',
         'interfaccia-classico': 'hero_rig/interfaccia-classico',
         'lumen-classico': 'hero_rig/lumen-classico',
+        'cripta-classico': 'hero_rig/cripta-classico',
     }
     for name, source in screenshots.items():
         data,mime=get('assets/screens/'+name+'.png')

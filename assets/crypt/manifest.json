@@ -1,0 +1,50 @@
+{
+  "generator": "OpenAI ImageGen",
+  "sha256": {
+    "environment-prompt.txt": "9d1d282ae3785e595a0bbe8d91d30eb43a05cc5855048f69bac3cf250949ece2",
+    "environment.png": "3cad78249beee6a85ce746b9e561028247042c88d72185a074b0c6f88d4151d3",
+    "monsters-prompt.txt": "9f8ded2eb920312d2605238fd9c51262a18d5bab25b62b203bffad5c70a3c4c9",
+    "monsters.png": "74f999d41f8fb3dcb3a06981d0c5d61301452375aec55afa511b0ab191b31d90"
+  },
+  "environment_source_size": [
+    1254,
+    1254
+  ],
+  "environment_runtime_size": [
+    466,
+    466
+  ],
+  "monster_source_size": [
+    1774,
+    887
+  ],
+  "monsters": [
+    {
+      "species": "SP_MIMIC",
+      "runtime_size": [
+        62,
+        47
+      ],
+      "source_cell_bbox": [
+        75,
+        237,
+        816,
+        794
+      ]
+    },
+    {
+      "species": "SP_BONE_KING",
+      "runtime_size": [
+        60,
+        62
+      ],
+      "source_cell_bbox": [
+        78,
+        21,
+        838,
+        810
+      ]
+    }
+  ],
+  "conversion": "Nearest-neighbor, indexed RGB565, 240 scenery colors, 96 monster colors and alpha threshold 128"
+}

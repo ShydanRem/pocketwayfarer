@@ -127,3 +127,11 @@ Tutte le sedici maestre hanno un costume dedicato. Ogni avanzata conduce alla pr
 Apri **… → Classico → Mappa** e tocca **Prati di Lumen** nella parte bassa della mappa. **Combatti** consuma un punto Stamina e apre un incontro. **Caccia auto** avvia la caccia offline. **Cripta dei Lumi** apre la discesa a stanze. Quando il tuo record raggiunge il piano 5, puoi partire dal piano 6.
 
 Tocca attorno alla sagoma di un mostro per sceglierlo. Una stella lo indica e il suo nome appare in alto. Con **Attacco** tocca quando l’anello raggiunge il riferimento dorato. Quando vedi il messaggio di parata, tocca quando arriva l’onda. In entrambe le fasi puoi usare anche BOOT. La mossa annunciata compare sopra l’arena.
+
+## Nella Cripta dei Lumi
+
+![Il percorso nella Cripta dei Lumi, il Mimic e il Re delle Ossa](img/hero_rig/cripta-classico.png)
+
+La mappa procede dal basso verso l’alto. Scegli una stanza con il bordo dorato, collegata alla tua posizione. **Qui** indica la stanza in cui sei. **Visitata** marca una sosta precedente e **?** indica una stanza ancora da scoprire. I nodi dorati mostrano il tipo di stanza prima che tu entri. Una stanza ordinaria costa 2 punti Stamina.
+
+In basso **Scorte** apre pozioni ed eteri. **Esci** chiede se usare una pergamena di ritorno. Puoi tornare al borgo anche dalle scale, tenendo il bottino. Dopo aver battuto il Re Gelatino al piano 5 puoi scegliere di rientrare dal piano 6 in una discesa successiva. Battere il Re delle Ossa al piano 10 sblocca la Riva di Vetro.
