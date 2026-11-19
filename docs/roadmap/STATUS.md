@@ -1,6 +1,6 @@
 # Registro di avanzamento
 
-Aggiornato il 19 novembre 2026. Consegna corrente `0.8.0-preview.6`. [Roadmap operativa](../ROADMAP.md)
+Aggiornato il 19 novembre 2026. Consegna corrente `0.8.0-preview.7`. [Roadmap operativa](../ROADMAP.md)
 
 ## Consegna R1 — atlante delle classi, 0.4.1-preview.1
 
@@ -20,8 +20,8 @@ Aggiornato il 19 novembre 2026. Consegna corrente `0.8.0-preview.6`. [Roadmap op
 | Nuovi avatar modulari classici | **40/40**, otto basi, sedici avanzate e sedici maestre |
 | Fallback legacy delle evoluzioni | 0 classi valide |
 | Assetti Lanternbound nel nuovo trattamento | 3/3; sistema separato |
-| Luoghi classici ridisegnati | Borgo e prime quattro regioni, fino alle Caverne di Brace e alla Fucina Infernale |
-| Mostri del Classico ridisegnati | **34/42** |
+| Luoghi classici ridisegnati | Borgo, cinque regioni e cinque dungeon, fino alla Cittadella Celeste |
+| Mostri del Classico ridisegnati | **42/42** |
 | Nuovo collaudo sul Pocket | Aperto |
 
 ## Consegna R2 — rig e otto basi, 0.5.0-preview.1
@@ -94,10 +94,14 @@ La radura color salvia rende leggibile il Lupo nero. Nelle Radici Antiche spicca
 
 Lava e bagliori restano fuori dalla fascia centrale di battaglia. Le forme del Golem, del Drago di cenere e del Signore dei Demoni risaltano sulla pietra fredda. Il percorso bilingue copre anello d’attacco, intento e parata con touch e BOOT, entrambi i boss e accesso alle Guglie dopo il riavvio. [Catture, prove e budget](ember-evidence/README.md)
 
-## Prossimo lotto R5.7 — Guglie del Cielo e Cittadella Celeste
+## Consegna R5.7 — Guglie del Cielo e Cittadella Celeste
 
-1. Disegnare i due ambienti con una fascia di battaglia che lasci leggibili creature chiare e scure.
-2. Integrare le ultime otto specie, tra cui Custode Celeste e Drago Stellare. Obiettivo 42/42.
-3. Verificare in IT/EN l’accesso dalle Caverne, il checkpoint, il boss finale e il ritorno al borgo con le ricompense dopo il riavvio. Registrare catture, salvataggio e budget.
+La terrazza lilla e il pavimento verde petrolio lasciano spazio ai gruppi di nemici. Le ultime otto specie comprendono il Custode Celeste e il Drago Stellare. Il giro bilingue verifica il checkpoint, il ritorno al borgo e il record del piano 10 dopo due riavvii. [Catture, prove e budget](sky-evidence/README.md)
 
-Seguono le interfacce di servizio. Il collaudo fisico può procedere in parallelo e serve per la stabile. [Sequenza e criteri](../ROADMAP.md#r5--unificare-il-resto-del-gioco)
+## Prossimo lotto R5.8 — mappa e interfacce di servizio
+
+1. Rifinire mappa del mondo e zaino. Provare su schermo circolare sia l’accesso alle cinque regioni sia la selezione e l’equipaggiamento di oggetti con nomi lunghi.
+2. Allineare bottega, forgia e missioni agli stessi pannelli e comandi. Verificare acquisto, potenziamento, consegna e ritorno al borgo in IT/EN.
+3. Rileggere il salvataggio dopo le transazioni, verificare scorrimento e ritorno touch/BOOT, poi aggiornare catture e guida.
+
+Il collaudo fisico può procedere in parallelo e serve per la stabile. [Sequenza e criteri](../ROADMAP.md#r5--unificare-il-resto-del-gioco)

@@ -664,6 +664,8 @@ static void field_fixture(unsigned mask, int total, rpg_foe *foes) {
                 if (foes[i].species == z->field_foes[j]) species |= 1u << j;
         if (species != mask || count != total) continue;
         R.g.rng_state = seed;
+        /* Sample the cost outside a clock tick that can restore stamina. */
+        if (ms % 1000 > 850) run(1000 - ms % 1000);
         int stamina = R.g.hero.stamina;
         press(TR("Combatti", "Fight"));
         assert(R.screen == R_BATTLE && R.g.hero.stamina == stamina - 1);
@@ -697,6 +699,20 @@ static void show_enemy_timing(const char *region, int lang) {
         int ph = rpg_battle_phase();
         if (ph == CHOOSE) press(TR("Guardia", "Guard"));
         if (ph == TELEGRAPH && !intent_seen) {
+            if (R.zone == RPG_ZONES - 1) {
+                bool heal_seen = false;
+                for (uint32_t i = 0; i < lv_obj_get_child_count(screen); i++) {
+                    lv_obj_t *child = lv_obj_get_child(screen, (int32_t)i);
+                    if (!lv_obj_check_type(child, &lv_label_class)) continue;
+                    const char *label = lv_label_get_text(child);
+                    if (label[0] != '+' || !label[1] || label[1 + strspn(label + 1, "0123456789")]) continue;
+                    lv_obj_update_layout(screen);
+                    lv_obj_get_coords(child, &area);
+                    assert(area.y1 > CY + 30);
+                    heal_seen = true;
+                }
+                assert(heal_seen);
+            }
             expedition_shot(region, "intento");
             intent_seen = true;
         }
@@ -716,6 +732,7 @@ static void show_enemy_timing(const char *region, int lang) {
 
 static void expedition_flow(int zone, const expedition_example *example) {
     const rpg_zone_info *z = rpg_zone(zone);
+    const bool final_region = zone == RPG_ZONES - 1;
     assert(R.g.zone_unlocked == zone && R.g.best_floor[zone - 1] == RPG_FLOORS && !R.g.run.active);
     rpg_game unlocked = R.g;
     for (int lang = 0; lang < 2; lang++) {
@@ -726,7 +743,7 @@ static void expedition_flow(int zone, const expedition_example *example) {
         assert(R.screen == R_MAP);
         R.g.zone_unlocked = unlocked.zone_unlocked;
         R.g.auto_battle = 0;
-        R.g.hero.level = (uint8_t)(z->max_level + 12);
+        R.g.hero.level = (uint8_t)(final_region ? RPG_MAX_LEVEL : z->max_level + 12);
         rpg_stats stats;
         rpg_stats_get(&R.g, &stats);
         R.g.hero.hp = stats.max_hp;
@@ -852,6 +869,13 @@ static void expedition_flow(int zone, const expedition_example *example) {
         R.g.hero.level = z->max_level >= 48 ? RPG_MAX_LEVEL : 65;
         R.g.hero.stat[ST_VIT] = 99;
         R.g.hero.stat[ST_AGI] = 80;
+        if (final_region) {
+            R.g.hero.stat[ST_INT] = 99; /* Absorb the Star Dragon's magic breath. */
+            R.g.hero.equip[SLOT_OFFHAND] = (rpg_item){
+                .type = IT_SHIELD, .tier = RPG_TIERS - 1, .rarity = RAR_LEGENDARY, .plus = 10, .level = 65,
+                .aff = {AF_HP_PCT, AF_ATK_PCT}, .aff_val = {40, 40},
+            };
+        }
         rpg_stats_get(&R.g, &stats);
         R.g.hero.hp = stats.max_hp;
         R.g.hero.sp = stats.max_sp;
@@ -861,21 +885,41 @@ static void expedition_flow(int zone, const expedition_example *example) {
         assert(find(lv_screen_active(), TX(rpg_species(z->final_boss)->name)));
         controls_clear();
         expedition_shot(example->region, example->final);
+        const uint32_t previous_gold = R.g.gold;
+        const uint32_t previous_bosses = R.g.bosses;
         auto_win();
         uint32_t gold = R.g.gold;
-        wf_app_start(saved, saved_len);
-        int next = zone + 1;
+        assert(gold > previous_gold && R.g.bosses == previous_bosses + 1);
+        if (final_region && !lang) press(TR("Continua", "Continue"));
+        else wf_app_start(saved, saved_len);
+        int next = final_region ? zone : zone + 1;
         assert(R.screen == R_TOWN && R.g.zone_unlocked == next && R.g.best_floor[zone] == RPG_FLOORS);
-        assert(!R.g.run.active && R.g.gold == gold && !R.g.classic.active);
+        assert(!R.g.run.active && R.g.gold == gold && R.g.bosses == previous_bosses + 1 && !R.g.classic.active);
         assert(find(lv_layer_top(), TR("Dungeon completato!", "Dungeon cleared!")));
+        if (final_region) {
+            assert(find(lv_layer_top(), TR("Hai conquistato Cittadella Celeste!", "You conquered Celestial Citadel!")));
+            expedition_shot(example->region, "ritorno");
+        }
         press("Ok");
+        if (final_region) {
+            for (int i = 0; i < (lang ? 1 : 2); i++) {
+                wf_app_start(saved, saved_len);
+                assert(R.screen == R_TOWN && !R.g.run.active && !R.g.classic.active);
+                assert(R.g.gold == gold && R.g.bosses == previous_bosses + 1);
+                assert(R.g.zone_unlocked == zone && R.g.best_floor[zone] == RPG_FLOORS);
+            }
+        }
         map_zone(next);
         assert(R.screen == R_ZONE && R.zone == next);
         assert(find(lv_screen_active(), TX(rpg_zone(next)->field_name)));
+        if (final_region)
+            assert(find(lv_screen_active(), TR("Record piano 10", "Best floor 10")));
     }
     wf_lang = 0;
-    printf("%s: IT/EN eight species, targeting, touch/BOOT attack, two bosses, checkpoint and zone %d unlock passed\n",
-           example->region, zone + 1);
+    printf("%s: IT/EN eight species, targeting, touch/BOOT attack, two bosses and checkpoint passed\n",
+           example->region);
+    if (final_region) puts("Classic finale: IT/EN return to town, single rewards over two boots and floor 10 record passed");
+    else printf("zone %d unlock passed\n", zone + 1);
 }
 
 int main(int argc,char **argv) {
@@ -910,9 +954,14 @@ int main(int argc,char **argv) {
         "ember", "brace", "minatore", "fucina", "diavoletto-e-cavaliere", "drago-di-cenere", "signore-dei-demoni",
         SP_IMP, SP_HELL_KNIGHT, false, true,
     };
+    const expedition_example sky = {
+        "sky", "guglie", "arpia", "cittadella", "cavaliere-e-golem", "custode-celeste", "drago-stellare",
+        SP_SKY_KNIGHT, SP_CRYSTAL_GOLEM, false, true,
+    };
     expedition_flow(1, &shore);
     expedition_flow(2, &wood);
     expedition_flow(3, &ember);
+    expedition_flow(4, &sky);
     printf("battle footer:%u actual opaque glyph pixels inside circle and below avatar; level99 all master rig stress passed\n",footer_ink_pixels);
     printf("hero rig native:%d screenshots,actual creation-adjacent classic views,formations,save/wake,full/incremental render and control separation passed;peak%zu image bytes\n",shots,peak_image_bytes);
     return 0;

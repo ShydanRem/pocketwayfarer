@@ -7,6 +7,7 @@
 #include "art/ember_art.h"
 #include "art/lumen_art.h"
 #include "art/shore_art.h"
+#include "art/sky_art.h"
 #include "art/wood_art.h"
 
 enum { PH_INTRO, PH_CHOOSE, PH_SKILLS, PH_RING, PH_ANIM, PH_TELEGRAPH, PH_PARRY, PH_END };
@@ -42,6 +43,7 @@ static const wf_sprite *foe_sprite(int species, bool windup) {
     if (species == SP_BONE_KING) return &classic_crypt_bone_king;
     static const wf_sprite *const illustrated_monsters[] = {
         classic_lumen_monsters, classic_shore_monsters, classic_wood_monsters, classic_ember_monsters,
+        classic_sky_monsters,
     };
     for (unsigned i = 0; i < sizeof illustrated_monsters / sizeof illustrated_monsters[0]; i++) {
         const wf_sprite *art = &illustrated_monsters[i][species];
@@ -210,7 +212,9 @@ static int play(const rpg_event *e) {
         if (e->actor < 0) {
             if (e->value) snprintf(buf, sizeof buf, "+%ld", (long)e->value);
             else snprintf(buf, sizeof buf, "%s", TR("Curato", "Cured"));
-            kit_float_text(B.scr, buf, COL_HP, &wf_font_big, HERO_X - 40, HERO_Y - 70);
+            /* The hero's heal floats below the enemy levels on illustrated fields. */
+            kit_float_text(B.scr, buf, COL_HP, &wf_font_big,
+                           HERO_X - (B.illustrated ? 64 : 40), HERO_Y - (B.illustrated ? 12 : 70));
             kit_burst(B.scr, ri(RI_HEART), HERO_X, HERO_Y - 30, 3);
             hero_face(HX_HAPPY, 0);
             update_vitals();

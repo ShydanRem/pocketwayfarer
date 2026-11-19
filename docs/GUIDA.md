@@ -159,3 +159,11 @@ L’**Antico Ceppo** al piano 5 apre il checkpoint del piano 6. La **Regina Ragn
 Dopo le Radici Antiche, tocca le **Caverne di Brace** nella parte alta a destra della mappa. Gli incontri all’aperto coprono i livelli **32–48**. In battaglia leggi sopra l’arena l’azione annunciata dal nemico. L’onda della parata converge sullo scudo centrale.
 
 Entra nella **Fucina Infernale** dalla schermata delle Caverne. Al piano 5 il **Drago di cenere** apre il checkpoint del piano 6. Il **Signore dei Demoni** al piano 10 sblocca le **Guglie del Cielo**.
+
+## Sulle Guglie del Cielo
+
+![Guglie del Cielo, gruppo di tre nemici e Drago Stellare](img/hero_rig/guglie-classico.png)
+
+Dopo la Fucina Infernale, scegli le **Guglie del Cielo** sul lato destro della mappa. Gli incontri all’aperto coprono i livelli **48–70**. Dalla terrazza delle Guglie puoi entrare nella **Cittadella Celeste**.
+
+Il **Custode Celeste** al piano 5 apre il checkpoint del piano 6. Al piano 10 il **Drago Stellare** chiude la spedizione. **Continua** porta al borgo con il bottino. Puoi tornare alle Guglie dalla mappa e vedere **Record piano 10** sotto l’ingresso della Cittadella.

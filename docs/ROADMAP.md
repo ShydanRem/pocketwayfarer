@@ -1,6 +1,6 @@
 # Roadmap di Pocket Wayfarer
 
-**Aggiornata il 19 novembre 2026.** Le schermate di riferimento arrivano alla Fucina Infernale. Il [registro di avanzamento](roadmap/STATUS.md) conserva le prove per ogni consegna. Le versioni indicano obiettivi di contenuto.
+**Aggiornata il 19 novembre 2026.** I cinque ambienti di esplorazione e i cinque dungeon del Classico sono ridisegnati. Il [registro di avanzamento](roadmap/STATUS.md) conserva le prove per ogni consegna. Le versioni indicano obiettivi di contenuto.
 
 ## Obiettivo e regole di avanzamento
 
@@ -9,6 +9,10 @@ Portare il gioco a un'identità coerente: personaggi riconoscibili, mondo leggib
 Un lotto è completato quando entra nel gioco, supera i controlli pertinenti e dispone di catture native. Un atlas generato, un concept o un punteggio del brief non equivalgono a una funzione completata. Si lavora su un solo lotto principale alla volta; correzioni di crash, salvataggi, input o leggibilità hanno precedenza. Il collaudo fisico può procedere in parallelo quando il Pocket è disponibile: non impedisce di produrre e verificare arte su PC, ma resta necessario per la release stabile.
 
 ## Stato reale di partenza
+
+**Consegna R5.7 / 0.8.0-preview.7.** Guglie del Cielo e Cittadella Celeste portano il Classico a **42 creature ridisegnate su 42**. Le prove bilingui coprono il percorso di ingresso, il checkpoint, il Drago Stellare e il rientro al borgo dalla vittoria salvata. [Catture e prove R5.7](roadmap/sky-evidence/README.md)
+
+![Guglie del Cielo, formazione a tre e Drago Stellare nel renderer nativo](img/hero_rig/guglie-classico.png)
 
 **Consegna R5.6 / 0.8.0-preview.6.** Caverne di Brace e Fucina Infernale hanno due fondali a 233 × 233 e otto nuove sagome. Il Classico raggiunge **34 specie ridisegnate su 42**. Le prove bilingui coprono anello, intento, parata, checkpoint e accesso alle Guglie del Cielo dopo il riavvio. [Catture e prove R5.6](roadmap/ember-evidence/README.md)
 
@@ -78,7 +82,7 @@ Il primo incremento della roadmap aggiunge **otto illustrazioni base nell'atlant
 | **R2 — avatar modulare e otto basi / 0.5-preview: completato su host** | R1 | Otto costumi base nel mondo, rig e canali estetici/equipaggiamento | Catture reali, continuità, cache e sanitizer verificati; collaudo fisico separato |
 | R3 — sedici avanzate / 0.6-preview: R3.1 e R3.2 verificati su host | R2 | Due lotti da otto, con rami A/B distinti | Ogni ramo riconoscibile anche in grigio e con copricapo equipaggiato; regole di classe invariate |
 | R4 — sedici maestre / 0.7-preview: R4.1 e R4.2 verificati su host | R3 | Sedici maestre integrate con costumi e illustrazioni propri | 40/40 identità modulari e relativo materiale di presentazione, senza riempitivi conteggiati come completati |
-| R5 — mondo e interfaccia / 0.8-preview. R5.1–R5.6 verificate su host | R2; R3/R4 per relativo abito | Interfaccia del personaggio, borgo, cinque regioni, dungeon e 42 specie del Classico | Percorso completo in italiano e inglese, controlli raggiungibili sul cerchio e catture dal renderer |
+| R5 — mondo e interfaccia / 0.8-preview. R5.1–R5.7 verificate su host | R2; R3/R4 per relativo abito | Interfaccia del personaggio, borgo, cinque regioni, dungeon e 42 specie del Classico | Percorso completo in italiano e inglese, controlli raggiungibili sul cerchio e catture dal renderer |
 | R6 — varietà e progressione / 0.9-preview | R4 + parte giocabile R5 | Scelte di percorso, nemici, eventi e ricompense rifinite | Difficoltà simulata e provata da persone; nuove strutture persistenti solo con migrazione esplicita |
 | R7 — animazione e audio | Rig R2; hardware audio per suono | Transizioni, effetti per ruolo, feedback e suoni opzionali | Nessun segnale essenziale affidato solo al colore/suono; movimento ridotto e pausa rispettati |
 | R8 — consolidamento / candidata 1.0 | R4–R7 nel perimetro scelto + R0 fisico | Ottimizzazione misurata, lunga sessione, backup/aggiornamento e pacchetto finale | Checklist hardware e rilascio superata; limiti residui dichiarati |
@@ -134,10 +138,10 @@ Gli ID non cambiano. L'avanzata richiede livello base 20 e job 30; la maestra li
 | **R5.4 · completato su host** | Riva di Vetro e Tempio Sommerso. Otto specie costiere, incluse Granchio corazzato e Leviatano. Copertura cumulativa 18/42. | Confronto dei fondali, catture di campo, gruppi da tre e due boss. Accesso dalla Cripta appena completata e prosecuzione verso il Bosco verificati. |
 | **R5.5 · completato su host** | Bosco Sussurrante e Radici Antiche. Otto specie, incluso il gruppo di ragni e creature delle radici. Copertura cumulativa 26/42. | Lettura delle sagome scure, trappola e bivio, checkpoint e accesso alle Caverne dopo il riavvio verificati. |
 | **R5.6 · completato su host** | Caverne di Brace e Fucina Infernale. Otto specie, con Drago di cenere e Signore dei Demoni. Copertura 34/42. | Lava e bagliori ai margini. Anello, intento, parata e passaggio alle Guglie verificati. |
-| **R5.7 · prossimo** | Guglie del Cielo e Cittadella Celeste. Ultime otto specie e due boss della regione. | Sagome chiare e scure leggibili sullo stesso sfondo. Verificare il percorso fino al boss finale del Classico e il ritorno con le ricompense. Copertura 42/42. |
-| **R5.8** | Mappa del mondo, zaino, bottega, forgia e missioni. Stessa grammatica di font, pannelli, selezione e ritorno. | In IT/EN nomi lunghi, scorrimento e touch sul cerchio, acquisto, potenziamento, equipaggiamento e consegna di una missione con salvataggio riletto. |
+| **R5.7 · completato su host** | Guglie del Cielo e Cittadella Celeste. Ultime otto specie, compresi Custode Celeste e Drago Stellare. Copertura 42/42. | Incontri chiari e scuri sulle terrazze, checkpoint e ritorno con la ricompensa finale verificati. |
+| **R5.8 · prossimo** | Mappa del mondo, zaino, bottega, forgia e missioni. Stessa grammatica di font, pannelli, selezione e ritorno. | In IT/EN nomi lunghi, scorrimento e touch sul cerchio, acquisto, potenziamento, equipaggiamento e consegna di una missione con salvataggio riletto. |
 
-Per i due fondali della regione rimanente si parte da 233 × 233 con espansione 2×. Il confronto R5.4 mostra che la risoluzione dimezzata conserva la separazione delle sagome e riduce a un quarto i byte degli indici. Le linee più sottili delle architetture perdono dettaglio. Se il fondale dipende da quel dettaglio, si rivede il costo prima di scegliere la variante. I mostri restano in lotti di massimo otto, con sagome, intenti e bersagli verificati sullo schermo finale. Il registro usa gli ID effettivi del core. I sette nemici di Lanternbound appartengono a un altro sistema.
+Da R5.4 a R5.7 i fondali usano 233 × 233 con espansione 2×. Il confronto R5.4 mostra che la risoluzione dimezzata conserva la separazione delle sagome e riduce a un quarto i byte degli indici. Le linee più sottili delle architetture perdono dettaglio. Il registro delle 42 specie usa gli ID effettivi del core e tiene conto di sagome, intenti e bersagli sullo schermo finale. I sette nemici di Lanternbound appartengono a un altro sistema.
 
 Arma, mano secondaria e testa sono i canali grafici dell’equipaggiamento già in uso. Prima di ampliare gli slot visibili va definita la precedenza tra costume e oggetto del giocatore. Ogni lotto include almeno una scena completa con HUD, comandi e catture dal renderer.
 
