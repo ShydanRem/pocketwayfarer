@@ -1,6 +1,6 @@
 # Registro di avanzamento
 
-Aggiornato il 19 novembre 2026. Consegna corrente `0.8.0-preview.5`. [Roadmap operativa](../ROADMAP.md)
+Aggiornato il 19 novembre 2026. Consegna corrente `0.8.0-preview.6`. [Roadmap operativa](../ROADMAP.md)
 
 ## Consegna R1 — atlante delle classi, 0.4.1-preview.1
 
@@ -20,8 +20,8 @@ Aggiornato il 19 novembre 2026. Consegna corrente `0.8.0-preview.5`. [Roadmap op
 | Nuovi avatar modulari classici | **40/40**, otto basi, sedici avanzate e sedici maestre |
 | Fallback legacy delle evoluzioni | 0 classi valide |
 | Assetti Lanternbound nel nuovo trattamento | 3/3; sistema separato |
-| Luoghi classici ridisegnati | Borgo, Prati di Lumen, Cripta dei Lumi, Riva di Vetro, Tempio Sommerso, Bosco Sussurrante e Radici Antiche |
-| Mostri del Classico ridisegnati | **26/42** |
+| Luoghi classici ridisegnati | Borgo e prime quattro regioni, fino alle Caverne di Brace e alla Fucina Infernale |
+| Mostri del Classico ridisegnati | **34/42** |
 | Nuovo collaudo sul Pocket | Aperto |
 
 ## Consegna R2 — rig e otto basi, 0.5.0-preview.1
@@ -90,10 +90,14 @@ Il nuovo campo usa ardesia al tramonto e il Tempio usa pietra verde sommersa. Ot
 
 La radura color salvia rende leggibile il Lupo nero. Nelle Radici Antiche spiccano le ali della Fata oscura. Il Ragno tessitore ha una sagoma bassa e ramata, la Regina Ragno ha un addome alto e zampe color avorio. Le prove in italiano e inglese coprono tre bersagli, una trappola, il checkpoint e lo sblocco delle Caverne. [Catture, prove e budget](wood-evidence/README.md)
 
-## Prossimo lotto R5.6 — Caverne di Brace e Fucina Infernale
+## Consegna R5.6 — Caverne di Brace e Fucina Infernale
 
-1. Disegnare i due ambienti con lava e bagliori ai margini. Lasciare il pavimento centrale uniforme abbastanza da leggere le sagome calde.
-2. Integrare otto specie. Dare forme distinguibili al Golem di lava, al Drago di cenere e al Signore dei Demoni, anche durante colpi e parata.
-3. Verificare in IT/EN il passaggio dal Bosco alle Caverne, la discesa e lo sblocco delle Guglie. Registrare catture, salvataggio e budget.
+Lava e bagliori restano fuori dalla fascia centrale di battaglia. Le forme del Golem, del Drago di cenere e del Signore dei Demoni risaltano sulla pietra fredda. Il percorso bilingue copre anello d’attacco, intento e parata con touch e BOOT, entrambi i boss e accesso alle Guglie dopo il riavvio. [Catture, prove e budget](ember-evidence/README.md)
 
-Seguono Guglie e interfacce di servizio. Il collaudo fisico può procedere in parallelo e serve per la stabile. [Sequenza e criteri](../ROADMAP.md#r5--unificare-il-resto-del-gioco)
+## Prossimo lotto R5.7 — Guglie del Cielo e Cittadella Celeste
+
+1. Disegnare i due ambienti con una fascia di battaglia che lasci leggibili creature chiare e scure.
+2. Integrare le ultime otto specie, tra cui Custode Celeste e Drago Stellare. Obiettivo 42/42.
+3. Verificare in IT/EN l’accesso dalle Caverne, il checkpoint, il boss finale e il ritorno al borgo con le ricompense dopo il riavvio. Registrare catture, salvataggio e budget.
+
+Seguono le interfacce di servizio. Il collaudo fisico può procedere in parallelo e serve per la stabile. [Sequenza e criteri](../ROADMAP.md#r5--unificare-il-resto-del-gioco)

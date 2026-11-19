@@ -12,6 +12,7 @@ python3 scripts/build_lumen_art.py --check
 python3 scripts/build_crypt_art.py --check
 python3 scripts/build_shore_art.py --check
 python3 scripts/build_wood_art.py --check
+python3 scripts/build_ember_art.py --check
 python3 scripts/build_class_art.py --check
 python3 scripts/build_hero_rig.py --check
 python3 scripts/class_inventory.py --check

@@ -1,0 +1,132 @@
+{
+  "generator": "OpenAI ImageGen",
+  "sha256": {
+    "environments-prompt.txt": "dd35402dc3054efacccd6c54ccf725b7b0a8e41d818db5191344a11755dfc344",
+    "environments.png": "851c59b3de4ebf43f0a83f7091f5718dd411d3a569e0bdc5faaafbde818cb009",
+    "monsters-prompt.txt": "91c988b0b91801d8c9608bfa3b86c388fbd52bb36e055285e2e224eb32abe824",
+    "monsters.png": "445dea081e08ad7514b9ee910a24d6abad8619beffea316f24ba90574eaa3cf2"
+  },
+  "environment_source_size": [
+    1774,
+    887
+  ],
+  "environment_runtime_size": [
+    233,
+    233
+  ],
+  "environment_display_size": [
+    466,
+    466
+  ],
+  "monster_source_size": [
+    1774,
+    887
+  ],
+  "monsters": [
+    {
+      "species": "SP_SALAMANDER",
+      "runtime_size": [
+        47,
+        33
+      ],
+      "source_cell_bbox": [
+        59,
+        126,
+        387,
+        355
+      ]
+    },
+    {
+      "species": "SP_LAVA_GOLEM",
+      "runtime_size": [
+        50,
+        42
+      ],
+      "source_cell_bbox": [
+        32,
+        63,
+        400,
+        371
+      ]
+    },
+    {
+      "species": "SP_FIRE_BAT",
+      "runtime_size": [
+        52,
+        27
+      ],
+      "source_cell_bbox": [
+        28,
+        123,
+        419,
+        324
+      ]
+    },
+    {
+      "species": "SP_GOBLIN_MINER",
+      "runtime_size": [
+        44,
+        39
+      ],
+      "source_cell_bbox": [
+        62,
+        79,
+        374,
+        358
+      ]
+    },
+    {
+      "species": "SP_IMP",
+      "runtime_size": [
+        41,
+        43
+      ],
+      "source_cell_bbox": [
+        104,
+        95,
+        354,
+        359
+      ]
+    },
+    {
+      "species": "SP_HELL_KNIGHT",
+      "runtime_size": [
+        42,
+        40
+      ],
+      "source_cell_bbox": [
+        26,
+        42,
+        382,
+        384
+      ]
+    },
+    {
+      "species": "SP_ASH_DRAGON",
+      "runtime_size": [
+        66,
+        64
+      ],
+      "source_cell_bbox": [
+        29,
+        23,
+        402,
+        383
+      ]
+    },
+    {
+      "species": "SP_DEMON_LORD",
+      "runtime_size": [
+        69,
+        63
+      ],
+      "source_cell_bbox": [
+        17,
+        24,
+        417,
+        388
+      ]
+    }
+  ],
+  "conversion": "Nearest-neighbor, indexed RGB565, at most 240 scenery colors, at most 96 monster colors and binary alpha"
+}

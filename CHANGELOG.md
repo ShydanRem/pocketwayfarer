@@ -1,5 +1,12 @@
 # Note di versione
 
+## 0.8.0-preview.6 — 19 novembre 2026
+
+- Ridisegnate Caverne di Brace e Fucina Infernale. Lava e riflessi incorniciano la zona di scontro in pietra fredda.
+- Integrate otto specie della quarta regione, inclusi Drago di cenere e Signore dei Demoni. Il Classico raggiunge 34 creature ridisegnate su 42.
+- Nei combattimenti ridisegnati il giudizio dell’attacco appare più in basso e lascia libera la testata degli intenti.
+- Verificati selezione dei tre bersagli, anello, intento, parata, due boss e accesso alle Guglie del Cielo in italiano e inglese.
+
 ## 0.8.0-preview.5 — 19 novembre 2026
 
 - Ridisegnati Bosco Sussurrante e Radici Antiche. Radura chiara sotto la chioma e pavimento uniforme per far risaltare le sagome.

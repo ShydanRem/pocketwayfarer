@@ -4,6 +4,7 @@
 #include <string.h>
 #include "rui.h"
 #include "art/crypt_art.h"
+#include "art/ember_art.h"
 #include "art/lumen_art.h"
 #include "art/shore_art.h"
 #include "art/wood_art.h"
@@ -18,9 +19,11 @@ static const wf_sprite *const illustrated_scenes[RS_COUNT] = {
     [RS_FIELD_MEADOW] = &classic_lumen_meadow,
     [RS_FIELD_SHORE] = &classic_shore,
     [RS_FIELD_FOREST] = &classic_wood,
+    [RS_FIELD_CAVES] = &classic_ember,
     [RS_DUNGEON_CRYPT] = &classic_crypt,
     [RS_DUNGEON_TEMPLE] = &classic_temple,
     [RS_DUNGEON_ROOTS] = &classic_roots,
+    [RS_DUNGEON_FORGE] = &classic_forge,
 };
 
 bool r_scene_illustrated(int scene) { return illustrated_scenes[scene] != NULL; }

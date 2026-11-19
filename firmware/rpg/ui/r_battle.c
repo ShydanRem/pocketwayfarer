@@ -4,6 +4,7 @@
 #include <string.h>
 #include "rui.h"
 #include "art/crypt_art.h"
+#include "art/ember_art.h"
 #include "art/lumen_art.h"
 #include "art/shore_art.h"
 #include "art/wood_art.h"
@@ -40,7 +41,7 @@ static const wf_sprite *foe_sprite(int species, bool windup) {
     if (species == SP_MIMIC) return &classic_crypt_mimic;
     if (species == SP_BONE_KING) return &classic_crypt_bone_king;
     static const wf_sprite *const illustrated_monsters[] = {
-        classic_lumen_monsters, classic_shore_monsters, classic_wood_monsters,
+        classic_lumen_monsters, classic_shore_monsters, classic_wood_monsters, classic_ember_monsters,
     };
     for (unsigned i = 0; i < sizeof illustrated_monsters / sizeof illustrated_monsters[0]; i++) {
         const wf_sprite *art = &illustrated_monsters[i][species];
@@ -439,7 +440,8 @@ static void on_ring_tap(lv_event_t *e) {
         kit_pos(B.info, CX, 55);
         lv_obj_remove_flag(B.buttons[5], LV_OBJ_FLAG_HIDDEN);
     }
-    quality_popup(B.scr, q, CX, 110);
+    /* Float the attack rating clear of the illustrated intent panel. */
+    quality_popup(B.scr, q, B.illustrated ? 112 : CX, B.illustrated ? 340 : 110);
     do_hero(&B.pending, q);
 }
 

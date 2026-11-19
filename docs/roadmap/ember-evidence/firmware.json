@@ -1,0 +1,15 @@
+{
+  "date": "2026-11-19",
+  "milestone": "R5.6-ember-caves",
+  "app_version": "0.8.0-preview.6",
+  "target": "ESP32-S3",
+  "idf_version": "5.5.1",
+  "bytes": 5052384,
+  "sha256": "9aa37977c7f43e1b91d8a2c9be5f78f5fad0ea8f66bba729245972723d477555",
+  "app_partition_bytes": 6291456,
+  "save_version": 4,
+  "save_bytes": 2808,
+  "classic_species_redesigned": 34,
+  "ember_captures": 20,
+  "physical_device_tested": false
+}
