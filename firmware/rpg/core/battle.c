@@ -601,7 +601,13 @@ void rpg_battle_finish(rpg_game *g, const rpg_battle *b, rpg_loot *loot) {
     }
     g->rng_state = r.s;
     loot->job_xp = loot->xp * 7u / 10u;
+    uint32_t gold_before = g->gold;
     rpg_gold_add(g, loot->gold);
+    if ((b->flags & B_FLAG_DUNGEON) && g->run.active) {
+        uint32_t earned = g->gold - gold_before;
+        uint32_t space = UINT32_MAX - g->run.gold;
+        g->run.gold += earned < space ? earned : space;
+    }
     for (int c = 0; c < CO_COUNT; c++) {
         int v = g->cons[c] + loot->cons[c];
         g->cons[c] = (uint8_t)(v > 99 ? 99 : v);

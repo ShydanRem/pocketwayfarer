@@ -46,6 +46,7 @@ if shots:
         for output, prefix, samples in [
             ('interfaccia-classico', 'interfaccia', ('classe', 'statistiche', 'equipaggiamento')),
             ('lumen-classico', 'lumen', ('borgo', 'prati', 'trio')),
+            ('cripta-classico', 'crypt', ('percorso', 'mimic', 're-delle-ossa')),
         ]:
             captures = [next(dst.glob(f'*-{prefix}-{part}-it.png'), None) for part in samples]
             if not all(captures):

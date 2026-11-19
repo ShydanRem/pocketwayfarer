@@ -231,7 +231,7 @@ int main(int argc, char **argv) {
     r_go(R_DUNGEON);
     run(300);
     shot("dungeon");
-    for (int c = 0; c < 3; c++) if (rpg_room_reachable(&g->run, 0, c)) { click(140 + c * 93, 360); break; }
+    for (int c = 0; c < 3; c++) if (rpg_room_reachable(&g->run, 0, c)) { click(131 + c * 102, 340); break; }
     run(800);
     shot("stanza");
     if (R.screen == R_BATTLE) {

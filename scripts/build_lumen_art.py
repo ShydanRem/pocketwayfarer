@@ -22,16 +22,16 @@ SPECIES = [
 ]
 
 
-def monster_entries(emitter):
+def monster_entries(emitter, source, species_limits, columns, rows, prefix):
     entries = []
-    with Image.open(SOURCE / "monsters.png") as image:
+    with Image.open(source) as image:
         if image.mode != "RGBA" or image.width != image.height * 2:
-            raise ValueError("Monster atlas must be RGBA with four columns and two rows")
+            raise ValueError("Monster atlas must be RGBA in a 2:1 aspect ratio")
         size = image.size
-        for i, (species, max_width, max_height) in enumerate(SPECIES):
-            row, col = divmod(i, 4)
-            box = (round(col*image.width/4), round(row*image.height/2),
-                   round((col+1)*image.width/4), round((row+1)*image.height/2))
+        for i, (species, max_width, max_height) in enumerate(species_limits):
+            row, col = divmod(i, columns)
+            box = (round(col * image.width / columns), round(row * image.height / rows),
+                   round((col + 1) * image.width / columns), round((row + 1) * image.height / rows))
             cell = image.crop(box)
             alpha = np.asarray(cell.getchannel("A")) >= 128
             ys, xs = np.where(alpha)
@@ -47,7 +47,7 @@ def monster_entries(emitter):
                 colors=96, method=Image.Quantize.MEDIANCUT, dither=Image.Dither.NONE
             ).convert("RGB")
             pixels = np.dstack((np.asarray(rgb), np.where(mask,255,0).astype(np.uint8)))
-            entries.append((species, emitter.sprite(f"lumen_monster_{i}", pixels), cut.size, bbox))
+            entries.append((species, emitter.sprite(f"{prefix}_{i}", pixels), cut.size, bbox))
     return entries, size
 
 
@@ -59,7 +59,7 @@ def build():
         size = image.size
         town, meadow = [e.sprite(name, indexed(image.crop((i*image.height, 0, (i+1)*image.height, image.height)), (466,466)))
                         for i, name in enumerate(("lumen_town", "lumen_meadow"))]
-    monsters, atlas_size = monster_entries(e)
+    monsters, atlas_size = monster_entries(e, SOURCE / "monsters.png", SPECIES, 4, 2, "lumen_monster")
     header = ('#pragma once\n#include "sprite.h"\n#include "rpg.h"\n'
               'extern const wf_sprite classic_lumen_town, classic_lumen_meadow;\n'
               'extern const wf_sprite classic_lumen_monsters[SP_COUNT];\n')

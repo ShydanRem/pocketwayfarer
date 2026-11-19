@@ -447,6 +447,196 @@ static void lumen_flow(void) {
     puts("Lumen: IT/EN town-to-victory touch, all three targets, timed touch/BOOT, v4 rewards, floor 6 and new sprites passed");
 }
 
+static void crypt_shot(const char *stage) {
+    char name[80];
+    snprintf(name, sizeof name, "crypt-%s-%s", stage, wf_lang ? "en" : "it");
+    shot(name);
+}
+
+static void crypt_boss_route(int floor) {
+    R.g.run.floor = (uint8_t)floor;
+    rpg_dungeon_floor(&R.g.run);
+    R.g.run.row = RPG_ROWS - 1;
+    for (int col = 0; col < RPG_COLS; col++) {
+        R.g.run.col = (int8_t)col;
+        if (R.g.run.rooms[RPG_ROWS - 1][col]) break;
+    }
+    assert(rpg_room_reachable(&R.g.run, RPG_ROWS, 1));
+    r_go(R_DUNGEON);
+}
+
+static void crypt_win(void) {
+    R.g.auto_battle = 1;
+    for (int t = 0; t < 1800 && rpg_battle_phase() != 7; t++) run(20);
+    if (R.g.classic.outcome != B_WON)
+        fprintf(stderr, "Crypt floor %d: expected victory, phase %d outcome %d\n",
+                R.g.run.floor, rpg_battle_phase(), R.g.classic.outcome);
+    assert(R.g.classic.active == 2 && R.g.classic.outcome == B_WON);
+    assert(find(lv_layer_top(), TR("Vittoria!", "Victory!")));
+}
+
+static void crypt_flow(void) {
+    for (int lang = 0; lang < 2; lang++) {
+        profile(FAM_WARRIOR, RACE_HUMAN, 1, 0, 1);
+        R.g.lang = wf_lang = (uint8_t)lang;
+        R.g.hero.stat[ST_STR] += 90;
+        R.g.hero.stat[ST_VIT] += 40;
+        rpg_stats stats;
+        rpg_stats_get(&R.g, &stats);
+        R.g.hero.hp = stats.max_hp;
+        R.g.cons[CO_POTION] = 2;
+        R.g.cons[CO_RETURN] = 1;
+        R.zone = 0;
+        r_go(R_ZONE);
+        run(1000 - ms % 1000);
+
+        /* Generate a real opening with a chest, then pick an RNG state
+         * that produces a mimic through the production resolver. */
+        int chest = -1;
+        for (uint32_t seed = 1; seed <= 10000 && chest < 0; seed++) {
+            rpg_game sim = R.g;
+            sim.rng_state = seed;
+            assert(rpg_dungeon_enter(&sim, 0, 0, seconds) == RPG_OK);
+            for (int col = 0; col < RPG_COLS; col++)
+                if (sim.run.rooms[0][col] == ROOM_CHEST) chest = col;
+            if (chest >= 0) R.g.rng_state = seed;
+        }
+        assert(chest >= 0);
+        press(TR("Cripta dei Lumi", "Lantern Crypt"));
+        assert(R.screen == R_DUNGEON && R.g.run.floor == 1 && R.g.run.row == -1);
+        assert(R.g.run.rooms[0][chest] == ROOM_CHEST);
+        assert(!find(lv_screen_active(), TR("Dal piano 6", "From floor 6")));
+        crypt_shot("ingresso");
+        click(CX, 108); /* visible but unreachable stairs */
+        assert(R.screen == R_DUNGEON && R.g.run.row == -1);
+
+        uint32_t mimic_seed;
+        for (mimic_seed = 1; mimic_seed <= 10000; mimic_seed++) {
+            rpg_game sim = R.g;
+            sim.rng_state = mimic_seed;
+            rpg_foe foes[RPG_MAX_FOES];
+            rpg_room_result reward;
+            int count;
+            assert(rpg_room_enter(&sim, 0, chest, foes, &count) == ROOM_CHEST);
+            rpg_room_resolve(&sim, &reward, foes, &count);
+            if (reward.mimic) break;
+        }
+        assert(mimic_seed <= 10000);
+        R.g.rng_state = mimic_seed;
+        uint32_t gold = R.g.gold;
+        int stamina = R.g.hero.stamina;
+        click(131 + chest * 102, 340);
+        assert(R.screen == R_BATTLE && R.g.classic.active == 1 && R.g.hero.stamina == stamina - 2);
+        run(1300);
+        assert(find(lv_screen_active(), "Mimic"));
+        crypt_shot("mimic");
+        wf_app_flush_save();
+        wf_app_start(saved, saved_len);
+        run(100);
+        assert(R.screen == R_DUNGEON && R.g.run.row == -1 && !R.g.run.cleared[0]);
+        assert(R.g.gold == gold && R.g.hero.stamina == stamina && R.g.rng_state == mimic_seed);
+        click(131 + chest * 102, 340);
+        assert(R.screen == R_BATTLE);
+        run(1300);
+        assert(find(lv_screen_active(), "Mimic"));
+        crypt_win();
+        uint32_t loot = R.g.gold;
+        assert(loot > gold);
+        assert(R.g.run.gold == loot - gold);
+        wf_app_start(saved, saved_len); /* restart before Continue */
+        assert(R.screen == R_DUNGEON && R.g.run.row == 0 && R.g.run.col == chest);
+        assert(R.g.gold == loot && !R.g.classic.active && (R.g.run.cleared[0] & (1u << chest)));
+        assert(R.g.run.gold == loot - gold);
+        rpg_game defeated = R.g;
+        rpg_dungeon_leave(&defeated, true);
+        assert(defeated.gold == loot - (loot - gold) / 2u);
+        assert(find(lv_screen_active(), TR("Qui", "Here")));
+        crypt_shot("percorso");
+        int potions = R.g.cons[CO_POTION], scrolls = R.g.cons[CO_RETURN];
+        assert(potions && scrolls);
+        R.g.hero.hp -= 15;
+        int hp = R.g.hero.hp;
+        press(TR("Scorte", "Supplies"));
+        press(TR("Pozione", "Potion"));
+        assert(R.g.cons[CO_POTION] == potions - 1 && R.g.hero.hp > hp);
+        press(TR("Esci", "Exit"));
+        press(TR("Resta", "Stay"));
+        assert(R.screen == R_DUNGEON && R.g.cons[CO_RETURN] == scrolls);
+
+        int trap = 0;
+        while (trap < RPG_COLS && !rpg_room_reachable(&R.g.run, 1, trap)) trap++;
+        assert(trap < RPG_COLS);
+        R.g.run.rooms[1][trap] = ROOM_TRAP;
+        r_go(R_DUNGEON);
+        run(100);
+        click(131 + trap * 102, 282);
+        assert(R.g.run.row == 1 && find(lv_layer_top(), TR("Trappola!", "Trap!")));
+        press(TR("Avanti", "Onward"));
+        assert(find(lv_screen_active(), TR("Visitata", "Visited")));
+        int merchant = 0;
+        while (merchant < RPG_COLS && !rpg_room_reachable(&R.g.run, 2, merchant)) merchant++;
+        assert(merchant < RPG_COLS);
+        R.g.run.rooms[2][merchant] = ROOM_MERCHANT;
+        r_go(R_DUNGEON);
+        run(100);
+        click(131 + merchant * 102, 224);
+        assert(R.screen == R_SHOP && R.shop_in_dungeon);
+        assert(wf_app_key(WF_KEY_BOOT_SHORT) && R.screen == R_DUNGEON && R.g.run.row == 2);
+
+        /* The route to the boss is generated. The fixture advances past
+         * subsequent floors so the actual OS input can check both bosses. */
+        R.g.auto_battle = 0;
+        crypt_boss_route(5);
+        press("Boss");
+        run(1300);
+        assert(find(lv_screen_active(), TR("Re Gelatino", "Slime King")));
+        crypt_win();
+        press(TR("Continua", "Continue"));
+        press(TR("Città", "Town"));
+        assert(R.screen == R_TOWN && rpg_dungeon_checkpoint(&R.g, 0));
+        press("Ok");
+        wf_app_start(saved, saved_len);
+        assert(!R.g.run.active && R.g.best_floor[0] == 5);
+        R.zone = 0;
+        r_go(R_ZONE);
+        press(TR("Dal piano 6", "From floor 6"));
+        assert(R.screen == R_DUNGEON && R.g.run.floor == 6 && R.g.run.row == -1);
+        crypt_shot("checkpoint");
+
+        R.g.auto_battle = 0;
+        R.g.hero.level = 18;
+        rpg_stats_get(&R.g, &stats);
+        R.g.hero.hp = stats.max_hp;
+        R.g.hero.sp = stats.max_sp;
+        crypt_boss_route(10);
+        crypt_shot("soglia");
+        press("Boss");
+        run(1300);
+        assert(find(lv_screen_active(), TR("Re delle Ossa", "Bone King")));
+        controls_clear();
+        crypt_shot("re-delle-ossa");
+        crypt_win();
+        loot = R.g.gold;
+        wf_app_start(saved, saved_len);
+        assert(R.screen == R_TOWN && R.g.zone_unlocked == 1 && R.g.best_floor[0] == 10);
+        assert(!R.g.run.active && R.g.gold == loot && !R.g.classic.active);
+        assert(find(lv_layer_top(), TR("Dungeon completato!", "Dungeon cleared!")));
+        wf_app_start(saved, saved_len);
+        assert(R.g.gold == loot && R.g.zone_unlocked == 1);
+        R.zone = 0;
+        r_go(R_ZONE);
+        press(TR("Cripta dei Lumi", "Lantern Crypt"));
+        scrolls = R.g.cons[CO_RETURN];
+        press(TR("Esci", "Exit"));
+        press(TR("Esci", "Leave"));
+        assert(R.screen == R_TOWN && !R.g.run.active && R.g.cons[CO_RETURN] == scrolls - 1);
+        wf_app_start(saved, saved_len);
+        assert(!R.g.run.active && R.g.cons[CO_RETURN] == scrolls - 1);
+    }
+    wf_lang = 0;
+    puts("Crypt: IT/EN touch entrance/locked rooms, mimic retry, exact-once loot, boss checkpoint after leaving, and floor 10 unlock passed");
+}
+
 int main(int argc,char **argv) {
     assert(argc==2);dest=argv[1];setvbuf(stdout,NULL,_IOLBF,0);
     lv_init();lv_tick_set_cb(tick);lv_display_t *display=lv_display_create(WF_RES,WF_RES);
@@ -466,6 +656,7 @@ int main(int argc,char **argv) {
     class_mapping();
     character_flow();
     lumen_flow();
+    crypt_flow();
     printf("battle footer:%u actual opaque glyph pixels inside circle and below avatar; level99 all master rig stress passed\n",footer_ink_pixels);
     printf("hero rig native:%d screenshots,actual creation-adjacent classic views,formations,save/wake,full/incremental render and control separation passed;peak%zu image bytes\n",shots,peak_image_bytes);
     return 0;

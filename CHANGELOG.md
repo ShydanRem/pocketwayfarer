@@ -1,5 +1,13 @@
 # Note di versione
 
+## 0.8.0-preview.3 — 19 novembre 2026
+
+- Nuovo fondale per la Cripta dei Lumi e nuove illustrazioni per Mimic e Re delle Ossa.
+- La mappa della Cripta evidenzia le stanze raggiungibili e distingue posizione attuale, stanze visitate e stanze ignote. I comandi **Esci** e **Scorte** hanno etichette e aree di tocco dedicate.
+- Tornare al borgo dopo aver battuto il Re Gelatino al piano 5 registra il completamento e apre l’ingresso al piano 6.
+- L’oro dei combattimenti entra nel totale della discesa mostrato sulla mappa e nel calcolo della perdita in caso di sconfitta.
+- Aggiornati guida e roadmap per i prossimi lotti di ambienti, interfaccia e progressione.
+
 ## 0.8.0-preview.2 — 19 novembre 2026
 
 - Ridisegnati il borgo del Classico e i Prati di Lumen. La radura dei combattimenti tiene i dettagli ai margini e lascia spazio alle sagome.

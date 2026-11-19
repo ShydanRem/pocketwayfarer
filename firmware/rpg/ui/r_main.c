@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "rui.h"
+#include "art/crypt_art.h"
 #include "art/lumen_art.h"
 
 rpg_ui_state R;
@@ -13,6 +14,7 @@ const wf_sprite *ri(int id) { return &rpg_ui_icons[id]; }
 
 lv_obj_t *r_scene(int scene) {
     if (scene == RS_FIELD_MEADOW) return kit_screen(&classic_lumen_meadow);
+    if (scene == RS_DUNGEON_CRYPT) return kit_screen(&classic_crypt);
     lv_obj_t *s = kit_screen(&rpg_scenes[scene]);
     const rpg_scene_fx *f = &rpg_scene_fxs[scene];
     fx_scene(s, f->lights, f->nlights, f->particles, f->color, 16);
