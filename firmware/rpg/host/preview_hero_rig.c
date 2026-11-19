@@ -637,28 +637,31 @@ static void crypt_flow(void) {
     puts("Crypt: IT/EN touch entrance/locked rooms, mimic retry, exact-once loot, boss checkpoint after leaving, and floor 10 unlock passed");
 }
 
-static void shore_shot(const char *stage) {
+static void expedition_shot(const char *region, const char *stage) {
     char name[80];
-    snprintf(name, sizeof name, "shore-%s-%s", stage, wf_lang ? "en" : "it");
+    snprintf(name, sizeof name, "%s-%s-%s", region, stage, wf_lang ? "en" : "it");
     shot(name);
 }
 
-static void shore_map(void) {
+static void map_zone(int zone) {
     r_go(R_MAP);
     run(120);
-    click(rpg_world_spots[1][0], rpg_world_spots[1][1]);
+    click(rpg_world_spots[zone][0], rpg_world_spots[zone][1]);
 }
 
 /* Pick deterministic encounters through the real generator, without
  * bypassing the field button, stamina cost or monster targeting. */
-static void shore_fight(unsigned mask, int total, rpg_foe *foes) {
+static void field_fixture(unsigned mask, int total, rpg_foe *foes) {
+    const rpg_zone_info *z = rpg_zone(R.zone);
     for (uint32_t seed = 1; seed <= 10000; seed++) {
         rpg_game sim = R.g;
         sim.rng_state = seed;
         int count;
-        assert(rpg_field_encounter(&sim, 1, foes, &count) == RPG_OK);
+        assert(rpg_field_encounter(&sim, R.zone, foes, &count) == RPG_OK);
         unsigned species = 0;
-        for (int i = 0; i < count; i++) species |= 1u << (foes[i].species - SP_CRAB);
+        for (int i = 0; i < count; i++)
+            for (int j = 0; j < 4; j++)
+                if (foes[i].species == z->field_foes[j]) species |= 1u << j;
         if (species != mask || count != total) continue;
         R.g.rng_state = seed;
         int stamina = R.g.hero.stamina;
@@ -669,39 +672,46 @@ static void shore_fight(unsigned mask, int total, rpg_foe *foes) {
         controls_clear();
         return;
     }
-    assert(!"No coastal encounter found");
+    assert(!"No matching field encounter found");
 }
 
-static void shore_flow(void) {
-    assert(R.g.zone_unlocked == 1 && R.g.best_floor[0] == RPG_FLOORS && !R.g.run.active);
+typedef struct {
+    const char *region, *landing, *single, *dungeon, *pair, *mid, *final;
+    int first_species, second_species;
+    bool trap;
+} expedition_example;
+
+static void expedition_flow(int zone, const expedition_example *example) {
+    const rpg_zone_info *z = rpg_zone(zone);
+    assert(R.g.zone_unlocked == zone && R.g.best_floor[zone - 1] == RPG_FLOORS && !R.g.run.active);
     rpg_game unlocked = R.g;
     for (int lang = 0; lang < 2; lang++) {
         R.g = unlocked;
         R.g.lang = wf_lang = (uint8_t)lang;
-        R.g.zone_unlocked = 0;
-        shore_map();
+        R.g.zone_unlocked = (uint8_t)(zone - 1);
+        map_zone(zone);
         assert(R.screen == R_MAP);
         R.g.zone_unlocked = unlocked.zone_unlocked;
         R.g.auto_battle = 0;
-        R.g.hero.level = 32;
+        R.g.hero.level = (uint8_t)(z->max_level + 12);
         rpg_stats stats;
         rpg_stats_get(&R.g, &stats);
         R.g.hero.hp = stats.max_hp;
         R.g.hero.sp = stats.max_sp;
-        shore_map();
-        assert(R.screen == R_ZONE && R.zone == 1);
-        assert(find(lv_screen_active(), TR("Riva di Vetro", "Glass Shore")));
-        shore_shot("riva");
+        map_zone(zone);
+        assert(R.screen == R_ZONE && R.zone == zone);
+        assert(find(lv_screen_active(), TX(z->field_name)));
+        expedition_shot(example->region, example->landing);
 
         rpg_foe foes[RPG_MAX_FOES];
-        shore_fight(0x07, 3, foes);
+        field_fixture(0x07, 3, foes);
         const int points[3][2] = {{78, 190}, {233, 169}, {388, 190}};
         for (int i = 2; i >= 0; i--) {
             click(points[i][0], points[i][1]);
             assert(rpg_battle_target_now() == i);
             assert(find(lv_screen_active(), TX(rpg_species(foes[i].species)->name)));
         }
-        shore_shot("trio");
+        expedition_shot(example->region, "trio");
         press(TR("Attacco", "Attack"));
         assert(rpg_battle_phase() == 3);
         for (int t = 0; t < 500 && rpg_battle_ring_quality_now() < 2; t++) run(5);
@@ -713,17 +723,17 @@ static void shore_flow(void) {
         press(TR("Continua", "Continue"));
         assert(R.screen == R_ZONE);
         R.g.auto_battle = 0;
-        shore_fight(0x08, 1, foes);
-        shore_shot("pirata");
+        field_fixture(0x08, 1, foes);
+        expedition_shot(example->region, example->single);
         auto_win();
         press(TR("Continua", "Continue"));
         assert(R.screen == R_ZONE);
 
         R.g.auto_battle = 0;
-        press(TR("Tempio Sommerso", "Sunken Temple"));
-        assert(R.screen == R_DUNGEON && R.g.run.zone == 1 && R.g.run.floor == 1);
-        assert(find(lv_screen_active(), TR("Tempio Sommerso", "Sunken Temple")));
-        shore_shot("tempio");
+        press(TX(z->dungeon_name));
+        assert(R.screen == R_DUNGEON && R.g.run.zone == zone && R.g.run.floor == 1);
+        assert(find(lv_screen_active(), TX(z->dungeon_name)));
+        expedition_shot(example->region, example->dungeon);
         int col = 0;
         while (col < RPG_COLS && !rpg_room_reachable(&R.g.run, 0, col)) col++;
         assert(col < RPG_COLS);
@@ -734,8 +744,9 @@ static void shore_flow(void) {
             sim.rng_state = seed;
             int count;
             assert(rpg_room_enter(&sim, 0, col, foes, &count) == ROOM_FIGHT);
-            if (count == 2 && ((foes[0].species == SP_SERPENT && foes[1].species == SP_DEEP_GHOST) ||
-                               (foes[1].species == SP_SERPENT && foes[0].species == SP_DEEP_GHOST))) break;
+            if (count == 2 &&
+                ((foes[0].species == example->first_species && foes[1].species == example->second_species) ||
+                 (foes[1].species == example->first_species && foes[0].species == example->second_species))) break;
         }
         assert(seed <= 10000);
         R.g.rng_state = seed;
@@ -746,26 +757,44 @@ static void shore_flow(void) {
         run(1300);
         assert(find(lv_screen_active(), TX(rpg_species(foes[0].species)->name)));
         controls_clear();
-        shore_shot("serpe-e-annegato");
+        expedition_shot(example->region, example->pair);
         auto_win();
         press(TR("Continua", "Continue"));
         assert(R.screen == R_DUNGEON && (R.g.run.cleared[0] & (1u << col)));
+        if (example->trap) {
+            int trap = 0;
+            while (trap < RPG_COLS && !rpg_room_reachable(&R.g.run, 1, trap)) trap++;
+            assert(trap < RPG_COLS);
+            R.g.run.rooms[1][trap] = ROOM_TRAP;
+            r_go(R_DUNGEON);
+            assert(find(lv_screen_active(), TR("Trappola", "Trap")));
+            expedition_shot(example->region, "bivio");
+            click(131 + 102 * trap, 282);
+            assert(R.g.run.row == 1 && find(lv_layer_top(), TR("Trappola!", "Trap!")));
+            press(TR("Avanti", "Onward"));
+            /* The Wood fixture must clear the healing boss reliably.
+             * Keep encounter balance to the separately leveled core runs. */
+            R.g.hero.equip[SLOT_WEAPON] = (rpg_item){
+                .type = IT_SWORD, .tier = RPG_TIERS - 1, .rarity = RAR_LEGENDARY, .plus = 10, .level = 40,
+                .aff = {AF_ATK_PCT}, .aff_val = {50},
+            };
+        }
 
         R.g.auto_battle = 0;
         stage_boss_floor(5);
         press("Boss");
         run(1300);
-        assert(find(lv_screen_active(), TR("Granchio corazzato", "Armoured Crab")));
+        assert(find(lv_screen_active(), TX(rpg_species(z->mid_boss)->name)));
         controls_clear();
-        shore_shot("granchio-corazzato");
+        expedition_shot(example->region, example->mid);
         auto_win();
         press(TR("Continua", "Continue"));
         press(TR("Città", "Town"));
-        assert(R.screen == R_TOWN && rpg_dungeon_checkpoint(&R.g, 1));
+        assert(R.screen == R_TOWN && rpg_dungeon_checkpoint(&R.g, zone));
         press("Ok");
-        shore_map();
+        map_zone(zone);
         press(TR("Dal piano 6", "From floor 6"));
-        assert(R.screen == R_DUNGEON && R.g.run.zone == 1 && R.g.run.floor == 6);
+        assert(R.screen == R_DUNGEON && R.g.run.zone == zone && R.g.run.floor == 6);
         R.g.auto_battle = 0;
         /* Navigation/recovery fixture. Balance is checked separately using
          * leveled heroes in the core dungeon simulations. */
@@ -778,24 +807,24 @@ static void shore_flow(void) {
         stage_boss_floor(10);
         press("Boss");
         run(1300);
-        assert(find(lv_screen_active(), TR("Leviatano", "Leviathan")));
+        assert(find(lv_screen_active(), TX(rpg_species(z->final_boss)->name)));
         controls_clear();
-        shore_shot("leviatano");
+        expedition_shot(example->region, example->final);
         auto_win();
         uint32_t gold = R.g.gold;
         wf_app_start(saved, saved_len);
-        assert(R.screen == R_TOWN && R.g.zone_unlocked == 2 && R.g.best_floor[1] == 10);
+        int next = zone + 1;
+        assert(R.screen == R_TOWN && R.g.zone_unlocked == next && R.g.best_floor[zone] == RPG_FLOORS);
         assert(!R.g.run.active && R.g.gold == gold && !R.g.classic.active);
         assert(find(lv_layer_top(), TR("Dungeon completato!", "Dungeon cleared!")));
         press("Ok");
-        r_go(R_MAP);
-        run(120);
-        click(rpg_world_spots[2][0], rpg_world_spots[2][1]);
-        assert(R.screen == R_ZONE && R.zone == 2);
-        assert(find(lv_screen_active(), TR("Bosco Sussurrante", "Whispering Wood")));
+        map_zone(next);
+        assert(R.screen == R_ZONE && R.zone == next);
+        assert(find(lv_screen_active(), TX(rpg_zone(next)->field_name)));
     }
     wf_lang = 0;
-    puts("Shore: IT/EN map gating, eight coastal species, trio targeting, touch/BOOT attack, both bosses, checkpoint and Wood unlock passed");
+    printf("%s: IT/EN eight species, targeting, touch/BOOT attack, two bosses, checkpoint and zone %d unlock passed\n",
+           example->region, zone + 1);
 }
 
 int main(int argc,char **argv) {
@@ -818,7 +847,16 @@ int main(int argc,char **argv) {
     character_flow();
     lumen_flow();
     crypt_flow();
-    shore_flow();
+    const expedition_example shore = {
+        "shore", "riva", "pirata", "tempio", "serpe-e-annegato", "granchio-corazzato", "leviatano",
+        SP_SERPENT, SP_DEEP_GHOST, false,
+    };
+    const expedition_example wood = {
+        "wood", "bosco", "ragno", "radici", "fungo-e-fata", "antico-ceppo", "regina-ragno",
+        SP_TOXIC_SHROOM, SP_DARK_FAIRY, true,
+    };
+    expedition_flow(1, &shore);
+    expedition_flow(2, &wood);
     printf("battle footer:%u actual opaque glyph pixels inside circle and below avatar; level99 all master rig stress passed\n",footer_ink_pixels);
     printf("hero rig native:%d screenshots,actual creation-adjacent classic views,formations,save/wake,full/incremental render and control separation passed;peak%zu image bytes\n",shots,peak_image_bytes);
     return 0;

@@ -1,5 +1,12 @@
 # Note di versione
 
+## 0.8.0-preview.5 — 19 novembre 2026
+
+- Ridisegnati Bosco Sussurrante e Radici Antiche. Radura chiara sotto la chioma e pavimento uniforme per far risaltare le sagome.
+- Integrate otto specie del Bosco, portando il Classico a 26 mostri ridisegnati su 42.
+- Estesi alla terza regione gli intenti e i bersagli del combattimento e la mappa con il prossimo percorso evidenziato.
+- Aggiunte prove bilingui per trappola, due boss, checkpoint, salvataggio e passaggio dal Bosco alle Caverne di Brace.
+
 ## 0.8.0-preview.4 — 19 novembre 2026
 
 - Ridisegnati Riva di Vetro e Tempio Sommerso, con otto nuove illustrazioni per le specie costiere.

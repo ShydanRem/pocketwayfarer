@@ -56,7 +56,7 @@ dal tempo della fase e non introducono timer di regole separati.
 | App | partizione `factory` da 6 MB |
 | Salvataggio | partizione NVS `wf_nvs` (256 KB), un blob versionato con CRC32 (2808 byte per l’RPG v4, header incluso), scritto in modo atomico da NVS |
 | Grafica | sprite indicizzati 8 bit in flash, espansi in PSRAM (RGB565 + alfa) e liberati al cambio schermata. HD-2D: fondali 466×466 a 1×, attori 88×88 a 1×/2×; nel classico l'eroe resta composto da livelli ritagliati |
-| Binario | RPG con Lanternbound, quaranta avatar modulari e ambienti del Classico fino al Tempio Sommerso. Circa 4,57 MiB con 24% libero nella partizione da 6 MiB. Il compagno è una build alternativa. [Dimensione e hash](roadmap/shore-evidence/firmware.json) |
+| Binario | RPG con Lanternbound, quaranta avatar modulari e ambienti del Classico fino alle Radici Antiche. Circa 4,69 MiB con 22% libero nella partizione da 6 MiB. Il compagno è una build alternativa. [Dimensione e hash](roadmap/wood-evidence/firmware.json) |
 | Rendering | LVGL a buffer parziale (466×48 righe, DMA interna), lettura touch ogni 10 ms per i minigiochi di timing |
 
 ## Tempo

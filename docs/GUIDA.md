@@ -143,3 +143,11 @@ In basso **Scorte** apre pozioni ed eteri. **Esci** chiede se usare una pergamen
 Superata la Cripta dei Lumi, tocca **Riva di Vetro** sul lato sinistro della mappa del mondo. Gli incontri all’aperto coprono i livelli **10–20**. Da qui puoi aprire anche il **Tempio Sommerso**. Scegli le stanze dal basso verso l’alto seguendo i collegamenti dorati.
 
 Al piano 5 il **Granchio corazzato** apre il checkpoint del piano 6. Al piano 10 il **Leviatano** chiude la discesa e sblocca il **Bosco Sussurrante**.
+
+## Nel Bosco Sussurrante
+
+![Bosco, combattimento a tre e Regina Ragno](img/hero_rig/bosco-classico.png)
+
+Dopo il Tempio Sommerso il **Bosco Sussurrante** compare nella parte alta a sinistra della mappa. Gli incontri all’aperto coprono i livelli **20–32**. Da qui puoi entrare nelle **Radici Antiche**. Le etichette delle stanze raggiungibili indicano il tipo di incontro e permettono di riconoscere una trappola dall’icona e dal nome prima di scegliere.
+
+L’**Antico Ceppo** al piano 5 apre il checkpoint del piano 6. La **Regina Ragno** al piano 10 sblocca le **Caverne di Brace**.
