@@ -43,6 +43,13 @@ if shots:
                 overview.alpha_composite(Image.open(p).convert('RGBA'),((i%4)*490+12,(i//4)*490+12))
             overview.save(dst/f'otto-avatar-{name}.png')
             overview.convert('LA').convert('RGBA').save(dst/('otto-avatar-grigio.png' if name=='base' else f'otto-avatar-{name}-grigio.png'))
+        samples = ['classe', 'statistiche', 'equipaggiamento']
+        interface = [next(iter(dst.glob(f'*-interfaccia-{part}-it.png')), None) for part in samples]
+        if all(interface):
+            triptych = Image.new('RGBA', (1470, 490), (16, 24, 32, 255))
+            for index, path in enumerate(interface):
+                triptych.alpha_composite(Image.open(path).convert('RGBA'), (index * 490 + 12, 12))
+            triptych.save(dst / 'interfaccia-classico.png')
     if dst.name == 'classes':
         base = sorted(p for p in dst.glob('*-classe-??.png') if int(p.stem[-2:]) < 8)
         if len(base) == 8:

@@ -25,6 +25,7 @@ SCREENS = {
 }
 CLASS_SCREENS = {'classi': 'otto-classi-base', 'arciere': '03-classe-02', 'classi-avanzate-a':'otto-classi-avanzate-a', 'classi-avanzate-b':'otto-classi-avanzate-b', 'classi-maestre-a':'otto-classi-maestre-a', 'classi-maestre-b':'otto-classi-maestre-b'}
 RIG_SCREENS = {'avatar-base': 'otto-avatar-base', 'avatar-avanzate-a':'otto-avatar-avanzate-a', 'avatar-avanzate-b':'otto-avatar-avanzate-b', 'avatar-maestre-a':'otto-avatar-maestre-a', 'avatar-maestre-b':'otto-avatar-maestre-b'}
+RIG_SCREENS['interfaccia-classico'] = 'interfaccia-classico'
 
 
 def manual_html():
@@ -41,6 +42,8 @@ def manual_html():
             rendered = rendered.replace('src="img/lantern/' + original + '"', 'src="assets/screens/' + alias + '" loading="lazy"')
         for alias,original in CLASS_SCREENS.items():
             rendered = rendered.replace('src="img/classes/'+original+'.png"', 'src="assets/screens/'+alias+'.png" loading="lazy"')
+        for alias, original in RIG_SCREENS.items():
+            rendered = rendered.replace('src="img/hero_rig/'+original+'.png"', 'src="assets/screens/'+alias+'.png" loading="lazy"')
         for original, alias in aliases.items():
             rendered = re.sub(r'href="' + re.escape(original) + r'(?:#[^"]*)?"', 'href="' + alias + '"', rendered)
         rendered = rendered.replace('id="installazione-manuale"', 'id="manuale"').replace('id="la-porta-usb-non-compare"', 'id="connessione"')
@@ -49,7 +52,7 @@ def manual_html():
         def image_figure(match):
             tag = match[1]
             alt = re.search(r'alt="([^"]*)"', tag)[1]
-            wide = any(name in tag for name in ['panoramica.png', 'guida-e-risonanza.png', 'assetti-e-guardiano.png'])
+            wide = any(name in tag for name in ['panoramica.png', 'guida-e-risonanza.png', 'assetti-e-guardiano.png', 'interfaccia-classico.png'])
             return '<figure' + (' class="wide"' if wide else '') + '>' + tag + '<figcaption>' + alt + '</figcaption></figure>'
         rendered = re.sub(r'<p>(<img [^>]+>)</p>', image_figure, rendered)
         sections.append(f'<section id="{anchor}">{rendered}</section>')
@@ -78,6 +81,7 @@ def roadmap_html():
     body=body.replace('src="img/classes/otto-classi-maestre-a.png"','src="assets/screens/classi-maestre-a.png" loading="lazy"')
     body=body.replace('src="img/hero_rig/otto-avatar-maestre-b.png"','src="assets/screens/avatar-maestre-b.png" loading="lazy"')
     body=body.replace('src="img/classes/otto-classi-maestre-b.png"','src="assets/screens/classi-maestre-b.png" loading="lazy"')
+    body=body.replace('src="img/hero_rig/interfaccia-classico.png"','src="assets/screens/interfaccia-classico.png" loading="lazy"')
     return body.replace('<table>','<div class="table-wrap"><table>').replace('</table>','</table></div>')
 
 

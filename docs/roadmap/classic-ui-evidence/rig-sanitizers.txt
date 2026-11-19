@@ -1,0 +1,7 @@
+master stats:64 IT/EN level45/99 text columns, four unwrapped lines inside circle and separate from avatar canvas passed
+real avatar widget:1000 cosmetic/pose swaps retain one buffer; scene deletes all avatar bytes; persistent FX baseline79794: passed
+avatar allocation failure: initial retry keeps intended hero; live failure retains matching image/key: passed
+40 exact class IDs, all modular costumes, size presets and save v4 roundtrips passed
+character flow: IT/EN creation, stat and skill point spending, match touch/BOOT back routes, remove and equip via bag, v4 saves passed
+battle footer:221164 actual opaque glyph pixels inside circle and below avatar; level99 all master rig stress passed
+hero rig native:791 screenshots,actual creation-adjacent classic views,formations,save/wake,full/incremental render and control separation passed;peak797306 image bytes

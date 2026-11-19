@@ -1,6 +1,6 @@
 # Registro di avanzamento
 
-Aggiornamento: 19 novembre 2026. Consegna corrente `0.7.0-preview.2`.
+Aggiornamento: 19 novembre 2026. Consegna corrente `0.8.0-preview.1`.
 
 ## Consegna R1 — atlante delle classi, 0.4.1-preview.1
 
@@ -68,11 +68,14 @@ La preview `0.7.0-preview.2` completa Templare (32), Ierofante (33), Gran Maestr
 
 La revisione delle pose ha individuato e corretto strappi nelle vesti di Ierofante, Asceso, Signore della Morte ed Evocavuoto. I test coprono 307.200 combinazioni estetiche, 1.600 confronti sotto lo stesso elmo, 64 casi di Statistiche a livello 45 e 99 e 1.003 catture native. [Prove R4.2](master-b-evidence/README.md).
 
-## Prossimo lotto R5 — mondo e interfaccia del Classico
+## Consegna R5.1 — interfaccia del personaggio
 
-1. Rilevare le incoerenze di creazione, scheda eroe, classi e equipaggiamento con catture a 466×466. Consolidare font, pannelli, comandi e ritorno in italiano e inglese.
-2. Applicare il linguaggio visivo al borgo e alle regioni classiche, partendo da una scena completa con interfaccia e combattimento. Tenere libera la zona degli attori e verificare leggibilità, piedi e bersagli.
-3. Inventariare le 42 specie classiche. Rinnovarle per piccoli lotti e verificare gruppi fino a tre, boss ed élite nel renderer con l’interfaccia reale.
-4. Estendere lo stesso trattamento a zaino, bottega, forgia, missioni, mappa e dungeon, con verifiche di memoria e raggiungibilità dei comandi sul cerchio.
+La preview `0.8.0-preview.1` porta l’archivio nel Classico. Creazione con indicatore delle otto tappe, scheda eroe leggibile con i nomi lunghi, abilità con gradi separati, carte di promozione e atlante nella stessa palette. Equipaggiamento con nomi degli slot sempre visibili e dettagli coerenti. I due flussi IT/EN attraversano creazione, spesa punti e rimozione/ripristino oggetto fino alla rilettura del salvataggio. [Prove R5.1](classic-ui-evidence/README.md)
+
+## Prossimo lotto R5.2 — borgo e prima regione
+
+1. Scegliere un percorso completo da borgo a campo e combattimento. Ridisegnare il fondale intorno alle posizioni di attori e comandi.
+2. Portare sul nuovo fondale un primo gruppo di specie classiche. Verificare sagome, intenti, bersagli, vitali e input nel cerchio per gruppi fino a tre.
+3. Estendere il trattamento alle regioni successive e ai dungeon. Zaino, bottega, forgia, missioni e mappa seguono il percorso di navigazione del Classico.
 
 R6 rifinisce varietà e progressione dopo una prima parte giocabile di R5. R7 comprende animazioni articolate e audio. Il collaudo fisico resta aperto e necessario per la stabile.

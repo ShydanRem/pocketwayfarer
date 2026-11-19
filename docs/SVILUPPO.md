@@ -52,14 +52,15 @@ Per rigenerare intenzionalmente i dati HD-2D:
 ```sh
 python3 scripts/build_lantern_art.py
 python3 scripts/build_lantern_art.py --check
+python3 scripts/build_classic_ui_art.py --check
 python3 scripts/build_hero_rig.py --check
 ```
 
 Il rig aggiunge `test_hero_rig --full` (307.200 combinazioni estetiche),
-`test_hero_cache` e `preview_hero_rig` (765 catture) e `preview_promotions` (160 catture). La suite li esegue
+`test_hero_cache` e `preview_hero_rig` (791 catture) e `preview_promotions` (160 catture). La suite li esegue
 automaticamente; dettagli e configurazione sanitizer nelle
 [prove R4.2](roadmap/master-b-evidence/README.md). La promozione include 32 percorsi touch completi base → avanzata → maestra, soglie 45/40 e otto abilità ereditate. Le scene Studio del rig sono
-strumenti di verifica del renderer, non nuove schermate giocabili.
+strumenti di verifica del renderer. Il percorso R5.1 simula anche la creazione del profilo, l’assegnazione di punti e la rimozione e il ripristino di un oggetto nelle due lingue. [Prove R5.1](roadmap/classic-ui-evidence/README.md)
 
 Mantieni insieme sorgenti, prompt, licenze e manifest. Non sovrascrivere gli originali per correggere un difetto dell’importatore.
 

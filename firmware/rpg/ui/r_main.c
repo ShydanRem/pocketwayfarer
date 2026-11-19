@@ -114,6 +114,8 @@ static void random_name(void) {
     snprintf(draft.name, sizeof draft.name, "%s%s", a[r % 20], b[(r >> 8) % 12]);
 }
 
+static lv_obj_t *c_progress;
+
 static void create_refresh(void) {
     static const wf_text steps[CS_COUNT] = {{"Razza", "Race"}, {"Carnagione", "Skin"}, {"Capelli", "Hair"},
                                             {"Colore capelli", "Hair colour"}, {"Occhi", "Eyes"},
@@ -122,8 +124,9 @@ static void create_refresh(void) {
                                     {"Coda", "Ponytail"}, {"Caschetto", "Bob"}, {"Trecce", "Braids"}};
     static const wf_text eyes[4] = {{"Nocciola", "Hazel"}, {"Azzurri", "Blue"}, {"Verdi", "Green"}, {"Viola", "Violet"}};
     char buf[96];
-    snprintf(buf, sizeof buf, "%d/%d  %s", cstep + 1, CS_COUNT, TX(steps[cstep]));
+    snprintf(buf, sizeof buf, "%s  ·  %d/%d", TX(steps[cstep]), cstep + 1, CS_COUNT);
     lv_label_set_text(c_title, buf);
+    lv_bar_set_value(c_progress, cstep + 1, LV_ANIM_OFF);
     const char *blurb = "";
     switch (cstep) {
     case CS_RACE: lv_label_set_text(c_value, TX(rpg_race(draft.race)->name)); blurb = TX(rpg_race(draft.race)->blurb); break;
@@ -174,8 +177,8 @@ static void on_step(lv_event_t *e) {
                  TR("Benvenuto a Borgo Lanterna, %s! Esplora i campi, scendi nei dungeon e diventa leggenda.",
                     "Welcome to Lantern Hollow, %s! Roam the fields, delve into dungeons and become a legend."),
                  R.g.hero.name);
-        dlg = kit_dialog(TX(rpg_class(R.g.hero.cls)->name), body, ri(RI_CROWN));
-        kit_dialog_button(dlg, TR("Andiamo!", "Let's go!"), COL_BTN_OK, close_dlg, 0);
+        dlg = r_character_dialog(TX(rpg_class(R.g.hero.cls)->name), body, ri(RI_CROWN));
+        r_character_button_style(kit_dialog_button(dlg, TR("Andiamo!", "Let's go!"), COL_BTN_OK, close_dlg, 0), true);
         return;
     }
     cstep += d;
@@ -183,27 +186,28 @@ static void on_step(lv_event_t *e) {
 }
 
 void scr_create(void) {
-    lv_obj_t *s = r_scene(RS_TOWN);
-    kit_dim(s, 120);
+    lv_obj_t *s = r_character_screen();
     if (!draft.name[0]) {
         random_name();
         draft.skin = 1;
         draft.hair_color = (uint8_t)(wf_platform_random() % 8);
     }
     cstep = 0;
-    c_title = kit_label(s, &wf_font_small, COL_GOLD, "", CX, 58);
+    c_title = kit_label(s, &ln_font_title, RC_GOLD, "", CX, 54);
+    c_progress = kit_bar(s, CX, 79, 144, 6, RC_GOLD, 1, CS_COUNT);
     hero_look l;
     draft_look(&l);
-    c_hero = hero_obj(s, &l, HX_IDLE, 3, CX, 168);
-    kit_round_button(s, ri(RI_BACK), NULL, 92, 300, 56, COL_PANEL_HI, on_cycle, -1);
-    lv_obj_t *nx = kit_round_button(s, ri(RI_BACK), NULL, 374, 300, 56, COL_PANEL_HI, on_cycle, 1);
-    lv_image_set_rotation(lv_obj_get_child(nx, 0), 1800);
-    c_value = kit_label(s, &wf_font_big, COL_TEXT, "", CX, 286);
-    c_blurb = kit_label(s, &wf_font_small, COL_DIM, "", CX, 324);
-    lv_obj_set_width(c_blurb, 250);
+    fx_shadow(s, CX, 252, 80);
+    c_hero = hero_obj(s, &l, HX_IDLE, 3, CX, 172);
+    r_character_panel(s, CX, 311, 356, 110);
+    r_character_button(s, "<", 92, 300, 48, 48, false, on_cycle, -1);
+    r_character_button(s, ">", 374, 300, 48, 48, false, on_cycle, 1);
+    c_value = kit_label(s, &ln_font_title, RC_IVORY, "", CX, 285);
+    c_blurb = kit_label(s, &ln_font_body, RC_MUTED, "", CX, 330);
+    lv_obj_set_width(c_blurb, 222);
     lv_label_set_long_mode(c_blurb, LV_LABEL_LONG_WRAP);
-    kit_text_button(s, TR("Indietro", "Back"), CX - 72, 392, 128, 48, COL_PANEL_HI, on_step, -1);
-    c_next = kit_text_button(s, "", CX + 72, 392, 128, 48, COL_BTN_OK, on_step, 1);
+    r_character_button(s, TR("Indietro", "Back"), CX - 68, 394, 120, 48, false, on_step, -1);
+    c_next = r_character_button(s, "", CX + 68, 394, 120, 48, true, on_step, 1);
     c_blink = lv_tick_get() + 2000;
     create_refresh();
 }
@@ -467,6 +471,7 @@ bool wf_app_key(int key) {
         if (!R.loaded) return false;
         if (R.screen == R_DUNGEON || R.screen == R_BATTLE || R.screen == R_TOWN) return true;
         if (R.screen == R_SKILLS || R.screen == R_CLASS) r_go(R_HERO);
+        else if (R.screen == R_HERO || R.screen == R_EQUIP) r_go(R_TOWN_CLASSIC);
         else if (R.screen == R_BAG) r_go(R_EQUIP);
         else if (R.screen == R_ZONE) r_go(R_MAP);
         else if (R.screen == R_SHOP && R.shop_in_dungeon) r_go(R_DUNGEON);

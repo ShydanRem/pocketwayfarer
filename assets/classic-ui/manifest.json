@@ -1,0 +1,15 @@
+{
+  "source": "source/archive.png",
+  "generator": "OpenAI ImageGen",
+  "sha256": "1b6a89edd498b42edb62ea1da7f30f3fad1d7547616c32e2e9f818988eeabdde",
+  "prompt_sha256": "dbb7e044ffff45e5f75dc146bb6926573af52a085d9520f1497a676bd8e7cfbf",
+  "source_size": [
+    1254,
+    1254
+  ],
+  "runtime_size": [
+    466,
+    466
+  ],
+  "import": "Nearest-neighbor, 240 colors without dithering, indexed RGB565"
+}

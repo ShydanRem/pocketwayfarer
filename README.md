@@ -10,7 +10,7 @@ Un RPG fantasy HD-2D per **Waveshare ESP32-S3-Touch-AMOLED-1.75**, con schermo r
 
 **[Roadmap operativa](docs/ROADMAP.md)** · [Stato del lotto attivo](docs/roadmap/STATUS.md) · [Direzione artistica delle 40 classi](docs/CLASS-ART-BIBLE.md)
 
-> **0.7.0-preview.2** — Completata la grafica delle 40 classi classiche. Tutte hanno avatar modulare, copricapo di classe e illustrazione dedicata. Il prossimo blocco è il redesign di mondo e interfaccia. [Roadmap](docs/ROADMAP.md) · [Prove R4.2](docs/roadmap/master-b-evidence/README.md). Collaudo fisico ancora aperto.
+> **0.8.0-preview.1** — Nuova interfaccia del personaggio nel Classico. Creazione, scheda eroe, abilità, classi ed equipaggiamento condividono il trattamento dell’archivio. [Prove R5.1](docs/roadmap/classic-ui-evidence/README.md) · [Roadmap](docs/ROADMAP.md)
 
 ## Sul Pocket, in pochi passaggi
 
@@ -116,3 +116,5 @@ R4.2 completa Templare, Ierofante, Gran Maestro, Asceso, Forgiarune, Trasmutator
 ![Ultime otto maestre nel renderer nativo](docs/img/hero_rig/otto-avatar-maestre-b.png)
 
 Verificate 307.200 combinazioni estetiche e 1.600 confronti dei rami con lo stesso elmo. I 32 percorsi di promozione in italiano e inglese coprono tutte le maestre e verificano abilità ereditate e salvataggi. [Prove R4.2](docs/roadmap/master-b-evidence/README.md).
+
+![Creazione, Statistiche ed Equipaggiamento nel Classico](docs/img/hero_rig/interfaccia-classico.png)

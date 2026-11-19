@@ -102,6 +102,14 @@ Le frecce scorrono le schede; **Percorso** apre i cinque nodi della famiglia, se
 
 ## Il tuo personaggio nel Classico
 
+![Creazione, Statistiche ed Equipaggiamento nella nuova interfaccia del Classico](img/hero_rig/interfaccia-classico.png)
+
+In **Personalizza**, le frecce cambiano il valore della tappa corrente. **Avanti** passa alla successiva e **Indietro** torna alla precedente per rivedere la scelta. **Inizia!** salva il profilo.
+
+Dal borgo apri **… → Classico**. In **Eroe** puoi distribuire i punti dalle schede **Statistiche** e **Abilità** o consultare il prossimo grado in **Classe**. Tocca un ramo per leggerne le abilità e, quando hai raggiunto i requisiti, confermare la promozione. **Indietro** e BOOT riportano alla scheda Eroe e quindi al borgo del Classico.
+
+In **Equip** ogni slot mostra il proprio nome. Tocca un oggetto per vederne i dettagli o toglierlo. Il **+** su uno slot libero apre lo zaino, dove puoi scegliere un oggetto compatibile. Il bordo dell’icona indica la rarità.
+
 Tutte le 40 classi usano avatar modulari: scegli razza, carnagione, capelli, occhi e volto nella creazione. Arma, mano secondaria e testa mostrano gli oggetti equipaggiati; senza un oggetto alla testa appare il copricapo della classe. Torso, piedi e accessori influiscono sulle statistiche ma non hanno ancora livelli grafici separati.
 
 Un passaggio di classe conserva i tuoi dati estetici. L'illustrazione nell'atlante resta un rappresentante separato. Le pose del nuovo avatar sono preliminari; **Movimento ridotto** mantiene la posa di riposo.

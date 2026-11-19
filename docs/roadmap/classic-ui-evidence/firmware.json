@@ -1,0 +1,18 @@
+{
+  "date": "2026-11-19",
+  "milestone": "R5.1-classic-character-ui",
+  "app_version": "0.8.0-preview.1",
+  "target": "ESP32-S3",
+  "idf_version": "5.5.1",
+  "bytes": 3980752,
+  "sha256": "ae9f3ca930eb9d045bd29699850c49e59bbd6b63142dd3efdf6f22479e7e5c35",
+  "app_partition_bytes": 6291456,
+  "save_version": 4,
+  "save_bytes": 2808,
+  "physical_device_tested": false,
+  "character_flow_captures": 26,
+  "rig_captures": 791,
+  "atlas_captures": 78,
+  "promotions_captures": 160,
+  "peak_host_image_bytes": 797306
+}

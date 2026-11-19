@@ -224,7 +224,7 @@ static void master_stats(void) {
         assert(lv_obj_get_width(column)==260);
         /* Four complete unwrapped lines, with the entire text box in the circle. */
         int line=lv_obj_get_style_text_line_space(column,0);
-        assert(lv_obj_get_height(column)==4*wf_font_small.line_height+3*line);
+        assert(lv_obj_get_height(column)==4*lv_obj_get_style_text_font(column,0)->line_height+3*line);
         int corners[][2]={{text.x1,text.y1},{text.x2,text.y1},{text.x1,text.y2},{text.x2,text.y2}};
         for(unsigned i=0;i<4;i++){int x=corners[i][0]-CX,y=corners[i][1]-CY;assert(x*x+y*y<233*233);}
         controls_clear();checks++;
@@ -249,6 +249,87 @@ static void allocation_recovery(void) {
     kit_screen(NULL);
     puts("avatar allocation failure: initial retry keeps intended hero; live failure retains matching image/key: passed");
 }
+
+static void flow_shot(const char *part) {
+    char name[80];
+    snprintf(name, sizeof name, "interfaccia-%s-%s", part, wf_lang ? "en" : "it");
+    shot(name);
+}
+
+/* Navigate through public touch targets and verify the persisted outcomes. */
+static void character_flow(void) {
+    static const char *steps[] = {"razza", "pelle", "capelli", "colore", "occhi", "viso", "classe", "nome"};
+    for (int lang = 0; lang < 2; lang++) {
+        wf_app_start(NULL, 0);
+        wf_lang = (uint8_t)lang;
+        r_go(R_TITLE);
+        press(TR("Personalizza", "Customize"));
+        assert(R.screen == R_CREATE);
+        int initial_saves = saves;
+        for (int step = 0; step < 8; step++) {
+            press(">");
+            controls_clear();
+            flow_shot(steps[step]);
+            if (step == 6) {
+                press(TR("Indietro", "Back"));
+                press(TR("Avanti", "Next"));
+            }
+            assert(saves == initial_saves);
+            press(step == 7 ? TR("Inizia!", "Begin!") : TR("Avanti", "Next"));
+        }
+        assert(R.screen == R_TOWN && R.loaded && saves > initial_saves);
+        rpg_game decoded;
+        assert(rpg_save_decode(saved, saved_len, &decoded));
+        assert(decoded.lang == lang && !memcmp(&decoded.hero, &R.g.hero, sizeof decoded.hero));
+        press(TR("Andiamo!", "Let's go!"));
+        press("...");
+        press(TR("Classico", "Classic"));
+        assert(R.screen == R_TOWN_CLASSIC);
+        click(374, 196);
+        assert(R.screen == R_HERO);
+        int points = R.g.hero.stat_points;
+        int strength = R.g.hero.stat[ST_STR];
+        press("+");
+        assert(R.g.hero.stat_points < points && R.g.hero.stat[ST_STR] == strength + 1);
+        flow_shot("statistiche");
+        press(TR("Abilità", "Skills"));
+        assert(R.screen == R_SKILLS);
+        flow_shot("abilita");
+        points = R.g.hero.skill_points;
+        press("+");
+        assert(R.g.hero.skill_points == points - 1);
+        press(TR("Indietro", "Back"));
+        assert(R.screen == R_HERO);
+        press(TR("Classe", "Class"));
+        assert(R.screen == R_CLASS);
+        flow_shot("promozioni");
+        assert(wf_app_key(WF_KEY_BOOT_SHORT) && R.screen == R_HERO);
+        press(TR("Indietro", "Back"));
+        assert(R.screen == R_TOWN_CLASSIC);
+        click(92, 296);
+        assert(R.screen == R_EQUIP);
+        controls_clear();
+        flow_shot("equipaggiamento");
+        rpg_item weapon = R.g.hero.equip[SLOT_WEAPON];
+        click(96, 230);
+        flow_shot("dettaglio");
+        press(TR("Togli", "Remove"));
+        assert(R.screen == R_EQUIP && rpg_item_empty(&R.g.hero.equip[SLOT_WEAPON]));
+        click(96, 230);
+        assert(R.screen == R_BAG && rpg_bag_count(&R.g) == 1);
+        click(CX - 2, 157);
+        press(TR("Equipaggia", "Equip"));
+        assert(!memcmp(&R.g.hero.equip[SLOT_WEAPON], &weapon, sizeof weapon));
+        assert(wf_app_key(WF_KEY_BOOT_SHORT) && R.screen == R_EQUIP);
+        assert(wf_app_key(WF_KEY_BOOT_SHORT) && R.screen == R_TOWN_CLASSIC);
+        r_save_now();
+        assert(rpg_save_decode(saved, saved_len, &decoded));
+        assert(!memcmp(&decoded.hero, &R.g.hero, sizeof decoded.hero));
+    }
+    wf_lang = 0;
+    puts("character flow: IT/EN creation, stat and skill point spending, match touch/BOOT back routes, remove and equip via bag, v4 saves passed");
+}
+
 int main(int argc,char **argv) {
     assert(argc==2);dest=argv[1];setvbuf(stdout,NULL,_IOLBF,0);
     lv_init();lv_tick_set_cb(tick);lv_display_t *display=lv_display_create(WF_RES,WF_RES);
@@ -266,6 +347,7 @@ int main(int argc,char **argv) {
     changing_look();
     allocation_recovery();
     class_mapping();
+    character_flow();
     printf("battle footer:%u actual opaque glyph pixels inside circle and below avatar; level99 all master rig stress passed\n",footer_ink_pixels);
     printf("hero rig native:%d screenshots,actual creation-adjacent classic views,formations,save/wake,full/incremental render and control separation passed;peak%zu image bytes\n",shots,peak_image_bytes);
     return 0;
