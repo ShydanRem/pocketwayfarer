@@ -1,0 +1,14 @@
+{
+  "date": "2026-11-19",
+  "milestone": "R5.8-classic-services",
+  "app_version": "0.8.0-preview.8",
+  "target": "ESP32-S3",
+  "idf_version": "5.5.1",
+  "bytes": 5238784,
+  "sha256": "71b1a2754263a72c1e1305469e914b188cc73a982e951b78aaba401b8366d2e4",
+  "app_partition_bytes": 6291456,
+  "save_version": 4,
+  "save_bytes": 2808,
+  "service_captures": 24,
+  "physical_device_tested": false
+}

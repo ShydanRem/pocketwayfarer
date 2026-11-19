@@ -32,6 +32,8 @@ RIG_SCREENS['riva-classico'] = 'riva-classico'
 RIG_SCREENS['bosco-classico'] = 'bosco-classico'
 RIG_SCREENS['brace-classico'] = 'brace-classico'
 RIG_SCREENS['guglie-classico'] = 'guglie-classico'
+RIG_SCREENS['mappa-zaino-classico'] = 'mappa-zaino-classico'
+RIG_SCREENS['servizi-classico'] = 'servizi-classico'
 
 
 def manual_html():
@@ -61,7 +63,7 @@ def manual_html():
             wide = any(name in tag for name in ['panoramica.png', 'guida-e-risonanza.png', 'assetti-e-guardiano.png',
                                                'interfaccia-classico.png', 'lumen-classico.png', 'cripta-classico.png',
                                                'riva-classico.png', 'bosco-classico.png', 'brace-classico.png',
-                                               'guglie-classico.png'])
+                                               'guglie-classico.png', 'mappa-zaino-classico.png', 'servizi-classico.png'])
             return '<figure' + (' class="wide"' if wide else '') + '>' + tag + '<figcaption>' + alt + '</figcaption></figure>'
         rendered = re.sub(r'<p>(<img [^>]+>)</p>', image_figure, rendered)
         sections.append(f'<section id="{anchor}">{rendered}</section>')
@@ -97,6 +99,8 @@ def roadmap_html():
     body=body.replace('src="img/hero_rig/bosco-classico.png"','src="assets/screens/bosco-classico.png" loading="lazy"')
     body=body.replace('src="img/hero_rig/brace-classico.png"','src="assets/screens/brace-classico.png" loading="lazy"')
     body=body.replace('src="img/hero_rig/guglie-classico.png"','src="assets/screens/guglie-classico.png" loading="lazy"')
+    body=body.replace('src="img/hero_rig/mappa-zaino-classico.png"','src="assets/screens/mappa-zaino-classico.png" loading="lazy"')
+    body=body.replace('src="img/hero_rig/servizi-classico.png"','src="assets/screens/servizi-classico.png" loading="lazy"')
     return body.replace('<table>','<div class="table-wrap"><table>').replace('</table>','</table></div>')
 
 

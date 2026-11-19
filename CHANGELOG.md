@@ -1,5 +1,12 @@
 # Note di versione
 
+## 0.8.0-preview.8 — 19 novembre 2026
+
+- Nuovo atlante delle Isole Sospese con cinque regioni riconoscibili, requisiti di accesso e indicatori di caccia e completamento.
+- Lo zaino mostra nome, livello e compatibilità degli oggetti. Le righe si adattano ai testi lunghi e gli acquisti conservano la posizione della lista.
+- La bottega indica prezzo e quantità, la forgia mostra costo e probabilità, il diario divide missioni e opzioni. Il tasto BOOT chiude i dettagli dell’oggetto prima di tornare alla schermata precedente.
+- Verificati in italiano e inglese lo scorrimento fino al quarantesimo oggetto, acquisti con zaino pieno, vendita, potenziamento, riscossione e rilettura del salvataggio v4.
+
 ## 0.8.0-preview.7 — 19 novembre 2026
 
 - Ridisegnate Guglie del Cielo e Cittadella Celeste. Nubi all’alba e una basilica astronomica al crepuscolo incorniciano due terrazze libere per il combattimento.

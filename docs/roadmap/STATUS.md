@@ -1,6 +1,6 @@
 # Registro di avanzamento
 
-Aggiornato il 19 novembre 2026. Consegna corrente `0.8.0-preview.7`. [Roadmap operativa](../ROADMAP.md)
+Aggiornato il 19 novembre 2026. Consegna corrente `0.8.0-preview.8`. [Roadmap operativa](../ROADMAP.md)
 
 ## Consegna R1 — atlante delle classi, 0.4.1-preview.1
 
@@ -22,6 +22,7 @@ Aggiornato il 19 novembre 2026. Consegna corrente `0.8.0-preview.7`. [Roadmap op
 | Assetti Lanternbound nel nuovo trattamento | 3/3; sistema separato |
 | Luoghi classici ridisegnati | Borgo, cinque regioni e cinque dungeon, fino alla Cittadella Celeste |
 | Mostri del Classico ridisegnati | **42/42** |
+| Interfacce di servizio del Classico | Mappa, zaino, bottega, forgia e diario aggiornati |
 | Nuovo collaudo sul Pocket | Aperto |
 
 ## Consegna R2 — rig e otto basi, 0.5.0-preview.1
@@ -98,10 +99,14 @@ Lava e bagliori restano fuori dalla fascia centrale di battaglia. Le forme del G
 
 La terrazza lilla e il pavimento verde petrolio lasciano spazio ai gruppi di nemici. Le ultime otto specie comprendono il Custode Celeste e il Drago Stellare. Il giro bilingue verifica il checkpoint, il ritorno al borgo e il record del piano 10 dopo due riavvii. [Catture, prove e budget](sky-evidence/README.md)
 
-## Prossimo lotto R5.8 — mappa e interfacce di servizio
+## Consegna R5.8 — mappa e interfacce di servizio
 
-1. Rifinire mappa del mondo e zaino. Provare su schermo circolare sia l’accesso alle cinque regioni sia la selezione e l’equipaggiamento di oggetti con nomi lunghi.
-2. Allineare bottega, forgia e missioni agli stessi pannelli e comandi. Verificare acquisto, potenziamento, consegna e ritorno al borgo in IT/EN.
-3. Rileggere il salvataggio dopo le transazioni, verificare scorrimento e ritorno touch/BOOT, poi aggiornare catture e guida.
+Le cinque regioni e il borgo si riconoscono sulla mappa illustrata. Righe adattabili e ritorno coerente via touch e BOOT unificano zaino, bottega, forgia e diario. Le prove bilingui percorrono le cinque regioni, raggiungono l’ultimo oggetto con swipe reali e verificano acquisti, vendita, potenziamento e missione dopo un riavvio. [Catture, prove e budget](services-evidence/README.md)
 
-Il collaudo fisico può procedere in parallelo e serve per la stabile. [Sequenza e criteri](../ROADMAP.md#r5--unificare-il-resto-del-gioco)
+## Prossimo lotto R6.1 — ritmo delle spedizioni
+
+1. Fissare due seed e un profilo di riferimento. Cronometrare l’arrivo alla prima scelta, il tempo fra incontri, le soste, le sconfitte e il ritorno al borgo.
+2. Ripetere le prove a parità di eroe e progressione. Usare il primo playtest per capire quali attese o scelte fanno interrompere la spedizione.
+3. Scegliere un solo intervento in base alle osservazioni e verificare gli stessi punti dopo la modifica. R6.2 usa la base così misurata per una nuova scelta rischio e ricompensa.
+
+Il collaudo fisico può procedere in parallelo e serve per la stabile. [Sequenza e criteri](../ROADMAP.md#r6-e-r7--profondità-ritmo-e-feedback)

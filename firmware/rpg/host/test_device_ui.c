@@ -194,7 +194,7 @@ static void modal_and_gems(void) {
     lv_obj_t *list = NULL;
     for (unsigned i = 0; i < lv_obj_get_child_count(lv_screen_active()); i++) {
         lv_obj_t *o = lv_obj_get_child(lv_screen_active(), (int)i);
-        if (lv_obj_get_width(o) == 320 && lv_obj_get_height(o) == 280) list = o;
+        if (lv_obj_get_width(o) == 320 && lv_obj_get_height(o) == 250) list = o;
     }
     assert(list);
     lv_area_t a; lv_obj_get_coords(lv_obj_get_child(list, 0), &a); click((a.x1+a.x2)/2, (a.y1+a.y2)/2);
@@ -212,7 +212,7 @@ static void modal_and_gems(void) {
         down=0; run(200);
     }
     assert(inside(last, panel));
-    char name[40]; snprintf(name, sizeof name, "%.10s x1", TX(rpg_species(SP_COUNT-1)->name));
+    char name[64]; snprintf(name, sizeof name, "%s x1", TX(rpg_species(SP_COUNT-1)->name));
     press(name); assert(R.g.gems[SP_COUNT-1] == 0 && R.g.bag[0].gems[0] == SP_COUNT);
     puts("all42 gem species plus Close: final species reached by touch scrolling and socketed: passed");
 }
