@@ -35,7 +35,7 @@ if shots:
     sheet.save(dst / 'galleria.png')
     if dst.name == 'hero_rig':
         all_classes=sorted(dst.glob('*-studio-??-0-0.png'),key=lambda p:int(p.stem.split('-')[2]))
-        for name,first in [('base',0),('avanzate-a',8),('avanzate-b',16),('maestre-a',24)]:
+        for name,first in [('base',0),('avanzate-a',8),('avanzate-b',16),('maestre-a',24),('maestre-b',32)]:
             base=[p for p in all_classes if first<=int(p.stem.split('-')[2])<first+8]
             if len(base)!=8:continue
             overview=Image.new('RGBA',(1960,980),(16,24,32,255))
@@ -50,7 +50,7 @@ if shots:
             for i,p in enumerate(base):
                 overview.alpha_composite(Image.open(p).convert('RGBA'), ((i%4)*490+12,(i//4)*490+12))
             overview.save(dst / 'otto-classi-base.png')
-        for name,first in [('avanzate-a',8),('avanzate-b',16),('maestre-a',24)]:
+        for name,first in [('avanzate-a',8),('avanzate-b',16),('maestre-a',24),('maestre-b',32)]:
             advanced=sorted(p for p in dst.glob('*-classe-??.png') if first<=int(p.stem[-2:])<first+8)
             if len(advanced)!=8:continue
             overview=Image.new('RGBA',(1960,980),(16,24,32,255))

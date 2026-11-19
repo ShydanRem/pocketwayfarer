@@ -1,4 +1,4 @@
-# Class illustrations — bases, advanced and first masters
+# Class illustrations — all forty classic classes
 
 Eight original representative illustrations generated with OpenAI ImageGen on 2026-11-17. Source: `source/base-classes.png`, generated identity `exec-ee986e68-ed60-45bf-ae12-58e2a8490899.png`, 1774 × 887 RGBA, four columns and two rows. The retained `source/base-classes-prompt.txt` is the exact generation prompt. `assets/lantern/source/prism/loadouts.png` was supplied as a visual-world reference; the eight figures are new representatives, not new animations of those three loadouts.
 
@@ -38,6 +38,12 @@ The generation briefs use the descriptive names Smith/Sorcerer for IDs 20/23; ca
 
 Eight original representatives generated with OpenAI ImageGen on 2026-11-18: Dragon Knight, Warlord, Archmage, Chronomancer, Beastmaster, Stormbow, Nightblade and Blademaster. Source `source/master-a.png`, 1774 × 887 RGBA, identity `exec-fca3f64a-0534-46e6-bcdf-c970dde9f98c.png`; exact prompt `source/master-a-prompt.txt`. The approved advanced-A illustration sheet was the only image reference; the prompt defines matching large costume forms for both modular and representative art.
 
-The source passed cell-edge alpha and native header/badge containment checks without a repair job. It is retained unaltered, with no local painting. Mechanical import preserves previous batches and registers one common scale/foot baseline for the new eight. Coverage is now **32 exact illustrations**, with explicit family references only for IDs32–39. Source identity, hashes, measured bounds, scale and prompt hash are recorded in `manifest.json`. [R4.1 evidence](../../docs/roadmap/master-a-evidence/README.md) covers all 80 IT/EN cards and 64 native atlas captures; physical testing remains open.
+The source passed cell-edge alpha and native header/badge containment checks without a repair job. It is retained unaltered, with no local painting. Mechanical import preserves previous batches and registers one common scale/foot baseline for the new eight. At R4.1 coverage was **32 exact illustrations**, with family references for IDs32–39. Source identity, hashes, measured bounds, scale and prompt hash are recorded in `manifest.json`. [R4.1 evidence](../../docs/roadmap/master-a-evidence/README.md) covers that baseline's 80 IT/EN cards and 64 native atlas captures; physical testing remains open.
 
 The master generation briefs use descriptive names Beast Lord/Storm Archer/Night Blade/Blade Master for IDs 28–31; canonical English UI names remain Beastmaster/Stormbow/Nightblade/Blademaster from the core table. Exact prompts are retained unaltered.
+
+## R4.2 — final master IDs 32–39
+
+Eight original representatives generated with ImageGen on 2026-11-18: Templar, Hierophant, Grandmaster, Ascendant, Runesmith, Transmuter, Deathlord and Voidcaller. Source `source/master-b.png`, 1774 × 887 RGBA, identity `exec-a1b665ea-89f2-4f99-ac45-3a8217eb21bb.png`; exact prompt `source/master-b-prompt.txt`. The approved master-A illustration sheet was the image reference. The source passed transparent cell-edge and native alpha-containment checks without a repair job; no PNG pixel was painted or reconstructed locally.
+
+All **40 classic class cards now have exact illustrations**, with no family references for valid IDs. These representatives remain separate from the customized player avatar. Mechanical import keeps previous batches intact and normalizes the new eight with one common scale/foot baseline. `manifest.json` records source/prompt hashes, identity, measured bounds and scale. [R4.2 evidence](../../docs/roadmap/master-b-evidence/README.md) covers all80 IT/EN cards and78 native atlas captures; this does not certify physical performance or final animation.

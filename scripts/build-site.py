@@ -23,8 +23,8 @@ SCREENS = {
     'assetti-e-guardiano': 'assetti-e-guardiano',
     'confronto-reliquie': '47-confronto-reliquie',
 }
-CLASS_SCREENS = {'classi': 'otto-classi-base', 'arciere': '03-classe-02', 'classi-avanzate-a':'otto-classi-avanzate-a', 'classi-avanzate-b':'otto-classi-avanzate-b', 'classi-maestre-a':'otto-classi-maestre-a'}
-RIG_SCREENS = {'avatar-base': 'otto-avatar-base', 'avatar-avanzate-a':'otto-avatar-avanzate-a', 'avatar-avanzate-b':'otto-avatar-avanzate-b', 'avatar-maestre-a':'otto-avatar-maestre-a'}
+CLASS_SCREENS = {'classi': 'otto-classi-base', 'arciere': '03-classe-02', 'classi-avanzate-a':'otto-classi-avanzate-a', 'classi-avanzate-b':'otto-classi-avanzate-b', 'classi-maestre-a':'otto-classi-maestre-a', 'classi-maestre-b':'otto-classi-maestre-b'}
+RIG_SCREENS = {'avatar-base': 'otto-avatar-base', 'avatar-avanzate-a':'otto-avatar-avanzate-a', 'avatar-avanzate-b':'otto-avatar-avanzate-b', 'avatar-maestre-a':'otto-avatar-maestre-a', 'avatar-maestre-b':'otto-avatar-maestre-b'}
 
 
 def manual_html():
@@ -76,6 +76,8 @@ def roadmap_html():
     body=body.replace('src="img/classes/otto-classi-avanzate-b.png"','src="assets/screens/classi-avanzate-b.png" loading="lazy"')
     body=body.replace('src="img/hero_rig/otto-avatar-maestre-a.png"','src="assets/screens/avatar-maestre-a.png" loading="lazy"')
     body=body.replace('src="img/classes/otto-classi-maestre-a.png"','src="assets/screens/classi-maestre-a.png" loading="lazy"')
+    body=body.replace('src="img/hero_rig/otto-avatar-maestre-b.png"','src="assets/screens/avatar-maestre-b.png" loading="lazy"')
+    body=body.replace('src="img/classes/otto-classi-maestre-b.png"','src="assets/screens/classi-maestre-b.png" loading="lazy"')
     return body.replace('<table>','<div class="table-wrap"><table>').replace('</table>','</table></div>')
 
 

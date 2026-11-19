@@ -1,0 +1,31 @@
+FAIL: cape torn/recolored class=33 pose=2 at 25,55
+FAIL: cape torn/recolored class=33 pose=2 at 26,55
+FAIL: cape torn/recolored class=33 pose=2 at 27,55
+FAIL: cape torn/recolored class=33 pose=2 at 28,55
+FAIL: cape torn/recolored class=33 pose=2 at 29,55
+FAIL: cape torn/recolored class=33 pose=2 at 30,55
+FAIL: cape torn/recolored class=33 pose=2 at 31,55
+FAIL: cape torn/recolored class=33 pose=2 at 32,55
+FAIL: cape torn/recolored class=33 pose=2 at 25,56
+FAIL: cape torn/recolored class=33 pose=2 at 26,56
+FAIL: cape torn/recolored class=33 pose=2 at 27,56
+FAIL: cape torn/recolored class=33 pose=2 at 28,56
+FAIL: cape torn/recolored class=33 pose=2 at 29,56
+FAIL: cape torn/recolored class=33 pose=2 at 30,56
+FAIL: cape torn/recolored class=33 pose=2 at 31,56
+FAIL: cape torn/recolored class=33 pose=2 at 32,56
+FAIL: cape torn/recolored class=33 pose=2 at 25,57
+FAIL: cape torn/recolored class=33 pose=2 at 26,57
+FAIL: cape torn/recolored class=33 pose=2 at 27,57
+FAIL: cape torn/recolored class=33 pose=2 at 28,57
+FAIL: cape torn/recolored class=33 pose=2 at 29,57
+FAIL: cape torn/recolored class=33 pose=2 at 30,57
+FAIL: cape torn/recolored class=33 pose=2 at 31,57
+FAIL: cape torn/recolored class=33 pose=2 at 32,57
+cloth class=24 rigid_flag=1 mismatches=0
+cloth class=30 rigid_flag=1 mismatches=0
+cloth class=33 rigid_flag=0 mismatches=307
+cloth class=35 rigid_flag=0 mismatches=319
+cloth class=38 rigid_flag=0 mismatches=224
+cloth class=39 rigid_flag=0 mismatches=355
+cloth regression: frames=24 cape_checks=9108 min_cape_opaque=93 failures=1205

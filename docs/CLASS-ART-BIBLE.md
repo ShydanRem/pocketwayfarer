@@ -90,6 +90,21 @@ Le illustrazioni restano rappresentanti separati dal giocatore. La cresta del Dr
 
 **Correzione delle cappe lunghe:** il rettangolo del braccio tagliava la cappa in attacco sugli ID 24/30. Per questi due costumi il layout registra braccia rigide: attacco/guardia/colpito traslano l'abito connesso e le prese degli oggetti insieme, mantenendo le suole ferme. Non si ricostruiscono parti del PNG né si dichiara completata l'animazione. Le maschere separate per arti e cappa restano R7; una posa semplice ma continua precede il movimento articolato.
 
+## R4.2 — ultime otto maestre
+
+| ID | Classe | Firme del costume con lo stesso elmo |
+|---|---|---|
+| 32 | Templare | Piastre squadrate a incastro e tabarro stretto con sigillo |
+| 33 | Ierofante | Mantello semicircolare basso e gonna continua a raggi |
+| 34 | Gran Maestro | Drappi diagonali sovrapposti e grande nodo squadrato |
+| 35 | Asceso | Pannelli a petalo aperti e anelli larghi ai polsi |
+| 36 | Forgiarune | Grembiule a piastre sovrapposte e grandi protezioni quadrate |
+| 37 | Trasmutatore | Contenitori esagonali e polsini doppi su giacca corta |
+| 38 | Signore della Morte | Spalle angolari corazzate e fronte chiuso con barre orizzontali |
+| 39 | Evocavuoto | Spalla obliqua e falde spezzate con apertura centrale |
+
+I 40 ID validi hanno grafica dedicata. Le pose preliminari per le vesti continue degli ID 33, 35, 38 e 39 usano la stessa soluzione adottata per le cappe degli ID 24 e 30. Le prese seguono la traslazione della veste e le suole restano ferme dopo la trasformazione della razza. [Verifiche native](roadmap/master-b-evidence/README.md).
+
 ## Checklist di produzione
 
 - Sorgenti, prompt, identità del generatore e trasformazioni registrati.

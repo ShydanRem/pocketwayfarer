@@ -10,7 +10,11 @@ Un lotto è completato quando entra nel gioco, supera i controlli pertinenti e d
 
 ## Stato reale di partenza
 
-**Consegna R4.1 / 0.7.0-preview.1:** prime otto maestre integrate: **32/40 avatar modulari e illustrazioni specifiche**. Cavaliere del Drago, Signore della Guerra, Arcimago, Cronomante, Signore delle Bestie, Arco della Tempesta, Lama Notturna e Maestro di Lame hanno costumi propri, con aspetto e oggetti conservati. Restano le otto maestre delle altre quattro famiglie. [Prove R4.1](roadmap/master-a-evidence/README.md).
+**Consegna R4.2 / 0.7.0-preview.2:** tutte le **40 classi** hanno costume modulare, copricapo di classe e illustrazione dedicata. Il lotto completa le sedici maestre con Templare, Ierofante, Gran Maestro, Asceso, Forgiarune, Trasmutatore, Signore della Morte ed Evocavuoto. [Prove R4.2](roadmap/master-b-evidence/README.md).
+
+![Ultime otto maestre nella verifica del renderer nativo](img/hero_rig/otto-avatar-maestre-b.png)
+
+**Consegna precedente R4.1 / 0.7.0-preview.1:** prime otto maestre integrate: **32/40 avatar modulari e illustrazioni specifiche**. Cavaliere del Drago, Signore della Guerra, Arcimago, Cronomante, Signore delle Bestie, Arco della Tempesta, Lama Notturna e Maestro di Lame hanno costumi propri, con aspetto e oggetti conservati. A quella consegna restavano otto maestre. [Prove R4.1](roadmap/master-a-evidence/README.md).
 
 ![Prime otto maestre: studio del renderer nativo](img/hero_rig/otto-avatar-maestre-a.png)
 
@@ -49,7 +53,7 @@ Il primo incremento della roadmap aggiunge **otto illustrazioni base nell'atlant
 | **R1 — atlante e otto classi base / 0.4.1-preview** | R0 host | Otto illustrazioni, 40 schede, abilità e alberi consultabili; roadmap e registro | 80 schede IT/EN, 16 percorsi di famiglia e input reali verificati; eroe/salvataggio invariati; firmware e sito verificati |
 | **R2 — avatar modulare e otto basi / 0.5-preview: completato su host** | R1 | Otto costumi base nel mondo, rig e canali estetici/equipaggiamento | Catture reali, continuità, cache e sanitizer verificati; collaudo fisico separato |
 | R3 — sedici avanzate / 0.6-preview: R3.1 e R3.2 verificati su host | R2 | Due lotti da otto, con rami A/B distinti | Ogni ramo riconoscibile anche in grigio e con copricapo equipaggiato; regole di classe invariate |
-| R4 — sedici maestre / 0.7-preview: R4.1 verificato su host, R4.2 da completare | R3 | Due lotti da otto, con identità propria; prime otto integrate | 40/40 identità modulari e relativo materiale di presentazione, senza riempitivi conteggiati come completati |
+| R4 — sedici maestre / 0.7-preview: R4.1 e R4.2 verificati su host | R3 | Sedici maestre integrate con costumi e illustrazioni propri | 40/40 identità modulari e relativo materiale di presentazione, senza riempitivi conteggiati come completati |
 | R5 — mondo e interfaccia / 0.8-preview | R2; R3/R4 per relativo abito | Creazione, eroe, classi, equipaggiamento, città, campi/dungeon e mostri coerenti | Percorso completo in italiano/inglese, controlli circolari raggiungibili e immagini confrontate sul renderer |
 | R6 — varietà e progressione / 0.9-preview | R4 + parte giocabile R5 | Scelte di percorso, nemici, eventi e ricompense rifinite | Difficoltà simulata e provata da persone; nuove strutture persistenti solo con migrazione esplicita |
 | R7 — animazione e audio | Rig R2; hardware audio per suono | Transizioni, effetti per ruolo, feedback e suoni opzionali | Nessun segnale essenziale affidato solo al colore/suono; movimento ridotto e pausa rispettati |

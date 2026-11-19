@@ -10,7 +10,7 @@ Un RPG fantasy HD-2D per **Waveshare ESP32-S3-Touch-AMOLED-1.75**, con schermo r
 
 **[Roadmap operativa](docs/ROADMAP.md)** · [Stato del lotto attivo](docs/roadmap/STATUS.md) · [Direzione artistica delle 40 classi](docs/CLASS-ART-BIBLE.md)
 
-> **0.7.0-preview.1** — Prime otto maestre integrate: 32/40 avatar modulari e illustrazioni specifiche, con aspetto personale e oggetti conservati. Restano le altre otto maestre. [Roadmap](docs/ROADMAP.md) · [Prove R4.1](docs/roadmap/master-a-evidence/README.md). Collaudo fisico ancora aperto.
+> **0.7.0-preview.2** — Completata la grafica delle 40 classi classiche. Tutte hanno avatar modulare, copricapo di classe e illustrazione dedicata. Il prossimo blocco è il redesign di mondo e interfaccia. [Roadmap](docs/ROADMAP.md) · [Prove R4.2](docs/roadmap/master-b-evidence/README.md). Collaudo fisico ancora aperto.
 
 ## Sul Pocket, in pochi passaggi
 
@@ -42,7 +42,7 @@ La Sentinella protegge e prepara, il Piromante applica bruciatura, il Predone sf
 
 Da **… → Classi** consulti anche le 40 classi classiche, le loro abilità e i percorsi di evoluzione. Le otto basi hanno nuove illustrazioni; le evoluzioni indicano quando mostrano il ritratto della famiglia. L'atlante non cambia il tuo eroe e resta distinto dai tre assetti della spedizione.
 
-Nel Classico, le otto basi, tutte le sedici avanzate e le prime otto maestre usano i nuovi avatar modulari: razza, pelle, capelli, occhi, volto e oggetti restano quelli del tuo eroe. Le altre otto maestre conservano temporaneamente la grafica precedente. La tavola seguente mostra il renderer LVGL in uno studio di verifica, non un nuovo luogo giocabile.
+Nel Classico, tutte le 40 classi usano i nuovi avatar modulari: razza, pelle, capelli, occhi, volto e oggetti restano quelli del tuo eroe. La tavola seguente mostra il renderer LVGL in uno studio di verifica, non un nuovo luogo giocabile.
 
 ![Otto avatar base nel renderer nativo](docs/img/hero_rig/otto-avatar-base.png)
 
@@ -110,3 +110,9 @@ R4.1 aggiunge Cavaliere del Drago, Signore della Guerra, Arcimago, Cronomante, S
 ![Prime otto maestre nel renderer nativo](docs/img/hero_rig/otto-avatar-maestre-a.png)
 
 Verificati 245.760 combinazioni estetiche, 1.200 confronti dei rami sotto lo stesso elmo e 16 percorsi touch completi fino alla maestra. La scheda Statistiche mantiene i nomi lunghi dentro il cerchio e separati dall’avatar. [Prove R4.1](docs/roadmap/master-a-evidence/README.md).
+
+R4.2 completa Templare, Ierofante, Gran Maestro, Asceso, Forgiarune, Trasmutatore, Signore della Morte ed Evocavuoto.
+
+![Ultime otto maestre nel renderer nativo](docs/img/hero_rig/otto-avatar-maestre-b.png)
+
+Verificate 307.200 combinazioni estetiche e 1.600 confronti dei rami con lo stesso elmo. I 32 percorsi di promozione in italiano e inglese coprono tutte le maestre e verificano abilità ereditate e salvataggi. [Prove R4.2](docs/roadmap/master-b-evidence/README.md).

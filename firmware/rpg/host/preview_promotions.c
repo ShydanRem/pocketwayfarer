@@ -106,7 +106,7 @@ int main(int argc,char **argv) {
         }
         assert(sibling[0]!=sibling[1]);
     }
-    for(int lang=0;lang<2;lang++)for(int family=0;family<4;family++) {
+    for(int lang=0;lang<2;lang++)for(int family=0;family<FAM_COUNT;family++) {
         uint64_t sibling[2]={0};
         for(int branch=0;branch<2;branch++) {
             int parent=8+family*2+branch,target=parent+16;seed_profile(family,lang);
@@ -132,7 +132,7 @@ int main(int argc,char **argv) {
         }
         assert(sibling[0]!=sibling[1]);
     }
-    printf("promotions:%u real touch changes, %u rejected thresholds, %u save v4 hero roundtrips, IT/EN cosmetics/owned gear preserved; 24 sibling comparisons under same helm passed\n",promotions,rejections,reloads);
+    printf("promotions:%u real touch changes, %u rejected thresholds, %u save v4 hero roundtrips, IT/EN cosmetics/owned gear preserved; 32 sibling comparisons under same helm passed\n",promotions,rejections,reloads);
     printf("masters:%u complete touch paths, direct/wrong-branch rejection, exact8 inherited/battle skills and previous ranks preserved; terminal class/job50 verified\n",master_skills);
     printf("promotions:%d native captures; peak%zu image bytes; studio views do not change owned equipment\n",shots,peak_image_bytes);
     return 0;

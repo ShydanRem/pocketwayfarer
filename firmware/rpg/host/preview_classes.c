@@ -3,6 +3,7 @@
 #include "preview_lantern.c"
 #undef main
 #include "art/class_art.h"
+_Static_assert(CLASS_ART_COUNT==RPG_CLASS_COUNT,"all classic atlas cards require exact artwork");
 
 static void assert_button_bounds(lv_obj_t *o) {
     lv_area_t a,b;lv_obj_get_coords(o,&a);lv_obj_get_coords(lv_obj_get_child(o,0),&b);
@@ -95,6 +96,6 @@ int main(int argc,char **argv) {
     wf_lang=0;
     puts("class atlas:80 bilingual cards,208 local skill references,16 family paths, wraparound, scrolled nodes, touch/BOOT close and PWR hooks: passed");
     puts("read-only: real class,cosmetics,equipment,skills,expedition and expected time simulation unchanged; no atlas save/reward: passed");
-    printf("class atlas:%d native captures; image buffers peak%zu bytes; thirty-two illustrations,8 explicit family references\n",shots,peak_image_bytes);
+    printf("class atlas:%d native captures; image buffers peak%zu bytes; forty exact illustrations,0 family references\n",shots,peak_image_bytes);
     return 0;
 }
