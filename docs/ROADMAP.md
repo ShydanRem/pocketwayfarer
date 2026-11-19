@@ -10,6 +10,10 @@ Un lotto è completato quando entra nel gioco, supera i controlli pertinenti e d
 
 ## Stato reale di partenza
 
+**Consegna R5.2 / 0.8.0-preview.2.** Il Classico ha un nuovo borgo, una nuova radura per i Prati di Lumen e otto specie ridisegnate. Nei combattimenti della prima regione sono verificati selezione dei tre bersagli, anello, parata e ritorno al campo dopo la vittoria. [Catture e prove R5.2](roadmap/lumen-evidence/README.md)
+
+![Borgo del Classico, Prati di Lumen e combattimento a tre nel renderer nativo](img/hero_rig/lumen-classico.png)
+
 **Consegna R5.1 / 0.8.0-preview.1.** Creazione, scheda eroe, abilità, promozioni, atlante ed equipaggiamento condividono il nuovo linguaggio visivo dell’archivio. Flussi touch e ritorno BOOT verificati in italiano e inglese. [Prove R5.1](roadmap/classic-ui-evidence/README.md)
 
 ![Creazione, Statistiche ed Equipaggiamento nel renderer nativo](img/hero_rig/interfaccia-classico.png)
@@ -58,7 +62,7 @@ Il primo incremento della roadmap aggiunge **otto illustrazioni base nell'atlant
 | **R2 — avatar modulare e otto basi / 0.5-preview: completato su host** | R1 | Otto costumi base nel mondo, rig e canali estetici/equipaggiamento | Catture reali, continuità, cache e sanitizer verificati; collaudo fisico separato |
 | R3 — sedici avanzate / 0.6-preview: R3.1 e R3.2 verificati su host | R2 | Due lotti da otto, con rami A/B distinti | Ogni ramo riconoscibile anche in grigio e con copricapo equipaggiato; regole di classe invariate |
 | R4 — sedici maestre / 0.7-preview: R4.1 e R4.2 verificati su host | R3 | Sedici maestre integrate con costumi e illustrazioni propri | 40/40 identità modulari e relativo materiale di presentazione, senza riempitivi conteggiati come completati |
-| R5 — mondo e interfaccia / 0.8-preview. R5.1 verificata su host | R2; R3/R4 per relativo abito | Creazione, eroe, classi, equipaggiamento, città, campi/dungeon e mostri coerenti | Percorso completo in italiano/inglese, controlli circolari raggiungibili e immagini confrontate sul renderer |
+| R5 — mondo e interfaccia / 0.8-preview. R5.1 e R5.2 verificate su host | R2; R3/R4 per relativo abito | Creazione, eroe, classi, equipaggiamento, città, campi/dungeon e mostri coerenti | Percorso completo in italiano/inglese, controlli circolari raggiungibili e immagini confrontate sul renderer |
 | R6 — varietà e progressione / 0.9-preview | R4 + parte giocabile R5 | Scelte di percorso, nemici, eventi e ricompense rifinite | Difficoltà simulata e provata da persone; nuove strutture persistenti solo con migrazione esplicita |
 | R7 — animazione e audio | Rig R2; hardware audio per suono | Transizioni, effetti per ruolo, feedback e suoni opzionali | Nessun segnale essenziale affidato solo al colore/suono; movimento ridotto e pausa rispettati |
 | R8 — consolidamento / candidata 1.0 | R4–R7 nel perimetro scelto + R0 fisico | Ottimizzazione misurata, lunga sessione, backup/aggiornamento e pacchetto finale | Checklist hardware e rilascio superata; limiti residui dichiarati |

@@ -9,6 +9,7 @@
 #include "art/lantern_art.h"
 #include "art/hero_rig_art.h"
 extern int rpg_battle_target_now(void);
+extern int rpg_battle_parry_quality_now(void);
 
 static rpg_game before;
 static bool fail_avatar_alloc;
@@ -330,6 +331,122 @@ static void character_flow(void) {
     puts("character flow: IT/EN creation, stat and skill point spending, match touch/BOOT back routes, remove and equip via bag, v4 saves passed");
 }
 
+static void lumen_shot(const char *part) {
+    char name[80];
+    snprintf(name, sizeof name, "lumen-%s-%s", part, wf_lang ? "en" : "it");
+    shot(name);
+}
+
+static void lumen_flow(void) {
+    enum { CHOOSE = 1, RING = 3, PARRY = 6, END = 7 };
+    for (int lang = 0; lang < 2; lang++) {
+        profile(FAM_WARRIOR, RACE_HUMAN, 1, 0, 1);
+        R.g.lang = wf_lang = (uint8_t)lang;
+        R.g.hero.stat[ST_STR] += 20;
+        R.g.hero.stat[ST_VIT] += 20;
+        r_go(R_TOWN);
+        press("...");
+        press(TR("Classico", "Classic"));
+        assert(R.screen == R_TOWN_CLASSIC);
+        lumen_shot("borgo");
+        press(TR("Mappa", "Map"));
+        assert(R.screen == R_MAP);
+        click(232, 372);
+        assert(R.screen == R_ZONE && R.zone == 0);
+        lumen_shot("prati");
+
+        rpg_foe foes[RPG_MAX_FOES];
+        uint32_t seed;
+        for (seed = 1; seed < 10000; seed++) {
+            rpg_game sim = R.g;
+            sim.rng_state = seed;
+            int count;
+            assert(rpg_field_encounter(&sim, 0, foes, &count) == RPG_OK);
+            if (count == 3 && foes[0].species != foes[1].species &&
+                foes[0].species != foes[2].species && foes[1].species != foes[2].species) break;
+        }
+        assert(seed < 10000);
+        R.g.rng_state = seed;
+        uint32_t gold = R.g.gold;
+        int stamina = R.g.hero.stamina;
+        press(TR("Combatti", "Fight"));
+        assert(R.screen == R_BATTLE && R.g.hero.stamina == stamina - 1);
+        run(1300);
+        assert(rpg_battle_phase() == CHOOSE);
+        controls_clear();
+        const int points[3][2] = {{388, 190}, {233, 169}, {78, 190}};
+        for (int target = 2; target >= 0; target--) {
+            click(points[2 - target][0], points[2 - target][1]);
+            assert(rpg_battle_target_now() == target);
+            assert(find(lv_screen_active(), TX(rpg_species(foes[target].species)->name)));
+        }
+        lumen_shot("trio");
+        press(TR("Guardia", "Guard"));
+        bool attacked = false, parried = false;
+        for (unsigned t = 0; t < 4000 && rpg_battle_phase() != END; t++) {
+            int ph = rpg_battle_phase();
+            if (ph == CHOOSE) {
+                press(TR("Attacco", "Attack"));
+                assert(rpg_battle_phase() == RING);
+            } else if (ph == RING && rpg_battle_ring_quality_now() >= WF_Q_GREAT) {
+                if (!attacked) lumen_shot("anello");
+                if (lang) assert(wf_app_key(WF_KEY_BOOT_DOWN));
+                else click(CX, CY);
+                assert(rpg_battle_phase() != RING);
+                attacked = true;
+            } else if (ph == PARRY && rpg_battle_parry_quality_now() >= WF_Q_GREAT) {
+                if (!parried) lumen_shot("parata");
+                if (lang) assert(wf_app_key(WF_KEY_BOOT_DOWN));
+                else click(CX, CY);
+                assert(rpg_battle_phase() != PARRY);
+                parried = true;
+            }
+            run(10);
+        }
+        assert(attacked && parried && rpg_battle_phase() == END);
+        assert(R.g.gold > gold && find(lv_layer_top(), TR("Vittoria!", "Victory!")));
+        lumen_shot("vittoria");
+        press(TR("Continua", "Continue"));
+        assert(R.screen == R_ZONE && !R.g.classic.active);
+        rpg_game decoded;
+        assert(rpg_save_decode(saved, saved_len, &decoded) && decoded.gold == R.g.gold);
+        assert(!decoded.classic.active && decoded.lang == lang);
+    }
+    wf_lang = 0;
+
+    profile(FAM_WARRIOR, RACE_HUMAN, 1, 0, 1);
+    R.g.best_floor[0] = 5;
+    r_go(R_ZONE);
+    assert(find(lv_screen_active(), "Record piano 5"));
+    press("Dal piano 6");
+    assert(R.screen == R_DUNGEON && R.g.run.floor == 6);
+    rpg_foe crypt[] = {{0}, {0}, {0}};
+    rpg_foe_make(&crypt[0], SP_SKELETON, 8, false);
+    rpg_foe_make(&crypt[1], SP_GHOST, 8, true);
+    rpg_foe_make(&crypt[2], SP_BAT, 7, false);
+    r_start_battle(crypt, 3, true, false);
+    run(1300);
+    controls_clear();
+    lumen_shot("cripta");
+    rpg_foe king;
+    rpg_foe_make(&king, SP_SLIME_KING, 8, false);
+    r_start_battle(&king, 1, true, true);
+    run(1300);
+    controls_clear();
+    lumen_shot("re-gelatino");
+
+    profile(FAM_WARRIOR, RACE_HUMAN, 1, 0, 1);
+    rpg_foe field[3];
+    rpg_foe_make(&field[0], SP_SLIME, 3, false);
+    rpg_foe_make(&field[1], SP_SHROOM, 3, false);
+    rpg_foe_make(&field[2], SP_WISP, 3, true);
+    r_start_battle(field, 3, false, false);
+    run(1300);
+    controls_clear();
+    lumen_shot("bestiario");
+    puts("Lumen: IT/EN town-to-victory touch, all three targets, timed touch/BOOT, v4 rewards, floor 6 and new sprites passed");
+}
+
 int main(int argc,char **argv) {
     assert(argc==2);dest=argv[1];setvbuf(stdout,NULL,_IOLBF,0);
     lv_init();lv_tick_set_cb(tick);lv_display_t *display=lv_display_create(WF_RES,WF_RES);
@@ -348,6 +465,7 @@ int main(int argc,char **argv) {
     allocation_recovery();
     class_mapping();
     character_flow();
+    lumen_flow();
     printf("battle footer:%u actual opaque glyph pixels inside circle and below avatar; level99 all master rig stress passed\n",footer_ink_pixels);
     printf("hero rig native:%d screenshots,actual creation-adjacent classic views,formations,save/wake,full/incremental render and control separation passed;peak%zu image bytes\n",shots,peak_image_bytes);
     return 0;

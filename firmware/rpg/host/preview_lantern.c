@@ -398,7 +398,7 @@ int main(int argc, char **argv) {
     /* Real classic ring + repeated power cycles, including a second sleep
      * during the preparation countdown. Neither BOOT nor touch may spend the
      * action early, and sleeping time must not expire the timing window. */
-    run(950); click(92, 280); run(120);
+    run(950); press("Attacco"); run(120);
     assert(rpg_battle_phase() == 3); /* PH_RING */
     int classic_quality = rpg_battle_ring_quality_now();
     wf_app_flush_save(); ms += 20000; seconds += 20; wf_app_wake();

@@ -84,6 +84,27 @@ static void on_enter(lv_event_t *e) {
 void scr_zone(void) {
     const rpg_zone_info *z = rpg_zone(R.zone);
     lv_obj_t *s = r_scene(RS_FIELD_MEADOW + z->field_scene);
+    if (z->field_scene == 0) {
+        r_character_panel(s, CX, 99, 306, 100);
+        kit_label(s, &ln_font_title, RC_GOLD, TX(z->field_name), CX, 75);
+        lv_obj_t *intro = kit_label(s, &ln_font_body, RC_IVORY, TX(z->blurb), CX, 118);
+        lv_obj_set_width(intro, 274);
+        char details[96];
+        snprintf(details, sizeof details, TR("Livelli %d–%d  ·  Stamina %d", "Levels %d–%d  ·  Stamina %d"),
+                 z->min_level, z->max_level, R.g.hero.stamina);
+        r_character_panel(s, CX, 169, 296, 34);
+        kit_label(s, &ln_font_body, RC_IVORY, details, CX, 169);
+        r_character_button(s, TR("Combatti", "Fight"), 124, 222, 126, 52, true, on_fight, 0);
+        r_character_button(s, TR("Caccia auto", "Auto hunt"), 342, 222, 126, 52, false, on_hunt, 0);
+        r_character_button(s, TX(z->dungeon_name), CX, 302, 240, 50, false, on_enter, 0);
+        bool checkpoint = rpg_dungeon_checkpoint(&R.g, R.zone);
+        if (checkpoint)
+            r_character_button(s, TR("Dal piano 6", "From floor 6"), CX, 352, 184, 38, false, on_enter, 1);
+        snprintf(details, sizeof details, TR("Record piano %d", "Best floor %d"), R.g.best_floor[R.zone]);
+        kit_label(s, &ln_font_body, RC_MUTED, details, CX, checkpoint ? 385 : 349);
+        r_character_button(s, TR("Mappa", "Map"), CX, 423, 122, 44, false, on_go, R_MAP);
+        return;
+    }
     kit_dim(s, 130);
     kit_label(s, &wf_font_big, COL_GOLD, TX(z->field_name), CX, 70);
     char buf[128];

@@ -72,10 +72,14 @@ La revisione delle pose ha individuato e corretto strappi nelle vesti di Ierofan
 
 La preview `0.8.0-preview.1` porta l’archivio nel Classico. Creazione con indicatore delle otto tappe, scheda eroe leggibile con i nomi lunghi, abilità con gradi separati, carte di promozione e atlante nella stessa palette. Equipaggiamento con nomi degli slot sempre visibili e dettagli coerenti. I due flussi IT/EN attraversano creazione, spesa punti e rimozione/ripristino oggetto fino alla rilettura del salvataggio. [Prove R5.1](classic-ui-evidence/README.md)
 
-## Prossimo lotto R5.2 — borgo e prima regione
+## Consegna R5.2 — borgo e prima regione
 
-1. Scegliere un percorso completo da borgo a campo e combattimento. Ridisegnare il fondale intorno alle posizioni di attori e comandi.
-2. Portare sul nuovo fondale un primo gruppo di specie classiche. Verificare sagome, intenti, bersagli, vitali e input nel cerchio per gruppi fino a tre.
-3. Estendere il trattamento alle regioni successive e ai dungeon. Zaino, bottega, forgia, missioni e mappa seguono il percorso di navigazione del Classico.
+La preview `0.8.0-preview.2` ridisegna il borgo del Classico e i Prati di Lumen. Le prime **8 specie su 42** usano nuove sagome. I test bilingui seguono il percorso dal borgo all’incontro, selezionano ogni nemico, completano anello e parata, ritirano le ricompense e rileggono il salvataggio. È verificato anche l’ingresso in Cripta dal piano 6. [Catture e prove R5.2](lumen-evidence/README.md)
 
-R6 rifinisce varietà e progressione dopo una prima parte giocabile di R5. R7 comprende animazioni articolate e audio. Il collaudo fisico resta aperto e necessario per la stabile.
+## Prossimo lotto R5.3 — Cripta e navigazione
+
+1. Ridisegnare la Cripta dei Lumi e la vista delle stanze, con percorsi raggiungibili, stato di visita e soglie del boss leggibili sul cerchio.
+2. Completare gli incontri rimasti con Mimic e Re delle Ossa e misurare la leggibilità di trappole, tesori, mercante e uscita.
+3. Verificare in IT/EN ingresso normale e dal piano 6, una stanza a scelta, lotta, bottino, ritorno e ripresa dopo lo spegnimento. Proseguire con le regioni successive e le relative specie in lotti di massimo otto.
+
+Zaino, bottega, forgia, missioni e mappa restano nel perimetro di R5. R6 rifinisce varietà e progressione. R7 comprende animazioni articolate e audio. Il collaudo fisico resta aperto per la stabile.

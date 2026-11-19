@@ -1,5 +1,13 @@
 # Note di versione
 
+## 0.8.0-preview.2 — 19 novembre 2026
+
+- Ridisegnati il borgo del Classico e i Prati di Lumen. La radura dei combattimenti tiene i dettagli ai margini e lascia spazio alle sagome.
+- Integrati Gelatino, Fungotto, Lupo grigio, Scintillo, Scheletro, Pipistrello, Spettro e Re Gelatino.
+- Nei combattimenti di Lumen e della Cripta, comandi e bersagli hanno aree di tocco separate. La testata mostra il bersaglio selezionato e la mossa imminente.
+- Corretta la cache degli effetti di combattimento. I buffer di ombre, scintille e bagliori restano validi finché sono usati da LVGL.
+- Aggiunta una prova bilingue dal borgo alla vittoria, con anello, parata, ricompensa e rilettura del salvataggio v4. Il collaudo sul Pocket resta aperto.
+
 ## 0.8.0-preview.1 — 19 novembre 2026
 
 - Nuovo archivio per creazione, scheda eroe, abilità, promozioni, atlante ed equipaggiamento del Classico. Pannelli e comandi condividono font, colori e stati di pressione.

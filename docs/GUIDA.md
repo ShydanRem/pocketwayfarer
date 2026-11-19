@@ -119,3 +119,11 @@ Le prime avanzate sono Cavaliere, Berserker, Elementalista, Arcanista, Ramingo, 
 Sono aggiornate anche le altre quattro famiglie: Paladino/Sacerdote, Campione/Mistico, Fabbro/Alchimista e Negromante/Stregone. Le ampolle sulla cintura dell’Alchimista sono decorazioni del costume: non indicano quante pozioni possiedi. I requisiti delle promozioni restano invariati.
 
 Tutte le sedici maestre hanno un costume dedicato. Ogni avanzata conduce alla propria maestra: servono **livello 45 e classe avanzata 40**. Dopo la conferma, la classe riparte da 1 e può arrivare a 50; conservi le abilità già apprese e il tuo aspetto. Le otto abilità disponibili provengono dalla linea base → avanzata → maestra. Non puoi saltare direttamente dalla base alla maestra o scegliere quella dell’altro ramo.
+
+## Dal borgo ai Prati di Lumen
+
+![Il borgo del Classico, i Prati di Lumen e un incontro con tre mostri sullo schermo circolare](img/hero_rig/lumen-classico.png)
+
+Apri **… → Classico → Mappa** e tocca **Prati di Lumen** nella parte bassa della mappa. **Combatti** consuma un punto Stamina e apre un incontro. **Caccia auto** avvia la caccia offline. **Cripta dei Lumi** apre la discesa a stanze. Quando il tuo record raggiunge il piano 5, puoi partire dal piano 6.
+
+Tocca attorno alla sagoma di un mostro per sceglierlo. Una stella lo indica e il suo nome appare in alto. Con **Attacco** tocca quando l’anello raggiunge il riferimento dorato. Quando vedi il messaggio di parata, tocca quando arriva l’onda. In entrambe le fasi puoi usare anche BOOT. La mossa annunciata compare sopra l’arena.
