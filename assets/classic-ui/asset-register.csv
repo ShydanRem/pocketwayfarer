@@ -1,0 +1,2 @@
+asset,origin,source,license_or_terms,modifications,verification
+archive,OpenAI ImageGen,source/archive.png,Applicable generation-tool terms,Nearest-neighbor to 466x466 and 240-color RGB565 palette,Deterministic import and native LVGL captures

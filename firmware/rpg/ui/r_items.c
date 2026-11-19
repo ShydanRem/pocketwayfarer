@@ -8,10 +8,6 @@ static lv_obj_t *dlg;
 static void close_dlg(lv_event_t *e) { (void)e; kit_dialog_close(dlg); dlg = NULL; }
 static void on_go(lv_event_t *e) { r_go((int)(intptr_t)lv_event_get_user_data(e)); }
 
-static const wf_text slot_names[SLOT_COUNT] = {{"Arma", "Weapon"}, {"Mano sinistra", "Off-hand"}, {"Testa", "Head"},
-                                               {"Corpo", "Body"}, {"Piedi", "Feet"}, {"Accessorio", "Accessory"},
-                                               {"Accessorio", "Accessory"}};
-
 static lv_obj_t *item_button(lv_obj_t *parent, const rpg_item *it, int x, int y, int size, lv_event_cb_t cb, intptr_t user) {
     lv_obj_t *b = kit_round_button(parent, NULL, NULL, x, y, size, COL_PANEL_HI, cb, user);
     lv_obj_set_style_radius(b, 14, 0);
@@ -51,32 +47,47 @@ static void on_slot(lv_event_t *e) {
         return;
     }
     r_item_dialog(it, NULL, &dlg);
-    kit_dialog_button(dlg, TR("Togli", "Remove"), COL_BAD, on_unequip, slot);
-    kit_dialog_button(dlg, "Ok", COL_PANEL_HI, close_dlg, 0);
+    r_character_dialog_style(dlg);
+    r_character_button_style(kit_dialog_button(dlg, TR("Togli", "Remove"), COL_BAD, on_unequip, slot), false);
+    r_character_button_style(kit_dialog_button(dlg, TR("Chiudi", "Close"), COL_PANEL_HI, close_dlg, 0), true);
 }
 
 void scr_equip(void) {
-    lv_obj_t *s = kit_screen(NULL);
-    lv_obj_set_style_bg_color(s, lv_color_hex(0x1a1830), 0);
+    static const wf_text captions[SLOT_COUNT] = {
+        {"Arma", "Weapon"}, {"Secondaria", "Off-hand"}, {"Testa", "Head"},
+        {"Corpo", "Body"}, {"Piedi", "Feet"}, {"Accessorio 1", "Accessory 1"}, {"Accessorio 2", "Accessory 2"},
+    };
+    static const int pos[SLOT_COUNT][2] = {
+        {96, 230}, {370, 230}, {CX, 119}, {147, 318}, {319, 318}, {113, 138}, {353, 138},
+    };
+    lv_obj_t *s = r_character_screen();
+    kit_label(s, &ln_font_title, RC_GOLD, TR("Equipaggiamento", "Equipment"), CX, 51);
     hero_look l;
     hero_look_from_game(&l, &R.g);
-    hero_obj(s, &l, HX_IDLE, 3, CX, 222);
-    const int lower=hero_uses_rig(&l)?344:336,left=hero_uses_rig(&l)?110:130,right=hero_uses_rig(&l)?356:336;
-    const int pos[SLOT_COUNT][2] = {{96, 230}, {370, 230}, {CX, 96}, {150, lower}, {316, lower}, {left, 130}, {right, 130}};
+    fx_shadow(s, CX, 302, 72);
+    hero_obj(s, &l, HX_IDLE, 3, CX, 221);
     for (int i = 0; i < SLOT_COUNT; i++) {
-        item_button(s, &R.g.hero.equip[i], pos[i][0], pos[i][1], 66, on_slot, i);
-        if (rpg_item_empty(&R.g.hero.equip[i])) {
-            lv_obj_t *caption=kit_label(s, &wf_font_small, COL_DIM, TX(slot_names[i]), pos[i][0], pos[i][1]);
-            lv_obj_set_width(caption,58);lv_label_set_long_mode(caption,LV_LABEL_LONG_WRAP);kit_pos(caption,pos[i][0],pos[i][1]);
+        const rpg_item *item = &R.g.hero.equip[i];
+        bool empty = rpg_item_empty(item);
+        int x = pos[i][0], y = pos[i][1];
+        lv_obj_t *slot = item_button(s, item, x, y, 56, on_slot, i);
+        r_character_button_style(slot, false);
+        if (empty) {
+            lv_obj_t *plus = r_text(slot, "+", RC_MUTED, &ln_font_title);
+            lv_obj_center(plus);
+        } else {
+            lv_obj_set_style_border_color(slot, lv_color_hex(rarity_color(item->rarity)), 0);
         }
+        kit_label(s, &ln_font_body, RC_IVORY, TX(captions[i]), x, i == SLOT_HEAD ? y - 40 : y + 41);
     }
     rpg_stats st;
     rpg_stats_get(&R.g, &st);
     char buf[64];
     snprintf(buf, sizeof buf, "ATK %ld · MATK %ld · %s %ld", (long)st.atk, (long)st.matk, TR("DIF", "DEF"), (long)st.def);
-    kit_label(s, &wf_font_small, COL_ENERGY, buf, CX, hero_uses_rig(&l)?392:380);
-    kit_text_button(s, TR("Zaino", "Bag"), CX + 62, 428, 110, 44, COL_BTN, on_go, R_BAG);
-    kit_round_button(s, ri(RI_BACK), NULL, CX - 50, 428, 48, COL_PANEL_HI, on_go, R_TOWN);
+    r_character_panel(s, CX, 387, 288, 29);
+    kit_label(s, &ln_font_body, RC_MUTED, buf, CX, 387);
+    r_character_button(s, TR("Indietro", "Back"), CX - 51, 426, 96, 42, false, on_go, R_TOWN_CLASSIC);
+    r_character_button(s, TR("Zaino", "Bag"), CX + 51, 426, 96, 42, true, on_go, R_BAG);
 }
 
 /* ---- Bag -------------------------------------------------------------------------------- */

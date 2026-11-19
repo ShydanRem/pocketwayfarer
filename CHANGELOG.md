@@ -1,5 +1,12 @@
 # Note di versione
 
+## 0.8.0-preview.1 — 19 novembre 2026
+
+- Nuovo archivio per creazione, scheda eroe, abilità, promozioni, atlante ed equipaggiamento del Classico. Pannelli e comandi condividono font, colori e stati di pressione.
+- La creazione mostra le otto tappe. La scheda dell’eroe riserva una riga intera alla classe. Le abilità mostrano il grado accanto al comando e mantengono la posizione dell’elenco dopo un miglioramento.
+- Gli slot dell’equipaggiamento mostrano nomi e stato anche a colpo d’occhio. Le schede Eroe ed Equip tornano al borgo del Classico con touch e BOOT.
+- Collaudo su host e build ESP32-S3. [Prove R5.1](docs/roadmap/classic-ui-evidence/README.md)
+
 ## 0.7.0-preview.2 — 19 novembre 2026
 
 - R4.2 completa le sedici maestre. Templare, Ierofante, Gran Maestro, Asceso, Forgiarune, Trasmutatore, Signore della Morte ed Evocavuoto ricevono costumi, copricapi e illustrazioni dedicati. Tutte le 40 classi adottano il nuovo trattamento.

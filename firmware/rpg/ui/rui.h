@@ -60,6 +60,19 @@ void hero_obj_set_pose(lv_obj_t *img, const hero_look *l, int expr, int preset, 
 void hero_obj_pose(lv_obj_t *img, int pose);
 
 /* Shared bits --------------------------------------------------------------- */
+LV_FONT_DECLARE(ln_font_body)
+LV_FONT_DECLARE(ln_font_title)
+#define RC_IVORY 0xfff1d9
+#define RC_MUTED 0xb7ced3
+#define RC_GOLD 0xf6c775
+#define RC_SURFACE 0x101d28
+lv_obj_t *r_character_screen(void);
+lv_obj_t *r_character_panel(lv_obj_t *parent, int x, int y, int w, int h);
+lv_obj_t *r_character_dialog(const char *title, const char *body, const wf_sprite *icon);
+void r_character_dialog_style(lv_obj_t *dialog);
+void r_character_button_style(lv_obj_t *button, bool accent);
+lv_obj_t *r_character_button(lv_obj_t *parent, const char *text, int x, int y, int w, int h,
+                             bool accent, lv_event_cb_t cb, intptr_t user);
 uint32_t rarity_color(int r);
 const wf_sprite *item_icon(const rpg_item *it);
 lv_obj_t *r_list(lv_obj_t *parent, int x, int y, int w, int h);
