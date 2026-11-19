@@ -1,6 +1,6 @@
 # Registro di avanzamento
 
-Aggiornato il 19 novembre 2026. Consegna corrente `0.8.0-preview.3`. [Roadmap operativa](../ROADMAP.md)
+Aggiornato il 19 novembre 2026. Consegna corrente `0.8.0-preview.4`. [Roadmap operativa](../ROADMAP.md)
 
 ## Consegna R1 — atlante delle classi, 0.4.1-preview.1
 
@@ -20,8 +20,8 @@ Aggiornato il 19 novembre 2026. Consegna corrente `0.8.0-preview.3`. [Roadmap op
 | Nuovi avatar modulari classici | **40/40**, otto basi, sedici avanzate e sedici maestre |
 | Fallback legacy delle evoluzioni | 0 classi valide |
 | Assetti Lanternbound nel nuovo trattamento | 3/3; sistema separato |
-| Luoghi classici ridisegnati | Borgo, Prati di Lumen, Cripta dei Lumi |
-| Mostri del Classico ridisegnati | **10/42** |
+| Luoghi classici ridisegnati | Borgo, Prati di Lumen, Cripta dei Lumi, Riva di Vetro e Tempio Sommerso |
+| Mostri del Classico ridisegnati | **18/42** |
 | Nuovo collaudo sul Pocket | Aperto |
 
 ## Consegna R2 — rig e otto basi, 0.5.0-preview.1
@@ -82,10 +82,14 @@ La preview `0.8.0-preview.2` ridisegna il borgo del Classico e i Prati di Lumen.
 
 La mappa distingue il prossimo passo, la stanza attuale, le stanze visitate e quelle ancora da scoprire. I comandi **Esci** e **Scorte** sono sempre nella stessa posizione. Il Mimic e il Re delle Ossa sono integrati con un nuovo fondale. Se torni al borgo dopo aver battuto il Re Gelatino al piano 5, il record sblocca l’ingresso al piano 6. [Catture e prove R5.3](crypt-evidence/README.md)
 
-## Prossimo lotto R5.4 — Riva di Vetro e Tempio Sommerso
+## Consegna R5.4 — Riva di Vetro e Tempio Sommerso
 
-1. Misurare la resa e il costo di un fondale a risoluzione intera e a metà risoluzione. Usare il risultato per il lotto costiero.
-2. Ridisegnare sabbia, vetro marino e rovine sommerse con un’area di gioco neutra. Integrare otto specie della regione, con un profilo distinto per Granchio corazzato e Leviatano.
-3. Verificare in italiano e inglese ingresso dal mondo appena sbloccato, area, dungeon, formazioni fino a tre, due boss e ritorno al borgo. Registrare le catture e il budget del firmware.
+Il nuovo campo usa ardesia al tramonto e il Tempio usa pietra verde sommersa. Otto specie sono integrate. Campo, battaglie e dungeon usano i controlli già introdotti a Lumen. Il confronto nativo ha portato a scegliere 233 × 233 per entrambi i fondali. Il percorso in IT/EN parte dalla Riva bloccata, attraversa i due boss e si chiude con il Bosco raggiungibile. [Catture, prove e budget](shore-evidence/README.md)
 
-Seguono Bosco, Caverne, Guglie e interfacce di servizio nei lotti R5.5–R5.8. Il collaudo fisico può procedere in parallelo e serve per la stabile. [Sequenza e criteri](../ROADMAP.md#r5--unificare-il-resto-del-gioco)
+## Prossimo lotto R5.5 — Bosco Sussurrante e Radici Antiche
+
+1. Integrare un bosco con ombre fredde e una fascia di combattimento leggibile. Nel dungeon distinguere radici, nodi raggiungibili e soglie dei boss.
+2. Ridisegnare otto specie. Verificare in particolare le sagome scure del Lupo nero e della Fata oscura, e distinguere il Ragno tessitore dalla Regina Ragno per dimensione e forma.
+3. Verificare il passaggio dalla Riva al Bosco e lo sblocco delle Caverne sul renderer in italiano e inglese. Registrare catture, salvataggio e budget.
+
+Seguono Caverne, Guglie e interfacce di servizio. Il collaudo fisico può procedere in parallelo e serve per la stabile. [Sequenza e criteri](../ROADMAP.md#r5--unificare-il-resto-del-gioco)

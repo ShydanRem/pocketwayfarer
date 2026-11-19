@@ -5,6 +5,7 @@
 #include "rui.h"
 #include "art/crypt_art.h"
 #include "art/lumen_art.h"
+#include "art/shore_art.h"
 
 rpg_ui_state R;
 
@@ -12,9 +13,17 @@ uint32_t r_now(void) { return wf_platform_now_s(); }
 int r_hour(void) { return (int)((r_now() / 3600u + R.g.hour_offset) % 24u); }
 const wf_sprite *ri(int id) { return &rpg_ui_icons[id]; }
 
+static const wf_sprite *const illustrated_scenes[RS_COUNT] = {
+    [RS_FIELD_MEADOW] = &classic_lumen_meadow,
+    [RS_FIELD_SHORE] = &classic_shore,
+    [RS_DUNGEON_CRYPT] = &classic_crypt,
+    [RS_DUNGEON_TEMPLE] = &classic_temple,
+};
+
+bool r_scene_illustrated(int scene) { return illustrated_scenes[scene] != NULL; }
+
 lv_obj_t *r_scene(int scene) {
-    if (scene == RS_FIELD_MEADOW) return kit_screen(&classic_lumen_meadow);
-    if (scene == RS_DUNGEON_CRYPT) return kit_screen(&classic_crypt);
+    if (r_scene_illustrated(scene)) return kit_screen(illustrated_scenes[scene]);
     lv_obj_t *s = kit_screen(&rpg_scenes[scene]);
     const rpg_scene_fx *f = &rpg_scene_fxs[scene];
     fx_scene(s, f->lights, f->nlights, f->particles, f->color, 16);

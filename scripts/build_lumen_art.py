@@ -22,7 +22,7 @@ SPECIES = [
 ]
 
 
-def monster_entries(emitter, source, species_limits, columns, rows, prefix):
+def monster_entries(emitter, source, species_limits, columns, rows, prefix, *, crop_boxes=None):
     entries = []
     with Image.open(source) as image:
         if image.mode != "RGBA" or image.width != image.height * 2:
@@ -30,8 +30,9 @@ def monster_entries(emitter, source, species_limits, columns, rows, prefix):
         size = image.size
         for i, (species, max_width, max_height) in enumerate(species_limits):
             row, col = divmod(i, columns)
-            box = (round(col * image.width / columns), round(row * image.height / rows),
-                   round((col + 1) * image.width / columns), round((row + 1) * image.height / rows))
+            box = crop_boxes[i] if crop_boxes is not None else (
+                round(col * image.width / columns), round(row * image.height / rows),
+                round((col + 1) * image.width / columns), round((row + 1) * image.height / rows))
             cell = image.crop(box)
             alpha = np.asarray(cell.getchannel("A")) >= 128
             ys, xs = np.where(alpha)

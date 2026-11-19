@@ -83,8 +83,9 @@ static void on_enter(lv_event_t *e) {
 
 void scr_zone(void) {
     const rpg_zone_info *z = rpg_zone(R.zone);
-    lv_obj_t *s = r_scene(RS_FIELD_MEADOW + z->field_scene);
-    if (z->field_scene == 0) {
+    int scene = RS_FIELD_MEADOW + z->field_scene;
+    lv_obj_t *s = r_scene(scene);
+    if (r_scene_illustrated(scene)) {
         r_character_panel(s, CX, 99, 306, 100);
         kit_label(s, &ln_font_title, RC_GOLD, TX(z->field_name), CX, 75);
         lv_obj_t *intro = kit_label(s, &ln_font_body, RC_IVORY, TX(z->blurb), CX, 118);
@@ -130,15 +131,13 @@ void scr_zone(void) {
 static lv_obj_t *d_hp, *d_sp;
 static lv_point_precise_t line_pts[RPG_COLS + RPG_ROWS * RPG_COLS * RPG_COLS][2];
 
-static int room_x(int c, bool crypt) { return crypt ? CX + (c - 1) * 102 : 140 + c * 93; }
-static int room_y(int r, bool crypt) { return crypt ? 340 - r * 58 : 360 - r * 72; }
-
-static bool in_crypt(void) {
-    return R.g.run.active && rpg_zone(R.g.run.zone)->dungeon_scene == 0;
-}
+static int room_x(int c, bool illustrated) { return illustrated ? CX + (c - 1) * 102 : 140 + c * 93; }
+static int room_y(int r, bool illustrated) { return illustrated ? 340 - r * 58 : 360 - r * 72; }
 
 static lv_obj_t *dungeon_dialog(const char *title, const char *body, const wf_sprite *icon) {
-    return in_crypt() ? r_character_dialog(title, body, icon) : kit_dialog(title, body, icon);
+    int scene = RS_DUNGEON_CRYPT + rpg_zone(R.g.run.zone)->dungeon_scene;
+    return R.g.run.active && r_scene_illustrated(scene)
+           ? r_character_dialog(title, body, icon) : kit_dialog(title, body, icon);
 }
 
 static void leave_to_town(const char *title, const char *body, const wf_sprite *icon) {
@@ -307,7 +306,7 @@ static void on_supplies(lv_event_t *e) {
     kit_dialog_button(dlg, "X", COL_PANEL_HI, close_dlg, 0);
 }
 
-static void crypt_room(lv_obj_t *s, const rpg_run *run, int row, int col) {
+static void illustrated_room(lv_obj_t *s, const rpg_run *run, int row, int col) {
     static const wf_text room_names[ROOM_KIND_COUNT] = {
         [ROOM_FIGHT] = {"Lotta", "Fight"}, [ROOM_ELITE] = {"Élite", "Elite"},
         [ROOM_CHEST] = {"Forziere", "Chest"}, [ROOM_TRAP] = {"Trappola", "Trap"},
@@ -352,15 +351,16 @@ void scr_dungeon(void) {
     if (!run->active) { r_go(R_TOWN); return; }
     R.shop_in_dungeon = false;
     const rpg_zone_info *z = rpg_zone(run->zone);
-    bool crypt = z->dungeon_scene == 0;
-    lv_obj_t *s = r_scene(RS_DUNGEON_CRYPT + z->dungeon_scene);
-    kit_dim(s, crypt ? 96 : 150);
+    int scene = RS_DUNGEON_CRYPT + z->dungeon_scene;
+    bool illustrated = r_scene_illustrated(scene);
+    lv_obj_t *s = r_scene(scene);
+    kit_dim(s, illustrated ? 96 : 150);
     r_vitals_arcs(s, &d_hp, &d_sp);
     rpg_stats st;
     rpg_stats_get(&R.g, &st);
     r_vitals_update(d_hp, d_sp, R.g.hero.hp, st.max_hp, R.g.hero.sp, st.max_sp);
     char buf[96];
-    if (crypt) {
+    if (illustrated) {
         r_character_panel(s, CX, 55, 264, 52);
         kit_label(s, &ln_font_title, RC_GOLD, TX(z->dungeon_name), CX, 44);
         snprintf(buf, sizeof buf, TR("Piano %d/%d · %lu oro", "Floor %d/%d · %lu gold"),
@@ -379,18 +379,18 @@ void scr_dungeon(void) {
             for (int d = 0; d < RPG_COLS; d++) {
                 bool link = r < 0 ? run->rooms[0][d] != 0 : ((run->links[r][c] >> d) & 1);
                 if (!link) continue;
-                line_pts[nl][0].x = room_x(r < 0 ? 1 : c, crypt);
-                line_pts[nl][0].y = r < 0 ? (crypt ? 397 : 422) : room_y(r, crypt);
-                line_pts[nl][1].x = room_x(d, crypt);
-                line_pts[nl][1].y = room_y(r + 1, crypt);
+                line_pts[nl][0].x = room_x(r < 0 ? 1 : c, illustrated);
+                line_pts[nl][0].y = r < 0 ? (illustrated ? 397 : 422) : room_y(r, illustrated);
+                line_pts[nl][1].x = room_x(d, illustrated);
+                line_pts[nl][1].y = room_y(r + 1, illustrated);
                 lv_obj_t *ln = lv_line_create(s);
                 lv_line_set_points(ln, line_pts[nl], 2);
                 bool walked = (r < 0 ? run->row >= 0 && run->col == d && run->row == 0 : false) ||
                               (r >= 0 && r < run->row && ((run->cleared[r] >> c) & 1) && ((run->cleared[r + 1] >> d) & 1));
-                bool next = crypt && r == run->row && (r < 0 || c == run->col);
-                uint32_t color = next ? RC_GOLD : crypt ? (walked ? 0x81c2b9 : 0x4a4a68) : (walked ? COL_GOLD : 0x6a6a8a);
+                bool next = illustrated && r == run->row && (r < 0 || c == run->col);
+                uint32_t color = next ? RC_GOLD : illustrated ? (walked ? 0x81c2b9 : 0x4a4a68) : (walked ? COL_GOLD : 0x6a6a8a);
                 lv_obj_set_style_line_color(ln, lv_color_hex(color), 0);
-                lv_obj_set_style_line_width(ln, crypt && !next ? 2 : 4, 0);
+                lv_obj_set_style_line_width(ln, illustrated && !next ? 2 : 4, 0);
                 lv_obj_set_style_line_rounded(ln, true, 0);
                 nl++;
             }
@@ -400,8 +400,8 @@ void scr_dungeon(void) {
         for (int c = 0; c < RPG_COLS; c++) {
             int kind = run->rooms[r][c];
             if (!kind) continue;
-            if (crypt) {
-                crypt_room(s, run, r, c);
+            if (illustrated) {
+                illustrated_room(s, run, r, c);
                 continue;
             }
             bool reach = rpg_room_reachable(run, r, c);
@@ -419,10 +419,10 @@ void scr_dungeon(void) {
     /* the hero marker */
     hero_look l;
     hero_look_from_game(&l, &R.g);
-    int hx = crypt || run->row < 0 ? CX : room_x(run->col, false);
-    int hy = crypt ? 398 : run->row < 0 ? 418 : room_y(run->row, false) - 34;
+    int hx = illustrated || run->row < 0 ? CX : room_x(run->col, false);
+    int hy = illustrated ? 398 : run->row < 0 ? 418 : room_y(run->row, false) - 34;
     hero_obj(s, &l, HX_IDLE, 1, hx, hy);
-    if (crypt) {
+    if (illustrated) {
         r_character_button(s, TR("Esci", "Exit"), 136, 397, 100, 42, false, on_exit_ask, 0);
         r_character_button(s, TR("Scorte", "Supplies"), 330, 397, 100, 42, false, on_supplies, 0);
         return;

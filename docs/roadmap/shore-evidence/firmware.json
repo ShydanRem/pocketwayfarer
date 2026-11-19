@@ -1,0 +1,24 @@
+{
+  "date": "2026-11-19",
+  "milestone": "R5.4-glass-shore",
+  "app_version": "0.8.0-preview.4",
+  "target": "ESP32-S3",
+  "idf_version": "5.5.1",
+  "bytes": 4792704,
+  "sha256": "a0767ea66dbda305f7da66bc7d07e5e32970179c517a03f547da9b72f9a63ec3",
+  "app_partition_bytes": 6291456,
+  "save_version": 4,
+  "save_bytes": 2808,
+  "classic_species_redesigned": 18,
+  "shore_captures": 14,
+  "physical_device_tested": false,
+  "backdrop_comparison": {
+    "source_resolution_full": 466,
+    "source_resolution_preview": 233,
+    "full_app_bytes": 5118448,
+    "full_backdrops_payload_bytes": 434730,
+    "preview_backdrops_payload_bytes": 108986,
+    "flash_bytes_saved": 325744,
+    "expanded_rgb565_bytes_per_backdrop": 434312
+  }
+}

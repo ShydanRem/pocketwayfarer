@@ -135,3 +135,11 @@ Tocca attorno alla sagoma di un mostro per sceglierlo. Una stella lo indica e il
 La mappa procede dal basso verso l’alto. Scegli una stanza con il bordo dorato, collegata alla tua posizione. **Qui** indica la stanza in cui sei. **Visitata** marca una sosta precedente e **?** indica una stanza ancora da scoprire. I nodi dorati mostrano il tipo di stanza prima che tu entri. Una stanza ordinaria costa 2 punti Stamina.
 
 In basso **Scorte** apre pozioni ed eteri. **Esci** chiede se usare una pergamena di ritorno. Puoi tornare al borgo anche dalle scale, tenendo il bottino. Dopo aver battuto il Re Gelatino al piano 5 puoi scegliere di rientrare dal piano 6 in una discesa successiva. Battere il Re delle Ossa al piano 10 sblocca la Riva di Vetro.
+
+## Alla Riva di Vetro
+
+![Riva di Vetro, gruppo di tre mostri e Leviatano sullo schermo circolare](img/hero_rig/riva-classico.png)
+
+Superata la Cripta dei Lumi, tocca **Riva di Vetro** sul lato sinistro della mappa del mondo. Gli incontri all’aperto coprono i livelli **10–20**. Da qui puoi aprire anche il **Tempio Sommerso**. Scegli le stanze dal basso verso l’alto seguendo i collegamenti dorati.
+
+Al piano 5 il **Granchio corazzato** apre il checkpoint del piano 6. Al piano 10 il **Leviatano** chiude la discesa e sblocca il **Bosco Sussurrante**.
