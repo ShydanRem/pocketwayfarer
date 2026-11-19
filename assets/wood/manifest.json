@@ -1,0 +1,188 @@
+{
+  "generator": "OpenAI ImageGen",
+  "sha256": {
+    "environments-prompt.txt": "f6861063a08afb2e33e99f5a01a87f4e89a257b2722153e3f6afee5636f04868",
+    "environments.png": "41535cb7f860a9a44a6cfdaace60304de26c0e8c6e861761ef2545fab7852bc8",
+    "monsters-prompt.txt": "e6d263ffbe2ef593bb3f8424a8beed32a84081eba2a4b8071519815a0e5ae0c9",
+    "monsters.png": "952fa0aeee7c74ffd6c9cfbf0fafcd8ebc23ef08bb20185cf44a618b766991f7"
+  },
+  "environment_source_size": [
+    1774,
+    887
+  ],
+  "environment_runtime_size": [
+    233,
+    233
+  ],
+  "environment_display_size": [
+    466,
+    466
+  ],
+  "monster_source_size": [
+    1774,
+    887
+  ],
+  "monsters": [
+    {
+      "species": "SP_TREANT",
+      "runtime_size": [
+        37,
+        42
+      ],
+      "source_cell": [
+        0,
+        0,
+        443,
+        423
+      ],
+      "source_cell_bbox": [
+        52,
+        37,
+        356,
+        382
+      ]
+    },
+    {
+      "species": "SP_OWL",
+      "runtime_size": [
+        37,
+        45
+      ],
+      "source_cell": [
+        443,
+        0,
+        834,
+        423
+      ],
+      "source_cell_bbox": [
+        60,
+        30,
+        349,
+        383
+      ]
+    },
+    {
+      "species": "SP_DIRE_WOLF",
+      "runtime_size": [
+        51,
+        34
+      ],
+      "source_cell": [
+        834,
+        0,
+        1342,
+        423
+      ],
+      "source_cell_bbox": [
+        27,
+        68,
+        486,
+        373
+      ]
+    },
+    {
+      "species": "SP_SPIDER",
+      "runtime_size": [
+        46,
+        30
+      ],
+      "source_cell": [
+        1342,
+        0,
+        1774,
+        423
+      ],
+      "source_cell_bbox": [
+        28,
+        124,
+        388,
+        357
+      ]
+    },
+    {
+      "species": "SP_TOXIC_SHROOM",
+      "runtime_size": [
+        45,
+        44
+      ],
+      "source_cell": [
+        0,
+        423,
+        400,
+        887
+      ],
+      "source_cell_bbox": [
+        20,
+        59,
+        384,
+        414
+      ]
+    },
+    {
+      "species": "SP_DARK_FAIRY",
+      "runtime_size": [
+        41,
+        47
+      ],
+      "source_cell": [
+        400,
+        423,
+        768,
+        887
+      ],
+      "source_component_seed": [
+        575,
+        640
+      ],
+      "source_cell_bbox": [
+        15,
+        48,
+        349,
+        430
+      ]
+    },
+    {
+      "species": "SP_ELDER_STUMP",
+      "runtime_size": [
+        77,
+        45
+      ],
+      "source_cell": [
+        690,
+        423,
+        1322,
+        887
+      ],
+      "source_component_seed": [
+        1040,
+        630
+      ],
+      "source_cell_bbox": [
+        14,
+        50,
+        627,
+        405
+      ]
+    },
+    {
+      "species": "SP_SPIDER_QUEEN",
+      "runtime_size": [
+        76,
+        64
+      ],
+      "source_cell": [
+        1322,
+        423,
+        1774,
+        887
+      ],
+      "source_cell_bbox": [
+        5,
+        42,
+        442,
+        410
+      ]
+    }
+  ],
+  "conversion": "Nearest-neighbor, indexed RGB565, at most 240 scenery colors, at most 96 monster colors and binary alpha"
+}

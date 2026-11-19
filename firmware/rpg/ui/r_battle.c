@@ -6,6 +6,7 @@
 #include "art/crypt_art.h"
 #include "art/lumen_art.h"
 #include "art/shore_art.h"
+#include "art/wood_art.h"
 
 enum { PH_INTRO, PH_CHOOSE, PH_SKILLS, PH_RING, PH_ANIM, PH_TELEGRAPH, PH_PARRY, PH_END };
 enum { AFTER_HERO, AFTER_NEXT_FOE, AFTER_TELEGRAPH, AFTER_FOE, AFTER_ROUND };
@@ -38,9 +39,14 @@ static struct {
 static const wf_sprite *foe_sprite(int species, bool windup) {
     if (species == SP_MIMIC) return &classic_crypt_mimic;
     if (species == SP_BONE_KING) return &classic_crypt_bone_king;
-    if (classic_shore_monsters[species].px) return &classic_shore_monsters[species];
-    const wf_sprite *art = &classic_lumen_monsters[species];
-    return art->px ? art : &rpg_monsters[species][windup];
+    static const wf_sprite *const illustrated_monsters[] = {
+        classic_lumen_monsters, classic_shore_monsters, classic_wood_monsters,
+    };
+    for (unsigned i = 0; i < sizeof illustrated_monsters / sizeof illustrated_monsters[0]; i++) {
+        const wf_sprite *art = &illustrated_monsters[i][species];
+        if (art->px) return art;
+    }
+    return &rpg_monsters[species][windup];
 }
 
 void r_start_battle(const rpg_foe *foes, int n, bool dungeon, bool boss) {

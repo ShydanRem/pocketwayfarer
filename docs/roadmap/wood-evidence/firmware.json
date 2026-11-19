@@ -1,0 +1,15 @@
+{
+  "date": "2026-11-19",
+  "milestone": "R5.5-whispering-wood",
+  "app_version": "0.8.0-preview.5",
+  "target": "ESP32-S3",
+  "idf_version": "5.5.1",
+  "bytes": 4922416,
+  "sha256": "4ce1543d181509b7f24a8be14680d5eadffcf9f3c49fdcf34a95f96bd88147ac",
+  "app_partition_bytes": 6291456,
+  "save_version": 4,
+  "save_bytes": 2808,
+  "classic_species_redesigned": 26,
+  "wood_captures": 16,
+  "physical_device_tested": false
+}

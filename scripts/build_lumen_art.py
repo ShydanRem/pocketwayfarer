@@ -6,7 +6,7 @@ import json
 from pathlib import Path
 
 import numpy as np
-from PIL import Image
+from PIL import Image, ImageDraw
 
 from build_art import Emitter
 from build_lantern_art import indexed
@@ -22,7 +22,7 @@ SPECIES = [
 ]
 
 
-def monster_entries(emitter, source, species_limits, columns, rows, prefix, *, crop_boxes=None):
+def monster_entries(emitter, source, species_limits, columns, rows, prefix, *, crop_boxes=None, component_seeds=None):
     entries = []
     with Image.open(source) as image:
         if image.mode != "RGBA" or image.width != image.height * 2:
@@ -35,6 +35,17 @@ def monster_entries(emitter, source, species_limits, columns, rows, prefix, *, c
                 round((col + 1) * image.width / columns), round((row + 1) * image.height / rows))
             cell = image.crop(box)
             alpha = np.asarray(cell.getchannel("A")) >= 128
+            seed = component_seeds.get(species) if component_seeds is not None else None
+            if seed is not None:
+                # A neighboring silhouette enters this width but is separated
+                # by transparent pixels. Keep only the seeded component.
+                mask = Image.fromarray(alpha.astype(np.uint8) * 255).copy()
+                point = (seed[0] - box[0], seed[1] - box[1])
+                if mask.getpixel(point) != 255:
+                    raise ValueError(f"Missing alpha component for {species}")
+                ImageDraw.floodfill(mask, point, 128)
+                alpha = np.asarray(mask) == 128
+                cell.putalpha(Image.fromarray(alpha.astype(np.uint8) * 255))
             ys, xs = np.where(alpha)
             if not xs.size or alpha[0].any() or alpha[-1].any() or alpha[:, 0].any() or alpha[:, -1].any():
                 raise ValueError(f"Missing or clipped monster in {species}")

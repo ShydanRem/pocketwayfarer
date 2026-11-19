@@ -1,6 +1,6 @@
 # Registro di avanzamento
 
-Aggiornato il 19 novembre 2026. Consegna corrente `0.8.0-preview.4`. [Roadmap operativa](../ROADMAP.md)
+Aggiornato il 19 novembre 2026. Consegna corrente `0.8.0-preview.5`. [Roadmap operativa](../ROADMAP.md)
 
 ## Consegna R1 — atlante delle classi, 0.4.1-preview.1
 
@@ -20,8 +20,8 @@ Aggiornato il 19 novembre 2026. Consegna corrente `0.8.0-preview.4`. [Roadmap op
 | Nuovi avatar modulari classici | **40/40**, otto basi, sedici avanzate e sedici maestre |
 | Fallback legacy delle evoluzioni | 0 classi valide |
 | Assetti Lanternbound nel nuovo trattamento | 3/3; sistema separato |
-| Luoghi classici ridisegnati | Borgo, Prati di Lumen, Cripta dei Lumi, Riva di Vetro e Tempio Sommerso |
-| Mostri del Classico ridisegnati | **18/42** |
+| Luoghi classici ridisegnati | Borgo, Prati di Lumen, Cripta dei Lumi, Riva di Vetro, Tempio Sommerso, Bosco Sussurrante e Radici Antiche |
+| Mostri del Classico ridisegnati | **26/42** |
 | Nuovo collaudo sul Pocket | Aperto |
 
 ## Consegna R2 — rig e otto basi, 0.5.0-preview.1
@@ -86,10 +86,14 @@ La mappa distingue il prossimo passo, la stanza attuale, le stanze visitate e qu
 
 Il nuovo campo usa ardesia al tramonto e il Tempio usa pietra verde sommersa. Otto specie sono integrate. Campo, battaglie e dungeon usano i controlli già introdotti a Lumen. Il confronto nativo ha portato a scegliere 233 × 233 per entrambi i fondali. Il percorso in IT/EN parte dalla Riva bloccata, attraversa i due boss e si chiude con il Bosco raggiungibile. [Catture, prove e budget](shore-evidence/README.md)
 
-## Prossimo lotto R5.5 — Bosco Sussurrante e Radici Antiche
+## Consegna R5.5 — Bosco Sussurrante e Radici Antiche
 
-1. Integrare un bosco con ombre fredde e una fascia di combattimento leggibile. Nel dungeon distinguere radici, nodi raggiungibili e soglie dei boss.
-2. Ridisegnare otto specie. Verificare in particolare le sagome scure del Lupo nero e della Fata oscura, e distinguere il Ragno tessitore dalla Regina Ragno per dimensione e forma.
-3. Verificare il passaggio dalla Riva al Bosco e lo sblocco delle Caverne sul renderer in italiano e inglese. Registrare catture, salvataggio e budget.
+La radura color salvia rende leggibile il Lupo nero. Nelle Radici Antiche spiccano le ali della Fata oscura. Il Ragno tessitore ha una sagoma bassa e ramata, la Regina Ragno ha un addome alto e zampe color avorio. Le prove in italiano e inglese coprono tre bersagli, una trappola, il checkpoint e lo sblocco delle Caverne. [Catture, prove e budget](wood-evidence/README.md)
 
-Seguono Caverne, Guglie e interfacce di servizio. Il collaudo fisico può procedere in parallelo e serve per la stabile. [Sequenza e criteri](../ROADMAP.md#r5--unificare-il-resto-del-gioco)
+## Prossimo lotto R5.6 — Caverne di Brace e Fucina Infernale
+
+1. Disegnare i due ambienti con lava e bagliori ai margini. Lasciare il pavimento centrale uniforme abbastanza da leggere le sagome calde.
+2. Integrare otto specie. Dare forme distinguibili al Golem di lava, al Drago di cenere e al Signore dei Demoni, anche durante colpi e parata.
+3. Verificare in IT/EN il passaggio dal Bosco alle Caverne, la discesa e lo sblocco delle Guglie. Registrare catture, salvataggio e budget.
+
+Seguono Guglie e interfacce di servizio. Il collaudo fisico può procedere in parallelo e serve per la stabile. [Sequenza e criteri](../ROADMAP.md#r5--unificare-il-resto-del-gioco)
