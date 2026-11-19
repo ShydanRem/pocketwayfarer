@@ -15,7 +15,7 @@ def inventory():
     art=(ROOT/'firmware/rpg/ui/art/class_art.h').read_text()
     rig_count=int(re.search(r'#define HERO_RIG_CLASS_COUNT (\d+)',rig)[1])
     art_count=int(re.search(r'#define CLASS_ART_COUNT (\d+)',art)[1])
-    assert rig_count==art_count==32, 'Review admitted class coverage'
+    assert rig_count==art_count==40, 'Review admitted class coverage'
     data=(ROOT/'firmware/rpg/core/data.c').read_text().split('class_names[RPG_CLASS_COUNT] = {',1)[1].split('\n};',1)[0]
     names=re.findall(r'\{T\("([^"]+)", "([^"]+)"\), T',data)
     assert len(names)==40, 'Review roadmap when the class schema changes'

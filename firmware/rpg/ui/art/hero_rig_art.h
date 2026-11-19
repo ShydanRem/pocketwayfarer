@@ -3,7 +3,7 @@
 #include "sprite.h"
 #include "rpg.h"
 typedef struct { wf_sprite s; int16_t x,y; const uint8_t *roles; } hero_rig_layer;
-#define HERO_RIG_CLASS_COUNT 32
+#define HERO_RIG_CLASS_COUNT 40
 extern const uint8_t rig_class_families[HERO_RIG_CLASS_COUNT];
 extern const uint8_t rig_class_tiers[HERO_RIG_CLASS_COUNT];
 extern const uint8_t rig_rigid_arms[HERO_RIG_CLASS_COUNT];

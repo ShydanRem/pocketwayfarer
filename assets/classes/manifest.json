@@ -1,7 +1,7 @@
 {
   "tool": "OpenAI ImageGen",
   "role": "Exact-class representative illustrations, separate from the customizable player avatar",
-  "count": 32,
+  "count": 40,
   "class_ids": [
     0,
     1,
@@ -34,7 +34,15 @@
     28,
     29,
     30,
-    31
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39
   ],
   "batches": [
     {
@@ -302,6 +310,72 @@
       ],
       "shared_scale": 0.1890547263681592,
       "source_identity": "exec-fca3f64a-0534-46e6-bcdf-c970dde9f98c.png"
+    },
+    {
+      "source": "assets/classes/source/master-b.png",
+      "sha256": "d4a34130bf0a0cbf58f6e4ad057de2eb8275dcc5c5c9520177ad94d79a4aeb8d",
+      "class_ids": [
+        32,
+        33,
+        34,
+        35,
+        36,
+        37,
+        38,
+        39
+      ],
+      "source_cell_bounds": [
+        [
+          131,
+          27,
+          378,
+          434
+        ],
+        [
+          101,
+          25,
+          368,
+          435
+        ],
+        [
+          110,
+          34,
+          343,
+          435
+        ],
+        [
+          113,
+          31,
+          337,
+          435
+        ],
+        [
+          106,
+          37,
+          387,
+          420
+        ],
+        [
+          109,
+          30,
+          333,
+          421
+        ],
+        [
+          91,
+          28,
+          356,
+          421
+        ],
+        [
+          101,
+          28,
+          329,
+          421
+        ]
+      ],
+      "shared_scale": 0.18536585365853658,
+      "source_identity": "exec-a1b665ea-89f2-4f99-ac45-3a8217eb21bb.png"
     }
   ],
   "grid": [
@@ -315,7 +389,8 @@
     "advanced-b-layout-repair-prompt.txt": "568359961c8e8e4adf3ba245d02dfba3a68f8c220263f87c43ab8d1c2c68f6a0",
     "advanced-b-prompt.txt": "5c02519ded7a9a5b763381e44b64e0f62803db3cd42d994e0220fc89e7f40d1d",
     "base-classes-prompt.txt": "53c5a3d473418e0df42e2c044fa3fd420cd980e5902596503de4c6511ddd7c75",
-    "master-a-prompt.txt": "97468c1c5cd181930d4c4711a4a43f63e93b012fa23c6cd1b47dc5c039eaf5bc"
+    "master-a-prompt.txt": "97468c1c5cd181930d4c4711a4a43f63e93b012fa23c6cd1b47dc5c039eaf5bc",
+    "master-b-prompt.txt": "34f0765028ef173bcf61b2be96392022052ff16f7d3014350aef52bb779c1fc3"
   },
   "transforms": [
     "shared scale within each eight-class batch",

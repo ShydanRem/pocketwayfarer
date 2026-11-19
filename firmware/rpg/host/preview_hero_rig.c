@@ -185,16 +185,16 @@ static void class_mapping(void) {
     for(int cls=0;cls<RPG_CLASS_COUNT;cls++) {
         profile(rpg_class_family(cls),0,1,0,1);R.g.hero.cls=(uint8_t)cls;
         hero_look look;hero_look_from_game(&look,&R.g);
-        assert(look.class_id==cls && hero_uses_rig(&look)==(cls<HERO_RIG_CLASS_COUNT));
+        assert(look.class_id==cls && hero_uses_rig(&look));
         for(int preset=1;preset<=3;preset++)
-            assert(hero_size(&look,preset)==(cls<HERO_RIG_CLASS_COUNT?(preset==3?176:preset==2?88:44):48*preset));
+            assert(hero_size(&look,preset)==(preset==3?176:preset==2?88:44));
         r_save_now();rpg_game decoded;assert(rpg_save_decode(saved,saved_len,&decoded));
         assert(decoded.hero.cls==cls && decoded.hero.hair_color==R.g.hero.hair_color);
     }
-    puts("40 exact class IDs, explicit advanced/master fallback, size presets and save v4 roundtrips passed");
+    puts("40 exact class IDs, all modular costumes, size presets and save v4 roundtrips passed");
 }
 static void large_vitals(void) {
-    const int classes[]={8,10,16,17,23,24,25,26,27,28,29,30,31,39};
+    const int classes[]={8,10,16,17,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39};
     for(int lang=0;lang<2;lang++)for(unsigned i=0;i<sizeof classes/sizeof classes[0];i++) {
         int cls=classes[i];profile(cls,RACE_HUMAN,1,0,1);
         R.g.hero.level=99;for(int s=0;s<ST_COUNT;s++)R.g.hero.stat[s]=99;
@@ -208,7 +208,7 @@ static void large_vitals(void) {
 }
 static void master_stats(void) {
     unsigned checks=0;
-    for(int lang=0;lang<2;lang++)for(int cls=24;cls<32;cls++)for(int level=45;level<=99;level+=54) {
+    for(int lang=0;lang<2;lang++)for(int cls=24;cls<RPG_CLASS_COUNT;cls++)for(int level=45;level<=99;level+=54) {
         profile(cls,RACE_HUMAN,4,5,7);R.g.hero.level=(uint8_t)level;
         wf_lang=R.g.lang=(uint8_t)lang;r_go(R_HERO);run(30);
         lv_obj_t *screen=lv_screen_active(),*hero=avatar(screen),*column=NULL;assert(hero);
@@ -266,7 +266,7 @@ int main(int argc,char **argv) {
     changing_look();
     allocation_recovery();
     class_mapping();
-    printf("battle footer:%u actual opaque glyph pixels inside circle and below avatar; level99 rig and legacy stress passed\n",footer_ink_pixels);
+    printf("battle footer:%u actual opaque glyph pixels inside circle and below avatar; level99 all master rig stress passed\n",footer_ink_pixels);
     printf("hero rig native:%d screenshots,actual creation-adjacent classic views,formations,save/wake,full/incremental render and control separation passed;peak%zu image bytes\n",shots,peak_image_bytes);
     return 0;
 }

@@ -18,6 +18,13 @@
     ]
   },
   "fixed_palette_note": "Alchemist decorative flask belt uses fixed costume colors, including purple shades similar to the magenta skin marker; coordinates are logical half-open rectangles.",
-  "rigid_arm_classes": [24,30],
-  "rigid_arm_note": "Long continuous Dragon Knight/Night Blade capes use coherent upper-costume translations and matching held-item mounts until R7 has separate limb/cape masks. Avoid tearing the flattened cape with rectangular arm offsets; soles remain planted."
+  "rigid_arm_classes": [
+    24,
+    30,
+    33,
+    35,
+    38,
+    39
+  ],
+  "rigid_arm_note": "Continuous long capes/robes use coherent upper-costume translations and matching held-item mounts until R7 has separate limb/cloth masks. Native review confirmed IDs24/30/33/35/38/39; avoid tearing flattened fabric with rectangular arm offsets. Sole threshold is applied after race compression."
 }

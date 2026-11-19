@@ -1,5 +1,12 @@
 # Note di versione
 
+## 0.7.0-preview.2 — 19 novembre 2026
+
+- R4.2 completa le sedici maestre. Templare, Ierofante, Gran Maestro, Asceso, Forgiarune, Trasmutatore, Signore della Morte ed Evocavuoto ricevono costumi, copricapi e illustrazioni dedicati. Tutte le 40 classi adottano il nuovo trattamento.
+- Le pose preliminari di Ierofante, Asceso, Signore della Morte ed Evocavuoto spostano veste e prese insieme per evitare strappi orizzontali. Le suole rimangono ferme per tutte le razze.
+- Verificate 307.200 combinazioni estetiche e 1.003 catture native. I test coprono tutte le promozioni maestre in italiano e inglese, i requisiti di livello, le abilità ereditate e la compatibilità con i salvataggi v4.
+- Firmware di circa 3,59 MiB nella partizione da 6 MiB. Collaudo sul dispositivo ancora aperto. [Prove R4.2](docs/roadmap/master-b-evidence/README.md).
+
 ## 0.7.0-preview.1 — 18 novembre 2026
 
 - R4.1: costumi modulari, copricapi default e illustrazioni specifiche per Cavaliere del Drago, Signore della Guerra, Arcimago, Cronomante, Signore delle Bestie, Arco della Tempesta, Lama Notturna e Maestro di Lame. Copertura reale **32/40**, con le altre otto maestre ancora in fallback esplicito.

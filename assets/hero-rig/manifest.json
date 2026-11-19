@@ -40,7 +40,15 @@
     28,
     29,
     30,
-    31
+    31,
+    32,
+    33,
+    34,
+    35,
+    36,
+    37,
+    38,
+    39
   ],
   "class_families": [
     0,
@@ -74,7 +82,15 @@
     2,
     2,
     3,
-    3
+    3,
+    4,
+    4,
+    5,
+    5,
+    6,
+    6,
+    7,
+    7
   ],
   "class_tiers": [
     0,
@@ -108,11 +124,23 @@
     2,
     2,
     2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
+    2,
     2
   ],
   "rigid_arm_classes": [
     24,
-    30
+    30,
+    33,
+    35,
+    38,
+    39
   ],
   "heads_scale": 0.09819855657214298,
   "hair_scale": 0.05705061499600003,
@@ -372,6 +400,70 @@
         108.97160883280758
       ],
       "scale": 0.1645421786566315
+    },
+    {
+      "component": "costume32",
+      "anchor": [
+        226.2446633825944,
+        105.376026272578
+      ],
+      "scale": 0.15920448032818202
+    },
+    {
+      "component": "costume33",
+      "anchor": [
+        225.89847009735743,
+        107.34909596662031
+      ],
+      "scale": 0.16017204743299748
+    },
+    {
+      "component": "costume34",
+      "anchor": [
+        227.27947019867548,
+        107.90596026490066
+      ],
+      "scale": 0.16044725797025636
+    },
+    {
+      "component": "costume35",
+      "anchor": [
+        228.38420348058904,
+        107.87014725568942
+      ],
+      "scale": 0.16042953020134226
+    },
+    {
+      "component": "costume36",
+      "anchor": [
+        226.88450704225352,
+        106.09014084507042
+      ],
+      "scale": 0.15906525466812577
+    },
+    {
+      "component": "costume37",
+      "anchor": [
+        225.84475524475525,
+        106.07972027972028
+      ],
+      "scale": 0.1590601844721666
+    },
+    {
+      "component": "costume38",
+      "anchor": [
+        227.43716577540107,
+        106.9572192513369
+      ],
+      "scale": 0.15948827292110873
+    },
+    {
+      "component": "costume39",
+      "anchor": [
+        227.9655612244898,
+        106.66326530612245
+      ],
+      "scale": 0.15934461086269974
     }
   ],
   "hand_mounts": [
@@ -694,6 +786,86 @@
         56,
         55
       ]
+    ],
+    [
+      [
+        33,
+        56
+      ],
+      [
+        57,
+        55
+      ]
+    ],
+    [
+      [
+        31,
+        57
+      ],
+      [
+        57,
+        56
+      ]
+    ],
+    [
+      [
+        31,
+        56
+      ],
+      [
+        57,
+        55
+      ]
+    ],
+    [
+      [
+        31,
+        56
+      ],
+      [
+        57,
+        55
+      ]
+    ],
+    [
+      [
+        32,
+        57
+      ],
+      [
+        57,
+        57
+      ]
+    ],
+    [
+      [
+        31,
+        57
+      ],
+      [
+        57,
+        56
+      ]
+    ],
+    [
+      [
+        31,
+        56
+      ],
+      [
+        57,
+        55
+      ]
+    ],
+    [
+      [
+        32,
+        56
+      ],
+      [
+        57,
+        55
+      ]
     ]
   ],
   "sources": {
@@ -713,11 +885,15 @@
     "hats.png": "de86755b799e8c3b1b128151bd388b1f5c551c02ca94380444c1567b7d27afa7",
     "heads-prompt.txt": "3f0ddc953050ffdad6c4fc0a3732a03b902117509ff31de56a38ee8b80c1b948",
     "heads.png": "7b9d2a3b3baa97f9d7dd88108fdebf7ff1eecd117f18311d2ed9e026da43e3f7",
-    "layout.json": "35f8ff6d80d5ad28afe622273b21ec85f54e29aba949973485ab199bcbac1217",
+    "layout.json": "4e2cdd7522b8e736524fc0d43caca5452cae14cd532c141279c254bc73eb4df6",
     "master-a-hats-prompt.txt": "195a11f21c4fda1fd861eab495c55b9ebc8c8ad79e8750d3a66b5b323112fef7",
     "master-a-hats.png": "e29d7bf26a01e1c2b6003c0e3bfca2da2c16d3f1ecf760038d060c7c0968e582",
     "master-a-outfits-prompt.txt": "167a0c3a37e5caf70c99c7d406082d0bb30687db4fca6d984c7df10121d033f6",
     "master-a-outfits.png": "9d68ffd444fbe8189c24401e75b9761c3348b2c2c281a1198e1ebf8b93682491",
+    "master-b-hats-prompt.txt": "19a7f8bd742bd6a7725e4d2aa6243c08df16915eb53f5c89e7f8d91493002f28",
+    "master-b-hats.png": "f5ed4fdca56e8ef390adc966b0863672051c7ff99a67ca7930dd6a06994f624c",
+    "master-b-outfits-prompt.txt": "88b43fdc586c40ab511599d361ba7e90c982d59e82ed3aa30e85a9097bdddbd6",
+    "master-b-outfits.png": "5ab3a68bddab5960cc8262eff08b858977ccad94e9d022ca315774b161c9c255",
     "outfits-prompt.txt": "d1cad56d90b97d7cc0d3de316cf11779979e8b733a0784cb9a3bd52a0b0d3fe1",
     "outfits.png": "1a3722d356c27b387ed83ee586a97d95e4deac385e94b3ad8052f9cadbd74b6e"
   },

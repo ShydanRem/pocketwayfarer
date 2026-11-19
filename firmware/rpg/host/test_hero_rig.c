@@ -86,9 +86,9 @@ static void metadata(void) {
     _Static_assert(IT_SWORD == 0 && IT_KNUCKLE == 6 && IT_SCYTHE == 8,"weapon indices changed");
     _Static_assert(IT_SHIELD == 9 && IT_QUIVER == 10 && IT_TOME == 11 && IT_CHARM == 12,"off-hand indices changed");
     _Static_assert(IT_HELM == 13 && IT_HOOD == 14 && IT_CIRCLET == 15,"head indices changed");
-    _Static_assert(HERO_RIG_CLASS_COUNT == 32,"update the explicit class metadata contract for the next batch");
+    _Static_assert(HERO_RIG_CLASS_COUNT == 40,"update the explicit class metadata contract for the next batch");
     for (unsigned f = 0; f < HERO_RIG_CLASS_COUNT; f++) {
-        /* Freeze core IDs: bases0..7, advanced8..23, masters24..31.
+        /* Freeze core IDs: bases0..7, advanced8..23, masters24..39.
          * Master IDs restart at family0; their UI tier is2, not1. */
         unsigned expected_family = f < FAM_COUNT ? f : f < 24 ? (f-8)/2 : (f-24)/2;
         unsigned expected_tier = f < FAM_COUNT ? 0 : f < 24 ? 1 : 2;
@@ -206,7 +206,7 @@ static void sibling_identity(void) {
     image first, second;
     static const uint8_t siblings[][2] = {
         {8,9},{10,11},{12,13},{14,15},{16,17},{18,19},{20,21},{22,23},
-        {24,25},{26,27},{28,29},{30,31}
+        {24,25},{26,27},{28,29},{30,31},{32,33},{34,35},{36,37},{38,39}
     };
     for (unsigned pair = 0; pair < sizeof siblings/sizeof siblings[0]; pair++)
     for (unsigned race = 0; race < RACE_COUNT; race++)
@@ -275,10 +275,10 @@ static void fixed_decorations(void) {
 }
 
 static void cape_continuity(void) {
-    /* Long left capes must remain intact through the provisional torso lean.
+    /* Long left capes and robe panels must remain intact through the provisional torso lean.
      * Observe the composed pixels below the arm/neck, without held equipment,
      * class hat, tail or long hair supplying pixels that could hide a tear. */
-    static const unsigned classes[] = {24,30};
+    static const unsigned classes[] = {24,30,33,35,38,39};
     static const struct { int pose, dx; } leans[] = {
         {HP_ATTACK,2},{HP_GUARD,-1},{HP_HIT,-2}
     };

@@ -2,5 +2,5 @@
 #pragma once
 #include "sprite.h"
 #include "rpg.h"
-#define CLASS_ART_COUNT 32
+#define CLASS_ART_COUNT 40
 extern const wf_sprite class_portraits[CLASS_ART_COUNT];

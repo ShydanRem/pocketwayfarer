@@ -1,6 +1,6 @@
 # Registro di avanzamento
 
-Aggiornamento: 18 novembre 2026. Consegna corrente: `0.7.0-preview.1`.
+Aggiornamento: 19 novembre 2026. Consegna corrente `0.7.0-preview.2`.
 
 ## Consegna R1 — atlante delle classi, 0.4.1-preview.1
 
@@ -16,9 +16,9 @@ Aggiornamento: 18 novembre 2026. Consegna corrente: `0.7.0-preview.1`.
 |---|---|
 | Regole delle classi classiche | 40/40 già presenti nel core |
 | Illustrazioni base R1 | 8/8 importate, mostrate e verificate nell'atlante |
-| Illustrazioni specifiche delle evoluzioni | **24/32**, tutte le avanzate e otto maestre; le altre otto esplicitano il riferimento familiare |
-| Nuovi avatar modulari classici | **32/40**, otto basi, sedici avanzate e otto maestre; aspetto e oggetti conservati |
-| Fallback legacy delle evoluzioni | 8 maestre, quattro combinazioni famiglia/grado; rami fratelli ancora condivisi fino a R4.2 |
+| Illustrazioni specifiche delle evoluzioni | **32/32**, tutte le avanzate e tutte le maestre |
+| Nuovi avatar modulari classici | **40/40**, otto basi, sedici avanzate e sedici maestre |
+| Fallback legacy delle evoluzioni | 0 classi valide |
 | Assetti Lanternbound nel nuovo trattamento | 3/3; sistema separato |
 | Nuovo collaudo sul Pocket | Aperto |
 
@@ -62,12 +62,17 @@ Aggiornamento: 18 novembre 2026. Consegna corrente: `0.7.0-preview.1`.
 
 **Correzioni necessarie:** la colonna Statistiche automatica entrava nel canale avatar con i nomi lunghi. Ora usa 260 px centrati a 290, con tutte le quattro righe dentro il cerchio. Le cappe lunghe di Drago/Lama Notturna evitano il taglio rettangolare del braccio con una posa coerente e prese degli oggetti solidali; le maschere articolate restano R7. [Prove R4.1](master-a-evidence/README.md). Animazione definitiva, R5 e collaudo fisico rimangono aperti.
 
-## Prossimo lotto: R4.2 — ultime otto maestre
+## Consegna R4.2 — tutte le 40 classi
 
-Ordine: Templare (32), Ierofante (33), Gran Maestro (34), Asceso (35), Forgiarune (36), Trasmutatore (37), Signore della Morte (38), Evocavuoto (39). Obiettivo: `0.7.0-preview.2`. La copertura 40/40 verrà dichiarata solo dopo integrazione e prove.
+La preview `0.7.0-preview.2` completa Templare (32), Ierofante (33), Gran Maestro (34), Asceso (35), Forgiarune (36), Trasmutatore (37), Signore della Morte (38) ed Evocavuoto (39). Tutti gli ID validi usano costumi modulari e illustrazioni dedicate. Le 32 verifiche dei percorsi base → avanzata → maestra coprono tutti i rami in italiano e inglese, comprese soglie, abilità ereditate e salvataggi v4.
 
-1. Due firme per ramo sotto lo stesso elmo, costume/copricapo e illustrazione; stessi ancoraggi e canali estetici, nessuna nuova famiglia o array persistente.
-2. Estendere metadata e matrice al grado UI 2 per le altre quattro famiglie; conservare le regressioni della cintura Alchimista e dei nomi lunghi.
-3. Completare i percorsi touch base → avanzata → maestra per tutti i sedici rami, soglie 45/40, abilità ereditate e salvataggio v4.
-4. Rivedere cinque pose, grigio/same-helmet, equipaggiamento e scene reali IT/EN; nominativi lunghi e dialoghi senza tagli.
-5. Misurare memoria/flash, passare sanitizer e distribuire con download verificati. Poi R5 unifica mondo/UI/mostri; R7 completa animazione/audio. Il collaudo fisico resta separato e necessario per la stabile.
+La revisione delle pose ha individuato e corretto strappi nelle vesti di Ierofante, Asceso, Signore della Morte ed Evocavuoto. I test coprono 307.200 combinazioni estetiche, 1.600 confronti sotto lo stesso elmo, 64 casi di Statistiche a livello 45 e 99 e 1.003 catture native. [Prove R4.2](master-b-evidence/README.md).
+
+## Prossimo lotto R5 — mondo e interfaccia del Classico
+
+1. Rilevare le incoerenze di creazione, scheda eroe, classi e equipaggiamento con catture a 466×466. Consolidare font, pannelli, comandi e ritorno in italiano e inglese.
+2. Applicare il linguaggio visivo al borgo e alle regioni classiche, partendo da una scena completa con interfaccia e combattimento. Tenere libera la zona degli attori e verificare leggibilità, piedi e bersagli.
+3. Inventariare le 42 specie classiche. Rinnovarle per piccoli lotti e verificare gruppi fino a tre, boss ed élite nel renderer con l’interfaccia reale.
+4. Estendere lo stesso trattamento a zaino, bottega, forgia, missioni, mappa e dungeon, con verifiche di memoria e raggiungibilità dei comandi sul cerchio.
+
+R6 rifinisce varietà e progressione dopo una prima parte giocabile di R5. R7 comprende animazioni articolate e audio. Il collaudo fisico resta aperto e necessario per la stabile.
