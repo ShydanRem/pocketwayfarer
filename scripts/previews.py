@@ -49,6 +49,7 @@ if shots:
             ('cripta-classico', 'crypt', ('percorso', 'mimic', 're-delle-ossa')),
             ('riva-classico', 'shore', ('riva', 'trio', 'leviatano')),
             ('bosco-classico', 'wood', ('bosco', 'trio', 'regina-ragno')),
+            ('brace-classico', 'ember', ('brace', 'trio', 'signore-dei-demoni')),
         ]:
             captures = [next(dst.glob(f'*-{prefix}-{part}-it.png'), None) for part in samples]
             if not all(captures):

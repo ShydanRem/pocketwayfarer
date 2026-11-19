@@ -72,6 +72,7 @@ def check(base, commit):
         'cripta-classico': 'hero_rig/cripta-classico',
         'riva-classico': 'hero_rig/riva-classico',
         'bosco-classico': 'hero_rig/bosco-classico',
+        'brace-classico': 'hero_rig/brace-classico',
     }
     for name, source in screenshots.items():
         data,mime=get('assets/screens/'+name+'.png')

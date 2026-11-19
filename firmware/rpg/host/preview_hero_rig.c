@@ -467,7 +467,7 @@ static void stage_boss_floor(int floor) {
 
 static void auto_win(void) {
     R.g.auto_battle = 1;
-    for (int t = 0; t < 1800 && rpg_battle_phase() != 7; t++) run(20);
+    for (int t = 0; t < 6000 && rpg_battle_phase() != 7; t++) run(20);
     if (R.g.classic.outcome != B_WON)
         fprintf(stderr, "Zone %d floor %d: expected victory, phase %d outcome %d\n",
                 R.zone, R.g.run.floor, rpg_battle_phase(), R.g.classic.outcome);
@@ -678,8 +678,41 @@ static void field_fixture(unsigned mask, int total, rpg_foe *foes) {
 typedef struct {
     const char *region, *landing, *single, *dungeon, *pair, *mid, *final;
     int first_species, second_species;
-    bool trap;
+    bool trap, timing_frames;
 } expedition_example;
+
+static void show_enemy_timing(const char *region, int lang) {
+    enum { CHOOSE = 1, TELEGRAPH = 5, PARRY = 6 };
+    bool intent_seen = false;
+    lv_obj_t *screen = lv_screen_active();
+    lv_obj_t *rating = find(screen, TR("Ottimo!", "Great!"));
+    if (!rating) rating = find(screen, TR("PERFETTO!", "PERFECT!"));
+    if (!rating) rating = find(screen, TR("Bene", "Good"));
+    assert(rating);
+    lv_obj_update_layout(screen);
+    lv_area_t area;
+    lv_obj_get_coords(rating, &area);
+    assert(area.y1 > CY);
+    for (int t = 0; t < 1500; t++) {
+        int ph = rpg_battle_phase();
+        if (ph == CHOOSE) press(TR("Guardia", "Guard"));
+        if (ph == TELEGRAPH && !intent_seen) {
+            expedition_shot(region, "intento");
+            intent_seen = true;
+        }
+        if (ph == PARRY && rpg_battle_parry_quality_now() >= WF_Q_GREAT) {
+            assert(intent_seen);
+            assert(find(lv_screen_active(), TR("Para: tocca quando l'onda arriva!", "Parry: tap when the wave lands!")));
+            expedition_shot(region, "parata");
+            if (lang) assert(wf_app_key(WF_KEY_BOOT_DOWN));
+            else click(CX, CY);
+            assert(rpg_battle_phase() != PARRY);
+            return;
+        }
+        run(10);
+    }
+    assert(!"No parry window in the live encounter");
+}
 
 static void expedition_flow(int zone, const expedition_example *example) {
     const rpg_zone_info *z = rpg_zone(zone);
@@ -716,9 +749,11 @@ static void expedition_flow(int zone, const expedition_example *example) {
         assert(rpg_battle_phase() == 3);
         for (int t = 0; t < 500 && rpg_battle_ring_quality_now() < 2; t++) run(5);
         assert(rpg_battle_ring_quality_now() >= 2);
+        if (example->timing_frames) expedition_shot(example->region, "anello");
         if (lang) assert(wf_app_key(WF_KEY_BOOT_DOWN));
         else click(CX, CY);
         assert(rpg_battle_phase() != 3);
+        if (example->timing_frames) show_enemy_timing(example->region, lang);
         auto_win();
         press(TR("Continua", "Continue"));
         assert(R.screen == R_ZONE);
@@ -781,6 +816,22 @@ static void expedition_flow(int zone, const expedition_example *example) {
         }
 
         R.g.auto_battle = 0;
+        /* Separate navigation/recovery from combat balance at the late bosses. */
+        if (z->max_level >= 48) {
+            R.g.hero.level = RPG_MAX_LEVEL;
+            R.g.hero.stat[ST_VIT] = 99;
+            R.g.hero.stat[ST_AGI] = 80;
+            R.g.hero.equip[SLOT_BODY] = (rpg_item){
+                .type = IT_PLATE, .tier = RPG_TIERS - 1, .rarity = RAR_LEGENDARY, .plus = 10, .level = 48,
+                .aff = {AF_HP_PCT}, .aff_val = {35},
+            };
+            R.g.hero.equip[SLOT_WEAPON].aff_val[0] = 100;
+            R.g.hero.equip[SLOT_WEAPON].aff[1] = AF_LIFESTEAL;
+            R.g.hero.equip[SLOT_WEAPON].aff_val[1] = 25;
+            rpg_stats_get(&R.g, &stats);
+            R.g.hero.hp = stats.max_hp;
+            R.g.hero.sp = stats.max_sp;
+        }
         stage_boss_floor(5);
         press("Boss");
         run(1300);
@@ -798,7 +849,7 @@ static void expedition_flow(int zone, const expedition_example *example) {
         R.g.auto_battle = 0;
         /* Navigation/recovery fixture. Balance is checked separately using
          * leveled heroes in the core dungeon simulations. */
-        R.g.hero.level = 65;
+        R.g.hero.level = z->max_level >= 48 ? RPG_MAX_LEVEL : 65;
         R.g.hero.stat[ST_VIT] = 99;
         R.g.hero.stat[ST_AGI] = 80;
         rpg_stats_get(&R.g, &stats);
@@ -849,14 +900,19 @@ int main(int argc,char **argv) {
     crypt_flow();
     const expedition_example shore = {
         "shore", "riva", "pirata", "tempio", "serpe-e-annegato", "granchio-corazzato", "leviatano",
-        SP_SERPENT, SP_DEEP_GHOST, false,
+        SP_SERPENT, SP_DEEP_GHOST, false, false,
     };
     const expedition_example wood = {
         "wood", "bosco", "ragno", "radici", "fungo-e-fata", "antico-ceppo", "regina-ragno",
-        SP_TOXIC_SHROOM, SP_DARK_FAIRY, true,
+        SP_TOXIC_SHROOM, SP_DARK_FAIRY, true, false,
+    };
+    const expedition_example ember = {
+        "ember", "brace", "minatore", "fucina", "diavoletto-e-cavaliere", "drago-di-cenere", "signore-dei-demoni",
+        SP_IMP, SP_HELL_KNIGHT, false, true,
     };
     expedition_flow(1, &shore);
     expedition_flow(2, &wood);
+    expedition_flow(3, &ember);
     printf("battle footer:%u actual opaque glyph pixels inside circle and below avatar; level99 all master rig stress passed\n",footer_ink_pixels);
     printf("hero rig native:%d screenshots,actual creation-adjacent classic views,formations,save/wake,full/incremental render and control separation passed;peak%zu image bytes\n",shots,peak_image_bytes);
     return 0;

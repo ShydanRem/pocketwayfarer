@@ -151,3 +151,11 @@ Al piano 5 il **Granchio corazzato** apre il checkpoint del piano 6. Al piano 10
 Dopo il Tempio Sommerso il **Bosco Sussurrante** compare nella parte alta a sinistra della mappa. Gli incontri all’aperto coprono i livelli **20–32**. Da qui puoi entrare nelle **Radici Antiche**. Le etichette delle stanze raggiungibili indicano il tipo di incontro e permettono di riconoscere una trappola dall’icona e dal nome prima di scegliere.
 
 L’**Antico Ceppo** al piano 5 apre il checkpoint del piano 6. La **Regina Ragno** al piano 10 sblocca le **Caverne di Brace**.
+
+## Nelle Caverne di Brace
+
+![Caverne di Brace, gruppo di tre nemici e Signore dei Demoni](img/hero_rig/brace-classico.png)
+
+Dopo le Radici Antiche, tocca le **Caverne di Brace** nella parte alta a destra della mappa. Gli incontri all’aperto coprono i livelli **32–48**. In battaglia leggi sopra l’arena l’azione annunciata dal nemico. L’onda della parata converge sullo scudo centrale.
+
+Entra nella **Fucina Infernale** dalla schermata delle Caverne. Al piano 5 il **Drago di cenere** apre il checkpoint del piano 6. Il **Signore dei Demoni** al piano 10 sblocca le **Guglie del Cielo**.
