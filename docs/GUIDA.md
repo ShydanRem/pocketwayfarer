@@ -128,13 +128,15 @@ In **Equip** ogni slot mostra il proprio nome. Tocca un oggetto per vederne i de
 
 Tutte le 40 classi usano avatar modulari: scegli razza, carnagione, capelli, occhi e volto nella creazione. Arma, mano secondaria e testa mostrano gli oggetti equipaggiati; senza un oggetto alla testa appare il copricapo della classe. Torso, piedi e accessori influiscono sulle statistiche ma non hanno ancora livelli grafici separati.
 
-Un passaggio di classe conserva i tuoi dati estetici. L’illustrazione nell’atlante resta un rappresentante separato. Il **Paladino**, il **Cavaliere del Drago** e le famiglie **Arciere**, **Mago** e **Occultista** hanno pose di carica, contatto, recupero e parata. Con **Movimento ridotto** queste classi usano pose fisse nei momenti chiave del combattimento.
+Un passaggio di classe conserva i tuoi dati estetici. L’illustrazione nell’atlante resta un rappresentante separato. Le **40 classi** hanno pose di carica, contatto, recupero e parata. Le otto famiglie hanno gesti distinti, adattati all’equipaggiamento indossato. Con **Movimento ridotto** si usano pose fisse nei momenti chiave.
 
 Nel Classico l’eroe è a sinistra e i nemici sono a destra. Tocca un avversario per selezionarlo. **Attacco**, **Abilità**, **Zaino** e **Guardia** sono sotto l’arena. Quando l’anello è attivo, l’istruzione occupa lo spazio dei comandi.
 
 ![Paladino in carica, Cavaliere del Drago all’impatto e Paladino in parata](img/hero_rig/pose-classico.png)
 
 ![Schieramento laterale, colpo dell’Arcimago e parata del Signore della Morte](img/hero_rig/pose-armi-classico.png)
+
+![Lama Notturna nello schieramento laterale, impatto del Gran Maestro e parata del Forgiarune](img/hero_rig/pose-famiglie-classico.png)
 
 Le prime avanzate sono Cavaliere, Berserker, Elementalista, Arcanista, Ramingo, Cecchino, Assassino e Duellante. Il passaggio continua a richiedere livello 20 e classe base 30. Puoi confrontare le due vie da **Classico → Eroe → Classe**, senza cambiare classe finché non confermi **Diventa!**.
 

@@ -74,7 +74,7 @@ typedef struct { render_key key; const lv_image_dsc_t *image; } hero_view;
 static render_key key_for(const hero_look *l,int expr,int preset,int pose) {
     render_key key;memset(&key,0,sizeof key);key.look=*l;
     key.expr=(uint8_t)(expr%4);key.preset=(uint8_t)(preset<1?1:preset>3?3:preset);
-    if (hero_has_combat_rig(l) && R.g.lantern.reduced_motion) {
+    if (hero_uses_rig(l) && R.g.lantern.reduced_motion) {
         if (pose == HP_GUARD_ENTRY || pose == HP_GUARD) pose = HP_GUARD;
         else if (pose == HP_RECOVER || pose == HP_ATTACK) pose = HP_ATTACK;
         else if (pose != HP_WINDUP) pose = HP_IDLE;

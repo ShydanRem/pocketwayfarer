@@ -1,5 +1,11 @@
 # Note di versione
 
+## 0.10.0-preview.4 — 20 novembre 2026
+
+- Guerriero, Ladro, Chierico, Monaco e Artefice ricevono i profili di combattimento. Le nuove pose coprono tutte le 40 classi del Classico.
+- Spada, ascia, pugnale, mazza e martello ruotano attorno alla presa. I tirapugni del Monaco seguono entrambe le mani. Cappe, abiti e copricapo seguono la posa senza spostare le suole.
+- Movimento ridotto usa le pose chiave anche nelle classi di questo lotto e mantiene anello e onda.
+
 ## 0.10.0-preview.3 — 20 novembre 2026
 
 - Battaglie del Classico in vista laterale. L’eroe occupa il lato sinistro, gli avversari hanno bersagli separati a destra e i comandi sono raccolti sotto l’arena.

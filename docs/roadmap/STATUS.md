@@ -1,6 +1,6 @@
 # Registro di avanzamento
 
-Aggiornato il 20 novembre 2026. Consegna corrente `0.10.0-preview.3`. [Roadmap operativa](../ROADMAP.md)
+Aggiornato il 20 novembre 2026. Consegna corrente `0.10.0-preview.4`. [Roadmap operativa](../ROADMAP.md)
 
 ## Consegna R1 — atlante delle classi, 0.4.1-preview.1
 
@@ -127,10 +127,14 @@ Tra carica e contatto cambia l’angolo dell’arma attorno alla presa. In difes
 
 Arciere, Mago e Occultista adottano le nuove pose in tutti i rami. Totale **17 classi su 40**. Il Classico schiera l’eroe a sinistra e fino a tre avversari a destra. In basso si trovano i comandi e le risorse. [Catture e verifiche](classic-weapons-evidence/README.md)
 
-## Prossimo lotto R7.2c — chiusura delle pose del Classico
+## Consegna R7.2c — pose per tutte le 40 classi
 
-1. Calibrare le 23 classi rimanenti di Guerriero, Ladro, Chierico, Monaco e Artefice.
-2. Verificare pugnale, tirapugni e martello con le varianti estetiche integrate nel rig.
-3. Ripetere prove native, misure e controlli di salvataggio su tutta la copertura prevista.
+Guerriero, Ladro, Chierico, Monaco e Artefice portano il totale a **40 classi su 40**. Le catture a 466 × 466 mostrano le otto famiglie in combattimento, con gli oggetti equipaggiati e i bersagli nella vista laterale. [Catture e verifiche](classic-all-poses-evidence/README.md)
+
+## Prossimo lotto R7.3 — audio opzionale
+
+1. Verificare connessioni e uscita audio per la scheda Pocket usata dal firmware.
+2. Misurare sul dispositivo se pochi effetti di attacco, parata e ricompensa possono convivere con l’input.
+3. Se l’uscita è disponibile, integrare volume e muto mantenendo leggibili i segnali visivi.
 
 Il collaudo fisico può procedere in parallelo e serve per la stabile. [Sequenza e criteri](../ROADMAP.md#r6-e-r7--profondità-ritmo-e-feedback)

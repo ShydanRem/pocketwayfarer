@@ -82,6 +82,7 @@ def check(base, commit):
         'servizi-classico': 'hero_rig/servizi-classico',
         'pose-classico': 'hero_rig/pose-classico',
         'pose-armi-classico': 'hero_rig/pose-armi-classico',
+        'pose-famiglie-classico': 'hero_rig/pose-famiglie-classico',
     }
     for name, source in screenshots.items():
         data,mime=get('assets/screens/'+name+'.png')

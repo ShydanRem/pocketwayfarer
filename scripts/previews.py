@@ -55,6 +55,7 @@ if shots:
             ('servizi-classico', 'services', ('bottega', 'forgia', 'missioni')),
             ('pose-classico', None, ('paladin-rig-carica', 'dragon-rig-contatto', 'paladin-rig-parata')),
             ('pose-armi-classico', None, ('stormbow-rig-schieramento', 'archmage-rig-contatto', 'deathlord-rig-parata')),
+            ('pose-famiglie-classico', None, ('nightblade-rig-schieramento', 'grandmaster-rig-contatto', 'runesmith-rig-parata')),
         ]:
             captures = [next(dst.glob(f'*-{prefix + "-" if prefix else ""}{part}-it.png'), None) for part in samples]
             if not all(captures):
@@ -67,6 +68,7 @@ if shots:
         for name, actors in (
             ('transizioni-classico', ('paladin-rig', 'dragon-rig')),
             ('transizioni-armi-classico', ('stormbow-rig', 'archmage-rig', 'deathlord-rig')),
+            ('transizioni-famiglie-classico', ('warlord-rig', 'nightblade-rig', 'hierophant-rig', 'grandmaster-rig', 'runesmith-rig')),
         ):
             frames = [next(dst.glob(f'*-{actor}-{stage}-it.png'), None) for actor in actors for stage in stages]
             if not all(frames):
