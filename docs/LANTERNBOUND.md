@@ -1,6 +1,6 @@
 # Lanternbound — spedizione HD-2D giocabile
 
-Implementazione aggiornata al 20 novembre 2026 (`0.9.0-preview.2`) nella **UI nativa C11/LVGL di Pocket Wayfarer**, per l’AMOLED circolare 466×466. Il firmware e l’eseguibile interattivo Linux usano lo stesso codice. Le immagini sono catture della UI effettiva. [Roadmap](ROADMAP.md)
+Implementazione aggiornata al 20 novembre 2026 (`0.9.0-preview.3`) nella **UI nativa C11/LVGL di Pocket Wayfarer**, per l’AMOLED circolare 466×466. Il firmware e l’eseguibile interattivo Linux usano lo stesso codice. Le immagini sono catture della UI effettiva. [Roadmap](ROADMAP.md)
 
 ![Borgo, combattimento e reliquia](img/lantern/panoramica.png)
 
@@ -11,6 +11,8 @@ Dal borgo **Parti** apre il primo bivio con l’assetto indicato sul pulsante. *
 Nella stanza evento si sceglie Focolare (25 PV o 12 PM) oppure Specchio (offrire 12 PV, avendone più di 12, per Risonanza piena e 8 PM; rifiutare dà 12 PM). Dopo ogni scontro ordinario vengono proposte due reliquie diverse non possedute. A tre slot si può confrontare e sostituire una delle possedute; si può anche rinunciare alla ricompensa. Le sei reliquie modificano parata, danno ai feriti, guardia, scudo iniziale, bruciatura e cura proseguendo. Dopo il boss si conserva un progetto fra le reliquie della run: dalla collezione si può equipaggiare una reliquia iniziale per le spedizioni successive. Occupa uno dei tre slot. Una vittoria senza reliquie termina senza assegnare un progetto. [Regole e prove dello scambio](RELIC-CHOICES.md).
 
 La quarta stanza offre **Sentiero** o **Bastione**. Il primo costa 0 PV e vale 10 oro. Il Bastione costa 12 PV all’ingresso e, se sconfiggi il Granchio di Marea da 88 PV, vale 25 oro. Una spedizione completa rende **80 oro sul Sentiero** o **95 oro col Bastione**. Rientrare conserva tutto, mentre una sconfitta sottrae `floor(oro / 4)`. L’accredito avviene una volta sola anche al riavvio. **Riprova** ripristina la spedizione conservando profilo, oro, progetti, bestiario e opzioni. Fame, stamina e livello del Classico appartengono al profilo fuori dalla spedizione. [Catture, misure e prove del Bastione](roadmap/bastion-evidence/README.md)
+
+Il riepilogo mostra l’oro accreditato e, dopo la sconfitta, la quota persa. Dopo il Faro distingue un progetto nuovo da uno già noto. Puoi aprire la collezione sul progetto conservato o equipaggiarlo direttamente dal riepilogo e ripartire. Il riavvio ripristina esito e reliquia iniziale. [Catture e prove del rientro](roadmap/return-evidence/README.md)
 
 Dal menu `...` si aprono mappa, bestiario con indizi, collezione, opzioni, guida in tre pagine e `Classico`. Una caccia già attiva mostra stato e raccolta nel nuovo borgo; per cominciare una spedizione occorre concludere caccia/dungeon classici attivi. Creazione dettagliata, inventario, 40 classi e mondo precedente restano accessibili nel classico.
 
@@ -78,14 +80,14 @@ L'[audit del 17 novembre](DEVICE-AUDIT-2026-11-17.md) corregge inoltre il cerchi
 |---|---|
 | Asset | Importazione deterministica: 52 immagini, due font, originali e prompt conservati. |
 | Core preesistente | 55.639 controlli RPG e 1.434 del compagno con ASan/UBSan. |
-| Spedizione | **600 partite simulate**, 52.393 snapshot salva/ripristina e 51.509 transizioni. 288 run di base, 288 con tutti i progetti iniziali e politiche rinuncia/sostituzione (6 × 3 × 8 × 2), 24 vittorie senza reliquie. Verificate le venti combinazioni di tre slot. Incontrate tutte le sette specie incluso boss. |
+| Spedizione | **600 partite simulate**, 52.485 snapshot salva/ripristina e 51.509 transizioni. 288 run di base, 288 con tutti i progetti iniziali e politiche rinuncia/sostituzione (6 × 3 × 8 × 2), 24 vittorie senza reliquie. Verificate le venti combinazioni di tre slot. Incontrate tutte le sette specie incluso boss. |
 | Affidabilità | Regressioni oro/morale/missioni/caccia/transazione/navigazione e migrazione v1/v2/v3 superate. |
-| UI nativa | **49 catture, 432 salvataggi validati**: touch/BOOT, abilità/bersaglio, cinque stanze, eventi, reliquia iniziale, pagine del borgo, vittoria/sconfitta/retry, IT/EN, pause e recupero classico. Inclusi confronto di tutti gli effetti, annullamento touch/BOOT, PWR/riavvio durante lo scambio e vittoria senza reliquie. |
+| UI nativa | **58 catture e 530 salvataggi validati**. Touch/BOOT, abilità e bersagli, cinque stanze, rientro, collezione, ripartenza, sconfitta, pausa e recupero in IT/EN. |
 | Regressioni dispositivo/UI | Tre catture del cerchio con frame da 120 ms; touch/BOOT a tempo dell'evento; scadenza, salvataggio lento/fallito, 20 s di schermo spento; 220 immagini stabili, 44 dialoghi e 42 specie di gemme. Sono scenari simulati sullo stesso codice nativo. |
 | Sanitizer UI | LVGL e UI compilati/eseguiti con ASan/UBSan senza errori rilevati. Leak scan finale disattivato perché l’app mantiene la scena attiva. Buffer immagini controllati anche su ricostruzioni ripetute del borgo. |
-| Memoria immagini host | Picco 1.302.884 byte (~1,24 MiB) nella preview Lanternbound. È memoria dei buffer immagini, non consumo totale del firmware o picco di ogni schermata classica. |
+| Memoria immagini host | Picco di 1.200.326 byte (~1,14 MiB) per i buffer immagini durante il percorso nativo Lanternbound. |
 | Desktop interattivo | Avvio, percorso, guida, timing e PWR/ripresa osservati nella precedente preview; migrazione desktop v3 verificata con SDL dummy. La nuova revisione ha catture e input LVGL automatici, senza una nuova prova manuale completa. |
-| Firmware | ESP-IDF 5.5.1, build ESP32-S3 riuscita; dimensione e hash dell’app in [firmware.json](roadmap/evidence/firmware.json). Nessun flash eseguito. |
+| Firmware | Build ESP32-S3 riuscita con ESP-IDF 5.5.1. Il flash sul Pocket resta da verificare. [Dimensione e SHA-256](roadmap/return-evidence/firmware.json) |
 
 Log in [lantern-evidence](lantern-evidence/). La strategia automatica usa offensive quando possibile e attacchi base altrimenti, senza riempire risorse fra incontri salvo l’evento. Senza reliquia iniziale, con timing sempre Bene, vincono 20/24 Sentinelle, 16/24 Piromanti e 15/24 Predoni; sempre Ottimo/Perfetto 24/24, sempre Mancato 0/24. Le 288 run con progetto iniziale usano Ottimo, le 24 senza reliquie Perfetto. Questa è taratura del modello, non una misura del divertimento.
 

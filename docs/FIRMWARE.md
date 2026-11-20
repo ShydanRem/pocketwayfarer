@@ -2,6 +2,8 @@
 
 Per mettere il gioco sul Pocket senza compilare, usa la [guida di installazione USB dal browser](INSTALLAZIONE.md). Per backup e aggiornamenti leggi [SALVATAGGI.md](SALVATAGGI.md).
 
+Le verifiche del rientro Lanternbound registrano dimensione e SHA-256 della build locale ESP32-S3 e la compatibilità del salvataggio v4. [Prove firmware di R6.3](roadmap/return-evidence/README.md)
+
 ## Hardware
 
 Waveshare **ESP32-S3-Touch-AMOLED-1.75**: ESP32-S3R8 (8 MB PSRAM), 16 MB flash,

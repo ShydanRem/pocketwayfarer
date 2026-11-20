@@ -165,6 +165,40 @@ static void relics(void) {
     a.state = LN_PARRY; a.elapsed_ms = 1000; a.sp = 0; a.relics = 1u << LR_HEART;
     assert(ln_tap(&a) && a.sp == 4 && a.resonance == 1); /* +3 relic, +1 end turn */
 }
+static void return_blueprints(void) {
+    rpg_game g;
+    fresh(&g);
+    rpg_lantern *l = &g.lantern;
+    bool unlocked = true;
+    l->state = LN_WON;
+    l->action = LN_GUARD;
+    l->blueprints = 1u << LR_BELL;
+    roundtrip(&g);
+    assert(ln_result_blueprint(l, &unlocked) == -1 && !unlocked);
+    assert(!ln_equip_blueprint(l, LR_COAL));
+    for (int relic = 0; relic < LR_COUNT; relic++) {
+        l->blueprints = 0;
+        l->equipped = 0;
+        for (int repeat = 0; repeat < 2; repeat++) {
+            ln_start(l, LN_SENTINEL, 81);
+            assert(ln_result_blueprint(l, &unlocked) == -1 && !unlocked);
+            assert(!ln_equip_blueprint(l, relic) && !ln_equip_blueprint(l, -1));
+            l->state = LN_BLUEPRINT;
+            l->room = 4;
+            l->relics = 1u << relic;
+            l->currency = 95;
+            assert(ln_keep_blueprint(l, relic));
+            assert(ln_bank(l) == 95 && !ln_bank(l));
+            roundtrip(&g);
+            assert(ln_result_blueprint(l, &unlocked) == relic && unlocked == !repeat);
+            assert(ln_equip_blueprint(l, relic) && l->equipped == relic + 1);
+            roundtrip(&g);
+        }
+        ln_start(l, LN_SENTINEL, 83);
+        assert(l->relics == (1u << relic) && ln_result_blueprint(l, NULL) == -1);
+        assert(ln_retreat(l) && ln_equip_blueprint(l, -1) && !l->equipped);
+    }
+}
 static void relic_exchanges(void) {
     rpg_game g;
     for (unsigned mask = 0; mask < (1u << LR_COUNT); mask++) {
@@ -333,7 +367,7 @@ static void bastion(void) {
 
 int main(void) {
     migration(); timing_pause_and_boundaries(); relics(); relic_exchanges(); coaching_and_feedback();
-    bastion();
+    bastion(); return_blueprints();
     int any_loss = 0;
     for (int q = 0; q <= 3; q++) {
         printf("lantern %s:", q == 0 ? "miss" : q == 1 ? "good" : q == 2 ? "great" : "perfect");

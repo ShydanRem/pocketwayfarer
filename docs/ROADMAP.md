@@ -10,6 +10,10 @@ Un lotto è completato quando entra nel gioco, supera i controlli pertinenti e d
 
 ## Stato reale di partenza
 
+**Consegna R6.3 / 0.9.0-preview.3.** Il riepilogo distingue l’oro accreditato da quello perso e mostra quale progetto hai conservato. Puoi equipaggiarlo o aprire la collezione senza passare dal borgo. Riavvio e partenza successiva sono verificati su host in italiano e inglese. [Catture e prove R6.3](roadmap/return-evidence/README.md)
+
+![Nuovo progetto, reliquia equipaggiata e perdita d’oro nel renderer nativo](img/lantern/rientro-lanternbound.png)
+
 **Consegna R6.2 / 0.9.0-preview.2.** Al quarto bivio il Sentiero è gratuito, mentre il Bastione scambia 12 PV e una lotta più dura per 15 oro in più se vinta. Le due vie sono state percorse con gli stessi due seed in IT/EN. La progressione verso il boss e il rientro anticipato sono verificati, incluso il riavvio. [Catture e confronto R6.2](roadmap/bastion-evidence/README.md)
 
 ![Il bivio, il Granchio del Bastione e l’accesso con PV bassi](img/lantern/bivio-bastione.png)
@@ -165,8 +169,10 @@ Arma, mano secondaria e testa sono i canali grafici dell’equipaggiamento già 
 |---|---|
 | **R6.1 · consegna su host** | Due seed con la Sentinella e confronto prima/dopo nei due idiomi. Il primo bivio si raggiunge con un tocco. Resta da osservare come i giocatori si orientano al primo avvio. |
 | **R6.2 · consegna su host, varietà** | Sentiero e Bastione mostrano prima dell’ingresso costo, nemico e ricompensa. Le tracce sui due seed misurano PV, PM, tempi ed esiti. Nel playtest resta da osservare quando i giocatori scelgono ciascuna via e perché. |
-| **R6.3 · prossimo, ritorno al borgo** | Rendere leggibile cosa si può usare o sbloccare con il bottino. Osservare se il giocatore inizia un altro viaggio e quale obiettivo si dà. Verificare ricompense e salvataggi dopo interruzione. |
-| **R7 · feedback** | Completare pose di attacco e guardia, impatti per ruolo e opzioni di movimento ridotto. Se il percorso audio dell’hardware è praticabile, aggiungere un set breve con muto e volume. |
+| **R6.3 · consegna su host, ritorno al borgo** | Verificati bottino, progetto, equipaggiamento e ripartenza attraverso il riavvio. Da osservare in playtest se il giocatore parte di nuovo e quale obiettivo sceglie. |
+| **R7.1 · prossimo, pose e transizioni** | Rifinire attacco e guardia nei tre assetti Lanternbound. Verificare silhouette, presa degli oggetti, pausa/ripresa, finestra dell’anello e movimento ridotto con catture native. |
+| **R7.2 · feedback del Classico** | Adattare le pose e gli impatti ai rig del Classico, verificando copricapo, mano secondaria e classi con mantello. Controllare leggibilità degli attori e dei bersagli. |
+| **R7.3 · audio opzionale** | Verificare prima l’uscita audio sul Pocket. Se utilizzabile, aggiungere pochi segnali distinti e controlli per volume e muto. Gli stessi eventi devono essere leggibili a schermo. |
 | **R8 · candidata 1.0** | Installazione pulita e aggiornamento da una preview con dati, prove sul Pocket di anello, parata e sonno/risveglio, sessione lunga, controllo del budget e pacchetto di ripristino. |
 
 Il primo obiettivo di design è una scelta comprensibile, non più numeri sullo schermo. Registrare, con consenso e senza introdurre account, osservazioni di playtest: tempi reali di spedizione, motivo delle sconfitte, scelte di percorso/reliquia, uso di Guardia/supporti e volontà di iniziare un altro viaggio. Una sessione di 5–8 minuti è una **ipotesi da provare**, non un dato già misurato.

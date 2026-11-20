@@ -1,5 +1,11 @@
 # Note di versione
 
+## 0.9.0-preview.3 — 20 novembre 2026
+
+- Lanternbound mostra l’oro accreditato a fine spedizione e la quota persa in caso di sconfitta.
+- Il riepilogo distingue un nuovo progetto da uno già in collezione. Mostra l’effetto della reliquia e permette di equipaggiarla per la prossima spedizione.
+- Dal riepilogo puoi aprire la collezione sulla reliquia appena conservata, ripartire o tornare al borgo. Il progetto e l’equipaggiamento si recuperano dopo il riavvio.
+
 ## 0.9.0-preview.2 — 20 novembre 2026
 
 - La quarta stanza di Lanternbound offre il Sentiero, gratuito e da 10 oro, oppure il Bastione, che costa 12 PV e rende 25 oro se vinci. Il Bastione ospita un Granchio di Marea da 88 PV.

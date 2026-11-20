@@ -92,6 +92,7 @@ if shots:
             'guida-e-risonanza': ['32-guida-primo-attacco', '35-parata-perfetta-scudo', '39-risonanza-impatto'],
             'impatto-dei-tre-eroi': ['36-fendente-impatto', '41-brace-impatto', '42-doppio-impatto'],
             'bivio-bastione': ['50-bastione-bivio-it', '51-bastione-combattimento-it', '53-bastion-locked-en'],
+            'rientro-lanternbound': ['55-rientro-progetto', '56-rientro-reliquia-pronta', '58-return-defeat-en'],
         }.items():
             if not all((dst / (name + '.png')).exists() for name in names):
                 continue

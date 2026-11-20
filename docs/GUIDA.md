@@ -76,9 +76,13 @@ Se riavvii durante il confronto ritrovi le due proposte e tutte le reliquie poss
 | Rosa di Brace | I colpi applicano 2 danni di bruciatura per due turni. |
 | Bussola del Faro | Proseguire dopo una stanza recupera fino a 6 PV. |
 
-Dopo la vittoria sul boss scegli un progetto fra le reliquie possedute nella run. Nel borgo apri **Zaino/Collezione**, scorri i progetti e scegli **Equipaggia**. La prossima spedizione partirà con quella reliquia; **Rimuovi** torna a una partenza senza progetto.
+Dopo la vittoria sul boss scegli un progetto fra le reliquie possedute nella spedizione. Il riepilogo mostra il nome, l’effetto e se il progetto è nuovo o già in collezione. Tocca **Equipaggia**, poi **Parti** per iniziare la prossima spedizione con la reliquia in uno dei tre slot.
 
-Puoi rinunciare a tutte le reliquie: vincere senza averne mantiene il premio di 80 monete e aumenta le vittorie, ma non aggiunge un progetto alla collezione.
+**Collezione** apre la scheda del progetto. Puoi cambiare reliquia, usare **Rimuovi** per ripartire senza una reliquia iniziale o premere **Torna** per rivedere il riepilogo. La collezione è accessibile anche dal borgo tramite **Zaino**.
+
+![Riepilogo con nuovo progetto, reliquia equipaggiata e sconfitta in inglese](img/lantern/rientro-lanternbound.png)
+
+Vincere dopo aver rinunciato a tutte le reliquie accredita l’oro e aumenta il numero di vittorie. In quel caso il riepilogo mostra l’eventuale reliquia iniziale o il numero di progetti in collezione.
 
 ## Focolare o Specchio
 
@@ -86,7 +90,7 @@ Il **Focolare** offre fino a 25 PV oppure 12 PM. Lo **Specchio** propone un patt
 
 ## Quando tornare
 
-Le prime quattro stanze valgono 10 monete ciascuna; il boss 40. Completare la spedizione dà quindi **80 monete**. Rientrare fra le stanze conserva tutto l’oro guadagnato. La sconfitta sottrae `floor(oro / 4)` e accredita il resto una sola volta.
+Completare la spedizione dà **80 monete** passando per il Sentiero o **95** passando per il Bastione. Rientrare fra le stanze conserva tutto l’oro guadagnato. La sconfitta sottrae un quarto del bottino arrotondato per difetto. Con 55 oro, per esempio, il riepilogo mostra 42 accreditati e 13 persi. L’accredito avviene una sola volta, anche se riavvii dal riepilogo.
 
 **Riprova** riparte con PV/PM pieni e conserva profilo, oro già depositato, progetti, bestiario e opzioni. Non ci sono attese di stamina per riprovare Lanternbound.
 

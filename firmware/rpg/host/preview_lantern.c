@@ -410,6 +410,87 @@ static void bastion_ui(void) {
     puts("Bastion UI: IT/EN forecast, blocked low HP, resume before/after entry and one reward on return passed");
 }
 
+static void check_label_clearance(const char *upper, const char *lower) {
+    lv_obj_t *screen = lv_screen_active();
+    lv_obj_update_layout(screen);
+    lv_obj_t *first = find(screen, upper), *second = find(screen, lower);
+    assert(first && second);
+    lv_area_t a, b;
+    lv_obj_get_coords(first, &a);
+    lv_obj_get_coords(second, &b);
+    assert(a.y2 < b.y1);
+}
+
+static void return_feedback_ui(void) {
+    for (int lang = 0; lang < 2; lang++) {
+        rpg_new_hero hero = {.lang = (uint8_t)lang};
+        rpg_game_new(&R.g, &hero, seconds, 47);
+        R.loaded = true;
+        wf_lang = R.g.lang;
+        R.g.coach.learned = LNC_ALL;
+        rpg_lantern *l = &R.g.lantern;
+        const char *relic = TX(ln_relic_name(LR_BELL));
+        const char *effect = TX(ln_relic_text(LR_BELL));
+        const uint32_t gold = R.g.gold;
+        ln_start(l, LN_SENTINEL, 97);
+        l->state = LN_BLUEPRINT;
+        l->room = 4;
+        l->currency = 95;
+        l->relics = 1u << LR_BELL;
+        l->blueprints = 1u << LR_COAL;
+        r_go(R_LANTERN);
+        r_save_now();
+        wf_app_start(saved, saved_len);
+        assert(l->state == LN_BLUEPRINT && R.g.gold == gold);
+        press(TR("CONSERVA", "KEEP"));
+        assert(l->state == LN_WON && R.g.gold == gold + 95 && l->settled == 96 && !l->equipped);
+        wf_app_start(saved, saved_len);
+        assert(R.g.gold == gold + 95 && find(lv_screen_active(), TR("Nuovo progetto", "New blueprint")));
+        assert(find(lv_screen_active(), relic) && find(lv_screen_active(), effect));
+        check_label_clearance(effect, TR("Equipaggia", "Equip"));
+        if (!lang) shot("rientro-progetto");
+
+        press(TR("Collezione", "Collection"));
+        assert(find(lv_screen_active(), relic) && find(lv_screen_active(), effect));
+        if (lang) shot("return-collection-en");
+        wf_app_key(WF_KEY_BOOT_SHORT);
+        assert(find(lv_screen_active(), TR("Nuovo progetto", "New blueprint")));
+        press(TR("Collezione", "Collection"));
+        press(TR("Torna", "Back"));
+        press(TR("Equipaggia", "Equip"));
+        assert(l->equipped == LR_BELL + 1);
+        wf_app_start(saved, saved_len);
+        assert(l->equipped == LR_BELL + 1 && R.g.gold == gold + 95);
+        assert(find(lv_screen_active(), TR("Pronta alla partenza", "Ready for next run")));
+        if (!lang) shot("rientro-reliquia-pronta");
+        press(TR("Parti", "Depart"));
+        assert(l->state == LN_ROUTE && l->relics == (1u << LR_BELL));
+        press(TR("Sentiero", "Trail"));
+        assert(l->state == LN_CHOOSE && l->shield == 12);
+
+        l->currency = 55;
+        press("II");
+        press(TR("Abbandona", "Abandon"));
+        assert(l->state == LN_LOST && R.g.gold == gold + 95 + 42);
+        assert(find(lv_screen_active(), TR("+42 oro · 13 persi", "+42 gold · 13 lost")));
+        if (lang) shot("return-defeat-en");
+        press(TR("Riprova", "Retry"));
+        assert(l->state == LN_ROUTE && l->relics == (1u << LR_BELL));
+
+        R.g.gold = UINT32_MAX - 2;
+        l->state = LN_BLUEPRINT;
+        l->room = 4;
+        l->currency = 95;
+        r_go(R_LANTERN);
+        press(TR("CONSERVA", "KEEP"));
+        assert(l->state == LN_WON && R.g.gold == UINT32_MAX && l->settled == 3);
+        check_label_clearance(TR("+2 oro · 4294967295 tot.", "Gold +2 / 4294967295"),
+                              TR("Già in collezione", "Already in collection"));
+        press(TR("Borgo", "Village"));
+    }
+    puts("return UI: IT/EN receipt, power cycle, collection and BOOT, equip and next run, defeat amount and gold cap passed");
+}
+
 static void departure_paths(void) {
     for (int lang = 0; lang < 2; lang++) {
         rpg_new_hero hero = {.lang = (uint8_t)lang};
@@ -657,6 +738,7 @@ int main(int argc, char **argv) {
     no_relic_victory_ui();
     departure_paths();
     bastion_ui();
+    return_feedback_ui();
     size_t stable = image_bytes;
     for (int i = 0; i < 12; i++) { r_go(R_TOWN); run(20); }
     assert(image_bytes == stable);
