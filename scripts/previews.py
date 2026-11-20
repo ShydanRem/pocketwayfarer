@@ -93,6 +93,7 @@ if shots:
             'impatto-dei-tre-eroi': ['36-fendente-impatto', '41-brace-impatto', '42-doppio-impatto'],
             'bivio-bastione': ['50-bastione-bivio-it', '51-bastione-combattimento-it', '53-bastion-locked-en'],
             'rientro-lanternbound': ['55-rientro-progetto', '56-rientro-reliquia-pronta', '58-return-defeat-en'],
+            'pose-lanternbound': ['59-carica-sentinella', '65-contatto-piromante', '73-parata-predone'],
         }.items():
             if not all((dst / (name + '.png')).exists() for name in names):
                 continue
@@ -100,4 +101,15 @@ if shots:
             for i, name in enumerate(names):
                 proof.alpha_composite(Image.open(dst / (name + '.png')).convert('RGBA'), (i * 490 + 12, 12))
             proof.save(dst / (output + '.png'))
+        poses = ('carica', 'contatto', 'recupero', 'entrata-guardia', 'parata')
+        actors = ('sentinella', 'piromante', 'predone')
+        frames = [dst / f'{59 + row * 5 + column}-{pose}-{actor}.png'
+                  for row, actor in enumerate(actors) for column, pose in enumerate(poses)]
+        if all(frame.exists() for frame in frames):
+            sheet = Image.new('RGB', (985, 564), (16, 24, 32))
+            for index, path in enumerate(frames):
+                tile = Image.open(path).crop((36, 108, 225, 287))
+                sheet.paste(tile, (4 + 197 * (index % 5), 4 + 188 * (index // 5)), tile)
+            sheet.save(dst / 'transizioni-lanternbound.png')
+            sheet.convert('L').save(dst / 'transizioni-lanternbound-grigio.png')
 print(f'{len(shots)} previews -> {dst}')

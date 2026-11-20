@@ -1,6 +1,6 @@
 # Roadmap di Pocket Wayfarer
 
-**Aggiornata il 20 novembre 2026.** Il redesign del Classico comprende i cinque ambienti di esplorazione, i cinque dungeon, le 42 creature e le interfacce di servizio. Lanternbound è entrato nella revisione del ritmo e delle scelte. Il [registro di avanzamento](roadmap/STATUS.md) conserva le prove per ogni consegna.
+**Aggiornata il 20 novembre 2026.** Il redesign del Classico comprende i cinque ambienti di esplorazione, i cinque dungeon, le 42 creature e le interfacce di servizio. I tre assetti di Lanternbound hanno ricevuto le transizioni di combattimento. Il [registro di avanzamento](roadmap/STATUS.md) conserva le prove per ogni consegna.
 
 ## Obiettivo e regole di avanzamento
 
@@ -9,6 +9,10 @@ Portare il gioco a un'identità coerente: personaggi riconoscibili, mondo leggib
 Un lotto è completato quando entra nel gioco, supera i controlli pertinenti e dispone di catture native. Un atlas generato, un concept o un punteggio del brief non equivalgono a una funzione completata. Si lavora su un solo lotto principale alla volta; correzioni di crash, salvataggi, input o leggibilità hanno precedenza. Il collaudo fisico può procedere in parallelo quando il Pocket è disponibile: non impedisce di produrre e verificare arte su PC, ma resta necessario per la release stabile.
 
 ## Stato reale di partenza
+
+**Consegna R7.1 / 0.10.0-preview.1.** Sentinella, Piromante e Predone ricevono tre fotogrammi a testa. In combattimento si leggono preparazione, contatto, recupero e ingresso in guardia. I test nativi verificano che la posa si recuperi al riavvio e che arco e onda funzionino anche con movimento ridotto. [Catture e prove R7.1](roadmap/combat-poses-evidence/README.md)
+
+![Carica della Sentinella, impatto del Piromante e parata del Predone nel renderer nativo](img/lantern/pose-lanternbound.png)
 
 **Consegna R6.3 / 0.9.0-preview.3.** Il riepilogo distingue l’oro accreditato da quello perso e mostra quale progetto hai conservato. Puoi equipaggiarlo o aprire la collezione senza passare dal borgo. Riavvio e partenza successiva sono verificati su host in italiano e inglese. [Catture e prove R6.3](roadmap/return-evidence/README.md)
 
@@ -170,8 +174,8 @@ Arma, mano secondaria e testa sono i canali grafici dell’equipaggiamento già 
 | **R6.1 · consegna su host** | Due seed con la Sentinella e confronto prima/dopo nei due idiomi. Il primo bivio si raggiunge con un tocco. Resta da osservare come i giocatori si orientano al primo avvio. |
 | **R6.2 · consegna su host, varietà** | Sentiero e Bastione mostrano prima dell’ingresso costo, nemico e ricompensa. Le tracce sui due seed misurano PV, PM, tempi ed esiti. Nel playtest resta da osservare quando i giocatori scelgono ciascuna via e perché. |
 | **R6.3 · consegna su host, ritorno al borgo** | Verificati bottino, progetto, equipaggiamento e ripartenza attraverso il riavvio. Da osservare in playtest se il giocatore parte di nuovo e quale obiettivo sceglie. |
-| **R7.1 · prossimo, pose e transizioni** | Rifinire attacco e guardia nei tre assetti Lanternbound. Verificare silhouette, presa degli oggetti, pausa/ripresa, finestra dell’anello e movimento ridotto con catture native. |
-| **R7.2 · feedback del Classico** | Adattare le pose e gli impatti ai rig del Classico, verificando copricapo, mano secondaria e classi con mantello. Controllare leggibilità degli attori e dei bersagli. |
+| **R7.1 · consegna su host, pose e transizioni** | Tre assetti verificati con carica, impatto, recupero, guardia, pausa, riavvio e movimento ridotto. Il test fisico resta aperto. |
+| **R7.2 · prossimo, feedback del Classico** | Cominciare da una classe con scudo e da una con mantello lungo. Verificare presa, corpo, copricapo, equipaggiamento e bersagli prima di estendere alle altre famiglie. |
 | **R7.3 · audio opzionale** | Verificare prima l’uscita audio sul Pocket. Se utilizzabile, aggiungere pochi segnali distinti e controlli per volume e muto. Gli stessi eventi devono essere leggibili a schermo. |
 | **R8 · candidata 1.0** | Installazione pulita e aggiornamento da una preview con dati, prove sul Pocket di anello, parata e sonno/risveglio, sessione lunga, controllo del budget e pacchetto di ripristino. |
 

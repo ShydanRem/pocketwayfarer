@@ -4,5 +4,7 @@
 extern const wf_sprite ln_scenes[2];
 extern const wf_sprite ln_actors[3][4];
 extern const wf_sprite ln_relics[6];
-extern const wf_sprite ln_loadouts[3][4];
+enum { LN_POSE_READY, LN_POSE_BREATH, LN_POSE_STRIKE, LN_POSE_BRACE,
+       LN_POSE_WINDUP, LN_POSE_RECOVER, LN_POSE_GUARD_ENTRY, LN_POSE_COUNT };
+extern const wf_sprite ln_loadouts[3][LN_POSE_COUNT];
 extern const wf_sprite ln_bestiary[5][4];

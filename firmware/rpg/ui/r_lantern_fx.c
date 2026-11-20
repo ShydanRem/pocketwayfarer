@@ -95,9 +95,19 @@ void lantern_fx_update(lantern_fx *fx, const rpg_lantern *l, lv_obj_t *hero, lv_
                              : perfect || l->feedback == LN_FEEDBACK_HEAL ? JADE : enemy_hit && !l->last_damage ? AMBER : DANGER;
     /* Freeze at the exact saved phase pose behind pause/preparation panels. */
     if (impact && !l->reduced_motion) {
-        int kick = (int)lroundf(sinf(p * 3.14159265f) * (l->action == LN_POWER ? 18 : 12));
-        if (hero_hit) { hero_dx = kick; foe_dx[actor] = kick / 2; }
-        else if (enemy_hit) { hero_dx = perfect ? 0 : -kick / 2; foe_dx[actor] = -kick; }
+        if (hero_hit) {
+            /* Set the full extension during contact, then settle into recovery. */
+            const int reach = l->action == LN_POWER ? 18 : 12;
+            const int t = l->elapsed_ms;
+            hero_dx = t < LN_POSE_CONTACT_MS ? reach * (t + 60) / (LN_POSE_CONTACT_MS + 60)
+                    : t < LN_POSE_RECOVERY_END_MS
+                      ? reach * (LN_POSE_RECOVERY_END_MS - t) / (LN_POSE_RECOVERY_END_MS - LN_POSE_CONTACT_MS) : 0;
+            foe_dx[actor] = hero_dx / 2;
+        } else if (enemy_hit) {
+            int kick = (int)lroundf(sinf(p * 3.14159265f) * (l->action == LN_POWER ? 18 : 12));
+            hero_dx = perfect ? 0 : -kick / 2;
+            foe_dx[actor] = -kick;
+        }
     }
     /* A paused/preparation scene has no moving effects over the pause surface. */
     if (!l->paused && !preparing && impact) {

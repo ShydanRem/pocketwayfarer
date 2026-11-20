@@ -1,5 +1,11 @@
 # Note di versione
 
+## 0.10.0-preview.1 — 20 novembre 2026
+
+- Nuove pose per i tre assetti di Lanternbound, con carica, contatto, recupero, ingresso in guardia e parata.
+- Gli affondi si chiudono con il recupero della posa. Pausa e riavvio conservano il punto della transizione.
+- Movimento ridotto usa pose fisse per carica, contatto e guardia e mantiene arco e onda di parata.
+
 ## 0.9.0-preview.3 — 20 novembre 2026
 
 - Lanternbound mostra l’oro accreditato a fine spedizione e la quota persa in caso di sconfitta.
