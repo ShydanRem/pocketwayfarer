@@ -187,7 +187,10 @@ static int play(const rpg_event *e) {
                 fx_shake(B.scr, 7, 320);
             }
             kit_flash(t, 0xffffff, 240);
-            if (!R.g.lantern.reduced_motion) kit_shake(t, e->kind == EV_CRIT_HIT ? 10 : 5);
+            /* Keep the layer's idle bob independent from impact feedback on
+             * calibrated fights. Translations on both axes can leave old
+             * pixels in a partial redraw when the sprite is also recolored. */
+            if (!B.combat_rig && !R.g.lantern.reduced_motion) kit_shake(t, e->kind == EV_CRIT_HIT ? 10 : 5);
             snprintf(buf, sizeof buf, "-%ld", (long)e->value);
             kit_float_text(B.scr, buf, e->kind == EV_CRIT_HIT ? COL_GOLD : COL_TEXT,
                            e->kind == EV_CRIT_HIT ? &wf_font_huge : &wf_font_big, tx(e->target), ty(e->target));
@@ -784,7 +787,9 @@ void battle_tick(void) {
             wf_parry_make(&p, &r, B.b.h.st.stat[ST_AGI], f->agi, f->boss);
             uint32_t color = B.b.foe_move == FOE_HIT ? 0xff4f7a : 0xff8a3a;
             if (B.illustrated) lv_obj_add_flag(B.buttons[5], LV_OBJ_FLAG_HIDDEN);
-            if (B.combat_rig) hero_obj_pose(B.hero, B.pending.kind == ACT_GUARD ? HP_GUARD : HP_GUARD_ENTRY);
+            if (B.combat_rig)
+                hero_obj_set_pose(B.hero, &B.look, HX_IDLE, 3,
+                                  B.pending.kind == ACT_GUARD ? HP_GUARD : HP_GUARD_ENTRY);
             parry_open(&B.parry, B.scr, &p, color, ri(RI_SHIELD), on_parry_tap);
             if (B.illustrated) {
                 if (B.combat_rig) lv_obj_move_foreground(B.hero);

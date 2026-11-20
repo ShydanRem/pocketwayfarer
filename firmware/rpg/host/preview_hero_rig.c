@@ -1136,6 +1136,9 @@ static void assert_classic_pose(int pose) {
     assert(!hero_rig_compose(&look, HX_IDLE, pose, rgb, mask));
     for (int y = 0; y < 176; y++) for (int x = 0; x < 176; x++) {
         int expected = (y / 2) * 88 + x / 2, pixel = y * 176 + x;
+        if (alpha[pixel] != mask[expected] || drawn[pixel] != rgb[expected])
+            fprintf(stderr, "classic pose mismatch: class %u, pose %d, phase %d at %d,%d\n",
+                    look.class_id, pose, rpg_battle_phase(), x, y);
         assert(alpha[pixel] == mask[expected] && drawn[pixel] == rgb[expected]);
         if (!alpha[pixel]) continue;
         int dx = area.x1 + x - CX, sy = area.y1 + y, dy = sy - CY;
@@ -1145,20 +1148,29 @@ static void assert_classic_pose(int pose) {
 
 static void classic_combat_rig(void) {
     enum { CLASSIC_CHOOSE = 1, CLASSIC_RING = 3, CLASSIC_ANIM = 4, CLASSIC_PARRY = 6 };
-    const int classes[] = {16, 24};
-    const char *regions[] = {"paladin-rig", "dragon-rig"};
+    static const struct {
+        int cls, race, skin, hair;
+        const char *tag;
+        uint8_t gear[3];
+    } examples[] = {
+        {16, RACE_HUMAN, 3, 0, "paladin-rig", {IT_MACE, IT_SHIELD, IT_HELM}},
+        {24, RACE_ELF, 2, 4, "dragon-rig", {IT_SWORD, IT_SHIELD, IT_CIRCLET}},
+        {29, RACE_BEAST, 1, 1, "stormbow-rig", {IT_BOW, IT_QUIVER, IT_CIRCLET}},
+        {26, RACE_ELF, 2, 3, "archmage-rig", {IT_STAFF, IT_TOME, IT_CIRCLET}},
+        {38, RACE_DWARF, 1, 2, "deathlord-rig", {IT_SCYTHE, IT_CHARM, IT_HOOD}},
+    };
     rnd = 17;
-    for (int quiet = 0; quiet < 2; quiet++) for (int i = 0; i < 2; i++) {
-        profile(classes[i], i ? RACE_ELF : RACE_HUMAN, i ? 2 : 3, i ? 4 : 0, 3);
+    for (int quiet = 0; quiet < 2; quiet++) for (unsigned i = 0; i < sizeof examples / sizeof examples[0]; i++) {
+        profile(examples[i].cls, examples[i].race, examples[i].skin, examples[i].hair, 3);
         R.g.lang = wf_lang = (uint8_t)quiet;
         R.g.lantern.reduced_motion = (uint8_t)quiet;
         R.zone = 0;
-        const uint8_t gear[] = {i ? IT_SWORD : IT_MACE, IT_SHIELD, i ? IT_CIRCLET : IT_HELM};
         const int slots[] = {SLOT_WEAPON, SLOT_OFFHAND, SLOT_HEAD};
         rpg_item equipped[3];
         for (int j = 0; j < 3; j++) {
-            R.g.bag[0] = (rpg_item){ .type = gear[j], .tier = (uint8_t)(j + 1), .level = 8, .rarity = RAR_RARE };
-            assert(rpg_equip(&R.g, 0) == RPG_OK && R.g.hero.equip[slots[j]].type == gear[j]);
+            uint8_t item = examples[i].gear[j];
+            R.g.bag[0] = (rpg_item){ .type = item, .tier = (uint8_t)(j + 1), .level = 8, .rarity = RAR_RARE };
+            assert(rpg_equip(&R.g, 0) == RPG_OK && R.g.hero.equip[slots[j]].type == item);
             equipped[j] = R.g.hero.equip[slots[j]];
         }
         rpg_foe foes[3];
@@ -1181,7 +1193,7 @@ static void classic_combat_rig(void) {
         press(TR("Attacco", "Attack"));
         assert(rpg_battle_phase() == CLASSIC_RING);
         assert_classic_pose(HP_WINDUP);
-        if (!quiet) expedition_shot(regions[i], "carica");
+        if (!quiet) expedition_shot(examples[i].tag, "carica");
         for (int j = 0; j < 500 && rpg_battle_ring_quality_now() != WF_Q_PERFECT; j++) run(5);
         assert(rpg_battle_ring_quality_now() == WF_Q_PERFECT);
         if (quiet) assert(wf_app_key(WF_KEY_BOOT_DOWN));
@@ -1195,7 +1207,7 @@ static void classic_combat_rig(void) {
         lv_obj_get_coords(rating, &label);
         const int left = label.x1 - CX, bottom = label.y2 - CY;
         assert(left * left + bottom * bottom < CX * CY);
-        if (!quiet) expedition_shot(regions[i], "contatto");
+        if (!quiet) expedition_shot(examples[i].tag, "contatto");
 
         wf_app_flush_save();
         ms += 2000; seconds += 2;
@@ -1204,29 +1216,29 @@ static void classic_combat_rig(void) {
         assert_classic_pose(HP_ATTACK);
         run(535);
         assert_classic_pose(quiet ? HP_ATTACK : HP_RECOVER);
-        if (!quiet) expedition_shot(regions[i], "recupero");
+        if (!quiet) expedition_shot(examples[i].tag, "recupero");
         for (int j = 0; j < 400 && rpg_battle_phase() != CLASSIC_PARRY; j++) run(5);
         assert(rpg_battle_phase() == CLASSIC_PARRY);
         assert_classic_pose(quiet ? HP_GUARD : HP_GUARD_ENTRY);
-        if (!quiet) expedition_shot(regions[i], "entrata");
+        if (!quiet) expedition_shot(examples[i].tag, "entrata");
         run(150);
         assert(rpg_battle_phase() == CLASSIC_PARRY);
         assert_classic_pose(HP_GUARD);
         for (int j = 0; j < 500 && rpg_battle_parry_quality_now() != WF_Q_PERFECT; j++) run(5);
         assert(rpg_battle_parry_quality_now() == WF_Q_PERFECT);
-        expedition_shot(regions[i], "parata");
+        expedition_shot(examples[i].tag, "parata");
         if (quiet) click(CX, 55); /* The parry instruction must not eat the tap. */
         else assert(wf_app_key(WF_KEY_BOOT_DOWN));
         assert(rpg_battle_phase() == CLASSIC_ANIM);
         wf_app_flush_save();
         wf_app_start(saved, saved_len);
-        assert(R.g.hero.cls == classes[i] && R.g.lantern.reduced_motion == quiet);
+        assert(R.g.hero.cls == examples[i].cls && R.g.lantern.reduced_motion == quiet);
         for (int j = 0; j < 3; j++)
             assert(!memcmp(&R.g.hero.equip[slots[j]], &equipped[j], sizeof equipped[j]));
         assert(R.screen == R_TOWN && R.g.classic.active == 0);
     }
     wf_lang = 0;
-    puts("classic combat rig: Paladin and Dragon Knight, equipment, three targets, wind-up/contact/recovery, wake, parry, reduced motion and v4 rollback passed");
+    puts("classic combat rig: Paladin, Dragon Knight, Stormbow, Archmage and Deathlord; equipment, three targets, wake, reduced motion, parry and v4 rollback passed");
 }
 
 int main(int argc,char **argv) {

@@ -1,5 +1,10 @@
 # Note di versione
 
+## 0.10.0-preview.3 — 20 novembre 2026
+
+- Arciere, Mago e Occultista ricevono profili di carica, colpo, recupero e parata lungo tutti i rami di classe. Arco, bastone e falce ruotano intorno alla presa, con la faretra solidale al busto.
+- Nelle battaglie con il nuovo rig, il lampo sul bersaglio sostituisce la scossa durante il colpo. L’ingresso in parata ripristina l’espressione di concentrazione.
+
 ## 0.10.0-preview.2 — 20 novembre 2026
 
 - Paladino e Cavaliere del Drago hanno nuove pose di carica, affondo, recupero, ingresso in guardia e parata. Arma, mano secondaria e copricapo seguono il rig personalizzato.

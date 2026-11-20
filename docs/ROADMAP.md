@@ -1,6 +1,6 @@
 # Roadmap di Pocket Wayfarer
 
-**Aggiornata il 20 novembre 2026.** Il redesign del Classico comprende i cinque ambienti di esplorazione, i cinque dungeon, le 42 creature e le interfacce di servizio. Le nuove transizioni di combattimento coprono i tre assetti di Lanternbound e le prime due classi del Classico. Il [registro di avanzamento](roadmap/STATUS.md) conserva le prove per ogni consegna.
+**Aggiornata il 20 novembre 2026.** Il redesign del Classico comprende i cinque ambienti di esplorazione, i cinque dungeon, le 42 creature e le interfacce di servizio. Le nuove transizioni di combattimento coprono i tre assetti di Lanternbound e 17 classi del Classico. Il [registro di avanzamento](roadmap/STATUS.md) conserva le prove per ogni consegna.
 
 ## Obiettivo e regole di avanzamento
 
@@ -9,6 +9,10 @@ Portare il gioco a un'identità coerente: personaggi riconoscibili, mondo leggib
 Un lotto è completato quando entra nel gioco, supera i controlli pertinenti e dispone di catture native. Un atlas generato, un concept o un punteggio del brief non equivalgono a una funzione completata. Si lavora su un solo lotto principale alla volta; correzioni di crash, salvataggi, input o leggibilità hanno precedenza. Il collaudo fisico può procedere in parallelo quando il Pocket è disponibile: non impedisce di produrre e verificare arte su PC, ma resta necessario per la release stabile.
 
 ## Stato reale di partenza
+
+**Consegna R7.2b / 0.10.0-preview.3.** Tutti i rami di Arciere, Mago e Occultista ricevono le pose di carica, impatto, recupero e parata. Sono 15 classi in più. Le prove nel renderer coprono arco e faretra, bastone e tomo, falce e cappa lunga. [Catture e prove R7.2b](roadmap/classic-weapons-evidence/README.md)
+
+![Arco della Tempesta, Arcimago e Signore della Morte nel combattimento nativo](img/hero_rig/pose-armi-classico.png)
 
 **Consegna R7.2a / 0.10.0-preview.2.** Paladino e Cavaliere del Drago ricevono pose di carica, affondo, recupero, ingresso in guardia e parata. Il rig muove il costume esistente e porta con sé l’equipaggiamento. Il controllo nativo copre i tre bersagli, anello, onda, pausa e movimento ridotto. [Catture e prove R7.2a](roadmap/classic-combat-evidence/README.md)
 
@@ -180,7 +184,8 @@ Arma, mano secondaria e testa sono i canali grafici dell’equipaggiamento già 
 | **R6.3 · consegna su host, ritorno al borgo** | Verificati bottino, progetto, equipaggiamento e ripartenza attraverso il riavvio. Da osservare in playtest se il giocatore parte di nuovo e quale obiettivo sceglie. |
 | **R7.1 · consegna su host, pose e transizioni** | Tre assetti verificati con carica, impatto, recupero, guardia, pausa, riavvio e movimento ridotto. Il test fisico resta aperto. |
 | **R7.2a · consegna su host, due classi del Classico** | Paladino e Cavaliere del Drago verificati con equipaggiamento effettivo, quattro razze, controlli circolari, pausa e movimento ridotto. |
-| **R7.2b · prossimo, estensione delle pose** | Calibrare una prima serie di profili per le altre famiglie, partendo da arco, bastone e falce. Verificare ancoraggi, mantelli lunghi, memoria e sagome sul renderer prima di estendere alle 38 classi rimanenti. |
+| **R7.2b · consegna su host, arco, bastone e falce** | Tutti i rami di Arciere, Mago e Occultista. Il rig copre 17/40 classi. Test nativi con equipaggiamento, IT/EN e movimento ridotto. |
+| **R7.2c · prossimo, le 23 classi rimanenti** | Calibrare Guerriero, Ladro, Chierico, Monaco e Artefice, partendo da pugnale, tirapugni e martello. Verificare l’intera matrice di classi, pose ed equipaggiamento e catturare almeno un rappresentante per famiglia. |
 | **R7.3 · audio opzionale** | Verificare prima l’uscita audio sul Pocket. Se utilizzabile, aggiungere pochi segnali distinti e controlli per volume e muto. Gli stessi eventi devono essere leggibili a schermo. |
 | **R8 · candidata 1.0** | Installazione pulita e aggiornamento da una preview con dati, prove sul Pocket di anello, parata e sonno/risveglio, sessione lunga, controllo del budget e pacchetto di ripristino. |
 

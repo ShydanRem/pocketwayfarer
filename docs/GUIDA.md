@@ -128,9 +128,11 @@ In **Equip** ogni slot mostra il proprio nome. Tocca un oggetto per vederne i de
 
 Tutte le 40 classi usano avatar modulari: scegli razza, carnagione, capelli, occhi e volto nella creazione. Arma, mano secondaria e testa mostrano gli oggetti equipaggiati; senza un oggetto alla testa appare il copricapo della classe. Torso, piedi e accessori influiscono sulle statistiche ma non hanno ancora livelli grafici separati.
 
-Un passaggio di classe conserva i tuoi dati estetici. L’illustrazione nell’atlante resta un rappresentante separato. Il **Paladino** e il **Cavaliere del Drago** hanno nuove pose di carica, contatto, recupero e parata. Con **Movimento ridotto** queste due classi usano pose fisse nei momenti chiave del combattimento.
+Un passaggio di classe conserva i tuoi dati estetici. L’illustrazione nell’atlante resta un rappresentante separato. Il **Paladino**, il **Cavaliere del Drago** e le famiglie **Arciere**, **Mago** e **Occultista** hanno pose di carica, contatto, recupero e parata. Con **Movimento ridotto** queste classi usano pose fisse nei momenti chiave del combattimento.
 
 ![Paladino in carica, Cavaliere del Drago all’impatto e Paladino in parata](img/hero_rig/pose-classico.png)
+
+![Arco della Tempesta in carica, Arcimago all’impatto e Signore della Morte in parata](img/hero_rig/pose-armi-classico.png)
 
 Le prime avanzate sono Cavaliere, Berserker, Elementalista, Arcanista, Ramingo, Cecchino, Assassino e Duellante. Il passaggio continua a richiedere livello 20 e classe base 30. Puoi confrontare le due vie da **Classico → Eroe → Classe**, senza cambiare classe finché non confermi **Diventa!**.
 
