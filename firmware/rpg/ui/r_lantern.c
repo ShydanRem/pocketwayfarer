@@ -38,7 +38,7 @@ static void advance_battle_clock(void);
 static void on_click(lv_event_t *e);
 static bool battle_state(int s) { return s >= LN_CHOOSE && s <= LN_IMPACT; }
 static bool result_state(int s) { return s == LN_WON || s == LN_LOST || s == LN_RETURNED; }
-static const wf_sprite *hero_sprite(int frame) { return &ln_loadouts[game()->archetype % LN_ARCHETYPES][frame & 3]; }
+static const wf_sprite *hero_sprite(int pose) { return &ln_loadouts[game()->archetype % LN_ARCHETYPES][pose]; }
 static const wf_sprite *foe_sprite(int kind, int frame) {
     if (kind == LN_ROOT || kind == LN_WISP) return &ln_actors[kind == LN_ROOT ? 1 : 2][frame & 3];
     int row = kind == LN_BOSS ? 4 : kind - LN_WOLF;
@@ -437,12 +437,25 @@ static void timing_tap(lv_event_t *e) {
     rpg_lantern before = *game();
     if (ln_tap(game())) changed_from(&before);
 }
+static int battle_hero_pose(const rpg_lantern *l, int idle) {
+    if (l->state == LN_ATTACK) return LN_POSE_WINDUP;
+    if (l->state == LN_IMPACT && l->feedback == LN_FEEDBACK_HERO) {
+        if (l->reduced_motion || l->elapsed_ms < LN_POSE_CONTACT_MS) return LN_POSE_STRIKE;
+        return l->elapsed_ms < LN_POSE_RECOVERY_END_MS ? LN_POSE_RECOVER : LN_POSE_READY;
+    }
+    if (l->state == LN_PARRY || (l->state == LN_TELEGRAPH && l->guard)) {
+        bool entering = l->state == LN_TELEGRAPH || !l->guard;
+        return entering && !l->reduced_motion && l->elapsed_ms < 140 ? LN_POSE_GUARD_ENTRY : LN_POSE_BRACE;
+    }
+    if (l->state == LN_IMPACT && l->feedback == LN_FEEDBACK_FOE)
+        return l->reduced_motion || l->elapsed_ms < 180 ? LN_POSE_BRACE : LN_POSE_READY;
+    return l->state == LN_CHOOSE ? idle : LN_POSE_READY;
+}
 static void draw_actor_frames(void) {
     rpg_lantern *l = game();
-    int frame = l->reduced_motion ? 0 : (int)((lv_tick_get() / 700u) & 1u);
+    int frame = l->reduced_motion || l->paused || L.ready_ms ? 0 : (int)((lv_tick_get() / 700u) & 1u);
     if (L.hero) {
-        int hf = L.page == PAGE_BATTLE && (l->state == LN_ATTACK || (l->state == LN_IMPACT && l->feedback == LN_FEEDBACK_HERO)) ? 2
-               : L.page == PAGE_BATTLE && (l->state == LN_PARRY || l->guard) ? 3 : frame;
+        int hf = L.page == PAGE_BATTLE ? battle_hero_pose(l, frame) : frame;
         kit_img_set(L.hero, hero_sprite(hf), 2);
     }
     if (L.page == PAGE_BATTLE) for (int i = 0; i < l->nfoes; i++) {
@@ -457,7 +470,11 @@ static void battle(void) {
     scene(PAGE_BATTLE, 1, 0);
     rpg_lantern *l = game();
     ground_shadow(LN_HERO_X, LN_HERO_Y + 80, 70);
-    L.hero = kit_img(L.root, hero_sprite(0), 2, LN_HERO_X, LN_HERO_Y);
+    L.hero = kit_img(L.root, hero_sprite(LN_POSE_READY), 2, LN_HERO_X, LN_HERO_Y);
+    /* Expand poses before the first timing window, rather than on its first frame. */
+    for (int p = LN_POSE_BREATH; p < LN_POSE_COUNT; p++)
+        if (!l->reduced_motion || p == LN_POSE_WINDUP || p == LN_POSE_STRIKE || p == LN_POSE_BRACE)
+            (void)gfx_sprite(hero_sprite(p), 2);
     for (int i = 0; i < l->nfoes; i++) {
         int x = ln_foe_x(l, i), y = ln_foe_y(l, i), scale = ln_foe_scale(l);
         ground_shadow(x, y + scale*40, scale == 1 ? 46 : 90);
@@ -521,6 +538,7 @@ static void battle(void) {
     lv_obj_remove_flag(L.catcher, LV_OBJ_FLAG_SCROLLABLE);
     lv_obj_add_event_cb(L.catcher, timing_tap, LV_EVENT_PRESSED, NULL);
     battle_refresh();
+    L.clock = L.visual_clock = lv_tick_get();
 }
 static void pause_view(void) {
     kit_dim(L.root, 175);

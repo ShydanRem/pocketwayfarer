@@ -8,16 +8,19 @@ The `0.4.0-preview.1` clarity revision replaces the village, arena, three loadou
 |---|---|---|
 | `source/prism/environments.png` | `exec-3f855ead-5f2c-4257-b941-0960256aaf8f.png` | Quiet-stage edit, 2 backgrounds, 1774×887 |
 | `source/prism/loadouts.png` | `exec-99272326-4b66-4fe5-88f8-c037954ad9da.png` | Layout-repaired edit, 4 poses × 3 heroes, 1448×1086 RGBA |
+| `source/prism/combat-poses.png` | `exec-891cb437-66d0-4030-96f9-d1891ad0f641.png` | Edit of the approved loadout atlas, 3 transition poses × 3 heroes, 1254×1254 RGBA |
 | `source/prism/enemies.png` | `exec-a93d5e0b-6991-4e14-9092-980ab0c6f303.png` | Layout-repaired edit, 4 poses × 7 species, 948×1659 RGBA |
 | `source/relics.png` | `exec-5703c2e6-fa2a-4af4-a367-4c317a760f3d.png` | Original retained 3×2 rewards, 1536×1024 RGBA |
 
 Exact generation and correction prompts are retained alongside each source. The busy first environment proposal (`exec-87c864fc-9001-4d5d-879e-ffd64457b560.png`) is retained under `source/prism/rejected/` for review and is **not imported**. Initial hero/enemy generations required a layout repair because weapons/poses crossed cell boundaries; the final imported sheets pass transparent-border validation. Their initial identities were `exec-a250b3a5-33f8-4b7e-ab1e-0ec6cb233061.png` and `exec-d7e94457-0c82-415d-93d1-7135505196d4.png`.
 
-`scripts/build_lantern_art.py` leaves source PNGs intact. Backgrounds become native 466×466 indexed RGB565 images, displayed at 1×. Actor rows use a shared scale, foot anchor at row 84 of an 88×88 canvas, nearest-neighbor sampling and alpha threshold 128. A single palette of at most 96 colors is shared by all four poses of each row, without dithering; backgrounds/relics use at most 240 colors. Four poses are idle, breathing, attack and guard/hit, not a full locomotion/combo set.
+`scripts/build_lantern_art.py` leaves source PNGs intact. Backgrounds become native 466×466 indexed RGB565 images, displayed at 1×. Actor rows use a shared scale, foot anchor at row 84 of an 88×88 canvas, nearest-neighbor sampling and alpha threshold 128. A single palette of at most 96 colors is shared within each row. Backgrounds and relics use at most 240 colors.
+
+R7.1 adds wind-up, recovery and guard entry to the existing four hero poses. The new frames are remapped to the shipped hero palettes and aligned using the midpoint of the boots at the existing floor line. The original poses, enemies and relics retain their pixels. The [prompt](source/prism/combat-poses-prompt.txt) and [source hash](manifest.json) accompany the atlas. [Comparison in LVGL](../../docs/roadmap/combat-poses-evidence/README.md)
 
 Enemy rows are not equally tall. `source/prism/layout.json` records row boundaries measured in transparent gutters; the importer rejects opaque border pixels instead of silently cropping them. Columns use proportional boundaries, preserving non-divisible source dimensions. This repair is distinct from editing the image creatively, which was performed with ImageGen.
 
-**52 runtime entries:** 2 backgrounds, 44 actor frames and 6 relics. `ln_actors[0]` duplicates the new Sentinel for compatibility; root keeper and wisp occupy the other two rows. `ln_loadouts` holds the three heroes; `ln_bestiary` holds wolf, crab, bat, moth and lighthouse automaton. Hero/single enemy/boss use 2× in combat; enemy pairs use 1× with separate touch boxes. This treatment uses painted depth and procedural LVGL effects, not a dynamic 3D scene.
+**61 runtime entries** include 2 backgrounds, 53 actor frames and 6 relics. `ln_actors[0]` holds the four original Sentinel poses for compatibility. Root keeper and wisp occupy the other two rows. `ln_loadouts` holds the three heroes with seven poses each. `ln_bestiary` holds wolf, crab, bat, moth and lighthouse automaton. Hero, single enemy and boss use 2× in combat. Enemy pairs use 1× with separate touch boxes.
 
 ## Retained historical sources
 
@@ -32,6 +35,6 @@ python3 scripts/build_lantern_art.py
 python3 scripts/build_lantern_art.py --check
 ```
 
-Validation includes source format/opacity/border checks, deterministic output comparison, native LVGL compilation, 49 scripted captures plus 3 timing regressions, framebuffer comparison, ASan/UBSan and an ESP-IDF build. Native hero alpha pixels are checked against HUD boundaries to prevent covered feet. Static conversion does not certify physical frame time, touch latency, battery use or readability at the device's diameter. Pixel-cluster refinement and richer animation remain art work, not automatically certified by these checks.
+Validation includes source format, opacity and border checks, deterministic output comparison, 73 native LVGL screenshots, 3 timing regressions, framebuffer comparison, ASan/UBSan and an ESP-IDF build. The tests inspect native hero alpha pixels against HUD boundaries. Device frame time, touch latency, power use and readability on the physical display remain to be measured.
 
 Combat slash/ring/particle effects and two-layer contact shadows are original procedural C/LVGL graphics, with no external asset dependency. Motion uses saved phase time and honors pause/reduced motion. No paid-provider, Tripo/Leonardo job or canonical `game-dev` package was used; that CLI is unavailable here. ImageGen and the local deterministic importer supply the asset workflow. Full provenance is in `asset-register.csv` and `manifest.json`.

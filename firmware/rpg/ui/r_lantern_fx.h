@@ -8,7 +8,7 @@ typedef struct {
     int foe_x[2], foe_y[2];
 } lantern_fx;
 
-enum { LN_HERO_X = 126, LN_HERO_Y = 201 };
+enum { LN_HERO_X = 126, LN_HERO_Y = 201, LN_POSE_CONTACT_MS = 150, LN_POSE_RECOVERY_END_MS = 320 };
 
 /* One shared layout for rendering, effects and non-overlapping touch boxes. */
 static inline int ln_foe_x(const rpg_lantern *l, int i) { return l->nfoes == 2 ? 270 + i*100 : 316; }

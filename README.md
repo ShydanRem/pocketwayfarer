@@ -10,7 +10,7 @@ Un RPG fantasy HD-2D per **Waveshare ESP32-S3-Touch-AMOLED-1.75**, con schermo r
 
 **[Roadmap operativa](docs/ROADMAP.md)** · [Stato del lotto attivo](docs/roadmap/STATUS.md) · [Direzione artistica delle 40 classi](docs/CLASS-ART-BIBLE.md)
 
-> **0.9.0-preview.3** — Il rientro di Lanternbound mostra l’oro accreditato e il progetto conservato. Puoi equipaggiare la reliquia e ripartire dal riepilogo. [Catture e prove R6.3](docs/roadmap/return-evidence/README.md) · [Roadmap](docs/ROADMAP.md)
+> **0.10.0-preview.1** — Sentinella, Piromante e Predone hanno nuove pose di carica, recupero e ingresso in guardia. [Catture e prove R7.1](docs/roadmap/combat-poses-evidence/README.md) · [Roadmap](docs/ROADMAP.md)
 
 ## Sul Pocket, in pochi passaggi
 

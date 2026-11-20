@@ -25,6 +25,7 @@ SCREENS = {
     'ritmo-spedizione': 'ritmo-spedizione',
     'bivio-bastione': 'bivio-bastione',
     'rientro-lanternbound': 'rientro-lanternbound',
+    'pose-lanternbound': 'pose-lanternbound',
 }
 CLASS_SCREENS = {'classi': 'otto-classi-base', 'arciere': '03-classe-02', 'classi-avanzate-a':'otto-classi-avanzate-a', 'classi-avanzate-b':'otto-classi-avanzate-b', 'classi-maestre-a':'otto-classi-maestre-a', 'classi-maestre-b':'otto-classi-maestre-b'}
 RIG_SCREENS = {'avatar-base': 'otto-avatar-base', 'avatar-avanzate-a':'otto-avatar-avanzate-a', 'avatar-avanzate-b':'otto-avatar-avanzate-b', 'avatar-maestre-a':'otto-avatar-maestre-a', 'avatar-maestre-b':'otto-avatar-maestre-b'}
@@ -67,7 +68,8 @@ def manual_html():
                                                'interfaccia-classico.png', 'lumen-classico.png', 'cripta-classico.png',
                                                'riva-classico.png', 'bosco-classico.png', 'brace-classico.png',
                                                'guglie-classico.png', 'mappa-zaino-classico.png', 'servizi-classico.png',
-                                               'ritmo-spedizione.png', 'bivio-bastione.png', 'rientro-lanternbound.png'])
+                                               'ritmo-spedizione.png', 'bivio-bastione.png', 'rientro-lanternbound.png',
+                                               'pose-lanternbound.png'])
             return '<figure' + (' class="wide"' if wide else '') + '>' + tag + '<figcaption>' + alt + '</figcaption></figure>'
         rendered = re.sub(r'<p>(<img [^>]+>)</p>', image_figure, rendered)
         sections.append(f'<section id="{anchor}">{rendered}</section>')
@@ -108,6 +110,7 @@ def roadmap_html():
     body=body.replace('src="img/lantern/ritmo-spedizione.png"','src="assets/screens/ritmo-spedizione.png" loading="lazy"')
     body=body.replace('src="img/lantern/bivio-bastione.png"','src="assets/screens/bivio-bastione.png" loading="lazy"')
     body=body.replace('src="img/lantern/rientro-lanternbound.png"','src="assets/screens/rientro-lanternbound.png" loading="lazy"')
+    body=body.replace('src="img/lantern/pose-lanternbound.png"','src="assets/screens/pose-lanternbound.png" loading="lazy"')
     return body.replace('<table>','<div class="table-wrap"><table>').replace('</table>','</table></div>')
 
 

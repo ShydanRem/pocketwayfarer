@@ -1,6 +1,6 @@
 # Registro di avanzamento
 
-Aggiornato il 20 novembre 2026. Consegna corrente `0.9.0-preview.3`. [Roadmap operativa](../ROADMAP.md)
+Aggiornato il 20 novembre 2026. Consegna corrente `0.10.0-preview.1`. [Roadmap operativa](../ROADMAP.md)
 
 ## Consegna R1 — atlante delle classi, 0.4.1-preview.1
 
@@ -115,10 +115,14 @@ La quarta stanza espone costo, nemico e oro di entrambe le vie. Le prove IT/EN r
 
 Oro accreditato, quota persa, progetto ed effetto sono leggibili nel riepilogo. La collezione apre il progetto conservato. La Campana del Borgo equipaggiata dal riepilogo dà 12 scudo al primo incontro della spedizione successiva, anche dopo un riavvio. Nel playtest con persone resta da osservare quale obiettivo viene scelto per la seconda spedizione. [Catture e verifiche](return-evidence/README.md)
 
-## Prossimo lotto R7.1 — animazione di combattimento
+## Consegna R7.1 — animazione di combattimento in Lanternbound
 
-1. Rifinire la posa d’attacco e di guardia per ciascuno dei tre assetti di Lanternbound.
-2. Confrontare le pose nel renderer circolare a dimensione reale, verificando mani, oggetti, sagome e spazio per i comandi.
-3. Verificare pausa, riavvio, anello e movimento ridotto prima di portare le pose sui rig del Classico in R7.2.
+Nove fotogrammi aggiunti su Sentinella, Piromante e Predone, con armi, tessuti e palette dei tre costumi. Il contatto e il ritorno in posa seguono il tempo salvato. Verificati pausa, riavvio, parata perfetta, movimento ridotto e spazio sopra l’interfaccia a 466 × 466. [Catture e verifiche](combat-poses-evidence/README.md)
+
+## Prossimo lotto R7.2 — animazione del Classico
+
+1. Rifinire attacco e difesa su una classe a scudo e una a mantello lungo, con l’equipaggiamento realmente indossato.
+2. Verificare mani, cappa e copricapo a dimensione reale, con i tre bersagli e movimento ridotto.
+3. Estendere le pose alle famiglie dopo le verifiche su maschere, memoria, salvataggi e timing.
 
 Il collaudo fisico può procedere in parallelo e serve per la stabile. [Sequenza e criteri](../ROADMAP.md#r6-e-r7--profondità-ritmo-e-feedback)

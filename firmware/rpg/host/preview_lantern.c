@@ -6,6 +6,8 @@
 #include <string.h>
 #include "lvgl.h"
 #include "rui.h"
+#include "art/lantern_art.h"
+#include "r_lantern_fx.h"
 
 static uint16_t fb[WF_RES * WF_RES], drawbuf[WF_RES * 40];
 static uint16_t incremental_fb[WF_RES * WF_RES];
@@ -122,6 +124,10 @@ static void check_hero_clearance(const char *name) {
             /* Test actual expanded sprite pixels against the rendered HUD,
              * rather than its padded transparent canvas. Feet used to fail. */
             assert(a.y1+(int)y > (title ? 137 : 106) && a.y1+(int)y < (title ? 287 : town ? 279 : 285));
+            if (battle) {
+                int dx = a.x1 + (int)x - CX, dy = a.y1 + (int)y - CY;
+                assert(dx * dx + dy * dy < CX * CY && a.x1 + (int)x < CX);
+            }
         }
         found = true;
     }
@@ -491,6 +497,95 @@ static void return_feedback_ui(void) {
     puts("return UI: IT/EN receipt, power cycle, collection and BOOT, equip and next run, defeat amount and gold cap passed");
 }
 
+static int expect_battle_hero(int pose) {
+    lv_obj_t *screen = lv_screen_active();
+    lv_obj_update_layout(screen);
+    for (uint32_t i = 0; i < lv_obj_get_child_count(screen); i++) {
+        lv_obj_t *object = lv_obj_get_child(screen, (int32_t)i);
+        if (!lv_obj_check_type(object, &lv_image_class) || lv_obj_get_width(object) != 176) continue;
+        lv_area_t area;
+        lv_obj_get_coords(object, &area);
+        int x = area.x1 + 88;
+        if (x < 105 || x > 150) continue;
+        assert(area.y1 + 88 == LN_HERO_Y);
+        unsigned archetype = R.g.lantern.archetype;
+        assert(lv_image_get_src(object) == gfx_sprite(&ln_loadouts[archetype][pose], 2));
+        check_hero_clearance("combat-pose");
+        return x;
+    }
+    assert(!"battle hero object missing");
+    return 0;
+}
+
+static void combat_poses(void) {
+    const char *names[] = {"sentinella", "piromante", "predone"};
+    for (int quiet = 0; quiet < 2; quiet++) for (int a = 0; a < LN_ARCHETYPES; a++) {
+        rpg_new_hero hero = {.lang = (uint8_t)quiet};
+        rpg_game_new(&R.g, &hero, seconds, 47);
+        R.loaded = true;
+        wf_lang = R.g.lang;
+        R.g.coach.learned = LNC_ALL;
+        rpg_lantern *l = &R.g.lantern;
+        l->reduced_motion = (uint8_t)quiet;
+        ln_start(l, a, 3294095628u);
+        l->room = LN_BASTION_ROOM;
+        r_go(R_LANTERN);
+        press(TR("Bastione", "Bastion"));
+        assert(l->state == LN_CHOOSE);
+
+        char name[64];
+        press(TR("Attacco", "Attack"));
+        assert(l->state == LN_ATTACK && expect_battle_hero(LN_POSE_WINDUP) == LN_HERO_X);
+        if (!quiet) { snprintf(name, sizeof name, "carica-%s", names[a]); shot(name); }
+        judge_at(WF_Q_PERFECT);
+        run(90);
+        assert(l->state == LN_IMPACT && l->quality == WF_Q_PERFECT && l->feedback == LN_FEEDBACK_HERO);
+        int x = expect_battle_hero(LN_POSE_STRIKE);
+        assert(quiet ? x == LN_HERO_X : x > LN_HERO_X);
+        if (!quiet) { snprintf(name, sizeof name, "contatto-%s", names[a]); shot(name); }
+        run(125);
+        int recovery = quiet ? LN_POSE_STRIKE : LN_POSE_RECOVER;
+        x = expect_battle_hero(recovery);
+        assert(quiet ? x == LN_HERO_X : x > LN_HERO_X);
+        if (!quiet) { snprintf(name, sizeof name, "recupero-%s", names[a]); shot(name); }
+
+        press("II");
+        rpg_lantern frozen = *l;
+        assert(l->paused && l->state == LN_IMPACT);
+        int frozen_x = expect_battle_hero(recovery);
+        run(850);
+        assert(!memcmp(l, &frozen, sizeof *l));
+        assert(expect_battle_hero(recovery) == frozen_x);
+        wf_app_start(saved, saved_len);
+        assert(!memcmp(l, &frozen, sizeof *l));
+        assert(expect_battle_hero(recovery) == frozen_x);
+        press(TR("Riprendi", "Resume"));
+        run(300);
+        assert(l->elapsed_ms == frozen.elapsed_ms && expect_battle_hero(recovery) == frozen_x);
+        run(400);
+        defend_once(false);
+
+        press(TR("Guardia", "Guard"));
+        assert(l->guard && l->state == LN_TELEGRAPH);
+        assert(expect_battle_hero(quiet ? LN_POSE_BRACE : LN_POSE_GUARD_ENTRY) == LN_HERO_X);
+        if (!quiet) {
+            snprintf(name, sizeof name, "entrata-guardia-%s", names[a]); shot(name);
+        }
+        run(150);
+        assert(expect_battle_hero(LN_POSE_BRACE) == LN_HERO_X);
+        while (l->state == LN_TELEGRAPH) run(5);
+        assert(l->state == LN_PARRY && expect_battle_hero(LN_POSE_BRACE) == LN_HERO_X);
+        if (!quiet) { snprintf(name, sizeof name, "parata-%s", names[a]); shot(name); }
+        judge_at(WF_Q_PERFECT);
+        run(60);
+        assert(l->state == LN_IMPACT && l->quality == WF_Q_PERFECT && l->feedback == LN_FEEDBACK_FOE);
+        press("II");
+        press(TR("Abbandona", "Abandon"));
+        press(TR("Borgo", "Village"));
+    }
+    puts("combat poses: all loadouts, IT/EN, saved phase/restart, guard/parry, reduced motion and visible alpha bounds passed");
+}
+
 static void departure_paths(void) {
     for (int lang = 0; lang < 2; lang++) {
         rpg_new_hero hero = {.lang = (uint8_t)lang};
@@ -739,6 +834,7 @@ int main(int argc, char **argv) {
     departure_paths();
     bastion_ui();
     return_feedback_ui();
+    combat_poses();
     size_t stable = image_bytes;
     for (int i = 0; i < 12; i++) { r_go(R_TOWN); run(20); }
     assert(image_bytes == stable);

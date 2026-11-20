@@ -1,6 +1,6 @@
 # Lanternbound — spedizione HD-2D giocabile
 
-Implementazione aggiornata al 20 novembre 2026 (`0.9.0-preview.3`) nella **UI nativa C11/LVGL di Pocket Wayfarer**, per l’AMOLED circolare 466×466. Il firmware e l’eseguibile interattivo Linux usano lo stesso codice. Le immagini sono catture della UI effettiva. [Roadmap](ROADMAP.md)
+Implementazione aggiornata al 20 novembre 2026 (`0.10.0-preview.1`) nella **UI nativa C11/LVGL di Pocket Wayfarer**, per l’AMOLED circolare 466×466. Il firmware e l’eseguibile interattivo Linux usano lo stesso codice. Le immagini sono catture della UI effettiva. [Roadmap](ROADMAP.md)
 
 ![Borgo, combattimento e reliquia](img/lantern/panoramica.png)
 
@@ -38,7 +38,7 @@ Sentinella: 120 PV/24 PM, Baluardo aggiunge 30 scudo e cura 6 PV; Risonanza aggi
 
 ## Grafica e limiti del trattamento
 
-Sono importate **52 immagini runtime**: due fondali, tre nuovi assetti a quattro pose, sei specie ordinarie e boss a quattro pose, sei reliquie, più quattro fotogrammi duplicati della Sentinella per compatibilità con la tabella attori. Le pose sono inattiva, respiro, attacco e guardia/colpito; non sono un set completo di camminata e combo. Scala, palette e ancoraggio dei piedi condivisi per riga evitano salti fra pose.
+Sono importate **61 immagini runtime**. Due fondali, tre assetti a sette pose, sette creature a quattro pose e sei reliquie, più quattro fotogrammi duplicati della Sentinella per compatibilità con la tabella attori. I tre assetti condividono la griglia 88×88. Ogni assetto usa la propria palette e mantiene lo stesso piano dei piedi fra le pose.
 
 Fondali nativi 466×466 a 1×; attori e reliquie su griglia 88×88 con scala intera. Nel combattimento eroe, avversario singolo e boss usano 2×, le coppie 1× con aree di selezione separate. Il fondale lascia una fascia quieta dietro le sagome, con ombre di contatto LVGL. Profondità e luce dei fondali sono dipinte, senza renderer 3D o illuminazione dinamica. Controlli, testi, font e barre sono oggetti LVGL effettivi. I font DejaVu sono rasterizzati a 20/22 px con accenti italiani. [Ricerca, confronto e limiti della revisione](ART-CLARITY.md). Sorgenti, prompt, licenze, registro e hash: [assets/lantern](../assets/lantern/README.md).
 
@@ -48,13 +48,15 @@ I segnali essenziali sono visivi. Il percorso audio dell’hardware resta da ver
 
 La prima lotta presenta una sola indicazione per volta: Attacco, arco dorato, intento e onda di parata. Un timing almeno Bene insegna l’azione; un miss mantiene il suggerimento. Guardia e abilità si apprendono usandole. Il suggerimento di Risonanza è confermabile con OK; a tre cariche sono evidenziati Abilità e poi il colpo offensivo. Nessun comando è bloccato dalla guida. L’apprendimento resta fra retry e riavvii; `Opzioni` consente di nascondere i suggerimenti o ripeterli.
 
-Taglio dorato della Sentinella, brace circolare del Piromante e doppio taglio del Predone accompagnano affondo e rinculo. Parata perfetta, scudo assorbente, bruciatura e Risonanza hanno messaggi distinti; il danno offensivo mostrato è quello effettivo, incluso l’eventuale secondo colpo. Le tre cariche sono anche segmenti visibili. Il nemico sconfitto sfuma durante l’impatto. Movimento ridotto mantiene pose, simboli e testo senza spostamenti, particelle o dissolvenze. Nessun flash a tutto schermo o movimento della camera.
+La posa di carica resta visibile mentre giri sull’anello. Al tocco segue il contatto, poi il recupero. In difesa si vedono l’ingresso in guardia e la posa tenuta durante l’onda. Taglio dorato della Sentinella, brace circolare del Piromante e doppio taglio del Predone accompagnano il colpo. Parata perfetta, scudo, bruciatura e Risonanza hanno messaggi distinti. Movimento ridotto usa pose fisse di carica, contatto e guardia, con i segnali di timing visibili. [Pose e verifica R7.1](roadmap/combat-poses-evidence/README.md)
 
 ![Guida, parata e Risonanza nella UI nativa](img/lantern/guida-e-risonanza.png)
 
 ![Effetti dei tre assetti](img/lantern/impatto-dei-tre-eroi.png)
 
-Gli effetti usano il tempo della fase salvata e si fermano con pausa/PWR. L’input dietro la pausa è escluso anche ai bordi delle immagini. I controlli verificano il contenimento dei testi nei pulsanti e confrontano byte per byte il framebuffer aggiornato con un ridisegno completo nelle 49 catture; un ridisegno completo dopo cambi di layout evita residui su PV e PM. Specifica e prove: [ONBOARDING-FEEDBACK.md](ONBOARDING-FEEDBACK.md).
+![Carica, impatto e parata in tre combattimenti sul Bastione](img/lantern/pose-lanternbound.png)
+
+Gli effetti usano il tempo della fase salvata e si fermano con pausa/PWR. L’input dietro la pausa è escluso anche ai bordi delle immagini. I controlli verificano il contenimento dei testi nei pulsanti e confrontano byte per byte il framebuffer incrementale con un ridisegno completo. [Verifiche della guida contestuale](ONBOARDING-FEEDBACK.md)
 
 ## Correzioni dell’audit e salvataggi
 
@@ -78,16 +80,16 @@ L'[audit del 17 novembre](DEVICE-AUDIT-2026-11-17.md) corregge inoltre il cerchi
 
 | Verifica | Evidenza |
 |---|---|
-| Asset | Importazione deterministica: 52 immagini, due font, originali e prompt conservati. |
+| Asset | Importazione deterministica di 61 immagini e due font, con originali e prompt conservati. |
 | Core preesistente | 55.639 controlli RPG e 1.434 del compagno con ASan/UBSan. |
 | Spedizione | **600 partite simulate**, 52.485 snapshot salva/ripristina e 51.509 transizioni. 288 run di base, 288 con tutti i progetti iniziali e politiche rinuncia/sostituzione (6 × 3 × 8 × 2), 24 vittorie senza reliquie. Verificate le venti combinazioni di tre slot. Incontrate tutte le sette specie incluso boss. |
 | Affidabilità | Regressioni oro/morale/missioni/caccia/transazione/navigazione e migrazione v1/v2/v3 superate. |
-| UI nativa | **58 catture e 530 salvataggi validati**. Touch/BOOT, abilità e bersagli, cinque stanze, rientro, collezione, ripartenza, sconfitta, pausa e recupero in IT/EN. |
+| UI nativa | **73 catture e 620 salvataggi validati**. Touch/BOOT, cinque stanze, ripartenza, tre assetti, appoggio delle pose, pausa e movimento ridotto in IT/EN. |
 | Regressioni dispositivo/UI | Tre catture del cerchio con frame da 120 ms; touch/BOOT a tempo dell'evento; scadenza, salvataggio lento/fallito, 20 s di schermo spento; 220 immagini stabili, 44 dialoghi e 42 specie di gemme. Sono scenari simulati sullo stesso codice nativo. |
 | Sanitizer UI | LVGL e UI compilati/eseguiti con ASan/UBSan senza errori rilevati. Leak scan finale disattivato perché l’app mantiene la scena attiva. Buffer immagini controllati anche su ricostruzioni ripetute del borgo. |
-| Memoria immagini host | Picco di 1.200.326 byte (~1,14 MiB) per i buffer immagini durante il percorso nativo Lanternbound. |
+| Memoria immagini host | Picco dei buffer durante il percorso nativo Lanternbound in [misure R7.1](roadmap/combat-poses-evidence/README.md). |
 | Desktop interattivo | Avvio, percorso, guida, timing e PWR/ripresa osservati nella precedente preview; migrazione desktop v3 verificata con SDL dummy. La nuova revisione ha catture e input LVGL automatici, senza una nuova prova manuale completa. |
-| Firmware | Build ESP32-S3 riuscita con ESP-IDF 5.5.1. Il flash sul Pocket resta da verificare. [Dimensione e SHA-256](roadmap/return-evidence/firmware.json) |
+| Firmware | Build ESP32-S3 riuscita con ESP-IDF 5.5.1. Il flash sul Pocket resta da verificare. [Dimensione e SHA-256](roadmap/combat-poses-evidence/firmware.json) |
 
 Log in [lantern-evidence](lantern-evidence/). La strategia automatica usa offensive quando possibile e attacchi base altrimenti, senza riempire risorse fra incontri salvo l’evento. Senza reliquia iniziale, con timing sempre Bene, vincono 20/24 Sentinelle, 16/24 Piromanti e 15/24 Predoni; sempre Ottimo/Perfetto 24/24, sempre Mancato 0/24. Le 288 run con progetto iniziale usano Ottimo, le 24 senza reliquie Perfetto. Questa è taratura del modello, non una misura del divertimento.
 

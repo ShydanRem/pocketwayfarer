@@ -43,6 +43,10 @@ Una parata perfetta riduce molto il danno, ma non lo annulla sempre. Guardia e s
 
 ![Suggerimenti nel primo incontro, parata perfetta e Risonanza](img/lantern/guida-e-risonanza.png)
 
+Durante l’anello la Sentinella alza il fendente, il Piromante raccoglie la lanterna e il Predone si abbassa per scattare. Il colpo arriva quando tocchi o premi BOOT. In difesa ogni assetto si prepara con la propria arma o scudo. Segui l’arco dorato e l’onda per giudicare il momento.
+
+![Carica della Sentinella, impatto del Piromante e parata del Predone nel gioco](img/lantern/pose-lanternbound.png)
+
 A tre cariche, l’abilità offensiva consuma la Risonanza e ottiene l’effetto dell’assetto. Sono evidenziati prima Abilità e poi il pulsante offensivo; i tre segmenti sotto le risorse mostrano anche la carica.
 
 I suggerimenti insegnano una cosa alla volta. Attacco e parata vengono appresi con un giudizio almeno Bene; Guardia e abilità usandole. Puoi confermare il suggerimento di Risonanza con OK. Le lezioni restano apprese tra spedizioni e riavvii. In **Opzioni** trovi **Suggerimenti** e **Ripeti guida**.
@@ -98,7 +102,7 @@ Completare la spedizione dà **80 monete** passando per il Sentiero o **95** pas
 
 Il menu **…** contiene Mappa, Bestiario, Collezione, Opzioni, Come si gioca e Classico. Il bestiario registra le creature effettivamente incontrate e dà un indizio sul loro comportamento. Sono presenti sei specie ordinarie e il Guardiano del Faro.
 
-**Timing assistito** allarga le finestre del 50%. **Movimento ridotto** elimina spostamenti, particelle e dissolvenze decorative mantenendo pose, simboli e informazioni di timing. Lingua e suggerimenti si cambiano dalle opzioni.
+**Timing assistito** allarga le finestre del 50%. **Movimento ridotto** usa pose fisse di carica, impatto e guardia. Arco, onda, simboli e giudizi rimangono visibili. Lingua e suggerimenti si cambiano dalle opzioni.
 
 **Classico** apre il precedente RPG con creazione dettagliata, 40 classi, inventario, bottega, forgia, campi, dungeon e caccia offline. Le sue regole sono diverse da Lanternbound; la grafica di tutte le sue schermate non è ancora stata ridisegnata. Legami/ESP-NOW nell’RPG non è una funzione di gioco completata. Nessun suono viene promesso nella preview corrente.
 
