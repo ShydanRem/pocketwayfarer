@@ -10,7 +10,7 @@ Un RPG fantasy HD-2D per **Waveshare ESP32-S3-Touch-AMOLED-1.75**, con schermo r
 
 **[Roadmap operativa](docs/ROADMAP.md)** · [Stato del lotto attivo](docs/roadmap/STATUS.md) · [Direzione artistica delle 40 classi](docs/CLASS-ART-BIBLE.md)
 
-> **0.9.0-preview.1** — **Parti** apre il primo bivio di Lanternbound con l’assetto indicato sul pulsante. **Eroe** apre la scelta fra i tre assetti. [Confronto e prove R6.1](docs/roadmap/pacing-evidence/README.md) · [Roadmap](docs/ROADMAP.md)
+> **0.9.0-preview.2** — Al quarto bivio di Lanternbound, il **Bastione** costa 12 PV e rende 25 oro se vinci. Il **Sentiero** resta gratuito e rende 10 oro. [Confronto e prove R6.2](docs/roadmap/bastion-evidence/README.md) · [Roadmap](docs/ROADMAP.md)
 
 ## Sul Pocket, in pochi passaggi
 

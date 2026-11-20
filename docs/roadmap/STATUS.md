@@ -1,6 +1,6 @@
 # Registro di avanzamento
 
-Aggiornato il 20 novembre 2026. Consegna corrente `0.9.0-preview.1`. [Roadmap operativa](../ROADMAP.md)
+Aggiornato il 20 novembre 2026. Consegna corrente `0.9.0-preview.2`. [Roadmap operativa](../ROADMAP.md)
 
 ## Consegna R1 — atlante delle classi, 0.4.1-preview.1
 
@@ -107,10 +107,14 @@ Le cinque regioni e il borgo si riconoscono sulla mappa illustrata. Righe adatta
 
 Dal borgo **Parti** apre il primo bivio con l’assetto indicato sul pulsante. Le tracce native IT/EN fissano due seed a parità di Sentinella e confrontano 80 passaggi prima e dopo la modifica. Partenza in un tocco, stesse risorse e stesso bottino, ripristino del bivio dopo il riavvio. Il primo playtest con persone resta da eseguire. [Catture e misure](pacing-evidence/README.md)
 
-## Prossimo lotto R6.2 — varietà dei percorsi
+## Consegna R6.2 — Sentiero e Bastione
 
-1. Scegliere un bivio in cui rendere leggibile il costo del rischio e la ricompensa prima dell’ingresso.
-2. Provare le due alternative sui seed di R6.1 a parità di assetto. Registrare PV, PM, ricompense, tempi ed esiti.
-3. Verificare il salvataggio prima e dopo la scelta, il rientro anticipato e l’accredito di una sola ricompensa.
+La quarta stanza espone costo, nemico e oro di entrambe le vie. Le prove IT/EN riprendono i due seed di R6.1, con quattro vittorie per via. Verificati soglia di ingresso, riavvio prima e dopo il costo, vecchio Pontile, sconfitta e rientro anticipato con accredito unico. [Tracce e prove](bastion-evidence/README.md)
+
+## Prossimo lotto R6.3 — ritorno al borgo
+
+1. Mostrare cosa è appena entrato nel bottino e quali progetti sono subito utilizzabili.
+2. Rendere raggiungibili collezione e prossima partenza dall’esito della spedizione.
+3. Verificare accredito, riavvio, retry e accesso alla collezione. Nel playtest osservare quale obiettivo il giocatore sceglie per la seconda spedizione.
 
 Il collaudo fisico può procedere in parallelo e serve per la stabile. [Sequenza e criteri](../ROADMAP.md#r6-e-r7--profondità-ritmo-e-feedback)

@@ -17,11 +17,18 @@ enum { LN_HIT, LN_HEAVY, LN_DOUBLE, LN_MEND };
 enum { LR_HEART, LR_THORN, LR_GLASS, LR_BELL, LR_COAL, LR_COMPASS, LR_COUNT };
 enum { LN_FEEDBACK_HERO = 1, LN_FEEDBACK_FOE, LN_FEEDBACK_HEAL, LN_FEEDBACK_BURN };
 enum { LN_EFFECT_RESONANCE = 1u, LN_EFFECT_BURN = 2u };
+enum { LN_PATH_TRAIL, LN_PATH_PIER, LN_PATH_BASTION };
+enum { LN_BASTION_ROOM = 3 };
 
 typedef struct {
     int16_t hp, max_hp;
     uint8_t kind, intent, burn, burn_turns;
 } ln_foe;
+
+typedef struct {
+    ln_foe foes[2];
+    uint8_t count, hp_cost, gold;
+} ln_route_info;
 
 typedef struct {
     /* Persistent profile/options, preserved when starting/retrying a run. */
@@ -52,6 +59,8 @@ wf_text ln_intent_name(int intent);
 bool ln_active(const rpg_lantern *l);
 void ln_start(rpg_lantern *l, int archetype, uint32_t seed);
 void ln_home(rpg_lantern *l);
+/* Inspect a combat route even when its entrance cost is unaffordable. */
+bool ln_preview_route(const rpg_lantern *l, int branch, ln_route_info *out);
 bool ln_enter(rpg_lantern *l, int branch);
 bool ln_action(rpg_lantern *l, int action, int target);
 int ln_quality(const rpg_lantern *l);

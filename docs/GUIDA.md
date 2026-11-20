@@ -10,7 +10,13 @@ Lanternbound è la nuova spedizione HD-2D di Pocket Wayfarer. Entri in cinque st
 
 ![Partenza con la Sentinella, primo bivio e ritorno al borgo](img/lantern/ritmo-spedizione.png)
 
-L’anteprima del cammino mostra i nemici prima di entrare. La spedizione segue questo ordine: lotta, evento, lotta, lotta, Guardiano del Faro. Nella stanza evento scegli Focolare o Specchio; nelle lotte ordinarie puoi trovare un avversario robusto o una coppia più fragile.
+L’anteprima del cammino mostra i nemici prima di entrare. La spedizione segue questo ordine: lotta, evento, lotta, bivio del Bastione e Guardiano del Faro. Nella stanza evento scegli Focolare o Specchio. Nella quarta stanza puoi confrontare il Sentiero e il Bastione.
+
+### Il bivio del Bastione
+
+![Schede di Sentiero e Bastione, combattimento e soglia d’ingresso](img/lantern/bivio-bastione.png)
+
+Il **Sentiero** costa 0 PV e vale **10 oro** se vinci. Il **Bastione** costa **12 PV all’ingresso**, ha un Granchio di Marea da **88 PV** e vale **25 oro** se lo sconfiggi. Puoi entrare con almeno 13 PV. Il premio entra nel bottino della spedizione dopo la vittoria. Con **Rientra** puoi portarlo al borgo prima del Guardiano.
 
 ## I comandi
 

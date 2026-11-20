@@ -1,6 +1,6 @@
 # Lanternbound — spedizione HD-2D giocabile
 
-Implementazione aggiornata al 20 novembre 2026 (`0.9.0-preview.1`) nella **UI nativa C11/LVGL di Pocket Wayfarer**, per l’AMOLED circolare 466×466. Il firmware e l’eseguibile interattivo Linux usano lo stesso codice. Le immagini sono catture della UI effettiva. [Roadmap](ROADMAP.md)
+Implementazione aggiornata al 20 novembre 2026 (`0.9.0-preview.2`) nella **UI nativa C11/LVGL di Pocket Wayfarer**, per l’AMOLED circolare 466×466. Il firmware e l’eseguibile interattivo Linux usano lo stesso codice. Le immagini sono catture della UI effettiva. [Roadmap](ROADMAP.md)
 
 ![Borgo, combattimento e reliquia](img/lantern/panoramica.png)
 
@@ -10,7 +10,7 @@ Dal borgo **Parti** apre il primo bivio con l’assetto indicato sul pulsante. *
 
 Nella stanza evento si sceglie Focolare (25 PV o 12 PM) oppure Specchio (offrire 12 PV, avendone più di 12, per Risonanza piena e 8 PM; rifiutare dà 12 PM). Dopo ogni scontro ordinario vengono proposte due reliquie diverse non possedute. A tre slot si può confrontare e sostituire una delle possedute; si può anche rinunciare alla ricompensa. Le sei reliquie modificano parata, danno ai feriti, guardia, scudo iniziale, bruciatura e cura proseguendo. Dopo il boss si conserva un progetto fra le reliquie della run: dalla collezione si può equipaggiare una reliquia iniziale per le spedizioni successive. Occupa uno dei tre slot. Una vittoria senza reliquie termina senza assegnare un progetto. [Regole e prove dello scambio](RELIC-CHOICES.md).
 
-Completare vale 80 monete: 10 per ciascuna delle prime quattro stanze e 40 per il boss. Rientrare conserva tutto; la sconfitta sottrae `floor(oro / 4)`. L’accredito è idempotente al riavvio. Riprova ripristina la spedizione conservando profilo, oro, progetti, bestiario e opzioni. Le statistiche della spedizione sono indipendenti da fame, stamina e livello classici.
+La quarta stanza offre **Sentiero** o **Bastione**. Il primo costa 0 PV e vale 10 oro. Il Bastione costa 12 PV all’ingresso e, se sconfiggi il Granchio di Marea da 88 PV, vale 25 oro. Una spedizione completa rende **80 oro sul Sentiero** o **95 oro col Bastione**. Rientrare conserva tutto, mentre una sconfitta sottrae `floor(oro / 4)`. L’accredito avviene una volta sola anche al riavvio. **Riprova** ripristina la spedizione conservando profilo, oro, progetti, bestiario e opzioni. Fame, stamina e livello del Classico appartengono al profilo fuori dalla spedizione. [Catture, misure e prove del Bastione](roadmap/bastion-evidence/README.md)
 
 Dal menu `...` si aprono mappa, bestiario con indizi, collezione, opzioni, guida in tre pagine e `Classico`. Una caccia già attiva mostra stato e raccolta nel nuovo borgo; per cominciare una spedizione occorre concludere caccia/dungeon classici attivi. Creazione dettagliata, inventario, 40 classi e mondo precedente restano accessibili nel classico.
 

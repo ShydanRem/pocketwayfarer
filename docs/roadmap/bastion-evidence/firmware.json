@@ -1,0 +1,13 @@
+{
+  "date": "2026-11-20",
+  "milestone": "R6.2-bastion-fork",
+  "app_version": "0.9.0-preview.2",
+  "target": "ESP32-S3",
+  "idf_version": "5.5.1",
+  "bytes": 5240544,
+  "sha256": "a548da749c9eccb2030270572022207607090be882a0140e8a29a3be995c4318",
+  "app_partition_bytes": 6291456,
+  "save_version": 4,
+  "save_bytes": 2808,
+  "physical_device_tested": false
+}

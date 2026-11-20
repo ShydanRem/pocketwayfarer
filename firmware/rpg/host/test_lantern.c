@@ -260,8 +260,80 @@ static void coaching_and_feedback(void) {
     assert(l->feedback == LN_FEEDBACK_BURN && l->last_damage == 2 && l->hp == hp && !l->resonance);
     puts("coach/feedback: actual learning, miss/retry, opt-out, exact actor/damage, resonance and burn: passed");
 }
+
+static void finish_bastion_encounter(rpg_game *g, int quality) {
+    rpg_lantern *l = &g->lantern;
+    for (int i = 0; i < 150 && l->state >= LN_CHOOSE && l->state <= LN_IMPACT; i++) {
+        switch (l->state) {
+        case LN_CHOOSE: assert(ln_action(l, LN_BASIC, 0)); break;
+        case LN_ATTACK: case LN_PARRY:
+            l->elapsed_ms = (uint16_t)tick_at_quality(l, quality);
+            assert(ln_quality(l) == quality && ln_tap(l));
+            break;
+        default: assert(ln_tick(l, 1000)); break;
+        }
+        roundtrip(g);
+    }
+    assert(l->state == LN_RELIC || l->state == LN_LOST);
+}
+
+static void bastion(void) {
+    rpg_game g;
+    fresh(&g);
+    rpg_lantern *l = &g.lantern;
+    ln_start(l, LN_SENTINEL, 3294095628u);
+    ln_route_info info;
+    rpg_lantern before = *l;
+    assert(!ln_preview_route(l, LN_PATH_BASTION, &info) && !ln_enter(l, LN_PATH_BASTION));
+    assert(!memcmp(l, &before, sizeof *l));
+
+    l->room = LN_BASTION_ROOM;
+    l->currency = 30;
+    l->hp = 12;
+    before = *l;
+    assert(ln_preview_route(l, LN_PATH_TRAIL, &info) && !info.hp_cost && info.gold == 10);
+    assert(ln_preview_route(l, LN_PATH_BASTION, &info) && info.hp_cost == 12 && info.gold == 25);
+    assert(info.count == 1 && info.foes[0].kind == LN_CRAB && info.foes[0].max_hp == 88);
+    assert(!ln_enter(l, LN_PATH_BASTION) && !memcmp(l, &before, sizeof *l));
+    roundtrip(&g);
+
+    l->hp = 90;
+    assert(ln_enter(l, LN_PATH_BASTION));
+    assert(l->hp == 78 && l->currency == 30 && l->branch == LN_PATH_BASTION);
+    assert(l->nfoes == 1 && l->foes[0].kind == LN_CRAB && l->foes[0].intent == LN_HEAVY);
+    assert(l->foes[0].hp == 88 && (l->seen & (1u << LN_CRAB)));
+    roundtrip(&g);
+    assert(!ln_enter(l, LN_PATH_BASTION) && l->hp == 78);
+    finish_bastion_encounter(&g, WF_Q_PERFECT);
+    assert(l->state == LN_RELIC && l->currency == 55 && !ln_bank(l));
+    assert(ln_skip_relic(l) && ln_retreat(l) && ln_bank(l) == 55);
+    roundtrip(&g);
+    assert(!ln_bank(l));
+
+    ln_start(l, LN_SENTINEL, 2224073057u);
+    l->room = LN_BASTION_ROOM;
+    l->currency = 30;
+    l->hp = 13;
+    assert(ln_enter(l, LN_PATH_BASTION) && l->hp == 1);
+    finish_bastion_encounter(&g, WF_Q_MISS);
+    assert(l->state == LN_LOST && l->currency == 30 && ln_bank(l) == 23);
+    roundtrip(&g);
+    assert(!ln_bank(l));
+
+    /* The old Pier branch in saved fourth-room encounters keeps its original payoff. */
+    ln_start(l, LN_SENTINEL, 2224073057u);
+    l->room = LN_BASTION_ROOM;
+    l->currency = 30;
+    assert(ln_enter(l, LN_PATH_PIER) && l->hp == 120 && l->nfoes == 2);
+    roundtrip(&g);
+    finish_bastion_encounter(&g, WF_Q_PERFECT);
+    assert(l->state == LN_RELIC && l->currency == 40);
+    puts("Bastion: pure preview, exact entry cost, low HP guard, legacy Pier, v4 resume and one-time win/loss payouts passed");
+}
+
 int main(void) {
     migration(); timing_pause_and_boundaries(); relics(); relic_exchanges(); coaching_and_feedback();
+    bastion();
     int any_loss = 0;
     for (int q = 0; q <= 3; q++) {
         printf("lantern %s:", q == 0 ? "miss" : q == 1 ? "good" : q == 2 ? "great" : "perfect");

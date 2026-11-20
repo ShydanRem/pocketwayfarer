@@ -1,5 +1,11 @@
 # Note di versione
 
+## 0.9.0-preview.2 — 20 novembre 2026
+
+- La quarta stanza di Lanternbound offre il Sentiero, gratuito e da 10 oro, oppure il Bastione, che costa 12 PV e rende 25 oro se vinci. Il Bastione ospita un Granchio di Marea da 88 PV.
+- Il bivio mostra PV del nemico, costo d’ingresso, premio e oro già raccolto. Il Bastione si apre da 13 PV in su.
+- Su PC il riavvio ripristina la scelta e il combattimento. Entrata e accredito della ricompensa avvengono una volta sola. Le vecchie lotte del Pontile già in corso mantengono il loro premio.
+
 ## 0.9.0-preview.1 — 20 novembre 2026
 
 - **Parti** apre il primo bivio di Lanternbound con l’assetto indicato sul pulsante. **Eroe** permette di cambiarlo e di tornare al borgo con touch o BOOT.
