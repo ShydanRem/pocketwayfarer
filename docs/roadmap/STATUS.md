@@ -1,6 +1,6 @@
 # Registro di avanzamento
 
-Aggiornato il 19 novembre 2026. Consegna corrente `0.8.0-preview.8`. [Roadmap operativa](../ROADMAP.md)
+Aggiornato il 20 novembre 2026. Consegna corrente `0.9.0-preview.1`. [Roadmap operativa](../ROADMAP.md)
 
 ## Consegna R1 — atlante delle classi, 0.4.1-preview.1
 
@@ -103,10 +103,14 @@ La terrazza lilla e il pavimento verde petrolio lasciano spazio ai gruppi di nem
 
 Le cinque regioni e il borgo si riconoscono sulla mappa illustrata. Righe adattabili e ritorno coerente via touch e BOOT unificano zaino, bottega, forgia e diario. Le prove bilingui percorrono le cinque regioni, raggiungono l’ultimo oggetto con swipe reali e verificano acquisti, vendita, potenziamento e missione dopo un riavvio. [Catture, prove e budget](services-evidence/README.md)
 
-## Prossimo lotto R6.1 — ritmo delle spedizioni
+## Consegna R6.1 — ritmo delle spedizioni
 
-1. Fissare due seed e un profilo di riferimento. Cronometrare l’arrivo alla prima scelta, il tempo fra incontri, le soste, le sconfitte e il ritorno al borgo.
-2. Ripetere le prove a parità di eroe e progressione. Usare il primo playtest per capire quali attese o scelte fanno interrompere la spedizione.
-3. Scegliere un solo intervento in base alle osservazioni e verificare gli stessi punti dopo la modifica. R6.2 usa la base così misurata per una nuova scelta rischio e ricompensa.
+Dal borgo **Parti** apre il primo bivio con l’assetto indicato sul pulsante. Le tracce native IT/EN fissano due seed a parità di Sentinella e confrontano 80 passaggi prima e dopo la modifica. Partenza in un tocco, stesse risorse e stesso bottino, ripristino del bivio dopo il riavvio. Il primo playtest con persone resta da eseguire. [Catture e misure](pacing-evidence/README.md)
+
+## Prossimo lotto R6.2 — varietà dei percorsi
+
+1. Scegliere un bivio in cui rendere leggibile il costo del rischio e la ricompensa prima dell’ingresso.
+2. Provare le due alternative sui seed di R6.1 a parità di assetto. Registrare PV, PM, ricompense, tempi ed esiti.
+3. Verificare il salvataggio prima e dopo la scelta, il rientro anticipato e l’accredito di una sola ricompensa.
 
 Il collaudo fisico può procedere in parallelo e serve per la stabile. [Sequenza e criteri](../ROADMAP.md#r6-e-r7--profondità-ritmo-e-feedback)

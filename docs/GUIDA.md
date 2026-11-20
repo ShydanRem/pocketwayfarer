@@ -6,7 +6,9 @@ Lanternbound è la nuova spedizione HD-2D di Pocket Wayfarer. Entri in cinque st
 
 ## Parti dal borgo
 
-**Gioca → Parti → scegli l’assetto → Parti → scegli il cammino.** Se c’è una caccia o un dungeon classico ancora attivo, concludilo prima di cominciare Lanternbound. La caccia attiva mostra nel borgo un accesso al suo stato e alla raccolta.
+**Gioca → Parti → scegli il cammino.** Il pulsante **Parti** indica l’assetto che porterai in spedizione. Per cambiarlo, apri **Eroe** e usa le frecce. Da lì puoi partire subito oppure tornare al borgo con **Torna** o BOOT. Se hai una caccia o un dungeon classico attivo, concludilo prima di avviare Lanternbound.
+
+![Partenza con la Sentinella, primo bivio e ritorno al borgo](img/lantern/ritmo-spedizione.png)
 
 L’anteprima del cammino mostra i nemici prima di entrare. La spedizione segue questo ordine: lotta, evento, lotta, lotta, Guardiano del Faro. Nella stanza evento scegli Focolare o Specchio; nelle lotte ordinarie puoi trovare un avversario robusto o una coppia più fragile.
 

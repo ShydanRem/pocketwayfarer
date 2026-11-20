@@ -1,12 +1,12 @@
 # Lanternbound — spedizione HD-2D giocabile
 
-Implementazione aggiornata al 17 novembre 2026 (`0.4.1-preview.1`) nella **UI nativa C11/LVGL di Pocket Wayfarer**, per l’AMOLED circolare 466×466. Sono disponibili firmware compilato e un eseguibile Linux interattivo dello stesso codice. Le immagini sotto sono catture della UI effettiva. La 0.4.1 aggiunge l’atlante delle classi; i tre assetti e le regole della spedizione restano distinti dalle 40 classi classiche. Piano e prove dell’incremento: [ROADMAP.md](ROADMAP.md).
+Implementazione aggiornata al 20 novembre 2026 (`0.9.0-preview.1`) nella **UI nativa C11/LVGL di Pocket Wayfarer**, per l’AMOLED circolare 466×466. Il firmware e l’eseguibile interattivo Linux usano lo stesso codice. Le immagini sono catture della UI effettiva. [Roadmap](ROADMAP.md)
 
 ![Borgo, combattimento e reliquia](img/lantern/panoramica.png)
 
 ## Cosa si può giocare
 
-Avvio rapido o creazione classica dell’eroe; borgo, scelta fra Sentinella, Piromante e Predone, e una spedizione di cinque stanze: lotta, evento, lotta, lotta, boss. Prima di entrare si vedono i nemici dei due percorsi; aprire questa anteprima non consuma RNG e non sblocca il bestiario. Sei specie ordinarie hanno comportamenti distinti: custode, fiammella, lupo, granchio corazzato, pipistrello a doppio colpo e falena che cura gli alleati. Il Guardiano del Faro è un automa originale con attacco pesante e doppio colpo.
+Dal borgo **Parti** apre il primo bivio con l’assetto indicato sul pulsante. **Eroe** permette di scegliere fra Sentinella, Piromante e Predone. La spedizione attraversa quattro stanze e il boss. Prima di entrare si vedono i nemici dei due percorsi. L’anteprima usa una copia dello stato e lascia la scoperta del bestiario all’incontro effettivo. Sei specie ordinarie hanno comportamenti distinti: custode, fiammella, lupo, granchio corazzato, pipistrello a doppio colpo e falena che cura gli alleati. Il Guardiano del Faro è un automa originale con attacco pesante e doppio colpo. [Prove della partenza diretta](roadmap/pacing-evidence/README.md)
 
 Nella stanza evento si sceglie Focolare (25 PV o 12 PM) oppure Specchio (offrire 12 PV, avendone più di 12, per Risonanza piena e 8 PM; rifiutare dà 12 PM). Dopo ogni scontro ordinario vengono proposte due reliquie diverse non possedute. A tre slot si può confrontare e sostituire una delle possedute; si può anche rinunciare alla ricompensa. Le sei reliquie modificano parata, danno ai feriti, guardia, scudo iniziale, bruciatura e cura proseguendo. Dopo il boss si conserva un progetto fra le reliquie della run: dalla collezione si può equipaggiare una reliquia iniziale per le spedizioni successive. Occupa uno dei tre slot. Una vittoria senza reliquie termina senza assegnare un progetto. [Regole e prove dello scambio](RELIC-CHOICES.md).
 
@@ -40,7 +40,7 @@ Sono importate **52 immagini runtime**: due fondali, tre nuovi assetti a quattro
 
 Fondali nativi 466×466 a 1×; attori e reliquie su griglia 88×88 con scala intera. Nel combattimento eroe, avversario singolo e boss usano 2×, le coppie 1× con aree di selezione separate. Il fondale lascia una fascia quieta dietro le sagome, con ombre di contatto LVGL. Profondità e luce dei fondali sono dipinte, senza renderer 3D o illuminazione dinamica. Controlli, testi, font e barre sono oggetti LVGL effettivi. I font DejaVu sono rasterizzati a 20/22 px con accenti italiani. [Ricerca, confronto e limiti della revisione](ART-CLARITY.md). Sorgenti, prompt, licenze, registro e hash: [assets/lantern](../assets/lantern/README.md).
 
-Il redesign non copre ancora tutte le schermate, regioni o combinazioni estetiche delle 40 classi classiche. Nessun audio è implementato: il percorso hardware non è stato verificato. I segnali essenziali sono visivi.
+I segnali essenziali sono visivi. Il percorso audio dell’hardware resta da verificare.
 
 ## Prima spedizione e feedback
 

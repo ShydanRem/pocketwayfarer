@@ -57,6 +57,7 @@ def check(base, commit):
     source_root=Path(__file__).resolve().parents[1]
     screenshots = {
         'borgo': 'lantern/02-borgo',
+        'ritmo-spedizione': 'lantern/ritmo-spedizione',
         'classi': 'classes/otto-classi-base',
         'avatar-base': 'hero_rig/otto-avatar-base',
         'avatar-avanzate-a': 'hero_rig/otto-avatar-avanzate-a',

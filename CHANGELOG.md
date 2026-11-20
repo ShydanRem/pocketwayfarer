@@ -1,5 +1,11 @@
 # Note di versione
 
+## 0.9.0-preview.1 — 20 novembre 2026
+
+- **Parti** apre il primo bivio di Lanternbound con l’assetto indicato sul pulsante. **Eroe** permette di cambiarlo e di tornare al borgo con touch o BOOT.
+- Due seed fissi, ripetuti in italiano e inglese su PC, passano da due tocchi a uno. Gli esiti, le risorse e il bottino coincidono con quelli della preview.8.
+- Verificati il blocco con caccia classica in corso e il ripristino del bivio dopo il riavvio, con lo stesso assetto e seed.
+
 ## 0.8.0-preview.8 — 19 novembre 2026
 
 - Nuovo atlante delle Isole Sospese con cinque regioni riconoscibili, requisiti di accesso e indicatori di caccia e completamento.
