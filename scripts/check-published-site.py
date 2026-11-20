@@ -59,6 +59,7 @@ def check(base, commit):
         'borgo': 'lantern/02-borgo',
         'ritmo-spedizione': 'lantern/ritmo-spedizione',
         'bivio-bastione': 'lantern/bivio-bastione',
+        'rientro-lanternbound': 'lantern/rientro-lanternbound',
         'classi': 'classes/otto-classi-base',
         'avatar-base': 'hero_rig/otto-avatar-base',
         'avatar-avanzate-a': 'hero_rig/otto-avatar-avanzate-a',

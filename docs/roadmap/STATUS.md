@@ -1,6 +1,6 @@
 # Registro di avanzamento
 
-Aggiornato il 20 novembre 2026. Consegna corrente `0.9.0-preview.2`. [Roadmap operativa](../ROADMAP.md)
+Aggiornato il 20 novembre 2026. Consegna corrente `0.9.0-preview.3`. [Roadmap operativa](../ROADMAP.md)
 
 ## Consegna R1 — atlante delle classi, 0.4.1-preview.1
 
@@ -111,10 +111,14 @@ Dal borgo **Parti** apre il primo bivio con l’assetto indicato sul pulsante. L
 
 La quarta stanza espone costo, nemico e oro di entrambe le vie. Le prove IT/EN riprendono i due seed di R6.1, con quattro vittorie per via. Verificati soglia di ingresso, riavvio prima e dopo il costo, vecchio Pontile, sconfitta e rientro anticipato con accredito unico. [Tracce e prove](bastion-evidence/README.md)
 
-## Prossimo lotto R6.3 — ritorno al borgo
+## Consegna R6.3 — ritorno al borgo
 
-1. Mostrare cosa è appena entrato nel bottino e quali progetti sono subito utilizzabili.
-2. Rendere raggiungibili collezione e prossima partenza dall’esito della spedizione.
-3. Verificare accredito, riavvio, retry e accesso alla collezione. Nel playtest osservare quale obiettivo il giocatore sceglie per la seconda spedizione.
+Oro accreditato, quota persa, progetto ed effetto sono leggibili nel riepilogo. La collezione apre il progetto conservato. La Campana del Borgo equipaggiata dal riepilogo dà 12 scudo al primo incontro della spedizione successiva, anche dopo un riavvio. Nel playtest con persone resta da osservare quale obiettivo viene scelto per la seconda spedizione. [Catture e verifiche](return-evidence/README.md)
+
+## Prossimo lotto R7.1 — animazione di combattimento
+
+1. Rifinire la posa d’attacco e di guardia per ciascuno dei tre assetti di Lanternbound.
+2. Confrontare le pose nel renderer circolare a dimensione reale, verificando mani, oggetti, sagome e spazio per i comandi.
+3. Verificare pausa, riavvio, anello e movimento ridotto prima di portare le pose sui rig del Classico in R7.2.
 
 Il collaudo fisico può procedere in parallelo e serve per la stabile. [Sequenza e criteri](../ROADMAP.md#r6-e-r7--profondità-ritmo-e-feedback)

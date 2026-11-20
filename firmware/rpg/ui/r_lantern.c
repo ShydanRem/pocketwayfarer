@@ -37,6 +37,7 @@ static void battle_refresh(void);
 static void advance_battle_clock(void);
 static void on_click(lv_event_t *e);
 static bool battle_state(int s) { return s >= LN_CHOOSE && s <= LN_IMPACT; }
+static bool result_state(int s) { return s == LN_WON || s == LN_LOST || s == LN_RETURNED; }
 static const wf_sprite *hero_sprite(int frame) { return &ln_loadouts[game()->archetype % LN_ARCHETYPES][frame & 3]; }
 static const wf_sprite *foe_sprite(int kind, int frame) {
     if (kind == LN_ROOT || kind == LN_WISP) return &ln_actors[kind == LN_ROOT ? 1 : 2][frame & 3];
@@ -159,7 +160,10 @@ static void header(const char *title, const char *subtitle) {
 static void save(void) { r_dirty(); r_save_now(); }
 static void changed(void) {
     rpg_lantern *l = game();
-    rpg_gold_add(&R.g, ln_bank(l));
+    const uint32_t gold_before = R.g.gold;
+    unsigned payout = ln_bank(l);
+    rpg_gold_add(&R.g, payout);
+    if (payout) l->settled = (uint16_t)(R.g.gold - gold_before + 1u);
     save();
     if (L.page == PAGE_BATTLE && battle_state(l->state)) battle_refresh();
     else show();
@@ -177,7 +181,7 @@ enum { C_DEPART = 1, C_HERO, C_BAG, C_MORE, C_HOME, C_CLASSIC, C_MAP, C_EQUIP, C
        C_CONTINUE, C_RETREAT, C_EVENT0, C_EVENT1, C_RETRY, C_ASSIST, C_MOTION,
        C_LANGUAGE, C_QUICK, C_CUSTOM, C_COLLECTION, C_ABORT, C_EQUIP_RELIC,
        C_BESTIARY, C_HELP, C_HUNT, C_COLLECT_HUNT, C_TIPS, C_REPLAY_TIPS, C_ACK_TIP,
-       C_REPLACE_RELIC, C_CANCEL_REPLACE, C_SKIP_RELIC, C_CLASSES, C_BASTION };
+       C_REPLACE_RELIC, C_CANCEL_REPLACE, C_SKIP_RELIC, C_CLASSES, C_BASTION, C_EQUIP_RESULT };
 
 static void departure_button(const char *text, int y) {
     lv_obj_t *b = button(L.root, text, CX, y, 216, 72, C_DEPART, true);
@@ -257,14 +261,17 @@ static void options(void) {
 }
 static void collection(void) {
     scene(PAGE_COLLECTION, 1, 155);
-    header(TR("Progetti di reliquia", "Relic blueprints"), TR("Un solo progetto all'inizio", "One blueprint at the start"));
+    header(TR("Progetti di reliquia", "Relic blueprints"), TR("Una reliquia alla partenza", "One relic at the start"));
     int r = L.pick % LR_COUNT;
     bool found = (game()->blueprints & (1u << r)) != 0;
-    lv_obj_t *art = kit_img(L.root, &ln_relics[r], 2, CX, 205);
+    lv_obj_t *art = kit_img(L.root, &ln_relics[r], 1, CX, 187);
     if (!found) lv_obj_set_style_image_opa(art, 70, 0);
-    label(L.root, found ? TX(ln_relic_name(r)) : TR("Progetto da scoprire", "Undiscovered blueprint"), CX, 298, 300, found ? AMBER : MUTED, false);
-    button(L.root, "<", 106, 216, 72, 72, C_LEFT, false);
-    button(L.root, ">", 360, 216, 72, 72, C_RIGHT, false);
+    panel(L.root, CX, 294, 306, 104, 245);
+    label(L.root, found ? TX(ln_relic_name(r)) : TR("Progetto da scoprire", "Undiscovered blueprint"), CX, 264, 290, found ? AMBER : MUTED, false);
+    label(L.root, found ? TX(ln_relic_text(r)) : TR("Conserva una reliquia dopo il Faro.", "Keep a relic after defeating the guardian."),
+          CX, 310, 284, IVORY, false);
+    button(L.root, "<", 106, 187, 72, 64, C_LEFT, false);
+    button(L.root, ">", 360, 187, 72, 64, C_RIGHT, false);
     bool equipped = game()->equipped == r + 1;
     lv_obj_t *equip = button(L.root, equipped ? TR("Rimuovi", "Remove") : TR("Equipaggia", "Equip"), 162, 378, 130, 64, C_EQUIP_RELIC, true);
     if (!found) lv_obj_add_state(equip, LV_STATE_DISABLED);
@@ -685,18 +692,45 @@ static void cleared(void) {
     button(L.root, TR("Rientra", "Return"), 304, 358, 130, 72, C_RETREAT, false);
 }
 static void result(void) {
-    scene(PAGE_RESULT, game()->state == LN_WON ? 0 : 1, 110);
-    bool win = game()->state == LN_WON, lost = game()->state == LN_LOST;
-    header(win ? TR("Il faro ricorda", "The beacon remembers") : lost ? TR("Non è l'ultimo viaggio", "Your journey is not over") : TR("Di nuovo a casa", "Home again"), NULL);
-    kit_img(L.root, &ln_relics[win ? LR_HEART : LR_COMPASS], 2, CX, 205);
-    char b[144];
-    unsigned banked = game()->settled ? game()->settled - 1u : 0;
-    snprintf(b, sizeof b, lost ? TR("+%u oro al borgo\nPerso solo il 25%% della spedizione.", "+%u gold to the village\nOnly 25%% of run gold was lost.")
-                              : TR("+%u oro al borgo\nIl prossimo viaggio ti aspetta.", "+%u gold to the village\nYour next journey awaits."), banked);
-    panel(L.root, CX, 294, 316, 82, 240);
-    label(L.root, b, CX, 294, 292, IVORY, false);
-    button(L.root, TR("Riprova", "Retry"), 162, 370, 130, 72, C_RETRY, true);
-    button(L.root, TR("Borgo", "Village"), 304, 370, 130, 72, C_HOME, false);
+    const rpg_lantern *l = game();
+    const bool win = l->state == LN_WON, lost = l->state == LN_LOST;
+    scene(PAGE_RESULT, win ? 0 : 1, 110);
+    char b[96];
+    const unsigned banked = l->settled ? l->settled - 1u : 0;
+    if (lost)
+        snprintf(b, sizeof b, TR("+%u oro · %u persi", "+%u gold · %u lost"), banked, l->currency / 4u);
+    else
+        snprintf(b, sizeof b, TR("+%u oro · %lu tot.", "Gold +%u / %lu"), banked, (unsigned long)R.g.gold);
+    header(win ? TR("Vittoria al Faro", "Beacon victory")
+               : lost ? TR("Spedizione persa", "Expedition lost") : TR("Rientro al borgo", "Back to the village"), b);
+
+    bool unlocked;
+    const int receipt = ln_result_blueprint(l, &unlocked);
+    const int relic = receipt >= 0 ? receipt : (int)l->equipped - 1;
+    panel(L.root, CX, 224, 316, 220, 245);
+    if (relic >= 0) {
+        const char *tag = receipt < 0 ? TR("Reliquia iniziale", "Starting relic")
+                         : unlocked ? TR("Nuovo progetto", "New blueprint")
+                                    : TR("Già in collezione", "Already in collection");
+        label(L.root, tag, CX, 130, 290, unlocked ? JADE : MUTED, false);
+        kit_img(L.root, &ln_relics[relic], 1, CX, 181);
+        label(L.root, TX(ln_relic_name(relic)), CX, 222, 288, AMBER, false);
+        label(L.root, TX(ln_relic_text(relic)), CX, 257, 286, IVORY, false);
+        if (l->equipped == relic + 1)
+            label(L.root, TR("Pronta alla partenza", "Ready for next run"), CX, 309, 288, JADE, false);
+        else
+            button(L.root, TR("Equipaggia", "Equip"), CX, 309, 154, 42, C_EQUIP_RESULT, false);
+    } else {
+        kit_img(L.root, &ln_relics[LR_COMPASS], 1, CX, 185);
+        unsigned projects = 0;
+        for (int i = 0; i < LR_COUNT; i++) projects += !!(l->blueprints & (1u << i));
+        snprintf(b, sizeof b, TR("Progetti in collezione %u/%d", "Blueprints in collection %u/%d"), projects, LR_COUNT);
+        label(L.root, b, CX, 249, 290, AMBER, false);
+        label(L.root, TR("Nessuna reliquia iniziale", "No starting relic"), CX, 285, 290, MUTED, false);
+    }
+    button(L.root, TR("Collezione", "Collection"), 157, 371, 142, 58, C_COLLECTION, false);
+    button(L.root, lost ? TR("Riprova", "Retry") : TR("Parti", "Depart"), 309, 371, 142, 58, C_RETRY, true);
+    button(L.root, TR("Borgo", "Village"), CX, 430, 130, 42, C_HOME, false);
 }
 static void show(void) {
     int s = game()->state;
@@ -705,7 +739,7 @@ static void show(void) {
     else if (s == LN_RELIC || s == LN_BLUEPRINT) reward();
     else if (s == LN_EVENT) event();
     else if (s == LN_CLEARED) cleared();
-    else if (s == LN_WON || s == LN_LOST || s == LN_RETURNED) result();
+    else if (result_state(s)) result();
     else scr_town();
 }
 void scr_lantern(void) { L.skill_menu = 0; show(); }
@@ -731,12 +765,19 @@ static void on_click(lv_event_t *e) {
         if (L.page == PAGE_TITLE) scr_lantern_title(); else options();
         return;
     }
-    if (c == C_HOME) { ln_home(l); save(); r_go(R_TOWN); return; }
+    if (c == C_HOME) {
+        if (L.page == PAGE_COLLECTION && result_state(l->state)) result();
+        else { ln_home(l); save(); r_go(R_TOWN); }
+        return;
+    }
     if (c == C_MORE) { menu(); return; }
     if (c == C_HERO) { R.screen = R_LANTERN; loadout(); return; }
     if (c == C_BAG || c == C_COLLECTION) {
-        L.pick = 0;
-        if (l->blueprints) while (!(l->blueprints & (1u << L.pick))) L.pick++;
+        L.pick = ln_result_blueprint(l, NULL);
+        if (L.pick < 0) {
+            L.pick = l->equipped ? l->equipped - 1 : 0;
+            if (l->blueprints) while (!(l->blueprints & (1u << L.pick))) L.pick++;
+        }
         collection(); return;
     }
     if (c == C_OPTIONS) { options(); return; }
@@ -762,7 +803,12 @@ static void on_click(lv_event_t *e) {
     if (c == C_EQUIP) { r_go(R_BAG); return; }
     if (c == C_EQUIP_RELIC) {
         int r = L.pick % LR_COUNT;
-        if ((l->blueprints & (1u << r)) && !ln_active(l)) { l->equipped = l->equipped == r + 1 ? 0 : (uint8_t)(r + 1); save(); collection(); }
+        if (ln_equip_blueprint(l, l->equipped == r + 1 ? -1 : r)) { save(); collection(); }
+        return;
+    }
+    if (c == C_EQUIP_RESULT) {
+        int relic = ln_result_blueprint(l, NULL);
+        if (relic >= 0 && ln_equip_blueprint(l, relic)) { save(); result(); }
         return;
     }
     if (c == C_ASSIST || c == C_MOTION) {
@@ -867,6 +913,7 @@ bool lantern_key(int key) {
     if (key != WF_KEY_BOOT_SHORT && key != WF_KEY_BOOT_LONG && key != WF_KEY_BOOT_DOWN) return false;
     if (key == WF_KEY_BOOT_DOWN && L.page != PAGE_BATTLE) return false;
     if (L.page == PAGE_REPLACE) { L.pick = L.offer_pick; reward(); return true; }
+    if (L.page == PAGE_COLLECTION && result_state(game()->state)) { result(); return true; }
     if (L.page == PAGE_BATTLE) {
         int phase = game()->state;
         advance_battle_clock();

@@ -12,6 +12,7 @@ typedef struct {
 
 _Static_assert(sizeof(rpg_save_header) == 16, "Save header ABI changed");
 _Static_assert(offsetof(rpg_game, lantern) == 1356, "Keep the v1 profile prefix byte-compatible");
+_Static_assert(offsetof(rpg_lantern, action) == 12, "Keep the combat action and victory receipt at their saved offset");
 _Static_assert(offsetof(rpg_lantern, equipped) == 64, "Keep the v2 run prefix byte-compatible");
 _Static_assert(sizeof(rpg_lantern) == 68, "Keep the v3 run size byte-compatible");
 _Static_assert(offsetof(rpg_game, coach) == RPG_V3_PROFILE_BYTES, "Keep the v3 profile byte-compatible");

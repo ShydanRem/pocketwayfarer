@@ -1,0 +1,13 @@
+{
+  "date": "2026-11-20",
+  "milestone": "R6.3-expedition-return",
+  "app_version": "0.9.0-preview.3",
+  "target": "ESP32-S3",
+  "idf_version": "5.5.1",
+  "bytes": 5241712,
+  "sha256": "43c851329c91a393dbfbaa57bb4ea766eb5df135df8d0769c01a7a20c68217a6",
+  "app_partition_bytes": 6291456,
+  "save_version": 4,
+  "save_bytes": 2808,
+  "physical_device_tested": false
+}

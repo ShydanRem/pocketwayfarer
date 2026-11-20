@@ -9,6 +9,7 @@ enum {
     BASTION_COST = 12, BASTION_CRAB_HP = 88,
     MAX_RUN_GOLD = LN_BASTION_ROOM * ROOM_GOLD + BASTION_GOLD + GUARDIAN_GOLD
 };
+enum { BLUEPRINT_RECORDED = 0x80, BLUEPRINT_UNLOCKED = 0x40, BLUEPRINT_ID_MASK = 0x3f };
 
 static int mini(int a, int b) { return a < b ? a : b; }
 static int maxi(int a, int b) { return a > b ? a : b; }
@@ -347,9 +348,27 @@ bool ln_skip_relic(rpg_lantern *l) {
 }
 bool ln_keep_blueprint(rpg_lantern *l, int r) {
     if (l->state != LN_BLUEPRINT || (unsigned)r >= LR_COUNT || !has(l, r)) return false;
+    const bool unlocked = !(l->blueprints & (1u << r));
     l->blueprints |= (uint8_t)(1u << r);
+    l->result_blueprint = (uint8_t)(BLUEPRINT_RECORDED | (unlocked ? BLUEPRINT_UNLOCKED : 0) | r);
     if (l->wins < UINT16_MAX) l->wins++;
     stage(l, LN_WON);
+    return true;
+}
+
+int ln_result_blueprint(const rpg_lantern *l, bool *unlocked) {
+    if (unlocked) *unlocked = false;
+    if (l->state != LN_WON || !(l->result_blueprint & BLUEPRINT_RECORDED)) return -1;
+    int relic = l->result_blueprint & BLUEPRINT_ID_MASK;
+    if (relic >= LR_COUNT || !(l->blueprints & (1u << relic))) return -1;
+    if (unlocked) *unlocked = (l->result_blueprint & BLUEPRINT_UNLOCKED) != 0;
+    return relic;
+}
+
+bool ln_equip_blueprint(rpg_lantern *l, int relic) {
+    if (ln_active(l) || relic < -1 || relic >= LR_COUNT) return false;
+    if (relic >= 0 && !(l->blueprints & (1u << relic))) return false;
+    l->equipped = (uint8_t)(relic + 1);
     return true;
 }
 bool ln_event(rpg_lantern *l, int choice) {

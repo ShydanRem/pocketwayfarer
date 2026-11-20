@@ -36,7 +36,9 @@ typedef struct {
     uint8_t blueprints, assist, reduced_motion;
     /* Run snapshot. Every rule-relevant field is saved, including timing. */
     uint8_t state, archetype, room, branch, nfoes, target, acting;
-    uint8_t action, next_state, resonance, relics, offers[2], turn;
+    /* Combat is finished when the victory receipt takes over this byte. */
+    union { uint8_t action, result_blueprint; };
+    uint8_t next_state, resonance, relics, offers[2], turn;
     uint8_t paused, guard, shield, focused, quality, feedback;
     int16_t hp, max_hp, sp, max_sp;
     int16_t last_damage;
@@ -73,6 +75,10 @@ int ln_relic_count(const rpg_lantern *l);
 bool ln_replace_relic(rpg_lantern *l, int choice, int outgoing);
 bool ln_skip_relic(rpg_lantern *l);
 bool ln_keep_blueprint(rpg_lantern *l, int relic);
+/* Returns the project recorded at victory, or -1 for other or older results. */
+int ln_result_blueprint(const rpg_lantern *l, bool *unlocked);
+/* Set the next expedition's relic, or pass -1 to clear it. */
+bool ln_equip_blueprint(rpg_lantern *l, int relic);
 bool ln_event(rpg_lantern *l, int choice);
 bool ln_continue(rpg_lantern *l);
 bool ln_retreat(rpg_lantern *l);
