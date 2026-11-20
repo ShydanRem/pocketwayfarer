@@ -9,6 +9,7 @@
 #include "art/lantern_art.h"
 #include "art/hero_rig_art.h"
 extern int rpg_battle_target_now(void);
+extern lv_obj_t *rpg_battle_target_view(int index, lv_area_t *area);
 extern int rpg_battle_parry_quality_now(void);
 
 static rpg_game before;
@@ -37,6 +38,37 @@ static lv_obj_t *avatar(lv_obj_t *root) {
         if(lv_obj_check_type(o,&lv_image_class) && lv_obj_get_user_data(o))return o;
     }
     return NULL;
+}
+static void tap_classic_foe(int target) {
+    lv_area_t area;
+    lv_obj_update_layout(lv_screen_active());
+    assert(rpg_battle_target_view(target, &area));
+    int x = (area.x1 + area.x2) / 2, y = (area.y1 + area.y2) / 2;
+    assert(x > CX && x < 420 && y > 100 && y < 300);
+    click(x, y);
+    assert(rpg_battle_target_now() == target);
+}
+static void classic_foes_clear(void) {
+    lv_area_t targets[RPG_MAX_FOES];
+    for (int i = 0; i < RPG_MAX_FOES; i++) {
+        lv_obj_t *foe = rpg_battle_target_view(i, &targets[i]);
+        if (!foe) break;
+        for (int j = 0; j < i; j++) {
+            lv_area_t a = targets[i], b = targets[j];
+            assert(a.x2 < b.x1 || a.x1 > b.x2 || a.y2 < b.y1 || a.y1 > b.y2);
+        }
+        lv_area_t bounds;
+        lv_obj_get_coords(foe, &bounds);
+        const lv_image_dsc_t *image = lv_image_get_src(foe);
+        assert(image->header.cf == LV_COLOR_FORMAT_RGB565A8);
+        const int w = image->header.w, h = image->header.h;
+        const uint8_t *alpha = image->data + image->header.stride * h;
+        for (int y = 0; y < h; y++) for (int x = 0; x < w; x++) {
+            if (!alpha[y * w + x]) continue;
+            int sx = bounds.x1 + x, sy = bounds.y1 + y, dx = sx - CX, dy = sy - CY;
+            assert(sx > 211 && sy > 74 && sy < 317 && dx * dx + dy * dy < CX * CY);
+        }
+    }
 }
 static void footer_ink(lv_obj_t *label,int hero_bottom) {
     const char *text=lv_label_get_text(label);
@@ -71,7 +103,14 @@ static void controls_clear(void) {
     const lv_image_dsc_t *d=lv_image_get_src(hero);
     const uint8_t *a=d->data+d->header.stride*d->header.h;
     int hero_bottom=ha.y1;
-    for(int y=0;y<(int)d->header.h;y++)for(int x=0;x<(int)d->header.w;x++)if(a[y*d->header.w+x])hero_bottom=ha.y1+y;
+    for(int y=0;y<(int)d->header.h;y++)for(int x=0;x<(int)d->header.w;x++)if(a[y*d->header.w+x]) {
+        hero_bottom=ha.y1+y;
+        if (R.screen == R_BATTLE) {
+            int dx = ha.x1 + x - CX, dy = ha.y1 + y - CY;
+            assert(dx < 0 && dx * dx + dy * dy < 233 * 233);
+        }
+    }
+    if (R.screen == R_BATTLE) classic_foes_clear();
     if(R.screen==R_BATTLE)for(unsigned i=0;i<lv_obj_get_child_count(s);i++) {
         lv_obj_t *label=lv_obj_get_child(s,(int)i);
         if(!lv_obj_check_type(label,&lv_label_class))continue;
@@ -97,6 +136,9 @@ static void controls_clear(void) {
             lv_obj_t *label=lv_obj_get_child(s,(int)j);
             if(!lv_obj_check_type(label,&lv_label_class) || !strstr(lv_label_get_text(label),"Lv"))continue;
             lv_area_t a;lv_obj_get_coords(label,&a);
+            if (!(a.x2 < b.x1 || a.x1 > b.x2 || a.y2 < b.y1 || a.y1 > b.y2))
+                fprintf(stderr, "foe level %s: %d,%d..%d,%d intersects control %d,%d..%d,%d\n",
+                        lv_label_get_text(label), a.x1,a.y1,a.x2,a.y2,b.x1,b.y1,b.x2,b.y2);
             assert(a.x2<b.x1 || a.x1>b.x2 || a.y2<b.y1 || a.y1>b.y2);
         }
         checks++;
@@ -143,10 +185,7 @@ static void actual_views(int cls) {
         rpg_foe f[3];for(int i=0;i<n;i++)rpg_foe_make(&f[i],i==0?SP_SLIME:i==1?SP_GHOST:SP_BAT,3,false);
         r_start_battle(f,n,false,false);run(1300);assert(rpg_battle_phase()==1);controls_clear();
         char name[80];snprintf(name,sizeof name,"gioco-%02d-lotta-%d",cls,n);shot(name);
-        if(n>1) { /* Both side targets stay reachable by real taps. */
-            click(n==2?140:112,190);assert(rpg_battle_target_now()==0);
-            click(n==2?326:354,190);assert(rpg_battle_target_now()==n-1);
-        }
+        for (int target = n - 1; target >= 0; target--) tap_classic_foe(target);
         wf_app_flush_save();ms+=20000;seconds+=20;wf_app_wake();run(30);
         assert(R.screen==R_BATTLE && rpg_battle_phase()==1);
     }
@@ -374,10 +413,8 @@ static void lumen_flow(void) {
         run(1300);
         assert(rpg_battle_phase() == CHOOSE);
         controls_clear();
-        const int points[3][2] = {{388, 190}, {233, 169}, {78, 190}};
         for (int target = 2; target >= 0; target--) {
-            click(points[2 - target][0], points[2 - target][1]);
-            assert(rpg_battle_target_now() == target);
+            tap_classic_foe(target);
             assert(find(lv_screen_active(), TX(rpg_species(foes[target].species)->name)));
         }
         lumen_shot("trio");
@@ -708,7 +745,7 @@ static void show_enemy_timing(const char *region, int lang) {
                     if (label[0] != '+' || !label[1] || label[1 + strspn(label + 1, "0123456789")]) continue;
                     lv_obj_update_layout(screen);
                     lv_obj_get_coords(child, &area);
-                    assert(area.y1 > CY + 30);
+                    assert(area.x2 < CX);
                     heal_seen = true;
                 }
                 assert(heal_seen);
@@ -755,10 +792,8 @@ static void expedition_flow(int zone, const expedition_example *example) {
 
         rpg_foe foes[RPG_MAX_FOES];
         field_fixture(0x07, 3, foes);
-        const int points[3][2] = {{78, 190}, {233, 169}, {388, 190}};
         for (int i = 2; i >= 0; i--) {
-            click(points[i][0], points[i][1]);
-            assert(rpg_battle_target_now() == i);
+            tap_classic_foe(i);
             assert(find(lv_screen_active(), TX(rpg_species(foes[i].species)->name)));
         }
         expedition_shot(example->region, "trio");
@@ -1124,7 +1159,7 @@ static void assert_classic_pose(int pose) {
     lv_obj_update_layout(screen);
     lv_area_t area;
     lv_obj_get_coords(hero, &area);
-    assert(area.x1 + 88 == CX && area.y1 + 88 == 344);
+    assert(area.x1 + 88 < CX && area.y1 + 88 < CY);
     const lv_image_dsc_t *image = lv_image_get_src(hero);
     assert(image->header.w == 176 && image->header.h == 176);
     const uint16_t *drawn = (const uint16_t *)image->data;
@@ -1142,7 +1177,7 @@ static void assert_classic_pose(int pose) {
         assert(alpha[pixel] == mask[expected] && drawn[pixel] == rgb[expected]);
         if (!alpha[pixel]) continue;
         int dx = area.x1 + x - CX, sy = area.y1 + y, dy = sy - CY;
-        assert(dx * dx + dy * dy < CX * CY && sy > 245 && sy < 428);
+        assert(dx < 0 && dx * dx + dy * dy < CX * CY && sy > 107 && sy < 305);
     }
 }
 
@@ -1186,10 +1221,8 @@ static void classic_combat_rig(void) {
         run(1100);
         assert(rpg_battle_phase() == CLASSIC_CHOOSE);
         controls_clear();
-        for (int j = 2; j >= 0; j--) {
-            click(112 + j * 121, j == 1 ? 169 : 190);
-            assert(rpg_battle_target_now() == j);
-        }
+        for (int j = 2; j >= 0; j--) tap_classic_foe(j);
+        if (!quiet) expedition_shot(examples[i].tag, "schieramento");
         press(TR("Attacco", "Attack"));
         assert(rpg_battle_phase() == CLASSIC_RING);
         assert_classic_pose(HP_WINDUP);

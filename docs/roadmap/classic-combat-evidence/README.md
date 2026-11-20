@@ -2,6 +2,8 @@
 
 ![Paladino in carica, Cavaliere del Drago all’impatto e parata nei Prati di Lumen](../../img/hero_rig/pose-classico.png)
 
+Le catture mostrano le pose dei due personaggi nello schieramento laterale introdotto nella preview seguente. [Prove R7.2b](../classic-weapons-evidence/README.md)
+
 Il **Paladino** raccoglie l’arma e porta lo scudo davanti al busto. Il **Cavaliere del Drago** entra più aperto nell’affondo e fa seguire la cappa al busto. La posa usa il personaggio del profilo, inclusi carnagione, capelli, arma, mano secondaria e copricapo equipaggiati. Le due classi sono il primo lotto di R7.2. Le altre famiglie seguono in R7.2b.
 
 Riga superiore **Paladino**, riga inferiore **Cavaliere del Drago**. Da sinistra a destra **carica, contatto, recupero, ingresso in guardia, parata**. Le immagini sono ritagli di catture LVGL a 466 × 466.

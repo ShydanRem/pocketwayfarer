@@ -378,7 +378,7 @@ void scr_town_classic(void) {
         float a = mids[i] * 3.14159265f / 180.0f;
         kit_img(s, ri(icons_[i]), 2, CX + (int)lroundf(192 * cosf(a)), CY + (int)lroundf(192 * sinf(a)));
     }
-    r_vitals_arcs(s, &t_hp, &t_sp);
+    r_vitals_arcs(s, &t_hp, &t_sp, true);
     r_character_panel(s, CX, 99, 316, 82);
     kit_label(s, &ln_font_title, RC_GOLD, TR("Borgo Lanterna", "Lantern Hollow"), CX, 75);
     t_info = kit_label(s, &ln_font_body, RC_IVORY, "", CX, 110);

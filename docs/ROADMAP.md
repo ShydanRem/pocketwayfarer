@@ -10,7 +10,7 @@ Un lotto è completato quando entra nel gioco, supera i controlli pertinenti e d
 
 ## Stato reale di partenza
 
-**Consegna R7.2b / 0.10.0-preview.3.** Tutti i rami di Arciere, Mago e Occultista ricevono le pose di carica, impatto, recupero e parata. Sono 15 classi in più. Le prove nel renderer coprono arco e faretra, bastone e tomo, falce e cappa lunga. [Catture e prove R7.2b](roadmap/classic-weapons-evidence/README.md)
+**Consegna R7.2b / 0.10.0-preview.3.** Il Classico passa allo schieramento laterale, con eroe a sinistra, avversari a destra e comandi sotto l’arena. Tutti i rami di Arciere, Mago e Occultista ricevono le pose di carica, impatto, recupero e parata. [Catture e prove R7.2b](roadmap/classic-weapons-evidence/README.md)
 
 ![Arco della Tempesta, Arcimago e Signore della Morte nel combattimento nativo](img/hero_rig/pose-armi-classico.png)
 
@@ -184,7 +184,7 @@ Arma, mano secondaria e testa sono i canali grafici dell’equipaggiamento già 
 | **R6.3 · consegna su host, ritorno al borgo** | Verificati bottino, progetto, equipaggiamento e ripartenza attraverso il riavvio. Da osservare in playtest se il giocatore parte di nuovo e quale obiettivo sceglie. |
 | **R7.1 · consegna su host, pose e transizioni** | Tre assetti verificati con carica, impatto, recupero, guardia, pausa, riavvio e movimento ridotto. Il test fisico resta aperto. |
 | **R7.2a · consegna su host, due classi del Classico** | Paladino e Cavaliere del Drago verificati con equipaggiamento effettivo, quattro razze, controlli circolari, pausa e movimento ridotto. |
-| **R7.2b · consegna su host, arco, bastone e falce** | Tutti i rami di Arciere, Mago e Occultista. Il rig copre 17/40 classi. Test nativi con equipaggiamento, IT/EN e movimento ridotto. |
+| **R7.2b · consegna su host, composizione laterale** | Eroe e avversari si affrontano dai due lati. Il rig copre 17/40 classi con i nuovi profili di arco, bastone e falce. Test IT/EN su tre bersagli e boss. |
 | **R7.2c · prossimo, le 23 classi rimanenti** | Calibrare Guerriero, Ladro, Chierico, Monaco e Artefice, partendo da pugnale, tirapugni e martello. Verificare l’intera matrice di classi, pose ed equipaggiamento e catturare almeno un rappresentante per famiglia. |
 | **R7.3 · audio opzionale** | Verificare prima l’uscita audio sul Pocket. Se utilizzabile, aggiungere pochi segnali distinti e controlli per volume e muto. Gli stessi eventi devono essere leggibili a schermo. |
 | **R8 · candidata 1.0** | Installazione pulita e aggiornamento da una preview con dati, prove sul Pocket di anello, parata e sonno/risveglio, sessione lunga, controllo del budget e pacchetto di ripristino. |

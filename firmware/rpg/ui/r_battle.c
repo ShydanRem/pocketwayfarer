@@ -36,8 +36,10 @@ static struct {
     uint32_t avatar_clock, strike_at;
 } B;
 
-#define HERO_X CX
+#define HERO_X 124
 #define HERO_Y (B.hero_y)
+#define SUMMON_X (HERO_X - 49)
+#define SUMMON_Y (HERO_Y + 48)
 
 static const wf_sprite *foe_sprite(int species, bool windup) {
     if (species == SP_MIMIC) return &classic_crypt_mimic;
@@ -153,8 +155,8 @@ static void fade_out(lv_obj_t *o) {
     lv_anim_start(&a);
 }
 
-static int tx(int who) { return who < 0 ? HERO_X : who == 3 ? HERO_X - 92 : B.foe_x[who]; }
-static int ty(int who) { return who < 0 ? HERO_Y - 40 : who == 3 ? HERO_Y : B.foe_y[who] - 20; }
+static int tx(int who) { return who < 0 ? HERO_X : who == 3 ? SUMMON_X : B.foe_x[who]; }
+static int ty(int who) { return who < 0 ? HERO_Y - 26 : who == 3 ? SUMMON_Y : B.foe_y[who] - 15; }
 
 static uint32_t status_color(int s) {
     static const uint32_t c[STS_COUNT] = {COL_TEXT, 0xff7a2a, 0x9aff5a, 0x8ae8ff, 0xffe04a, 0xff4a5a, 0xc8a0ff, 0x8a8aa8};
@@ -179,7 +181,8 @@ static int play(const rpg_event *e) {
             }
             lv_obj_t *t = B.foe_img[e->target];
             if (!B.combat_rig || e->actor == 3)
-                lunge(e->actor == 3 && B.summon ? B.summon : B.hero, (B.foe_x[e->target] - HERO_X) / 4, -40);
+                lunge(e->actor == 3 && B.summon ? B.summon : B.hero,
+                      (B.foe_x[e->target] - HERO_X) / 6, (B.foe_y[e->target] - HERO_Y) / 8);
             fx_sparks(B.scr, tx(e->target), ty(e->target) + 10, e->kind == EV_CRIT_HIT ? 0xffd060 : 0xfff0d0,
                       e->kind == EV_CRIT_HIT ? 10 : 5);
             if (e->kind == EV_CRIT_HIT && !B.combat_rig && !R.g.lantern.reduced_motion) {
@@ -201,7 +204,7 @@ static int play(const rpg_event *e) {
             update_foe(e->target);
             return 420;
         }
-        lunge(B.foe_img[e->actor], (HERO_X - B.foe_x[e->actor]) / 4, 40);
+        lunge(B.foe_img[e->actor], (HERO_X - B.foe_x[e->actor]) / 7, (HERO_Y - B.foe_y[e->actor]) / 7);
         if (e->value) {
             fx_sparks(B.scr, HERO_X, HERO_Y - 10, 0xff6a4a, 5);
             if (!B.combat_rig && !R.g.lantern.reduced_motion && e->value * 5 > B.b.h.st.max_hp) {
@@ -214,7 +217,7 @@ static int play(const rpg_event *e) {
         hero_obj_set_pose(B.hero,&B.look,e->quality==3?HX_IDLE:HX_HURT,3,e->quality==3?HP_GUARD:HP_HIT);
         snprintf(buf, sizeof buf, "-%ld", (long)e->value);
         kit_float_text(B.scr, buf, e->value ? COL_BAD : COL_ENERGY, &wf_font_big, HERO_X + 40, HERO_Y - 70);
-        if (e->quality == 3) kit_float_text(B.scr, TR("Parata perfetta!", "Perfect parry!"), COL_GOLD, &wf_font_small, HERO_X, HERO_Y - 110);
+        if (e->quality == 3) kit_float_text(B.scr, TR("Parata perfetta!", "Perfect parry!"), COL_GOLD, &wf_font_small, CX, 342);
         update_vitals();
         return 420;
     case EV_MISS:
@@ -227,7 +230,7 @@ static int play(const rpg_event *e) {
             else snprintf(buf, sizeof buf, "%s", TR("Curato", "Cured"));
             /* The hero's heal floats below the enemy levels on illustrated fields. */
             kit_float_text(B.scr, buf, COL_HP, &wf_font_big,
-                           HERO_X - (B.illustrated ? 64 : 40), HERO_Y - (B.illustrated ? 12 : 70));
+                           HERO_X + 32, HERO_Y - 12);
             kit_burst(B.scr, ri(RI_HEART), HERO_X, HERO_Y - 30, 3);
             hero_face(HX_HAPPY, 0);
             update_vitals();
@@ -261,7 +264,7 @@ static int play(const rpg_event *e) {
         kit_float_text(B.scr, TR("Schivato!", "Dodged!"), COL_ENERGY, &wf_font_big, HERO_X, HERO_Y - 90);
         return 380;
     case EV_COUNTER:
-        lunge(B.hero, (B.foe_x[e->target] - HERO_X) / 4, -40);
+        lunge(B.hero, (B.foe_x[e->target] - HERO_X) / 6, (B.foe_y[e->target] - HERO_Y) / 8);
         snprintf(buf, sizeof buf, TR("Contrattacco -%ld", "Counter -%ld"), (long)e->value);
         kit_float_text(B.scr, buf, COL_GOLD, &wf_font_small, tx(e->target), ty(e->target));
         kit_flash(B.foe_img[e->target], 0xffffff, 240);
@@ -281,13 +284,14 @@ static int play(const rpg_event *e) {
         if (!B.summon) {
             int species = rpg_skill(e->skill)->element == EL_DARK ? SP_SKELETON : SP_WOLF;
             const wf_sprite *sp = foe_sprite(species, false);
-            B.summon = kit_img(B.scr, sp, 2, HERO_X - 92, HERO_Y + 6);
+            B.summon = kit_img(B.scr, sp, 1, SUMMON_X, SUMMON_Y);
+            lv_obj_move_to_index(B.summon, lv_obj_get_index(B.hero));
         }
         lv_obj_set_style_opa(B.summon, 255, 0);
         kit_flash(B.summon, 0xffffff, 400);
         return 450;
     case EV_SUMMON_HIT:
-        if (B.summon) lunge(B.summon, (B.foe_x[e->target] - HERO_X + 92) / 4, -40);
+        if (B.summon) lunge(B.summon, (B.foe_x[e->target] - SUMMON_X) / 6, (B.foe_y[e->target] - SUMMON_Y) / 8);
         kit_flash(B.foe_img[e->target], 0xffffff, 240);
         snprintf(buf, sizeof buf, "-%ld", (long)e->value);
         kit_float_text(B.scr, buf, COL_TEXT, &wf_font_big, tx(e->target), ty(e->target));
@@ -460,7 +464,7 @@ static void on_ring_tap(lv_event_t *e) {
         lv_obj_remove_flag(B.buttons[5], LV_OBJ_FLAG_HIDDEN);
     }
     /* Float the attack rating clear of the illustrated intent panel. */
-    quality_popup(B.scr, q, B.illustrated ? 112 : CX, B.illustrated ? 340 : 110,
+    quality_popup(B.scr, q, CX, 354,
                   B.illustrated ? &ln_font_title : NULL);
     do_hero(&B.pending, q);
 }
@@ -490,7 +494,7 @@ static void act(const rpg_action *a) {
     if (B.illustrated) {
         lv_obj_set_width(B.info, 208);
         lv_obj_set_width(lv_obj_get_child(B.info, 0), 196);
-        kit_pos(B.info, CX, 95);
+        kit_pos(B.info, CX, 357);
         lv_obj_add_flag(B.buttons[5], LV_OBJ_FLAG_HIDDEN);
     }
     if (B.combat_rig) hero_obj_pose(B.hero, HP_WINDUP);
@@ -608,6 +612,7 @@ static void on_parry_tap(lv_event_t *e) {
     if (B.phase != PH_PARRY || waiting_for_input()) return;
     int q = parry_judge(&B.parry);
     parry_close(&B.parry);
+    set_info(NULL);
     if (B.illustrated) lv_obj_remove_flag(B.buttons[5], LV_OBJ_FLAG_HIDDEN);
     rpg_battle_foe(&B.b, q);
     play_events(AFTER_FOE);
@@ -628,31 +633,30 @@ void scr_battle(void) {
     hero_look_from_game(&B.look, &R.g);
     B.combat_rig = hero_has_combat_rig(&B.look);
     B.striking = false;
-    bool modern=hero_uses_rig(&B.look);B.hero_y=modern?344:352;
-    static const int xs[3][3] = {{CX, 0, 0}, {140, 326, 0}, {112, CX, 354}};
-    /* The separated battle layout also applies to legacy costume fallbacks:
-     * their old single-foe bar crossed the player's weapon/body at y300. */
-    static const int feet[3][3] = {{210, 0, 0}, {220,220,0}, {228,204,228}};
+    bool modern = hero_uses_rig(&B.look);
+    B.hero_y = modern ? 216 : 230;
+    /* Keep the roster opposite the player: a pair uses the front and rear
+     * lanes, while a trio raises its middle enemy clear of the lower two. */
+    static const int xs[3][3] = {{326, 0, 0}, {267, 375, 0}, {267, 323, 375}};
+    static const int feet[3][3] = {{285, 0, 0}, {285, 246, 0}, {285, 164, 287}};
     for (int i = 0; i < n; i++) {
         const rpg_foe *f = &B.b.foe[i];
         const wf_sprite *sprite = foe_sprite(f->species, false);
-        B.scale[i] = n >= 2 && sprite->w > 54 ? 1 : 2;
+        const int height_limit = n == 3 && i == 1 ? 41 : 46;
+        B.scale[i] = (n > 1 && (sprite->w > 52 || sprite->h > height_limit)) ||
+                     (n == 1 && (sprite->w > 106 || sprite->h > 95)) ? 1 : 2;
         B.foe_x[i] = xs[n - 1][i];
         int sh = sprite->h * B.scale[i];
         B.foe_y[i] = feet[n - 1][i] - sh / 2 + 4;
         fx_shadow(B.scr, B.foe_x[i], feet[n - 1][i], n >= 2 ? 70 : f->boss ? 150 : 100);
         B.foe_img[i] = kit_img(B.scr, sprite, B.scale[i], B.foe_x[i], B.foe_y[i]);
-        B.foe_hit[i] = NULL;
-        lv_obj_t *hit = B.foe_img[i];
-        if (B.illustrated) {
-            hit = B.foe_hit[i] = lv_obj_create(B.scr);
-            lv_obj_remove_style_all(hit);
-            lv_obj_remove_flag(hit, LV_OBJ_FLAG_SCROLLABLE);
-            int width = sprite->w * B.scale[i];
-            int height = sh < 64 ? 64 : sh;
-            lv_obj_set_size(hit, width < 100 ? 100 : width, height + 10);
-            kit_pos(hit, B.foe_x[i], feet[n - 1][i] - height / 2 + 4);
-        }
+        lv_obj_t *hit = B.foe_hit[i] = lv_obj_create(B.scr);
+        lv_obj_remove_style_all(hit);
+        lv_obj_remove_flag(hit, LV_OBJ_FLAG_SCROLLABLE);
+        int width = sprite->w * B.scale[i], height = sh < 62 ? 62 : sh;
+        if (n > 1 && width > 104) width = 104;
+        lv_obj_set_size(hit, width < 78 ? 78 : width, height + 8);
+        kit_pos(hit, B.foe_x[i], feet[n - 1][i] - height / 2 + 4);
         lv_obj_add_flag(hit, LV_OBJ_FLAG_CLICKABLE);
         lv_obj_add_event_cb(hit, on_foe, LV_EVENT_CLICKED, (void *)(intptr_t)i);
         if (!R.g.lantern.reduced_motion) {
@@ -660,7 +664,8 @@ void scr_battle(void) {
             kit_fade_in(B.foe_img[i], 350, i * 120);
         }
         int by = B.foe_y[i] + sh / 2 + 10;
-        B.foe_bar[i] = kit_bar(B.scr, B.foe_x[i], by, n == 3 ? 84 : 110, 12, COL_BAD, f->hp, f->max_hp);
+        B.foe_bar[i] = kit_bar(B.scr, B.foe_x[i], by, n > 1 ? 76 : 108, 9, COL_BAD, f->hp, f->max_hp);
+        lv_obj_remove_flag(B.foe_bar[i], LV_OBJ_FLAG_CLICKABLE);
         char buf[24];
         snprintf(buf, sizeof buf, "%sLv%d", f->elite ? "\xe2\x98\x85" : "", f->level);
         B.foe_lbl[i] = kit_label(B.scr, &wf_font_small, f->elite ? COL_GOLD : COL_TEXT, buf, B.foe_x[i], by + 18);
@@ -669,7 +674,7 @@ void scr_battle(void) {
     B.hero = hero_obj(B.scr, &B.look, HX_IDLE, 3, HERO_X, HERO_Y);
     B.avatar_phase=-1;
     if(!modern)kit_bob(B.hero, 3, 1500);
-    r_vitals_arcs(B.scr, &B.hp_arc, &B.sp_arc);
+    r_vitals_arcs(B.scr, &B.hp_arc, &B.sp_arc, false);
     B.vitals = kit_label(B.scr, &wf_font_small, COL_TEXT, "", CX, 444);
     lv_obj_remove_flag(B.vitals, LV_OBJ_FLAG_CLICKABLE);
     /* Two compact 14px ink rows fit the circular footer even when HP/SP grow.
@@ -677,23 +682,19 @@ void scr_battle(void) {
     lv_obj_set_style_text_line_space(B.vitals,-8,0);
     B.marker = kit_img(B.scr, ri(RI_STAR), 2, 0, 0);
     if (!R.g.lantern.reduced_motion) kit_bob(B.marker, 5, 600);
-    static const struct { int icon, x, y, size; uint32_t color; } btn[6] = {
-        {RI_SWORD, 92, 280, 66, 0xe8503a}, {RI_SPARKLE, 126, 366, 66, 0x8a5ae8}, {RI_BAG, 340, 366, 66, 0xa8783a},
-        {RI_SHIELD, 374, 280, 66, 0x3a7ae8}, {RI_RUN, 66, 196, 48, COL_PANEL_HI}, {RI_AUTO, 400, 196, 48, COL_PANEL_HI},
+    static const struct { int icon, x, y; uint32_t color; } btn[6] = {
+        {RI_SWORD, 106, 355, 0xe8503a}, {RI_SPARKLE, 190, 355, 0x8a5ae8}, {RI_BAG, 276, 355, 0xa8783a},
+        {RI_SHIELD, 360, 355, 0x3a7ae8}, {RI_RUN, 161, 401, COL_PANEL_HI}, {RI_AUTO, 305, 401, COL_PANEL_HI},
     };
     for (int i = 0; i < 6; i++) {
         if (B.illustrated) {
             static const wf_text names[] = {{"Attacco", "Attack"}, {"Abilità", "Skills"}, {"Zaino", "Bag"},
                                             {"Guardia", "Guard"}, {"Fuga", "Flee"}, {"Auto no", "Auto off"}};
-            static const int pos[][2] = {{92,302},{103,366},{363,366},{374,302},{100,103},{366,103}};
-            B.buttons[i] = r_character_button(B.scr, TX(names[i]), pos[i][0], pos[i][1],
-                                               i == 5 ? 94 : 86, 40, i == 0, on_button, i);
+            B.buttons[i] = r_character_button(B.scr, TX(names[i]), btn[i].x, btn[i].y,
+                                               i == 5 ? 96 : 82, 41, i == 0, on_button, i);
             continue;
         }
-        int x=i==1?108:i==2?358:btn[i].x;
-        /* Leave levels attached to their targets, including elite Lv99. */
-        bool side=i==0 || i==3;
-        B.buttons[i] = kit_round_button(B.scr, ri(btn[i].icon), NULL, x, side?302:btn[i].y, side?60:btn[i].size, btn[i].color, on_button, i);
+        B.buttons[i] = kit_round_button(B.scr, ri(btn[i].icon), NULL, btn[i].x, btn[i].y, 44, btn[i].color, on_button, i);
         lv_obj_set_style_bg_color(B.buttons[i], lv_color_lighten(lv_color_hex(btn[i].color), 40), 0);
     }
     if (B.boss || B.dungeon) {
@@ -828,6 +829,11 @@ int rpg_battle_ring_quality_now(void) { return B.phase == PH_RING ? ring_judge(&
 int rpg_battle_parry_quality_now(void) { return B.phase == PH_PARRY ? parry_judge(&B.parry) : -1; }
 int rpg_battle_phase(void) { return B.phase; }
 int rpg_battle_target_now(void) { return B.target; }
+lv_obj_t *rpg_battle_target_view(int index, lv_area_t *area) {
+    if ((unsigned)index >= B.b.nfoes) return NULL;
+    lv_obj_get_coords(B.foe_hit[index], area);
+    return B.foe_img[index];
+}
 
 void r_classic_suspend(void) {
     if (R.screen != R_BATTLE || B.suspended) return;

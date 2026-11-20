@@ -54,7 +54,7 @@ if shots:
             ('mappa-zaino-classico', 'services', ('mappa', 'zaino', 'dettaglio')),
             ('servizi-classico', 'services', ('bottega', 'forgia', 'missioni')),
             ('pose-classico', None, ('paladin-rig-carica', 'dragon-rig-contatto', 'paladin-rig-parata')),
-            ('pose-armi-classico', None, ('stormbow-rig-carica', 'archmage-rig-contatto', 'deathlord-rig-parata')),
+            ('pose-armi-classico', None, ('stormbow-rig-schieramento', 'archmage-rig-contatto', 'deathlord-rig-parata')),
         ]:
             captures = [next(dst.glob(f'*-{prefix + "-" if prefix else ""}{part}-it.png'), None) for part in samples]
             if not all(captures):
@@ -73,7 +73,7 @@ if shots:
                 continue
             poses = Image.new('RGB', (940, 184 * len(actors)), (16, 24, 32))
             for i, frame in enumerate(frames):
-                tile = Image.open(frame).crop((143, 247, 323, 425))
+                tile = Image.open(frame).crop((34, 122, 214, 300))
                 poses.paste(tile, (4 + 188 * (i % 5), 3 + 184 * (i // 5)), tile)
             poses.save(dst / (name + '.png'))
             poses.convert('L').save(dst / (name + '-grigio.png'))

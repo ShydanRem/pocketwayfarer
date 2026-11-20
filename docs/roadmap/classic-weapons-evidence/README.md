@@ -1,6 +1,8 @@
 # R7.2b — arco, bastone e falce nel Classico
 
-![Arco della Tempesta in carica, Arcimago all’impatto e Signore della Morte in parata](../../img/hero_rig/pose-armi-classico.png)
+![Schieramento laterale, Arcimago all’impatto e Signore della Morte in parata](../../img/hero_rig/pose-armi-classico.png)
+
+Nel Classico l’eroe occupa il lato sinistro e i nemici si schierano a destra. Le formazioni a tre dispongono un nemico più indietro per conservare sagome e aree touch distinte. I comandi sono raccolti sotto l’arena. L’istruzione d’attacco è visibile durante l’anello nella fascia dei comandi.
 
 Le nuove pose arrivano a **17 classi su 40**. Questo lotto aggiunge 15 classi ai due profili di Paladino e Cavaliere del Drago.
 
@@ -22,8 +24,8 @@ Da sinistra **carica, contatto, recupero, ingresso in parata, parata**. I ritagl
 
 - **340 prove** controllano in quattro razze le cinque pose di 17 classi, con la verifica di continuità di busto e cappa. La suite continua a verificare **307.200 combinazioni estetiche**, livelli degli oggetti, piedi fermi e contorni interi.
 - Il runner nativo usa l’inventario per equipaggiare gli oggetti e segue cinque classi, tre bersagli per scontro, touch e BOOT in IT/EN, movimento ridotto, parata e risveglio durante l’impatto. Il riavvio conserva il profilo v4 e l’equipaggiamento.
-- Le **30 catture** coincidono con il ridisegno completo e sono identiche tra la build normale e la prova con ASan/UBSan. L’impatto sul bersaglio usa il lampo locale per evitare residui dovuti alla scossa sommata all’oscillazione. I 30 salvataggi del percorso mirato sono stati validati.
-- Il picco dei buffer immagini nel percorso mirato è **722.498 byte**. Il firmware locale occupa **5.319.056 byte**, con **972.400 byte** liberi nella partizione app. [Build locale ESP32-S3](firmware.json)
+- Le **35 catture** coincidono con il ridisegno completo e sono identiche con ASan e UBSan. Le aree touch sono separate e il test controlla i pixel opachi dei personaggi nel cerchio. L’impatto usa il lampo locale per evitare residui dovuti alla scossa sommata all’oscillazione. I 30 salvataggi del percorso mirato sono validati.
+- Il picco dei buffer immagini nel percorso mirato è **702.821 byte**. Il firmware locale occupa **5.319.200 byte**, con **972.256 byte** liberi nella partizione app. [Build locale ESP32-S3](firmware.json)
 
 ```sh
 cmake -S firmware/host -B build/host/cmake -DCMAKE_BUILD_TYPE=Release

@@ -125,7 +125,7 @@ Tra carica e contatto cambia l’angolo dell’arma attorno alla presa. In difes
 
 ## Consegna R7.2b — arco, bastone e falce
 
-Arciere, Mago e Occultista adottano le nuove pose in tutti i rami. Il palco di prova usa arco e faretra, bastone e tomo, falce e amuleto con il copricapo equipaggiato. Totale **17 classi su 40**. [Catture e verifiche](classic-weapons-evidence/README.md)
+Arciere, Mago e Occultista adottano le nuove pose in tutti i rami. Totale **17 classi su 40**. Il Classico schiera l’eroe a sinistra e fino a tre avversari a destra. In basso si trovano i comandi e le risorse. [Catture e verifiche](classic-weapons-evidence/README.md)
 
 ## Prossimo lotto R7.2c — chiusura delle pose del Classico
 

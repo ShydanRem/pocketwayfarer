@@ -2,6 +2,7 @@
 
 ## 0.10.0-preview.3 — 20 novembre 2026
 
+- Battaglie del Classico in vista laterale. L’eroe occupa il lato sinistro, gli avversari hanno bersagli separati a destra e i comandi sono raccolti sotto l’arena.
 - Arciere, Mago e Occultista ricevono profili di carica, colpo, recupero e parata lungo tutti i rami di classe. Arco, bastone e falce ruotano intorno alla presa, con la faretra solidale al busto.
 - Nelle battaglie con il nuovo rig, il lampo sul bersaglio sostituisce la scossa durante il colpo. L’ingresso in parata ripristina l’espressione di concentrazione.
 

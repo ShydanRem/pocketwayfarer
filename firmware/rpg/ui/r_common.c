@@ -85,13 +85,14 @@ void r_item_dialog(const rpg_item *it, const char *extra, lv_obj_t **dlg) {
     if (title) lv_obj_set_style_text_color(title, lv_color_hex(rarity_color(it->rarity)), 0);
 }
 
-void r_vitals_arcs(lv_obj_t *s, lv_obj_t **hp, lv_obj_t **sp) {
+void r_vitals_arcs(lv_obj_t *s, lv_obj_t **hp, lv_obj_t **sp, bool icons) {
     *hp = kit_arc(s, 226, 16, 98, 172, COL_HP, 0, 100);
     lv_arc_set_mode(*hp, LV_ARC_MODE_REVERSE);
     *sp = kit_arc(s, 226, 16, 8, 82, 0x5aa0ff, 0, 100);
-    lv_obj_t *a = kit_img(s, ri(RI_HEART), 2, 48, 290);
-    lv_obj_t *b = kit_img(s, ri(RI_SP), 2, 418, 290);
-    (void)a; (void)b;
+    if (icons) {
+        kit_img(s, ri(RI_HEART), 2, 48, 290);
+        kit_img(s, ri(RI_SP), 2, 418, 290);
+    }
 }
 
 void r_vitals_update(lv_obj_t *hp, lv_obj_t *sp, int32_t hpv, int32_t hpmax, int32_t spv, int32_t spmax) {
