@@ -354,7 +354,7 @@ void scr_dungeon(void) {
     bool illustrated = r_scene_illustrated(scene);
     lv_obj_t *s = r_scene(scene);
     kit_dim(s, illustrated ? 96 : 150);
-    r_vitals_arcs(s, &d_hp, &d_sp);
+    r_vitals_arcs(s, &d_hp, &d_sp, true);
     rpg_stats st;
     rpg_stats_get(&R.g, &st);
     r_vitals_update(d_hp, d_sp, R.g.hero.hp, st.max_hp, R.g.hero.sp, st.max_sp);

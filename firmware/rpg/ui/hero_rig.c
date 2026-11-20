@@ -59,13 +59,43 @@ static const combat_pose dragon_motion[HP_COUNT] = {
     [HP_GUARD_ENTRY] = {-2, 1,-2, 0,-3},
     [HP_GUARD]  = {-4, 3, -4,  0, -6},
 };
+static const combat_pose bow_motion[HP_COUNT] = {
+    [HP_WINDUP] = {-2, 0, -3, -4,  5},
+    [HP_ATTACK] = { 1,-1, -6,  6,  3},
+    [HP_RECOVER]= { 0, 1,  0,  3,  0},
+    [HP_GUARD_ENTRY] = {-1, 1, -2, 2,-2},
+    [HP_GUARD]  = {-3, 3, -4,  4, -4},
+};
+static const combat_pose staff_motion[HP_COUNT] = {
+    [HP_WINDUP] = {-2,-2, -7,  2, -2},
+    [HP_ATTACK] = { 3,-3, -3,  7,  4},
+    [HP_RECOVER]= { 1, 2,  0,  2,  1},
+    [HP_GUARD_ENTRY] = {-1, 1, -3, 1,-2},
+    [HP_GUARD]  = {-2, 4, -5,  4, -5},
+};
+static const combat_pose scythe_motion[HP_COUNT] = {
+    [HP_WINDUP] = {-3, 1, -1, -5,  2},
+    [HP_ATTACK] = { 4,-2, -5,  6,  3},
+    [HP_RECOVER]= { 2, 2, -1,  3,  0},
+    [HP_GUARD_ENTRY] = {-2, 2, -2, 2,-3},
+    [HP_GUARD]  = {-4, 4, -5,  4, -4},
+};
+static const combat_pose *combat_profile(const hero_look *l) {
+    if (l->class_id == PALADIN_COSTUME) return paladin_motion;
+    if (l->class_id == DRAGON_KNIGHT_COSTUME) return dragon_motion;
+    if (l->fam == FAM_ARCHER) return bow_motion;
+    if (l->fam == FAM_MAGE || (l->fam == FAM_OCCULTIST && l->weapon == IT_STAFF)) return staff_motion;
+    if (l->fam == FAM_OCCULTIST) return scythe_motion;
+    return NULL;
+}
 bool hero_has_combat_rig(const hero_look *l) {
-    return hero_uses_rig(l) && (l->class_id == PALADIN_COSTUME || l->class_id == DRAGON_KNIGHT_COSTUME);
+    return hero_uses_rig(l) && combat_profile(l);
 }
 static const combat_pose *combat_motion(const hero_look *l, int pose) {
-    if ((unsigned)pose >= HP_COUNT || pose == HP_IDLE || pose == HP_BREATH || pose == HP_HIT || !hero_has_combat_rig(l))
+    if ((unsigned)pose >= HP_COUNT || pose == HP_IDLE || pose == HP_BREATH || pose == HP_HIT || !hero_uses_rig(l))
         return NULL;
-    return &(l->class_id == PALADIN_COSTUME ? paladin_motion : dragon_motion)[pose];
+    const combat_pose *profile = combat_profile(l);
+    return profile ? &profile[pose] : NULL;
 }
 static const int body_rows[] = {0, 32, 56, 76, 87};
 static int map_axis(int n, const int *from, const int *to, int count) {
@@ -183,7 +213,9 @@ static void gear_part(const hero_rig_layer *layer,int x,int y,int tier,bool head
     int ox=x-44,oy=y-(head?32:56);
     if (turn) {
         /* Nearest-neighbor inverse rotation about the same registered grip. */
-        const int cosine = 232, sine = turn * 108; /* +/-25 degrees */
+        const bool wide = turn < -1 || turn > 1;
+        const int cosine = wide ? 232 : 250;
+        const int sine = (turn < 0 ? -1 : 1) * (wide ? 108 : 55);
         const int sx0 = layer->x - 44, sy0 = layer->y - 56;
         const int sx1 = sx0 + s->w - 1, sy1 = sy0 + s->h - 1;
         int left = GRID, right = -GRID, top = GRID, bottom = -GRID;
@@ -207,6 +239,22 @@ static void gear_part(const hero_rig_layer *layer,int x,int y,int tier,bool head
     for(int yy=0;yy<s->h;yy++) for(int xx=0;xx<s->w;xx++) {
         uint8_t index=s->px[yy*s->w+xx];if(!index)continue;
         put(rgb,alpha,layer->x+xx+ox,layer->y+yy+oy,palette[index]);
+    }
+}
+static int weapon_turn(const hero_look *l, int pose) {
+    switch (l->weapon) {
+    case IT_SWORD:
+    case IT_DAGGER:
+    case IT_MACE:
+        return pose == HP_WINDUP ? 2 : pose == HP_ATTACK ? -2 : 0;
+    case IT_BOW:
+        return pose == HP_WINDUP ? 1 : pose == HP_ATTACK ? -1 : 0;
+    case IT_STAFF:
+        return pose == HP_WINDUP ? 1 : pose == HP_ATTACK ? -1 : pose == HP_GUARD ? 1 : 0;
+    case IT_SCYTHE:
+        return pose == HP_WINDUP ? 1 : pose == HP_ATTACK ? -1 : 0;
+    default:
+        return 0;
     }
 }
 unsigned hero_rig_compose(const hero_look *l,int expr,int pose,uint16_t *rgb,uint8_t *alpha) {
@@ -247,7 +295,9 @@ unsigned hero_rig_compose(const hero_look *l,int expr,int pose,uint16_t *rgb,uin
     /* The crescent crosses the head on attack. Keep its shaft/grip in front
      * of clothing, but let the face/hair occlude the blade instead of masking
      * the player's expression. Other held items keep the foreground order. */
-    if(l->weapon==IT_SCYTHE)gear_part(&rig_gear[IT_SCYTHE],left_x,left_y,l->weapon_tier,false,0,rgb,alpha);
+    const bool weapon_profile = motion && (l->fam == FAM_ARCHER || l->fam == FAM_MAGE || l->fam == FAM_OCCULTIST);
+    if(l->weapon==IT_SCYTHE)gear_part(&rig_gear[IT_SCYTHE],left_x,left_y,l->weapon_tier,false,
+                                    weapon_profile ? weapon_turn(l, pose) : 0,rgb,alpha);
     part(&rig_heads[race][l->body?1:0][expr%4],l,pose,2,motion,rgb,alpha);
     part(&rig_hair[l->hair%6],l,pose,1,motion,rgb,alpha);
     int head_y=24+body_y(32 + (motion ? motion->neck_y : 0),l)-32+(pose==HP_BREATH?-1:pose==HP_HIT?1:0);
@@ -260,8 +310,8 @@ unsigned hero_rig_compose(const hero_look *l,int expr,int pose,uint16_t *rgb,uin
             gear_part(&rig_knuckles[0],left_x,left_y,l->weapon_tier,false,0,rgb,alpha);
             gear_part(&rig_knuckles[1],right_x,right_y,l->weapon_tier,false,0,rgb,alpha);
         } else {
-            bool swing = motion && (l->weapon == IT_SWORD || l->weapon == IT_DAGGER || l->weapon == IT_MACE);
-            int turn = swing ? pose == HP_WINDUP ? 1 : pose == HP_ATTACK ? -1 : 0 : 0;
+            bool swing = motion && (weapon_profile || l->weapon == IT_SWORD || l->weapon == IT_DAGGER || l->weapon == IT_MACE);
+            int turn = swing ? weapon_turn(l, pose) : 0;
             gear_part(&rig_gear[l->weapon],left_x,left_y,l->weapon_tier,false,turn,rgb,alpha);
         }
     }

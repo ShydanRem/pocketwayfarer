@@ -54,6 +54,7 @@ if shots:
             ('mappa-zaino-classico', 'services', ('mappa', 'zaino', 'dettaglio')),
             ('servizi-classico', 'services', ('bottega', 'forgia', 'missioni')),
             ('pose-classico', None, ('paladin-rig-carica', 'dragon-rig-contatto', 'paladin-rig-parata')),
+            ('pose-armi-classico', None, ('stormbow-rig-schieramento', 'archmage-rig-contatto', 'deathlord-rig-parata')),
         ]:
             captures = [next(dst.glob(f'*-{prefix + "-" if prefix else ""}{part}-it.png'), None) for part in samples]
             if not all(captures):
@@ -63,15 +64,19 @@ if shots:
                 triptych.alpha_composite(Image.open(path).convert('RGBA'), (index * 490 + 12, 12))
             triptych.save(dst / (output + '.png'))
         stages = ('carica', 'contatto', 'recupero', 'entrata', 'parata')
-        actors = ('paladin-rig', 'dragon-rig')
-        frames = [next(dst.glob(f'*-{actor}-{stage}-it.png'), None) for actor in actors for stage in stages]
-        if all(frames):
-            poses = Image.new('RGB', (940, 368), (16, 24, 32))
+        for name, actors in (
+            ('transizioni-classico', ('paladin-rig', 'dragon-rig')),
+            ('transizioni-armi-classico', ('stormbow-rig', 'archmage-rig', 'deathlord-rig')),
+        ):
+            frames = [next(dst.glob(f'*-{actor}-{stage}-it.png'), None) for actor in actors for stage in stages]
+            if not all(frames):
+                continue
+            poses = Image.new('RGB', (940, 184 * len(actors)), (16, 24, 32))
             for i, frame in enumerate(frames):
-                tile = Image.open(frame).crop((143, 247, 323, 425))
+                tile = Image.open(frame).crop((34, 122, 214, 300))
                 poses.paste(tile, (4 + 188 * (i % 5), 3 + 184 * (i // 5)), tile)
-            poses.save(dst / 'transizioni-classico.png')
-            poses.convert('L').save(dst / 'transizioni-classico-grigio.png')
+            poses.save(dst / (name + '.png'))
+            poses.convert('L').save(dst / (name + '-grigio.png'))
     if dst.name == 'classes':
         base = sorted(p for p in dst.glob('*-classe-??.png') if int(p.stem[-2:]) < 8)
         if len(base) == 8:

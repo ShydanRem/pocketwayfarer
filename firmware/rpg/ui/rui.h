@@ -86,7 +86,7 @@ lv_obj_t *r_row(lv_obj_t *list, int h);
 lv_obj_t *r_text(lv_obj_t *parent, const char *t, uint32_t color, const lv_font_t *font);
 void r_item_dialog(const rpg_item *it, const char *title_extra, lv_obj_t **dlg);
 const char *r_item_lines(const rpg_item *it, char *buf, int cap);
-void r_vitals_arcs(lv_obj_t *s, lv_obj_t **hp, lv_obj_t **sp);
+void r_vitals_arcs(lv_obj_t *s, lv_obj_t **hp, lv_obj_t **sp, bool icons);
 void r_vitals_update(lv_obj_t *hp, lv_obj_t *sp, int32_t hpv, int32_t hpmax, int32_t spv, int32_t spmax);
 const char *r_fmt_time(uint32_t s, char *buf, int cap);
 lv_obj_t *r_back(lv_obj_t *parent, int screen);

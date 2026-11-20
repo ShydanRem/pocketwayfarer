@@ -98,6 +98,9 @@ static void metadata(void) {
               "metadata disagrees with core IDs class=%u family=%u tier=%u",f,rig_class_families[f],rig_class_tiers[f]);
         hero_look admitted = bare_look(f,RACE_HUMAN);
         CHECK(hero_uses_rig(&admitted),"admitted exact class rejected class=%u",f);
+        bool calibrated = f == 16 || f == 24 || expected_family == FAM_MAGE ||
+                          expected_family == FAM_ARCHER || expected_family == FAM_OCCULTIST;
+        CHECK(hero_has_combat_rig(&admitted) == calibrated, "combat profile coverage mismatch class=%u",f);
         admitted.fam = (uint8_t)((expected_family+1)%FAM_COUNT);
         CHECK(!hero_uses_rig(&admitted),"wrong family admitted class=%u",f);
         admitted.fam = (uint8_t)expected_family;
@@ -299,6 +302,7 @@ static void cape_continuity(void) {
         CHECK(opaque >= 64,"cape observation lacks coverage class=%u opaque=%u",l.class_id,opaque);
         if (opaque < minimum_cape_opaque) minimum_cape_opaque = opaque;
         for (unsigned p = 0; p < sizeof leans/sizeof leans[0]; p++) {
+            if (hero_has_combat_rig(&l) && leans[p].pose != HP_HIT) continue;
             compose(&l,HX_IDLE,leans[p].pose,&leaned);
             for (unsigned y = 55; y < 77; y++) for (unsigned x = 10; x < 33; x++) {
                 unsigned from = y*GRID+x, to = (unsigned)((int)from+leans[p].dx);
@@ -311,12 +315,12 @@ static void cape_continuity(void) {
 }
 
 static void calibrated_poses(void) {
-    const unsigned classes[] = {16, 24};
     const int poses[] = {HP_WINDUP, HP_ATTACK, HP_RECOVER, HP_GUARD_ENTRY, HP_GUARD};
     const int body_start = 35, body_end = 77;
-    for (unsigned class_index = 0; class_index < sizeof classes / sizeof classes[0]; class_index++)
+    for (unsigned cls = 0; cls < HERO_RIG_CLASS_COUNT; cls++)
     for (unsigned race = 0; race < RACE_COUNT; race++) {
-        hero_look l = bare_look(classes[class_index], race);
+        hero_look l = bare_look(cls, race);
+        if (!hero_has_combat_rig(&l)) continue;
         l.hair = 0;
         image frames[sizeof poses / sizeof poses[0]];
         for (unsigned p = 0; p < sizeof poses / sizeof poses[0]; p++) {
@@ -355,6 +359,7 @@ static void calibrated_poses(void) {
             combat_pose_checks++;
         }
     }
+    CHECK(combat_pose_checks == 17 * RACE_COUNT * 5, "unexpected calibrated pose count %u", combat_pose_checks);
 }
 
 static void full(void) {

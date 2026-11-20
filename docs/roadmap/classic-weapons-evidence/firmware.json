@@ -1,0 +1,13 @@
+{
+  "date": "2026-11-20",
+  "milestone": "R7.2b-classic-weapon-poses",
+  "app_version": "0.10.0-preview.3",
+  "target": "ESP32-S3",
+  "idf_version": "5.5.1",
+  "bytes": 5319200,
+  "sha256": "7f9f23f50162cac06bf3f4e726ba52892f8008bb0849f87c8f68a4e3eb914936",
+  "app_partition_bytes": 6291456,
+  "save_version": 4,
+  "save_bytes": 2808,
+  "physical_device_tested": false
+}

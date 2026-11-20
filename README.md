@@ -10,7 +10,7 @@ Un RPG fantasy HD-2D per **Waveshare ESP32-S3-Touch-AMOLED-1.75**, con schermo r
 
 **[Roadmap operativa](docs/ROADMAP.md)** · [Stato del lotto attivo](docs/roadmap/STATUS.md) · [Direzione artistica delle 40 classi](docs/CLASS-ART-BIBLE.md)
 
-> **0.10.0-preview.2** — Il Paladino e il Cavaliere del Drago hanno nuove pose di carica, affondo, recupero e parata con l’equipaggiamento indossato. [Catture e prove R7.2a](docs/roadmap/classic-combat-evidence/README.md) · [Roadmap](docs/ROADMAP.md)
+> **0.10.0-preview.3** — Gli scontri del Classico passano alla vista laterale. Arciere, Mago e Occultista portano a 17 il numero di classi con le nuove pose. [Catture e prove R7.2b](docs/roadmap/classic-weapons-evidence/README.md) · [Roadmap](docs/ROADMAP.md)
 
 ## Sul Pocket, in pochi passaggi
 

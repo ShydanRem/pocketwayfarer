@@ -1,6 +1,6 @@
 # Registro di avanzamento
 
-Aggiornato il 20 novembre 2026. Consegna corrente `0.10.0-preview.2`. [Roadmap operativa](../ROADMAP.md)
+Aggiornato il 20 novembre 2026. Consegna corrente `0.10.0-preview.3`. [Roadmap operativa](../ROADMAP.md)
 
 ## Consegna R1 — atlante delle classi, 0.4.1-preview.1
 
@@ -123,10 +123,14 @@ Nove fotogrammi aggiunti su Sentinella, Piromante e Predone, con armi, tessuti e
 
 Tra carica e contatto cambia l’angolo dell’arma attorno alla presa. In difesa il Paladino avvicina lo scudo. La cappa del Cavaliere del Drago segue il busto attraverso una deformazione continua. I test verificano geometria e prese, tre bersagli a schermo, risveglio durante l’impatto e ritorno al borgo dopo un riavvio completo. [Catture e verifiche](classic-combat-evidence/README.md)
 
-## Prossimo lotto R7.2b — profili per le altre famiglie
+## Consegna R7.2b — arco, bastone e falce
 
-1. Calibrare i profili di carica e parata per arco, bastone e falce.
-2. Estendere per famiglie dopo aver verificato mani, cape, dimensione circolare, compatibilità e budget.
-3. Verificare ogni famiglia tra equipaggiamento base e posseduto e conservare i risultati nel registro della roadmap.
+Arciere, Mago e Occultista adottano le nuove pose in tutti i rami. Totale **17 classi su 40**. Il Classico schiera l’eroe a sinistra e fino a tre avversari a destra. In basso si trovano i comandi e le risorse. [Catture e verifiche](classic-weapons-evidence/README.md)
+
+## Prossimo lotto R7.2c — chiusura delle pose del Classico
+
+1. Calibrare le 23 classi rimanenti di Guerriero, Ladro, Chierico, Monaco e Artefice.
+2. Verificare pugnale, tirapugni e martello con le varianti estetiche integrate nel rig.
+3. Ripetere prove native, misure e controlli di salvataggio su tutta la copertura prevista.
 
 Il collaudo fisico può procedere in parallelo e serve per la stabile. [Sequenza e criteri](../ROADMAP.md#r6-e-r7--profondità-ritmo-e-feedback)

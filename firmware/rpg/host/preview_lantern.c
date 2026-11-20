@@ -142,7 +142,20 @@ static void shot(const char *name) {
     memcpy(incremental_fb, fb, sizeof fb);
     lv_obj_invalidate(lv_screen_active());
     lv_refr_now(NULL);
-    if (memcmp(incremental_fb, fb, sizeof fb)) fprintf(stderr, "incremental/full render mismatch: %s\n", name);
+    if (memcmp(incremental_fb, fb, sizeof fb)) {
+        int left = WF_RES, top = WF_RES, right = 0, bottom = 0, changed = 0;
+        for (int y = 0; y < WF_RES; y++) for (int x = 0; x < WF_RES; x++) {
+            unsigned pixel = (unsigned)(y * WF_RES + x);
+            if (incremental_fb[pixel] == fb[pixel]) continue;
+            if (x < left) left = x;
+            if (x > right) right = x;
+            if (y < top) top = y;
+            if (y > bottom) bottom = y;
+            changed++;
+        }
+        fprintf(stderr, "incremental/full render mismatch: %s (%d pixels at %d,%d..%d,%d)\n",
+                name, changed, left, top, right, bottom);
+    }
     assert(!memcmp(incremental_fb, fb, sizeof fb));
     char path[512]; snprintf(path, sizeof path, "%s/%02d-%s.ppm", dest, ++shots, name);
     FILE *f = fopen(path, "wb"); assert(f);
