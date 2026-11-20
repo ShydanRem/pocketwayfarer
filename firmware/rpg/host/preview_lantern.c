@@ -153,7 +153,7 @@ static void shot(const char *name) {
 static void play_battle(void) {
     rpg_lantern *l = &R.g.lantern;
     for (int guard = 0; guard < 15000 && l->state >= LN_CHOOSE && l->state <= LN_IMPACT; guard++) {
-        if (l->state == LN_CHOOSE) { press("Attacco"); }
+        if (l->state == LN_CHOOSE) { press(TR("Attacco", "Attack")); }
         else if ((l->state == LN_ATTACK || l->state == LN_PARRY) && ln_quality(l) == WF_Q_PERFECT) {
             assert(wf_app_key(WF_KEY_BOOT_SHORT));
         }
@@ -284,8 +284,128 @@ static void no_relic_victory_ui(void) {
     press("Borgo");
     puts("no-relic UI: all five rooms, skip every reward, win without blueprint softlock, exactly one gold payout after reload: passed");
 }
+static void pacing_sample(uint32_t seed, uint32_t start, const char *event, int taps) {
+    const rpg_lantern *l = &R.g.lantern;
+    printf("%s,%lu,%u,%s,%lu,%d,%d,%d,%u\n", wf_lang ? "en" : "it", (unsigned long)seed, l->room + 1,
+           event, (unsigned long)(ms - start), taps, l->hp, l->sp, l->currency);
+}
+
+static void pacing_preview(void) {
+    static const uint32_t platform_origins[] = {17, 661};
+    puts("language,seed,room,event,simulated_ms,departure_taps,hp,sp,run_gold");
+    uint32_t seed_seen[2] = {0};
+    for (int lang = 0; lang < 2; lang++) for (int scenario = 0; scenario < 2; scenario++) {
+        rpg_new_hero hero = {.lang = (uint8_t)lang};
+        rpg_game_new(&R.g, &hero, seconds, 37);
+        R.loaded = true;
+        R.g.lantern.archetype = LN_SENTINEL;
+        r_go(R_TOWN);
+        run(100);
+        if (!lang && !scenario) shot("pacing-borgo");
+        rnd = platform_origins[scenario];
+        const uint32_t start = ms, gold = R.g.gold;
+        press(TR("PARTI", "DEPART"));
+        int taps = 1;
+        if (R.g.lantern.state != LN_ROUTE) {
+            press(TR("Parti", "Depart"));
+            taps++;
+        }
+        assert(R.g.lantern.state == LN_ROUTE && R.g.lantern.archetype == LN_SENTINEL);
+        assert(R.g.lantern.hp == 120 && R.g.lantern.sp == 24 && !R.g.lantern.relics);
+        const uint32_t seed = R.g.lantern.rng;
+        if (lang) assert(seed_seen[scenario] == seed);
+        else seed_seen[scenario] = seed;
+        pacing_sample(seed, start, "first_choice", taps);
+        if (!lang && !scenario) shot("pacing-prima-scelta");
+        for (int room = 0; room < 5; room++) {
+            assert(R.g.lantern.room == room && R.g.lantern.state == LN_ROUTE);
+            if (room == 1) {
+                press(TR("Focolare", "Hearth"));
+                pacing_sample(seed, start, "rest_open", taps);
+                press(TR("+25 PV", "+25 HP"));
+                pacing_sample(seed, start, "rest_done", taps);
+            } else {
+                const char *route = room == 4 ? TR("Affrontalo", "Face the guardian") : TR("Sentiero", "Trail");
+                press(route);
+                assert(R.g.lantern.state == LN_CHOOSE);
+                pacing_sample(seed, start, "battle_start", taps);
+                play_battle();
+                if (R.g.lantern.state == LN_LOST) {
+                    pacing_sample(seed, start, "defeat", taps);
+                    break;
+                }
+                pacing_sample(seed, start, "battle_end", taps);
+                if (room < 4) {
+                    assert(R.g.lantern.state == LN_RELIC);
+                    press(TR("Lascia", "Skip"));
+                    pacing_sample(seed, start, "reward_skipped", taps);
+                }
+            }
+            if (room < 4) {
+                press(TR("Prosegui", "Continue"));
+                pacing_sample(seed, start, "next_route", taps);
+            }
+        }
+        assert(R.g.lantern.state == LN_WON && R.g.gold == gold + 80 && R.g.lantern.wins == 1);
+        pacing_sample(seed, start, "victory", taps);
+        press(TR("Borgo", "Village"));
+        assert(R.screen == R_TOWN && R.g.gold == gold + 80);
+        pacing_sample(seed, start, "return", taps);
+        if (!lang && !scenario) shot("pacing-ritorno");
+    }
+}
+
+static void departure_paths(void) {
+    for (int lang = 0; lang < 2; lang++) {
+        rpg_new_hero hero = {.lang = (uint8_t)lang};
+        rpg_game_new(&R.g, &hero, seconds, 47);
+        R.loaded = true;
+        r_go(R_TOWN);
+        press(TR("Eroe", "Hero"));
+        press(">");
+        assert(R.g.lantern.archetype == LN_MAGE && R.g.lantern.state == LN_NONE);
+        if (lang) assert(wf_app_key(WF_KEY_BOOT_SHORT));
+        else press("Torna");
+        assert(R.screen == R_TOWN);
+        lv_obj_t *start = find(lv_screen_active(), TR("PARTI", "DEPART"));
+        assert(start);
+        lv_obj_t *name = find(lv_obj_get_parent(start), TX(ln_archetype_name(LN_MAGE)));
+        assert(name);
+        lv_obj_update_layout(lv_screen_active());
+        lv_area_t action, loadout, button;
+        lv_obj_get_coords(start, &action);
+        lv_obj_get_coords(name, &loadout);
+        lv_obj_get_coords(lv_obj_get_parent(start), &button);
+        assert(action.y2 < loadout.y1 && loadout.y2 < button.y2);
+        assert(loadout.x1 > button.x1 && loadout.x2 < button.x2);
+
+        const uint32_t gold = R.g.gold;
+        assert(rpg_hunt_start(&R.g, 0, seconds) == RPG_OK);
+        r_go(R_TOWN);
+        const uint32_t random_before = rnd;
+        press(TR("PARTI", "DEPART"));
+        assert(R.screen == R_TOWN && R.g.hunt.active && R.g.lantern.state == LN_NONE);
+        assert(R.g.gold == gold && rnd == random_before);
+        assert(!strcmp(kit_last_toast(), TR("Concludi prima il viaggio o la caccia classica",
+                                             "Finish your classic run or hunt first")));
+        R.g.hunt.active = 0;
+        press("...");
+        press(TR("Mappa", "Map"));
+        press(TR("Parti", "Depart"));
+        assert(R.g.lantern.state == LN_ROUTE && R.g.lantern.archetype == LN_MAGE);
+        const uint32_t seed = R.g.lantern.rng;
+        wf_app_start(saved, saved_len);
+        assert(R.screen == R_LANTERN && R.g.lantern.state == LN_ROUTE && R.g.lantern.rng == seed);
+        assert(R.g.lantern.archetype == LN_MAGE && R.g.gold == gold);
+        press(TR("Rientra", "Return"));
+        press(TR("Borgo", "Village"));
+    }
+    puts("Direct departure: selected loadout, touch/BOOT back, hunt guard, map start and same saved route after reboot IT/EN passed");
+}
+
 int main(int argc, char **argv) {
-    assert(argc == 2); dest = argv[1];
+    assert(argc == 2 || (argc == 3 && !strcmp(argv[2], "--pacing")));
+    dest = argv[1];
     lv_init(); lv_tick_set_cb(tick);
     const uint32_t accents[] = {0x00e0, 0x00e8, 0x00e9, 0x00f2, 0x00f9, 0x00b7};
     for (unsigned i = 0; i < sizeof accents / sizeof accents[0]; i++) {
@@ -298,10 +418,15 @@ int main(int argc, char **argv) {
     lv_display_set_flush_cb(d, flush);
     lv_indev_t *in = lv_indev_create(); lv_indev_set_type(in, LV_INDEV_TYPE_POINTER); lv_indev_set_read_cb(in, read_touch);
     lv_timer_set_period(lv_indev_get_read_timer(in), 10);
+    if (argc == 3) {
+        pacing_preview();
+        return 0;
+    }
     wf_app_start(NULL, 0); run(150); shot("titolo");
     press("Gioca"); assert(R.loaded && R.screen == R_TOWN); run(150); shot("borgo");
-    press("PARTI"); run(100); shot("assetto");
-    press("Parti"); assert(R.g.lantern.state == LN_ROUTE); shot("percorso");
+    press("Eroe"); run(100); shot("assetto");
+    press("Torna"); assert(R.screen == R_TOWN);
+    press("PARTI"); assert(R.g.lantern.state == LN_ROUTE); shot("percorso");
     lv_obj_t *route_name = find(lv_screen_active(), "Fiammella");
     assert(route_name && lv_obj_get_height(route_name) <= 30); /* never wraps into the footer */
     uint32_t route_rng = R.g.lantern.rng;
@@ -368,7 +493,7 @@ int main(int argc, char **argv) {
     press("Eroe"); press(">"); shot("piromante"); press(">"); shot("predone"); wf_app_key(WF_KEY_BOOT_SHORT);
     press("..."); press("Opzioni"); press("Italiano / English"); shot("options-english"); press("Back");
     shot("village-english");
-    press("DEPART"); press("Depart"); press("Trail");
+    press("DEPART"); press("Trail");
     /* Reach loss through real missed timing windows, without modifying HP. */
     for (int guard = 0; guard < 10000 && R.g.lantern.state <= LN_IMPACT; guard++) {
         if (R.g.lantern.state == LN_CHOOSE) press("Guard");
@@ -379,7 +504,7 @@ int main(int argc, char **argv) {
     press("Return"); assert(R.g.lantern.state == LN_RETURNED); press("Village");
     /* Dedicated UI fixture for the second authored event; full branch behavior
      * is also exercised by the core run simulations. */
-    press("DEPART"); press("Depart");
+    press("DEPART");
     R.g.lantern.room = 1; r_go(R_LANTERN);
     press("Mirror"); shot("mirror-event"); int hp0 = R.g.lantern.hp;
     press("Offer 12 HP"); assert(R.g.lantern.hp == hp0-12 && R.g.lantern.resonance == 3);
@@ -431,7 +556,7 @@ int main(int argc, char **argv) {
     press("..."); press("Opzioni"); press("Suggerimenti: sì");
     assert(R.g.coach.disabled); press("Ripeti guida");
     assert(!R.g.coach.disabled && !R.g.coach.learned && R.g.gold == profile_gold);
-    press("Torna"); press("PARTI"); press(">"); /* Predone -> Sentinella */
+    press("Torna"); press("Eroe"); press(">"); /* Predone -> Sentinella */
     assert(R.g.lantern.archetype == LN_SENTINEL); press("Parti"); press("Sentiero");
     assert(find(lv_screen_active(), TX(ln_coach_caption(LNT_ATTACK)))); shot("guida-primo-attacco");
     press("Attacco"); shot("guida-timing-in-gioco"); judge_at(WF_Q_MISS);
@@ -457,24 +582,25 @@ int main(int argc, char **argv) {
     press("Riprendi"); run(300); assert(R.g.lantern.elapsed_ms == frozen.elapsed_ms);
     run(350); assert(R.g.lantern.hp == frozen.hp && R.g.lantern.sp == frozen.sp && R.g.lantern.rng == frozen.rng);
     return_after_hit();
-    press("PARTI"); press(">"); press("Parti"); press("Sentiero");
+    press("Eroe"); press(">"); press("Parti"); press("Sentiero");
     assert(R.g.lantern.archetype == LN_MAGE && !find(lv_screen_active(), TX(ln_coach_caption(LNT_ATTACK))));
     shot("seconda-spedizione-senza-guida"); press("Abilità"); press("Brace\n6 PM"); judge_at(WF_Q_PERFECT);
     run(100); shot("brace-impatto"); return_after_hit();
-    press("PARTI"); press(">"); press("Parti"); press("Sentiero");
+    press("Eroe"); press(">"); press("Parti"); press("Sentiero");
     assert(R.g.lantern.archetype == LN_ROGUE); press("Abilità"); check_buttons(lv_screen_active());
     press("Doppio\n6 PM"); judge_at(WF_Q_PERFECT); run(100); shot("doppio-impatto"); return_after_hit();
     press("..."); press("Opzioni"); press("Movimento ridotto: no");
     assert(R.g.lantern.reduced_motion); press("Torna");
-    press("PARTI"); press("Parti"); press("Sentiero"); press("Abilità"); press("Doppio\n6 PM"); judge_at(WF_Q_PERFECT);
+    press("PARTI"); press("Sentiero"); press("Abilità"); press("Doppio\n6 PM"); judge_at(WF_Q_PERFECT);
     run(100); shot("impatto-movimento-ridotto"); return_after_hit();
     press("..."); press("Opzioni"); press("Ripeti guida"); press("Italiano / English"); shot("options-guidance-english"); press("Back");
-    press("DEPART"); press("Depart"); press("Trail");
+    press("DEPART"); press("Trail");
     assert(find(lv_screen_active(), TX(ln_coach_caption(LNT_ATTACK)))); shot("first-fight-guidance-english");
     press("II"); press("Abandon"); press("Village");
     relic_exchange_ui();
     press("Return"); press("Village");
     no_relic_victory_ui();
+    departure_paths();
     size_t stable = image_bytes;
     for (int i = 0; i < 12; i++) { r_go(R_TOWN); run(20); }
     assert(image_bytes == stable);

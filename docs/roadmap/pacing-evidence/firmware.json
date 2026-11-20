@@ -1,0 +1,13 @@
+{
+  "date": "2026-11-20",
+  "milestone": "R6.1-expedition-pacing",
+  "app_version": "0.9.0-preview.1",
+  "target": "ESP32-S3",
+  "idf_version": "5.5.1",
+  "bytes": 5238960,
+  "sha256": "bcb2ad0a5ad56daea48a344f0494d9a425609edb5defae56beee82017d531c5e",
+  "app_partition_bytes": 6291456,
+  "save_version": 4,
+  "save_bytes": 2808,
+  "physical_device_tested": false
+}

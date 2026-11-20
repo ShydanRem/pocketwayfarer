@@ -1,6 +1,6 @@
 # Roadmap di Pocket Wayfarer
 
-**Aggiornata il 19 novembre 2026.** Il redesign del Classico comprende i cinque ambienti di esplorazione, i cinque dungeon, le 42 creature e le interfacce di servizio. Il [registro di avanzamento](roadmap/STATUS.md) conserva le prove per ogni consegna.
+**Aggiornata il 20 novembre 2026.** Il redesign del Classico comprende i cinque ambienti di esplorazione, i cinque dungeon, le 42 creature e le interfacce di servizio. Lanternbound è entrato nella revisione del ritmo e delle scelte. Il [registro di avanzamento](roadmap/STATUS.md) conserva le prove per ogni consegna.
 
 ## Obiettivo e regole di avanzamento
 
@@ -9,6 +9,10 @@ Portare il gioco a un'identità coerente: personaggi riconoscibili, mondo leggib
 Un lotto è completato quando entra nel gioco, supera i controlli pertinenti e dispone di catture native. Un atlas generato, un concept o un punteggio del brief non equivalgono a una funzione completata. Si lavora su un solo lotto principale alla volta; correzioni di crash, salvataggi, input o leggibilità hanno precedenza. Il collaudo fisico può procedere in parallelo quando il Pocket è disponibile: non impedisce di produrre e verificare arte su PC, ma resta necessario per la release stabile.
 
 ## Stato reale di partenza
+
+**Consegna R6.1 / 0.9.0-preview.1.** Il primo bivio si raggiunge con un tocco dal borgo. Due seed, ripetuti in IT/EN con la Sentinella, danno gli stessi passaggi, PV, PM e oro della versione precedente. Il playtest con persone resta aperto. [Confronto e prove R6.1](roadmap/pacing-evidence/README.md)
+
+![Partenza, primo bivio e rientro dopo la vittoria](img/lantern/ritmo-spedizione.png)
 
 **Consegna R5.8 / 0.8.0-preview.8.** La mappa illustra le Isole Sospese. Zaino e bottega mostrano nomi completi in righe adattabili. Forgia e diario presentano costi, probabilità e premi. Il giro IT/EN copre acquisto, vendita, potenziamento e missione con rilettura del salvataggio. [Catture e prove R5.8](roadmap/services-evidence/README.md)
 
@@ -155,8 +159,8 @@ Arma, mano secondaria e testa sono i canali grafici dell’equipaggiamento già 
 
 | Passaggio | Esperimento o verifica |
 |---|---|
-| **R6.1 · prossimo, ritmo** | Confrontare due seed di riferimento a parità di eroe e progressione. Registrare il tempo fino alla prima scelta di percorso, le soste e l’esito della spedizione. Confrontare le misure con le osservazioni del primo playtest. |
-| **R6.2 · varietà** | Provare una scelta rischio/ricompensa chiaramente diversa, per esempio una via d’élite che scambia risorse per una ricompensa visibile. Misurare quando i giocatori scelgono ciascuna via e perché. |
+| **R6.1 · consegna su host** | Due seed con la Sentinella e confronto prima/dopo nei due idiomi. Il primo bivio si raggiunge con un tocco. Resta da osservare come i giocatori si orientano al primo avvio. |
+| **R6.2 · prossimo, varietà** | Provare una scelta rischio/ricompensa chiaramente diversa, per esempio una via d’élite che scambia risorse per una ricompensa visibile. Misurare PV, PM, tempi ed esiti sui due seed. Nel playtest osservare quando i giocatori scelgono ciascuna via e perché. |
 | **R6.3 · ritorno al borgo** | Rendere leggibile cosa si può usare o sbloccare con ciò che si è guadagnato. Osservare se il giocatore inizia un altro viaggio e quale obiettivo si dà. Verificare ricompense e salvataggi dopo interruzione. |
 | **R7 · feedback** | Completare pose di attacco e guardia, impatti per ruolo e opzioni di movimento ridotto. Se il percorso audio dell’hardware è praticabile, aggiungere un set breve con muto e volume. |
 | **R8 · candidata 1.0** | Installazione pulita e aggiornamento da una preview con dati, prove sul Pocket di anello, parata e sonno/risveglio, sessione lunga, controllo del budget e pacchetto di ripristino. |

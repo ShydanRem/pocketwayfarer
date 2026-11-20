@@ -179,6 +179,16 @@ enum { C_DEPART = 1, C_HERO, C_BAG, C_MORE, C_HOME, C_CLASSIC, C_MAP, C_EQUIP, C
        C_BESTIARY, C_HELP, C_HUNT, C_COLLECT_HUNT, C_TIPS, C_REPLAY_TIPS, C_ACK_TIP,
        C_REPLACE_RELIC, C_CANCEL_REPLACE, C_SKIP_RELIC, C_CLASSES };
 
+static void departure_button(const char *text, int y) {
+    lv_obj_t *b = button(L.root, text, CX, y, 216, 72, C_DEPART, true);
+    lv_obj_align(lv_obj_get_child(b, 0), LV_ALIGN_CENTER, 0, -13);
+    lv_obj_t *loadout_name = lv_label_create(b);
+    lv_obj_set_style_text_font(loadout_name, BODY, 0);
+    lv_obj_set_style_text_color(loadout_name, lv_color_hex(INK), 0);
+    lv_label_set_text(loadout_name, TX(ln_archetype_name(game()->archetype)));
+    lv_obj_align(loadout_name, LV_ALIGN_CENTER, 0, 13);
+}
+
 void scr_lantern_title(void) {
     scene(PAGE_TITLE, 0, 50);
     panel(L.root, CX, 91, 330, 46, 225);
@@ -197,7 +207,9 @@ void scr_town(void) {
     if (ln_active(game())) { r_go(R_LANTERN); return; }
     scene(PAGE_TOWN, 0, 0);
     char sub[64];
-    snprintf(sub, sizeof sub, TR("%lu oro  ·  %u spedizioni", "%lu gold  ·  %u expeditions"),
+    const char *summary = game()->wins == 1 ? TR("%lu oro  ·  %u spedizione", "%lu gold  ·  %u expedition")
+                                             : TR("%lu oro  ·  %u spedizioni", "%lu gold  ·  %u expeditions");
+    snprintf(sub, sizeof sub, summary,
              (unsigned long)R.g.gold, game()->wins);
     header(TR("Borgo Lanterna", "Lantern Hollow"), sub);
     ground_shadow(160, 275, 70);
@@ -206,7 +218,7 @@ void scr_town(void) {
     button(L.root, "...", 347, 146, 52, 52, C_MORE, false);
     button(L.root, TR("Eroe", "Hero"), 169, 306, 116, 54, C_HERO, false);
     button(L.root, TR("Zaino", "Relics"), 297, 306, 116, 54, C_BAG, false);
-    button(L.root, TR("PARTI", "DEPART"), CX, 376, 216, 72, C_DEPART, true);
+    departure_button(TR("PARTI", "DEPART"), 376);
 }
 static void menu(void) {
     scene(PAGE_MENU, 0, 160);
@@ -230,7 +242,8 @@ static void loadout(void) {
     snprintf(b, sizeof b, "%s  ·  %s", TX(ln_skill_name(game()->archetype, 0)), TX(ln_skill_name(game()->archetype, 1)));
     panel(L.root, CX, 302, 312, 66, 230);
     label(L.root, b, CX, 300, 292, IVORY, false);
-    button(L.root, TR("Parti", "Depart"), CX, 372, 216, 72, C_BEGIN, true);
+    button(L.root, TR("Parti", "Depart"), CX, 371, 216, 60, C_BEGIN, true);
+    button(L.root, TR("Torna", "Back"), CX, 431, 124, 42, C_HOME, false);
 }
 static void options(void) {
     scene(PAGE_OPTIONS, 0, 180);
@@ -275,7 +288,7 @@ static void world_map(void) {
         lv_obj_set_style_border_color(node, lv_color_hex(ln_active(game()) && i == game()->room ? AMBER : MUTED), 0);
         char n[4]; snprintf(n, sizeof n, "%d", i+1); label(L.root, n, xy[i][0], xy[i][1], 40, IVORY, false);
     }
-    button(L.root, TR("Parti", "Depart"), CX, 378, 216, 72, C_DEPART, true);
+    departure_button(TR("Parti", "Depart"), 378);
 }
 static void bestiary(void) {
     scene(PAGE_BESTIARY, 1, 150);
@@ -687,7 +700,7 @@ static void on_click(lv_event_t *e) {
     }
     if (c == C_HOME) { ln_home(l); save(); r_go(R_TOWN); return; }
     if (c == C_MORE) { menu(); return; }
-    if (c == C_HERO || c == C_DEPART) { R.screen = R_LANTERN; loadout(); return; }
+    if (c == C_HERO) { R.screen = R_LANTERN; loadout(); return; }
     if (c == C_BAG || c == C_COLLECTION) {
         L.pick = 0;
         if (l->blueprints) while (!(l->blueprints & (1u << L.pick))) L.pick++;
@@ -747,7 +760,7 @@ static void on_click(lv_event_t *e) {
         }
         return;
     }
-    if (c == C_BEGIN || c == C_RETRY) {
+    if (c == C_DEPART || c == C_BEGIN || c == C_RETRY) {
         if (R.g.run.active || R.g.hunt.active) {
             kit_toast(TR("Concludi prima il viaggio o la caccia classica", "Finish your classic run or hunt first"), NULL); return;
         }

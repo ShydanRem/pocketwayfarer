@@ -10,7 +10,7 @@ Un RPG fantasy HD-2D per **Waveshare ESP32-S3-Touch-AMOLED-1.75**, con schermo r
 
 **[Roadmap operativa](docs/ROADMAP.md)** · [Stato del lotto attivo](docs/roadmap/STATUS.md) · [Direzione artistica delle 40 classi](docs/CLASS-ART-BIBLE.md)
 
-> **0.8.0-preview.8** — Nuova mappa delle Isole Sospese, zaino con nomi completi e rinnovati pannelli di bottega, forgia e diario. [Catture e prove R5.8](docs/roadmap/services-evidence/README.md) · [Roadmap](docs/ROADMAP.md)
+> **0.9.0-preview.1** — **Parti** apre il primo bivio di Lanternbound con l’assetto indicato sul pulsante. **Eroe** apre la scelta fra i tre assetti. [Confronto e prove R6.1](docs/roadmap/pacing-evidence/README.md) · [Roadmap](docs/ROADMAP.md)
 
 ## Sul Pocket, in pochi passaggi
 
@@ -24,7 +24,7 @@ Il pacchetto include firmware, grafica e font: non servono compilazione, microSD
 
 ## Il primo viaggio
 
-**Gioca → Parti → scegli l’assetto → Parti → scegli il cammino.** La guida contestuale insegna attacco, parata e Risonanza mentre giochi; i suggerimenti appresi scompaiono e si possono ripetere dalle opzioni.
+**Gioca → Parti → scegli il cammino.** L’assetto in uso è scritto sul pulsante **Parti**. Apri **Eroe** se vuoi cambiarlo. La guida contestuale insegna attacco, parata e Risonanza durante le prime lotte. Puoi ripeterla dalle opzioni.
 
 | Nella spedizione | La tua scelta |
 |---|---|
