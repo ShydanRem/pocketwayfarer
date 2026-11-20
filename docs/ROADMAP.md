@@ -10,6 +10,10 @@ Un lotto è completato quando entra nel gioco, supera i controlli pertinenti e d
 
 ## Stato reale di partenza
 
+**Consegna R6.2 / 0.9.0-preview.2.** Al quarto bivio il Sentiero è gratuito, mentre il Bastione scambia 12 PV e una lotta più dura per 15 oro in più se vinta. Le due vie sono state percorse con gli stessi due seed in IT/EN. La progressione verso il boss e il rientro anticipato sono verificati, incluso il riavvio. [Catture e confronto R6.2](roadmap/bastion-evidence/README.md)
+
+![Il bivio, il Granchio del Bastione e l’accesso con PV bassi](img/lantern/bivio-bastione.png)
+
 **Consegna R6.1 / 0.9.0-preview.1.** Il primo bivio si raggiunge con un tocco dal borgo. Due seed, ripetuti in IT/EN con la Sentinella, danno gli stessi passaggi, PV, PM e oro della versione precedente. Il playtest con persone resta aperto. [Confronto e prove R6.1](roadmap/pacing-evidence/README.md)
 
 ![Partenza, primo bivio e rientro dopo la vittoria](img/lantern/ritmo-spedizione.png)
@@ -160,8 +164,8 @@ Arma, mano secondaria e testa sono i canali grafici dell’equipaggiamento già 
 | Passaggio | Esperimento o verifica |
 |---|---|
 | **R6.1 · consegna su host** | Due seed con la Sentinella e confronto prima/dopo nei due idiomi. Il primo bivio si raggiunge con un tocco. Resta da osservare come i giocatori si orientano al primo avvio. |
-| **R6.2 · prossimo, varietà** | Provare una scelta rischio/ricompensa chiaramente diversa, per esempio una via d’élite che scambia risorse per una ricompensa visibile. Misurare PV, PM, tempi ed esiti sui due seed. Nel playtest osservare quando i giocatori scelgono ciascuna via e perché. |
-| **R6.3 · ritorno al borgo** | Rendere leggibile cosa si può usare o sbloccare con ciò che si è guadagnato. Osservare se il giocatore inizia un altro viaggio e quale obiettivo si dà. Verificare ricompense e salvataggi dopo interruzione. |
+| **R6.2 · consegna su host, varietà** | Sentiero e Bastione mostrano prima dell’ingresso costo, nemico e ricompensa. Le tracce sui due seed misurano PV, PM, tempi ed esiti. Nel playtest resta da osservare quando i giocatori scelgono ciascuna via e perché. |
+| **R6.3 · prossimo, ritorno al borgo** | Rendere leggibile cosa si può usare o sbloccare con il bottino. Osservare se il giocatore inizia un altro viaggio e quale obiettivo si dà. Verificare ricompense e salvataggi dopo interruzione. |
 | **R7 · feedback** | Completare pose di attacco e guardia, impatti per ruolo e opzioni di movimento ridotto. Se il percorso audio dell’hardware è praticabile, aggiungere un set breve con muto e volume. |
 | **R8 · candidata 1.0** | Installazione pulita e aggiornamento da una preview con dati, prove sul Pocket di anello, parata e sonno/risveglio, sessione lunga, controllo del budget e pacchetto di ripristino. |
 

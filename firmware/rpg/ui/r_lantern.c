@@ -177,7 +177,7 @@ enum { C_DEPART = 1, C_HERO, C_BAG, C_MORE, C_HOME, C_CLASSIC, C_MAP, C_EQUIP, C
        C_CONTINUE, C_RETREAT, C_EVENT0, C_EVENT1, C_RETRY, C_ASSIST, C_MOTION,
        C_LANGUAGE, C_QUICK, C_CUSTOM, C_COLLECTION, C_ABORT, C_EQUIP_RELIC,
        C_BESTIARY, C_HELP, C_HUNT, C_COLLECT_HUNT, C_TIPS, C_REPLAY_TIPS, C_ACK_TIP,
-       C_REPLACE_RELIC, C_CANCEL_REPLACE, C_SKIP_RELIC, C_CLASSES };
+       C_REPLACE_RELIC, C_CANCEL_REPLACE, C_SKIP_RELIC, C_CLASSES, C_BASTION };
 
 static void departure_button(const char *text, int y) {
     lv_obj_t *b = button(L.root, text, CX, y, 216, 72, C_DEPART, true);
@@ -338,24 +338,57 @@ static void hunt(void) {
     button(L.root, TR("Raccogli", "Collect"), 162, 378, 130, 64, C_COLLECT_HUNT, true);
     button(L.root, TR("Zaino", "Bag"), 304, 378, 130, 64, C_EQUIP, false);
 }
+static void bastion_route(const rpg_lantern *l) {
+    const int routes[] = {LN_PATH_TRAIL, LN_PATH_BASTION};
+    for (int i = 0; i < 2; i++) {
+        ln_route_info info;
+        if (!ln_preview_route(l, routes[i], &info)) continue;
+        const int x = i ? 313 : 153;
+        lv_obj_t *card = panel(L.root, x, 224, 150, 198, 245);
+        lv_obj_set_style_border_color(card, lv_color_hex(i ? DANGER : JADE), 0);
+        kit_img(L.root, foe_sprite(info.foes[0].kind, 0), 1, x, 174);
+        label(L.root, enemy_short(info.foes[0].kind), x, 224, 140, IVORY, false);
+        char text[48];
+        snprintf(text, sizeof text, TR("%d PV", "%d HP"), info.foes[0].max_hp);
+        label(L.root, text, x, 250, 140, MUTED, false);
+        snprintf(text, sizeof text, TR("Costo %u PV", "Cost %u HP"), info.hp_cost);
+        label(L.root, text, x, 281, 140, i ? DANGER : MUTED, false);
+        snprintf(text, sizeof text, TR("Vinci +%u oro", "Win +%u gold"), info.gold);
+        label(L.root, text, x, 307, 140, AMBER, false);
+        lv_obj_t *enter = button(L.root, i ? TR("Bastione", "Bastion") : TR("Sentiero", "Trail"),
+                                 x, 352, 150, 54, i ? C_BASTION : C_ROUTE0, !i);
+        if (info.hp_cost && l->hp <= info.hp_cost) {
+            lv_obj_add_state(enter, LV_STATE_DISABLED);
+            snprintf(text, sizeof text, TR("Servono almeno %u PV", "Requires at least %u HP"), info.hp_cost + 1u);
+            label(L.root, text, CX, 398, 274, DANGER, false);
+        }
+    }
+}
+
 static void route(void) {
     scene(PAGE_ROUTE, 1, 90);
     rpg_lantern *l = game();
     char b[64];
+    if (l->room == LN_BASTION_ROOM) {
+        snprintf(b, sizeof b, TR("%u/5 · %d PV · %u oro", "%u/5 · %d HP · %u gold"),
+                 l->room + 1, l->hp, l->currency);
+        header(TR("Il bivio del Bastione", "The bastion fork"), b);
+        bastion_route(l);
+        button(L.root, TR("Rientra", "Return"), CX, 430, 120, 42, C_RETREAT, false);
+        return;
+    }
     snprintf(b, sizeof b, TR("Stanza %u / 5  ·  %u oro", "Room %u / 5  ·  %u gold"), l->room + 1, l->currency);
     header(l->room == 4 ? TR("Il faro spento", "The silent beacon") : TR("Scegli il cammino", "Choose your path"), b);
     if (l->room == 1) L.hero = kit_img(L.root, hero_sprite(0), 2, CX, 205);
     else if (l->room == 4) kit_img(L.root, foe_sprite(LN_BOSS, 0), 2, CX, 205);
     else {
-        /* Preview on copies: neither seeing the route nor reopening this view
-         * advances the run RNG or discovers creatures before meeting them. */
         for (int branch = 0; branch < 2; branch++) {
-            rpg_lantern preview = *l;
-            if (!ln_enter(&preview, branch)) continue;
+            ln_route_info preview;
+            if (!ln_preview_route(l, branch, &preview)) continue;
             int x = branch ? 304 : 162;
-            for (int i = 0; i < preview.nfoes; i++)
+            for (int i = 0; i < preview.count; i++)
                 kit_img(L.root, foe_sprite(preview.foes[i].kind, 0), 1,
-                        x + (preview.nfoes == 1 ? 0 : i ? 24 : -24), 194 + i * 8);
+                        x + (preview.count == 1 ? 0 : i ? 24 : -24), 194 + i * 8);
             char name[64];
             snprintf(name, sizeof name, "%s", enemy_short(preview.foes[0].kind));
             panel(L.root, x, 255, 138, 34, 230);
@@ -779,7 +812,9 @@ static void on_click(lv_event_t *e) {
     if (c == C_GUARD && L.skill_menu) { L.skill_menu = 0; battle_refresh(); return; }
     bool success = false;
     switch (c) {
-    case C_ROUTE0: case C_ROUTE1: success = ln_enter(l, c == C_ROUTE1); break;
+    case C_ROUTE0: success = ln_enter(l, LN_PATH_TRAIL); break;
+    case C_ROUTE1: success = ln_enter(l, LN_PATH_PIER); break;
+    case C_BASTION: success = ln_enter(l, LN_PATH_BASTION); break;
     case C_ATTACK: success = ln_action(l, L.skill_menu ? LN_POWER : LN_BASIC, l->target); L.skill_menu = 0; break;
     case C_SKILLS: success = ln_action(l, LN_SUPPORT, l->target); L.skill_menu = 0; break;
     case C_GUARD: success = ln_action(l, LN_GUARD, l->target); break;

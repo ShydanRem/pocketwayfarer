@@ -91,6 +91,7 @@ if shots:
         for output, names in {
             'guida-e-risonanza': ['32-guida-primo-attacco', '35-parata-perfetta-scudo', '39-risonanza-impatto'],
             'impatto-dei-tre-eroi': ['36-fendente-impatto', '41-brace-impatto', '42-doppio-impatto'],
+            'bivio-bastione': ['50-bastione-bivio-it', '51-bastione-combattimento-it', '53-bastion-locked-en'],
         }.items():
             if not all((dst / (name + '.png')).exists() for name in names):
                 continue

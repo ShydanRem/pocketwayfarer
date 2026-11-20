@@ -290,7 +290,7 @@ static void pacing_sample(uint32_t seed, uint32_t start, const char *event, int 
            event, (unsigned long)(ms - start), taps, l->hp, l->sp, l->currency);
 }
 
-static void pacing_preview(void) {
+static void pacing_preview(bool bastion) {
     static const uint32_t platform_origins[] = {17, 661};
     puts("language,seed,room,event,simulated_ms,departure_taps,hp,sp,run_gold");
     uint32_t seed_seen[2] = {0};
@@ -325,7 +325,9 @@ static void pacing_preview(void) {
                 press(TR("+25 PV", "+25 HP"));
                 pacing_sample(seed, start, "rest_done", taps);
             } else {
-                const char *route = room == 4 ? TR("Affrontalo", "Face the guardian") : TR("Sentiero", "Trail");
+                const char *route = room == 4 ? TR("Affrontalo", "Face the guardian")
+                                  : bastion && room == LN_BASTION_ROOM ? TR("Bastione", "Bastion")
+                                  : TR("Sentiero", "Trail");
                 press(route);
                 assert(R.g.lantern.state == LN_CHOOSE);
                 pacing_sample(seed, start, "battle_start", taps);
@@ -346,13 +348,66 @@ static void pacing_preview(void) {
                 pacing_sample(seed, start, "next_route", taps);
             }
         }
-        assert(R.g.lantern.state == LN_WON && R.g.gold == gold + 80 && R.g.lantern.wins == 1);
+        unsigned reward = bastion ? 95 : 80;
+        assert(R.g.lantern.state == LN_WON && R.g.gold == gold + reward && R.g.lantern.wins == 1);
         pacing_sample(seed, start, "victory", taps);
         press(TR("Borgo", "Village"));
-        assert(R.screen == R_TOWN && R.g.gold == gold + 80);
+        assert(R.screen == R_TOWN && R.g.gold == gold + reward);
         pacing_sample(seed, start, "return", taps);
         if (!lang && !scenario) shot("pacing-ritorno");
     }
+}
+
+static void bastion_ui(void) {
+    for (int lang = 0; lang < 2; lang++) {
+        rpg_new_hero hero = {.lang = (uint8_t)lang};
+        rpg_game_new(&R.g, &hero, seconds, 47);
+        R.loaded = true;
+        rpg_lantern *l = &R.g.lantern;
+        R.g.coach.learned = LNC_ALL;
+        ln_start(l, LN_SENTINEL, 3294095628u);
+        l->room = LN_BASTION_ROOM; l->hp = 12; l->currency = 30;
+        r_go(R_LANTERN); r_save_now();
+        const char *bastion = TR("Bastione", "Bastion");
+        const char *cost = TR("Costo 12 PV", "Cost 12 HP");
+        const char *prize = TR("Vinci +25 oro", "Win +25 gold");
+        lv_obj_t *card = find(lv_screen_active(), bastion);
+        assert(card && find(lv_screen_active(), cost) && find(lv_screen_active(), prize));
+        assert(lv_obj_has_state(lv_obj_get_parent(card), LV_STATE_DISABLED));
+        assert(find(lv_screen_active(), TR("Servono almeno 13 PV", "Requires at least 13 HP")));
+        rpg_lantern before = *l;
+        press(bastion);
+        assert(!memcmp(l, &before, sizeof *l));
+        if (lang) shot("bastion-locked-en");
+
+        l->hp = 90;
+        r_save_now();
+        wf_app_start(saved, saved_len);
+        assert(l->state == LN_ROUTE && l->hp == 90 && l->currency == 30 && l->rng == before.rng);
+        assert(find(lv_screen_active(), cost) && find(lv_screen_active(), prize));
+        shot(lang ? "bastion-fork-en" : "bastione-bivio-it");
+        const uint32_t gold = R.g.gold;
+        press(bastion);
+        assert(l->state == LN_CHOOSE && l->hp == 78 && l->currency == 30 && l->branch == LN_PATH_BASTION);
+        assert(l->foes[0].max_hp == 88);
+        if (!lang) shot("bastione-combattimento-it");
+        wf_app_start(saved, saved_len);
+        assert(l->paused && l->hp == 78 && l->branch == LN_PATH_BASTION && l->currency == 30);
+        press(TR("Riprendi", "Resume"));
+        run(650);
+        play_battle();
+        assert(l->state == LN_RELIC && l->currency == 55 && R.g.gold == gold);
+        wf_app_start(saved, saved_len);
+        assert(l->state == LN_RELIC && l->currency == 55 && R.g.gold == gold);
+        press(TR("Lascia", "Skip"));
+        press(TR("Rientra", "Return"));
+        assert(l->state == LN_RETURNED && R.g.gold == gold + 55);
+        wf_app_start(saved, saved_len);
+        assert(l->state == LN_RETURNED && R.g.gold == gold + 55);
+        if (!lang) shot("bastione-rientro-it");
+        press(TR("Borgo", "Village"));
+    }
+    puts("Bastion UI: IT/EN forecast, blocked low HP, resume before/after entry and one reward on return passed");
 }
 
 static void departure_paths(void) {
@@ -404,7 +459,7 @@ static void departure_paths(void) {
 }
 
 int main(int argc, char **argv) {
-    assert(argc == 2 || (argc == 3 && !strcmp(argv[2], "--pacing")));
+    assert(argc == 2 || (argc == 3 && (!strcmp(argv[2], "--pacing") || !strcmp(argv[2], "--pacing-bastion"))));
     dest = argv[1];
     lv_init(); lv_tick_set_cb(tick);
     const uint32_t accents[] = {0x00e0, 0x00e8, 0x00e9, 0x00f2, 0x00f9, 0x00b7};
@@ -419,7 +474,7 @@ int main(int argc, char **argv) {
     lv_indev_t *in = lv_indev_create(); lv_indev_set_type(in, LV_INDEV_TYPE_POINTER); lv_indev_set_read_cb(in, read_touch);
     lv_timer_set_period(lv_indev_get_read_timer(in), 10);
     if (argc == 3) {
-        pacing_preview();
+        pacing_preview(!strcmp(argv[2], "--pacing-bastion"));
         return 0;
     }
     wf_app_start(NULL, 0); run(150); shot("titolo");
@@ -601,6 +656,7 @@ int main(int argc, char **argv) {
     press("Return"); press("Village");
     no_relic_victory_ui();
     departure_paths();
+    bastion_ui();
     size_t stable = image_bytes;
     for (int i = 0; i < 12; i++) { r_go(R_TOWN); run(20); }
     assert(image_bytes == stable);

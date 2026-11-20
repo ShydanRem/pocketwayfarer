@@ -58,6 +58,7 @@ def check(base, commit):
     screenshots = {
         'borgo': 'lantern/02-borgo',
         'ritmo-spedizione': 'lantern/ritmo-spedizione',
+        'bivio-bastione': 'lantern/bivio-bastione',
         'classi': 'classes/otto-classi-base',
         'avatar-base': 'hero_rig/otto-avatar-base',
         'avatar-avanzate-a': 'hero_rig/otto-avatar-avanzate-a',

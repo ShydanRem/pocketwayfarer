@@ -4,6 +4,12 @@
 #include "rng.h"
 #include "timing.h"
 
+enum {
+    ROOM_GOLD = 10, GUARDIAN_GOLD = 40, BASTION_GOLD = 25,
+    BASTION_COST = 12, BASTION_CRAB_HP = 88,
+    MAX_RUN_GOLD = LN_BASTION_ROOM * ROOM_GOLD + BASTION_GOLD + GUARDIAN_GOLD
+};
+
 static int mini(int a, int b) { return a < b ? a : b; }
 static int maxi(int a, int b) { return a > b ? a : b; }
 static bool has(const rpg_lantern *l, int r) { return (l->relics & (1u << r)) != 0; }
@@ -88,26 +94,62 @@ static void intents(rpg_lantern *l) {
                             : f->kind == LN_CRAB || l->turn % 3 == 2 ? LN_HEAVY : LN_HIT);
     }
 }
-bool ln_enter(rpg_lantern *l, int branch) {
-    if (l->state != LN_ROUTE || (unsigned)branch > 1) return false;
-    l->branch = (uint8_t)branch;
-    if (l->room == 1) { stage(l, LN_EVENT); return true; }
-    l->turn = l->acting = l->target = l->guard = l->focused = 0;
+static bool route_available(const rpg_lantern *l, int branch) {
+    return l->state == LN_ROUTE && ((unsigned)branch <= LN_PATH_PIER ||
+                                    (branch == LN_PATH_BASTION && l->room == LN_BASTION_ROOM));
+}
+
+static unsigned room_gold(int room, int branch) {
+    if (room == 4) return GUARDIAN_GOLD;
+    return room == LN_BASTION_ROOM && branch == LN_PATH_BASTION ? BASTION_GOLD : ROOM_GOLD;
+}
+
+static int route_cost(int branch) { return branch == LN_PATH_BASTION ? BASTION_COST : 0; }
+
+static void prepare_foes(rpg_lantern *l, int branch) {
     memset(l->foes, 0, sizeof l->foes);
-    l->nfoes = (uint8_t)(l->room == 4 ? 1 : branch ? 2 : 1);
+    if (branch == LN_PATH_BASTION) {
+        l->nfoes = 1;
+        l->foes[0] = (ln_foe){.kind = LN_CRAB, .hp = BASTION_CRAB_HP, .max_hp = BASTION_CRAB_HP};
+        return;
+    }
+    bool pier = branch == LN_PATH_PIER;
+    l->nfoes = (uint8_t)(pier && l->room != 4 ? 2 : 1);
     for (int i = 0; i < l->nfoes; i++) {
         ln_foe *f = &l->foes[i];
-        f->kind = (uint8_t)(l->room == 4 ? LN_BOSS : branch ? LN_WISP : LN_ROOT);
+        f->kind = (uint8_t)(l->room == 4 ? LN_BOSS : pier ? LN_WISP : LN_ROOT);
         if (l->room >= 2 && l->room < 4) {
             static const uint8_t solo[] = {LN_ROOT, LN_WOLF, LN_CRAB};
             static const uint8_t pairs[] = {LN_WISP, LN_BAT, LN_MOTH};
-            f->kind = (branch ? pairs : solo)[roll(l, 0, 2)];
+            f->kind = (pier ? pairs : solo)[roll(l, 0, 2)];
         }
-        f->hp = f->max_hp = (int16_t)(l->room == 4 ? 176 : branch ? 20 + l->room * 4 : 36 + l->room * 10);
+        f->hp = f->max_hp = (int16_t)(l->room == 4 ? 176 : pier ? 20 + l->room * 4 : 36 + l->room * 10);
         if (f->kind == LN_BAT) f->hp = f->max_hp = (int16_t)(f->hp * 4 / 5);
         if (f->kind == LN_CRAB) f->hp = f->max_hp = (int16_t)(f->hp * 11 / 10);
-        l->seen |= (uint8_t)(1u << f->kind);
     }
+}
+
+bool ln_preview_route(const rpg_lantern *l, int branch, ln_route_info *out) {
+    if (!route_available(l, branch) || l->room == 1) return false;
+    rpg_lantern preview = *l;
+    prepare_foes(&preview, branch);
+    memcpy(out->foes, preview.foes, sizeof out->foes);
+    out->count = preview.nfoes;
+    out->hp_cost = (uint8_t)route_cost(branch);
+    out->gold = (uint8_t)room_gold(l->room, branch);
+    return true;
+}
+
+bool ln_enter(rpg_lantern *l, int branch) {
+    if (!route_available(l, branch)) return false;
+    int cost = route_cost(branch);
+    if (cost && l->hp <= cost) return false;
+    l->hp = (int16_t)(l->hp - cost);
+    l->branch = (uint8_t)branch;
+    if (l->room == 1) { stage(l, LN_EVENT); return true; }
+    l->turn = l->acting = l->target = l->guard = l->focused = 0;
+    prepare_foes(l, branch);
+    for (int i = 0; i < l->nfoes; i++) l->seen |= (uint8_t)(1u << l->foes[i].kind);
     l->shield = (uint8_t)(has(l, LR_BELL) ? 12 : 0);
     intents(l);
     stage(l, LN_CHOOSE);
@@ -120,7 +162,7 @@ static int target(const rpg_lantern *l, int t) {
 }
 static void impact(rpg_lantern *l, int next) { l->next_state = (uint8_t)next; stage(l, LN_IMPACT); }
 static void victory(rpg_lantern *l) {
-    l->currency = (uint16_t)(l->currency + (l->room == 4 ? 40 : 10));
+    l->currency = (uint16_t)(l->currency + room_gold(l->room, l->branch));
     if (l->room == 4) {
         if (l->relics) impact(l, LN_BLUEPRINT);
         else {
@@ -316,7 +358,7 @@ bool ln_event(rpg_lantern *l, int choice) {
         if (l->hp <= 12) return false;
         l->hp -= 12; l->resonance = 3; heal(l, 0, 8);
     } else heal(l, choice ? 0 : 25, choice ? 12 : 0);
-    l->currency += 10;
+    l->currency += ROOM_GOLD;
     stage(l, LN_CLEARED);
     return true;
 }
@@ -360,7 +402,7 @@ void ln_sanitize(rpg_lantern *l) {
     l->shield = (uint8_t)mini(l->shield, 60);
     l->focused = (uint8_t)mini(l->focused, 32);
     l->elapsed_ms = (uint16_t)mini(l->elapsed_ms, 2800);
-    l->currency = (uint16_t)mini(l->currency, 80);
+    l->currency = (uint16_t)mini(l->currency, MAX_RUN_GOLD);
     for (int i = 0; i < 2; i++) l->offers[i] %= LR_COUNT;
     if (ln_active(l) && !l->rng) l->rng = 0x51eedu;
 }
