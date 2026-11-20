@@ -212,10 +212,16 @@ static void changing_look(void) {
         hero_obj_set_pose(o,&look,HX_IDLE,3,i%HP_COUNT);assert(image_bytes==steady);
     }
     R.g.lantern.reduced_motion=1;
-    hero_obj_set_pose(o,&look,HX_IDLE,3,HP_IDLE);
-    const lv_image_dsc_t *idle=lv_image_get_src(o);
-    for(int pose=HP_BREATH;pose<HP_COUNT;pose++) {
-        hero_obj_set_pose(o,&look,HX_IDLE,3,pose);assert(lv_image_get_src(o)==idle);
+    static const int quiet_poses[HP_COUNT] = {
+        [HP_IDLE] = HP_IDLE, [HP_BREATH] = HP_IDLE, [HP_HIT] = HP_IDLE,
+        [HP_WINDUP] = HP_WINDUP, [HP_ATTACK] = HP_ATTACK, [HP_RECOVER] = HP_ATTACK,
+        [HP_GUARD_ENTRY] = HP_GUARD, [HP_GUARD] = HP_GUARD,
+    };
+    for(int pose=0;pose<HP_COUNT;pose++) {
+        hero_obj_set_pose(o,&look,HX_IDLE,3,quiet_poses[pose]);
+        const lv_image_dsc_t *expected=lv_image_get_src(o);
+        hero_obj_set_pose(o,&look,HX_IDLE,3,pose);
+        assert(lv_image_get_src(o)==expected && image_bytes==steady);
     }
     R.g.lantern.reduced_motion=0;
     kit_screen(NULL);assert(image_bytes==persistent);
@@ -1193,6 +1199,11 @@ static void classic_combat_rig(void) {
         {29, RACE_BEAST, 1, 1, "stormbow-rig", {IT_BOW, IT_QUIVER, IT_CIRCLET}},
         {26, RACE_ELF, 2, 3, "archmage-rig", {IT_STAFF, IT_TOME, IT_CIRCLET}},
         {38, RACE_DWARF, 1, 2, "deathlord-rig", {IT_SCYTHE, IT_CHARM, IT_HOOD}},
+        {25, RACE_DWARF, 2, 0, "warlord-rig", {IT_AXE, IT_SHIELD, IT_HELM}},
+        {30, RACE_BEAST, 3, 1, "nightblade-rig", {IT_DAGGER, IT_CHARM, IT_HOOD}},
+        {33, RACE_ELF, 3, 4, "hierophant-rig", {IT_MACE, IT_TOME, IT_CIRCLET}},
+        {34, RACE_HUMAN, 4, 0, "grandmaster-rig", {IT_KNUCKLE, IT_CHARM, IT_CIRCLET}},
+        {36, RACE_DWARF, 3, 1, "runesmith-rig", {IT_HAMMER, IT_SHIELD, IT_HELM}},
     };
     rnd = 17;
     for (int quiet = 0; quiet < 2; quiet++) for (unsigned i = 0; i < sizeof examples / sizeof examples[0]; i++) {
@@ -1271,7 +1282,7 @@ static void classic_combat_rig(void) {
         assert(R.screen == R_TOWN && R.g.classic.active == 0);
     }
     wf_lang = 0;
-    puts("classic combat rig: Paladin, Dragon Knight, Stormbow, Archmage and Deathlord; equipment, three targets, wake, reduced motion, parry and v4 rollback passed");
+    puts("classic combat rig: all eight families, equipment, three targets, wake, reduced motion, parry and v4 rollback passed");
 }
 
 int main(int argc,char **argv) {

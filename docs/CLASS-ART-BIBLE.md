@@ -113,6 +113,10 @@ Il Paladino (16) raccoglie l’arma e porta lo scudo verso il busto. Il Cavalier
 
 Arciere separa le mani in carica e raccoglie il gesto al contatto. La faretra segue il busto. Il Mago alza il bastone in carica e lo porta avanti nel colpo. La falce dell’Occultista cambia angolo intorno alla presa e passa dietro volto e capelli. La cappa conserva il contorno mentre cambia l’appoggio del busto. I tre profili coprono tutti i rami delle rispettive famiglie. [Pose a dimensione reale](roadmap/classic-weapons-evidence/README.md)
 
+## R7.2c — tutte le famiglie del Classico
+
+Il Guerriero apre la spalla in carica e avvicina lo scudo in difesa. Il Ladro raccoglie il pugnale e si riallinea dopo il colpo. Il Chierico tiene la guardia stretta. Il Monaco alterna le due mani e i tirapugni seguono le prese. L’Artefice alza il martello mentre la parata tiene l’attrezzo vicino al busto. Cappe, vesti e copricapo usano gli stessi punti di registrazione del costume. [Catture delle famiglie](roadmap/classic-all-poses-evidence/README.md)
+
 ## Checklist di produzione
 
 - Sorgenti, prompt, identità del generatore e trasformazioni registrati.

@@ -3,7 +3,6 @@
 #include <stdio.h>
 #include <string.h>
 #include "rui.h"
-#include "hero_rig.h"
 #include "art/crypt_art.h"
 #include "art/ember_art.h"
 #include "art/lumen_art.h"
@@ -631,10 +630,9 @@ void scr_battle(void) {
     B.end_dlg = B.item_dlg = NULL;
     int n = B.b.nfoes;
     hero_look_from_game(&B.look, &R.g);
-    B.combat_rig = hero_has_combat_rig(&B.look);
+    B.combat_rig = hero_uses_rig(&B.look);
     B.striking = false;
-    bool modern = hero_uses_rig(&B.look);
-    B.hero_y = modern ? 216 : 230;
+    B.hero_y = B.combat_rig ? 216 : 230;
     /* Keep the roster opposite the player: a pair uses the front and rear
      * lanes, while a trio raises its middle enemy clear of the lower two. */
     static const int xs[3][3] = {{326, 0, 0}, {267, 375, 0}, {267, 323, 375}};
@@ -673,7 +671,7 @@ void scr_battle(void) {
     fx_shadow(B.scr, HERO_X, HERO_Y + hero_foot_offset(&B.look,3), 90);
     B.hero = hero_obj(B.scr, &B.look, HX_IDLE, 3, HERO_X, HERO_Y);
     B.avatar_phase=-1;
-    if(!modern)kit_bob(B.hero, 3, 1500);
+    if(!B.combat_rig)kit_bob(B.hero, 3, 1500);
     r_vitals_arcs(B.scr, &B.hp_arc, &B.sp_arc, false);
     B.vitals = kit_label(B.scr, &wf_font_small, COL_TEXT, "", CX, 444);
     lv_obj_remove_flag(B.vitals, LV_OBJ_FLAG_CLICKABLE);

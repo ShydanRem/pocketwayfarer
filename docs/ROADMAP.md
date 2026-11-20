@@ -1,6 +1,6 @@
 # Roadmap di Pocket Wayfarer
 
-**Aggiornata il 20 novembre 2026.** Il redesign del Classico comprende i cinque ambienti di esplorazione, i cinque dungeon, le 42 creature e le interfacce di servizio. Le nuove transizioni di combattimento coprono i tre assetti di Lanternbound e 17 classi del Classico. Il [registro di avanzamento](roadmap/STATUS.md) conserva le prove per ogni consegna.
+**Aggiornata il 20 novembre 2026.** Il redesign del Classico comprende i cinque ambienti di esplorazione, i cinque dungeon, le 42 creature e le interfacce di servizio. Le transizioni di combattimento coprono i tre assetti di Lanternbound e tutte le **40 classi** del Classico. Il [registro di avanzamento](roadmap/STATUS.md) conserva le prove per ogni consegna.
 
 ## Obiettivo e regole di avanzamento
 
@@ -9,6 +9,10 @@ Portare il gioco a un'identità coerente: personaggi riconoscibili, mondo leggib
 Un lotto è completato quando entra nel gioco, supera i controlli pertinenti e dispone di catture native. Un atlas generato, un concept o un punteggio del brief non equivalgono a una funzione completata. Si lavora su un solo lotto principale alla volta; correzioni di crash, salvataggi, input o leggibilità hanno precedenza. Il collaudo fisico può procedere in parallelo quando il Pocket è disponibile: non impedisce di produrre e verificare arte su PC, ma resta necessario per la release stabile.
 
 ## Stato reale di partenza
+
+**Consegna R7.2c / 0.10.0-preview.4.** Le 23 classi rimanenti di Guerriero, Ladro, Chierico, Monaco e Artefice ricevono i nuovi profili. Le prove coprono tirapugni sulle due mani, presa del martello, pugnale, cappe e vesti lunghe nella vista laterale. [Catture e prove R7.2c](roadmap/classic-all-poses-evidence/README.md)
+
+![Lama Notturna nello schieramento laterale, Gran Maestro all’impatto e Forgiarune in parata](img/hero_rig/pose-famiglie-classico.png)
 
 **Consegna R7.2b / 0.10.0-preview.3.** Il Classico passa allo schieramento laterale, con eroe a sinistra, avversari a destra e comandi sotto l’arena. Tutti i rami di Arciere, Mago e Occultista ricevono le pose di carica, impatto, recupero e parata. [Catture e prove R7.2b](roadmap/classic-weapons-evidence/README.md)
 
@@ -185,8 +189,8 @@ Arma, mano secondaria e testa sono i canali grafici dell’equipaggiamento già 
 | **R7.1 · consegna su host, pose e transizioni** | Tre assetti verificati con carica, impatto, recupero, guardia, pausa, riavvio e movimento ridotto. Il test fisico resta aperto. |
 | **R7.2a · consegna su host, due classi del Classico** | Paladino e Cavaliere del Drago verificati con equipaggiamento effettivo, quattro razze, controlli circolari, pausa e movimento ridotto. |
 | **R7.2b · consegna su host, composizione laterale** | Eroe e avversari si affrontano dai due lati. Il rig copre 17/40 classi con i nuovi profili di arco, bastone e falce. Test IT/EN su tre bersagli e boss. |
-| **R7.2c · prossimo, le 23 classi rimanenti** | Calibrare Guerriero, Ladro, Chierico, Monaco e Artefice, partendo da pugnale, tirapugni e martello. Verificare l’intera matrice di classi, pose ed equipaggiamento e catturare almeno un rappresentante per famiglia. |
-| **R7.3 · audio opzionale** | Verificare prima l’uscita audio sul Pocket. Se utilizzabile, aggiungere pochi segnali distinti e controlli per volume e muto. Gli stessi eventi devono essere leggibili a schermo. |
+| **R7.2c · consegna su host, 40/40 classi** | Cinque profili aggiunti. Verificati tutti i rami, le quattro razze e gli oggetti, con catture native delle otto famiglie nella vista laterale. |
+| **R7.3 · prossimo, audio opzionale** | Verificare prima l’uscita audio sul Pocket. Se utilizzabile, aggiungere pochi segnali distinti e controlli per volume e muto. Gli stessi eventi devono essere leggibili a schermo. |
 | **R8 · candidata 1.0** | Installazione pulita e aggiornamento da una preview con dati, prove sul Pocket di anello, parata e sonno/risveglio, sessione lunga, controllo del budget e pacchetto di ripristino. |
 
 Il primo obiettivo di design è una scelta comprensibile, non più numeri sullo schermo. Registrare, con consenso e senza introdurre account, osservazioni di playtest: tempi reali di spedizione, motivo delle sconfitte, scelte di percorso/reliquia, uso di Guardia/supporti e volontà di iniziare un altro viaggio. Una sessione di 5–8 minuti è una **ipotesi da provare**, non un dato già misurato.

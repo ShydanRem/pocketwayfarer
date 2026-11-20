@@ -102,4 +102,6 @@ R7.2a uses the existing Paladin and Dragon Knight pixels. The runtime applies a 
 
 R7.2b adds combat profiles for all Mage, Archer and Occultist costumes. Bow, staff and scythe use a smaller turn about the registered grip. Quivers follow the torso and the scythe keeps its layer behind the head. The existing atlas pixels and registration supply all 15 additional classes. [Native captures and checks](../../docs/roadmap/classic-weapons-evidence/README.md)
 
+R7.2c extends the pose mesh to the Warrior, Rogue, Cleric, Monk and Artificer families. Knuckles remain attached to both separate hand mounts. Axes and hammers use short rotations around the existing grip. The original atlas pixels, registration, color channels and exact class costumes supply all 40 classes. [Native captures and checks](../../docs/roadmap/classic-all-poses-evidence/README.md)
+
 Native QA identified rectangular arm cuts in robes33/35/38/39. `rigid_arm_classes` now covers24/30/33/35/38/39 only: connected fabric and grips lean together while soles remain fixed after race compression. Other new costumes retain their existing arm motion. New pixel regressions extend the old cape checks; this deliberately simpler provisional pose does not claim final articulated animation. [R4.2 evidence](../../docs/roadmap/master-b-evidence/README.md) records the final matrix, native review and limits.

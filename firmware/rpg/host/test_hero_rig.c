@@ -34,7 +34,6 @@ static int bottom(const image *im) {
         for (int x = 0; x < GRID; x++) if (im->alpha[y*GRID+x]) return y;
     return -1;
 }
-static int pose_count(const hero_look *l) { return hero_has_combat_rig(l) ? HP_COUNT : HP_HIT + 1; }
 
 static void compose(const hero_look *l, int expression, int pose, image *im) {
     hero_look before = *l;
@@ -98,9 +97,6 @@ static void metadata(void) {
               "metadata disagrees with core IDs class=%u family=%u tier=%u",f,rig_class_families[f],rig_class_tiers[f]);
         hero_look admitted = bare_look(f,RACE_HUMAN);
         CHECK(hero_uses_rig(&admitted),"admitted exact class rejected class=%u",f);
-        bool calibrated = f == 16 || f == 24 || expected_family == FAM_MAGE ||
-                          expected_family == FAM_ARCHER || expected_family == FAM_OCCULTIST;
-        CHECK(hero_has_combat_rig(&admitted) == calibrated, "combat profile coverage mismatch class=%u",f);
         admitted.fam = (uint8_t)((expected_family+1)%FAM_COUNT);
         CHECK(!hero_uses_rig(&admitted),"wrong family admitted class=%u",f);
         admitted.fam = (uint8_t)expected_family;
@@ -130,7 +126,7 @@ static void geometry(void) {
         l.hair = (uint8_t)((f+skin+body)%6); l.hair_color = (uint8_t)((f+r+skin)%8);
         l.eyes = (uint8_t)((skin+body)%4); l.head = EMPTY; /* class default hat */
         compose(&l,expression,HP_IDLE,&idle);
-        for (int pose = HP_IDLE; pose < pose_count(&l); pose++) {
+        for (int pose = HP_IDLE; pose < HP_COUNT; pose++) {
             compose(&l,expression,pose,&frame);
             CHECK(!differs(&idle,&frame,78,GRID),"feet moved class=%u race=%u expr=%u pose=%d",f,r,expression,pose);
             /* Same input must reproduce every byte, independent of previous frame. */
@@ -152,7 +148,7 @@ static void joint_continuity(void) {
     for (unsigned f = 0; f < HERO_RIG_CLASS_COUNT; f++) for (unsigned r = 0; r < RACE_COUNT; r++) {
         hero_look l = bare_look(f,r); /* No weapon/offhand/hat to hide the seam. */
         compose(&l,HX_IDLE,HP_IDLE,&idle);
-        for (int pose = HP_IDLE; pose < pose_count(&l); pose++) {
+        for (int pose = HP_IDLE; pose < HP_COUNT; pose++) {
             compose(&l,HX_IDLE,pose,&frame);
             /* Planted lower legs and moving trunk overlap at their joint.
              * This catches the former breath gap at row63 (row66 for dwarf),
@@ -194,7 +190,7 @@ static void visible_channels(void) {
             compose(&l,expression,HP_IDLE,&changed);
             CHECK(differs(&baseline,&changed,0,40),"expression %d invisible on exposed face class=%u race=%u",expression,f,r);
         }
-        for (int pose = HP_BREATH; pose < pose_count(&l); pose++) {
+        for (int pose = HP_BREATH; pose < HP_COUNT; pose++) {
             compose(&l,HX_IDLE,pose,&changed);
             CHECK(differs(&baseline,&changed,0,GRID),"pose %d invisible class=%u race=%u",pose,f,r);
         }
@@ -216,7 +212,7 @@ static void sibling_identity(void) {
     for (unsigned pair = 0; pair < sizeof siblings/sizeof siblings[0]; pair++)
     for (unsigned race = 0; race < RACE_COUNT; race++)
     for (unsigned tier = 0; tier < RPG_TIERS; tier++)
-    for (int pose = HP_IDLE; pose <= HP_HIT; pose++) {
+    for (int pose = HP_IDLE; pose < HP_COUNT; pose++) {
         hero_look a = bare_look(siblings[pair][0],race);
         hero_look b = bare_look(siblings[pair][1],race);
         a.head = b.head = IT_HELM; a.head_tier = b.head_tier = (uint8_t)tier;
@@ -247,7 +243,7 @@ static void equipment(void) {
                 if (item <= IT_SCYTHE) { geared.weapon = (uint8_t)item; geared.weapon_tier = (uint8_t)tier; }
                 else if (item <= IT_CHARM) { geared.off = (uint8_t)item; geared.off_tier = (uint8_t)tier; }
                 else { geared.head = (uint8_t)item; geared.head_tier = (uint8_t)tier; }
-                for (int pose = HP_IDLE; pose < pose_count(&l); pose++) {
+                for (int pose = HP_IDLE; pose < HP_COUNT; pose++) {
                     compose(&geared,HX_IDLE,pose,&frame);
                     CHECK(!differs(&bare,&frame,78,GRID),"gear moved feet class=%u race=%u item=%u pose=%d",f,r,item,pose);
                     if (pose == HP_IDLE) tiers[tier] = frame;
@@ -260,7 +256,7 @@ static void equipment(void) {
         /* Mixed real channels, large weapon plus offhand and helmet together. */
         l.weapon = IT_SCYTHE; l.off = IT_SHIELD; l.head = IT_HELM;
         l.weapon_tier = 4; l.off_tier = 3; l.head_tier = 2;
-        for (int pose = HP_IDLE; pose < pose_count(&l); pose++) compose(&l,HX_HURT,pose,&frame);
+        for (int pose = HP_IDLE; pose < HP_COUNT; pose++) compose(&l,HX_HURT,pose,&frame);
     }
 }
 
@@ -280,13 +276,10 @@ static void fixed_decorations(void) {
 }
 
 static void cape_continuity(void) {
-    /* Long left capes and robe panels must remain intact through the provisional torso lean.
+    /* Long left capes and robe panels must remain intact through hit recoil.
      * Observe the composed pixels below the arm/neck, without held equipment,
      * class hat, tail or long hair supplying pixels that could hide a tear. */
-    static const unsigned classes[] = {30,33,35,38,39};
-    static const struct { int pose, dx; } leans[] = {
-        {HP_ATTACK,2},{HP_GUARD,-1},{HP_HIT,-2}
-    };
+    static const unsigned classes[] = {24,30,33,35,38,39};
     image idle, leaned;
     CHECK(rig_hair[0].y+rig_hair[0].s.h < 55,
           "short hair intrudes into cape observation region");
@@ -301,15 +294,12 @@ static void cape_continuity(void) {
             if (idle.alpha[y*GRID+x]) opaque++;
         CHECK(opaque >= 64,"cape observation lacks coverage class=%u opaque=%u",l.class_id,opaque);
         if (opaque < minimum_cape_opaque) minimum_cape_opaque = opaque;
-        for (unsigned p = 0; p < sizeof leans/sizeof leans[0]; p++) {
-            if (hero_has_combat_rig(&l) && leans[p].pose != HP_HIT) continue;
-            compose(&l,HX_IDLE,leans[p].pose,&leaned);
-            for (unsigned y = 55; y < 77; y++) for (unsigned x = 10; x < 33; x++) {
-                unsigned from = y*GRID+x, to = (unsigned)((int)from+leans[p].dx);
-                cape_checks++;
-                CHECK(idle.alpha[from] == leaned.alpha[to] && idle.rgb[from] == leaned.rgb[to],
-                      "cape torn/recolored class=%u pose=%d at %u,%u",l.class_id,leans[p].pose,x,y);
-            }
+        compose(&l,HX_IDLE,HP_HIT,&leaned);
+        for (unsigned y = 55; y < 77; y++) for (unsigned x = 10; x < 33; x++) {
+            unsigned from = y*GRID+x, to = from - 2;
+            cape_checks++;
+            CHECK(idle.alpha[from] == leaned.alpha[to] && idle.rgb[from] == leaned.rgb[to],
+                  "cape torn/recolored class=%u during hit at %u,%u",l.class_id,x,y);
         }
     }
 }
@@ -320,7 +310,6 @@ static void calibrated_poses(void) {
     for (unsigned cls = 0; cls < HERO_RIG_CLASS_COUNT; cls++)
     for (unsigned race = 0; race < RACE_COUNT; race++) {
         hero_look l = bare_look(cls, race);
-        if (!hero_has_combat_rig(&l)) continue;
         l.hair = 0;
         image frames[sizeof poses / sizeof poses[0]];
         for (unsigned p = 0; p < sizeof poses / sizeof poses[0]; p++) {
@@ -359,7 +348,8 @@ static void calibrated_poses(void) {
             combat_pose_checks++;
         }
     }
-    CHECK(combat_pose_checks == 17 * RACE_COUNT * 5, "unexpected calibrated pose count %u", combat_pose_checks);
+    CHECK(combat_pose_checks == HERO_RIG_CLASS_COUNT * RACE_COUNT * 5,
+          "unexpected calibrated pose count %u", combat_pose_checks);
 }
 
 static void full(void) {
