@@ -50,7 +50,7 @@ typedef struct {
     uint8_t head, head_tier;          /* IT_* head item or 0xff */
 } hero_look;
 enum { HX_IDLE, HX_BLINK, HX_HURT, HX_HAPPY };
-enum { HP_IDLE, HP_BREATH, HP_ATTACK, HP_GUARD, HP_HIT, HP_COUNT };
+enum { HP_IDLE, HP_BREATH, HP_ATTACK, HP_GUARD, HP_HIT, HP_WINDUP, HP_RECOVER, HP_GUARD_ENTRY, HP_COUNT };
 bool hero_uses_rig(const hero_look *l);
 int hero_size(const hero_look *l, int preset);
 int hero_foot_offset(const hero_look *l, int preset);

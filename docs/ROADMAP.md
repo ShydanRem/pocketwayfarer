@@ -1,6 +1,6 @@
 # Roadmap di Pocket Wayfarer
 
-**Aggiornata il 20 novembre 2026.** Il redesign del Classico comprende i cinque ambienti di esplorazione, i cinque dungeon, le 42 creature e le interfacce di servizio. I tre assetti di Lanternbound hanno ricevuto le transizioni di combattimento. Il [registro di avanzamento](roadmap/STATUS.md) conserva le prove per ogni consegna.
+**Aggiornata il 20 novembre 2026.** Il redesign del Classico comprende i cinque ambienti di esplorazione, i cinque dungeon, le 42 creature e le interfacce di servizio. Le nuove transizioni di combattimento coprono i tre assetti di Lanternbound e le prime due classi del Classico. Il [registro di avanzamento](roadmap/STATUS.md) conserva le prove per ogni consegna.
 
 ## Obiettivo e regole di avanzamento
 
@@ -9,6 +9,10 @@ Portare il gioco a un'identità coerente: personaggi riconoscibili, mondo leggib
 Un lotto è completato quando entra nel gioco, supera i controlli pertinenti e dispone di catture native. Un atlas generato, un concept o un punteggio del brief non equivalgono a una funzione completata. Si lavora su un solo lotto principale alla volta; correzioni di crash, salvataggi, input o leggibilità hanno precedenza. Il collaudo fisico può procedere in parallelo quando il Pocket è disponibile: non impedisce di produrre e verificare arte su PC, ma resta necessario per la release stabile.
 
 ## Stato reale di partenza
+
+**Consegna R7.2a / 0.10.0-preview.2.** Paladino e Cavaliere del Drago ricevono pose di carica, affondo, recupero, ingresso in guardia e parata. Il rig muove il costume esistente e porta con sé l’equipaggiamento. Il controllo nativo copre i tre bersagli, anello, onda, pausa e movimento ridotto. [Catture e prove R7.2a](roadmap/classic-combat-evidence/README.md)
+
+![Carica del Paladino, affondo del Cavaliere del Drago e parata sul display circolare](img/hero_rig/pose-classico.png)
 
 **Consegna R7.1 / 0.10.0-preview.1.** Sentinella, Piromante e Predone ricevono tre fotogrammi a testa. In combattimento si leggono preparazione, contatto, recupero e ingresso in guardia. I test nativi verificano che la posa si recuperi al riavvio e che arco e onda funzionino anche con movimento ridotto. [Catture e prove R7.1](roadmap/combat-poses-evidence/README.md)
 
@@ -175,7 +179,8 @@ Arma, mano secondaria e testa sono i canali grafici dell’equipaggiamento già 
 | **R6.2 · consegna su host, varietà** | Sentiero e Bastione mostrano prima dell’ingresso costo, nemico e ricompensa. Le tracce sui due seed misurano PV, PM, tempi ed esiti. Nel playtest resta da osservare quando i giocatori scelgono ciascuna via e perché. |
 | **R6.3 · consegna su host, ritorno al borgo** | Verificati bottino, progetto, equipaggiamento e ripartenza attraverso il riavvio. Da osservare in playtest se il giocatore parte di nuovo e quale obiettivo sceglie. |
 | **R7.1 · consegna su host, pose e transizioni** | Tre assetti verificati con carica, impatto, recupero, guardia, pausa, riavvio e movimento ridotto. Il test fisico resta aperto. |
-| **R7.2 · prossimo, feedback del Classico** | Cominciare da una classe con scudo e da una con mantello lungo. Verificare presa, corpo, copricapo, equipaggiamento e bersagli prima di estendere alle altre famiglie. |
+| **R7.2a · consegna su host, due classi del Classico** | Paladino e Cavaliere del Drago verificati con equipaggiamento effettivo, quattro razze, controlli circolari, pausa e movimento ridotto. |
+| **R7.2b · prossimo, estensione delle pose** | Calibrare una prima serie di profili per le altre famiglie, partendo da arco, bastone e falce. Verificare ancoraggi, mantelli lunghi, memoria e sagome sul renderer prima di estendere alle 38 classi rimanenti. |
 | **R7.3 · audio opzionale** | Verificare prima l’uscita audio sul Pocket. Se utilizzabile, aggiungere pochi segnali distinti e controlli per volume e muto. Gli stessi eventi devono essere leggibili a schermo. |
 | **R8 · candidata 1.0** | Installazione pulita e aggiornamento da una preview con dati, prove sul Pocket di anello, parata e sonno/risveglio, sessione lunga, controllo del budget e pacchetto di ripristino. |
 

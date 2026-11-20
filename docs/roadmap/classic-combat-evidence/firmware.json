@@ -1,0 +1,13 @@
+{
+  "date": "2026-11-20",
+  "milestone": "R7.2a-classic-combat-rig",
+  "app_version": "0.10.0-preview.2",
+  "target": "ESP32-S3",
+  "idf_version": "5.5.1",
+  "bytes": 5318080,
+  "sha256": "a7196dbbd79256e1bb0796c57b0db90e7fbeab3d2535aaebc8ed6e5aab441c96",
+  "app_partition_bytes": 6291456,
+  "save_version": 4,
+  "save_bytes": 2808,
+  "physical_device_tested": false
+}

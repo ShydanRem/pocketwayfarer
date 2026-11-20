@@ -168,7 +168,7 @@ static void on_train_tap(lv_event_t *e) {
     ring_close(&tring);
     quality_sum += q;
     swings++;
-    quality_popup(train_scr, q, CX, 180);
+    quality_popup(train_scr, q, CX, 180, NULL);
     if (q) {
         kit_shake(train_pet, 4 + q * 2);
         kit_burst(train_scr, icon(q == 3 ? WF_ICON_STAR : WF_ICON_SPARKLE), CX, 260, q + 1);

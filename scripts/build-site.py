@@ -38,6 +38,7 @@ RIG_SCREENS['brace-classico'] = 'brace-classico'
 RIG_SCREENS['guglie-classico'] = 'guglie-classico'
 RIG_SCREENS['mappa-zaino-classico'] = 'mappa-zaino-classico'
 RIG_SCREENS['servizi-classico'] = 'servizi-classico'
+RIG_SCREENS['pose-classico'] = 'pose-classico'
 
 
 def manual_html():
@@ -69,7 +70,7 @@ def manual_html():
                                                'riva-classico.png', 'bosco-classico.png', 'brace-classico.png',
                                                'guglie-classico.png', 'mappa-zaino-classico.png', 'servizi-classico.png',
                                                'ritmo-spedizione.png', 'bivio-bastione.png', 'rientro-lanternbound.png',
-                                               'pose-lanternbound.png'])
+                                               'pose-lanternbound.png', 'pose-classico.png'])
             return '<figure' + (' class="wide"' if wide else '') + '>' + tag + '<figcaption>' + alt + '</figcaption></figure>'
         rendered = re.sub(r'<p>(<img [^>]+>)</p>', image_figure, rendered)
         sections.append(f'<section id="{anchor}">{rendered}</section>')
@@ -107,6 +108,7 @@ def roadmap_html():
     body=body.replace('src="img/hero_rig/guglie-classico.png"','src="assets/screens/guglie-classico.png" loading="lazy"')
     body=body.replace('src="img/hero_rig/mappa-zaino-classico.png"','src="assets/screens/mappa-zaino-classico.png" loading="lazy"')
     body=body.replace('src="img/hero_rig/servizi-classico.png"','src="assets/screens/servizi-classico.png" loading="lazy"')
+    body=body.replace('src="img/hero_rig/pose-classico.png"','src="assets/screens/pose-classico.png" loading="lazy"')
     body=body.replace('src="img/lantern/ritmo-spedizione.png"','src="assets/screens/ritmo-spedizione.png" loading="lazy"')
     body=body.replace('src="img/lantern/bivio-bastione.png"','src="assets/screens/bivio-bastione.png" loading="lazy"')
     body=body.replace('src="img/lantern/rientro-lanternbound.png"','src="assets/screens/rientro-lanternbound.png" loading="lazy"')

@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include "rui.h"
+#include "hero_rig.h"
 #include "art/crypt_art.h"
 #include "art/ember_art.h"
 #include "art/lumen_art.h"
@@ -16,7 +17,7 @@ enum { AFTER_HERO, AFTER_NEXT_FOE, AFTER_TELEGRAPH, AFTER_FOE, AFTER_ROUND };
 static struct {
     rpg_battle b;
     rpg_foe start_foes[RPG_MAX_FOES];
-    bool dungeon, boss, illustrated;
+    bool dungeon, boss, illustrated, combat_rig, striking;
     int phase, after;
     uint32_t phase_at, next_ev_at;
     int ev_index;
@@ -32,7 +33,7 @@ static struct {
     uint32_t suspended_at, ready_until;
     bool suspended;
     int avatar_phase;
-    uint32_t avatar_clock;
+    uint32_t avatar_clock, strike_at;
 } B;
 
 #define HERO_X CX
@@ -128,6 +129,7 @@ static void anim_ty(void *o, int32_t v) { lv_obj_set_style_translate_y(o, v, 0);
 static void anim_opa(void *o, int32_t v) { lv_obj_set_style_opa(o, (lv_opa_t)v, 0); }
 
 static void lunge(lv_obj_t *o, int dx, int dy) {
+    if (R.g.lantern.reduced_motion) return;
     lv_anim_t a;
     lv_anim_init(&a);
     lv_anim_set_var(&a, o);
@@ -170,17 +172,22 @@ static int play(const rpg_event *e) {
     case EV_HIT:
     case EV_CRIT_HIT:
         if (e->actor < 0 || e->actor == 3) {
-            if(e->actor<0)hero_obj_set_pose(B.hero,&B.look,HX_IDLE,3,HP_ATTACK);
+            if (e->actor < 0) {
+                hero_obj_set_pose(B.hero,&B.look,HX_IDLE,3,HP_ATTACK);
+                B.striking = B.combat_rig && !R.g.lantern.reduced_motion;
+                B.strike_at = lv_tick_get();
+            }
             lv_obj_t *t = B.foe_img[e->target];
-            lunge(e->actor == 3 && B.summon ? B.summon : B.hero, (B.foe_x[e->target] - HERO_X) / 4, -40);
+            if (!B.combat_rig || e->actor == 3)
+                lunge(e->actor == 3 && B.summon ? B.summon : B.hero, (B.foe_x[e->target] - HERO_X) / 4, -40);
             fx_sparks(B.scr, tx(e->target), ty(e->target) + 10, e->kind == EV_CRIT_HIT ? 0xffd060 : 0xfff0d0,
                       e->kind == EV_CRIT_HIT ? 10 : 5);
-            if (e->kind == EV_CRIT_HIT) {
+            if (e->kind == EV_CRIT_HIT && !B.combat_rig && !R.g.lantern.reduced_motion) {
                 fx_flash(0xffffff, 150, 220);
                 fx_shake(B.scr, 7, 320);
             }
             kit_flash(t, 0xffffff, 240);
-            kit_shake(t, e->kind == EV_CRIT_HIT ? 10 : 5);
+            if (!R.g.lantern.reduced_motion) kit_shake(t, e->kind == EV_CRIT_HIT ? 10 : 5);
             snprintf(buf, sizeof buf, "-%ld", (long)e->value);
             kit_float_text(B.scr, buf, e->kind == EV_CRIT_HIT ? COL_GOLD : COL_TEXT,
                            e->kind == EV_CRIT_HIT ? &wf_font_huge : &wf_font_big, tx(e->target), ty(e->target));
@@ -194,11 +201,13 @@ static int play(const rpg_event *e) {
         lunge(B.foe_img[e->actor], (HERO_X - B.foe_x[e->actor]) / 4, 40);
         if (e->value) {
             fx_sparks(B.scr, HERO_X, HERO_Y - 10, 0xff6a4a, 5);
-            if (e->value * 5 > B.b.h.st.max_hp) { fx_shake(B.scr, 6, 280); fx_flash(0xff2a2a, 90, 200); }
+            if (!B.combat_rig && !R.g.lantern.reduced_motion && e->value * 5 > B.b.h.st.max_hp) {
+                fx_shake(B.scr, 6, 280); fx_flash(0xff2a2a, 90, 200);
+            }
         }
         lv_obj_set_style_image_recolor(B.hero, lv_color_hex(0xff4a4a), 0);
         kit_flash(B.hero, 0xff4a4a, 260);
-        kit_shake(B.hero, 6);
+        if (!B.combat_rig && !R.g.lantern.reduced_motion) kit_shake(B.hero, 6);
         hero_obj_set_pose(B.hero,&B.look,e->quality==3?HX_IDLE:HX_HURT,3,e->quality==3?HP_GUARD:HP_HIT);
         snprintf(buf, sizeof buf, "-%ld", (long)e->value);
         kit_float_text(B.scr, buf, e->value ? COL_BAD : COL_ENERGY, &wf_font_big, HERO_X + 40, HERO_Y - 70);
@@ -206,6 +215,7 @@ static int play(const rpg_event *e) {
         update_vitals();
         return 420;
     case EV_MISS:
+        if (B.combat_rig && e->actor < 0) hero_obj_pose(B.hero, HP_IDLE);
         kit_float_text(B.scr, TR("Mancato", "Miss"), COL_DIM, &wf_font_small, tx(e->target), ty(e->target));
         return 300;
     case EV_HEAL:
@@ -411,6 +421,7 @@ static void after_events(void) {
         char buf[64];
         snprintf(buf, sizeof buf, "%s: %s", TX(rpg_species(B.b.foe[i].species)->name), TX(moves[B.b.foe_move % 6]));
         set_info(buf);
+        if (B.combat_rig) hero_obj_pose(B.hero, B.pending.kind == ACT_GUARD ? HP_GUARD : HP_IDLE);
         phase(PH_TELEGRAPH);
         break;
     }
@@ -438,6 +449,7 @@ static void on_ring_tap(lv_event_t *e) {
     if (B.phase != PH_RING || waiting_for_input()) return;
     int q = ring_judge(&B.ring);
     ring_close(&B.ring);
+    set_info(NULL);
     if (B.illustrated) {
         lv_obj_set_width(B.info, 258);
         lv_obj_set_width(lv_obj_get_child(B.info, 0), 244);
@@ -445,7 +457,8 @@ static void on_ring_tap(lv_event_t *e) {
         lv_obj_remove_flag(B.buttons[5], LV_OBJ_FLAG_HIDDEN);
     }
     /* Float the attack rating clear of the illustrated intent panel. */
-    quality_popup(B.scr, q, B.illustrated ? 112 : CX, B.illustrated ? 340 : 110);
+    quality_popup(B.scr, q, B.illustrated ? 112 : CX, B.illustrated ? 340 : 110,
+                  B.illustrated ? &ln_font_title : NULL);
     do_hero(&B.pending, q);
 }
 
@@ -477,7 +490,9 @@ static void act(const rpg_action *a) {
         kit_pos(B.info, CX, 95);
         lv_obj_add_flag(B.buttons[5], LV_OBJ_FLAG_HIDDEN);
     }
+    if (B.combat_rig) hero_obj_pose(B.hero, HP_WINDUP);
     ring_open(&B.ring, B.scr, &ring, on_ring_tap);
+    if (B.illustrated) lv_obj_move_foreground(B.vitals);
     phase(PH_RING);
 }
 
@@ -608,6 +623,8 @@ void scr_battle(void) {
     B.end_dlg = B.item_dlg = NULL;
     int n = B.b.nfoes;
     hero_look_from_game(&B.look, &R.g);
+    B.combat_rig = hero_has_combat_rig(&B.look);
+    B.striking = false;
     bool modern=hero_uses_rig(&B.look);B.hero_y=modern?344:352;
     static const int xs[3][3] = {{CX, 0, 0}, {140, 326, 0}, {112, CX, 354}};
     /* The separated battle layout also applies to legacy costume fallbacks:
@@ -635,8 +652,10 @@ void scr_battle(void) {
         }
         lv_obj_add_flag(hit, LV_OBJ_FLAG_CLICKABLE);
         lv_obj_add_event_cb(hit, on_foe, LV_EVENT_CLICKED, (void *)(intptr_t)i);
-        kit_bob(B.foe_img[i], 3, 1100 + i * 170);
-        kit_fade_in(B.foe_img[i], 350, i * 120);
+        if (!R.g.lantern.reduced_motion) {
+            kit_bob(B.foe_img[i], 3, 1100 + i * 170);
+            kit_fade_in(B.foe_img[i], 350, i * 120);
+        }
         int by = B.foe_y[i] + sh / 2 + 10;
         B.foe_bar[i] = kit_bar(B.scr, B.foe_x[i], by, n == 3 ? 84 : 110, 12, COL_BAD, f->hp, f->max_hp);
         char buf[24];
@@ -649,11 +668,12 @@ void scr_battle(void) {
     if(!modern)kit_bob(B.hero, 3, 1500);
     r_vitals_arcs(B.scr, &B.hp_arc, &B.sp_arc);
     B.vitals = kit_label(B.scr, &wf_font_small, COL_TEXT, "", CX, 444);
+    lv_obj_remove_flag(B.vitals, LV_OBJ_FLAG_CLICKABLE);
     /* Two compact 14px ink rows fit the circular footer even when HP/SP grow.
      * A single long line at y446 clipped the three-digit advanced profiles. */
     lv_obj_set_style_text_line_space(B.vitals,-8,0);
     B.marker = kit_img(B.scr, ri(RI_STAR), 2, 0, 0);
-    kit_bob(B.marker, 5, 600);
+    if (!R.g.lantern.reduced_motion) kit_bob(B.marker, 5, 600);
     static const struct { int icon, x, y, size; uint32_t color; } btn[6] = {
         {RI_SWORD, 92, 280, 66, 0xe8503a}, {RI_SPARKLE, 126, 366, 66, 0x8a5ae8}, {RI_BAG, 340, 366, 66, 0xa8783a},
         {RI_SHIELD, 374, 280, 66, 0x3a7ae8}, {RI_RUN, 66, 196, 48, COL_PANEL_HI}, {RI_AUTO, 400, 196, 48, COL_PANEL_HI},
@@ -704,10 +724,19 @@ void scr_battle(void) {
 void battle_tick(void) {
     uint32_t t = lv_tick_get();
     if (waiting_for_input()) return;
+    if (B.striking && t - B.strike_at >= 160) {
+        hero_obj_pose(B.hero, HP_RECOVER);
+        B.striking = false;
+    }
     if(B.phase==PH_CHOOSE || B.phase==PH_RING || B.phase==PH_PARRY) {
-        uint32_t clock=t/700;
-        if(B.avatar_phase!=B.phase || (B.phase==PH_CHOOSE && B.avatar_clock!=clock))
-            hero_obj_pose(B.hero,B.phase==PH_RING?HP_ATTACK:B.phase==PH_PARRY?HP_GUARD:clock&1?HP_BREATH:HP_IDLE);
+        uint32_t clock = B.phase == PH_PARRY ? t - B.phase_at >= 140 : t / 700;
+        if (B.avatar_phase != B.phase ||
+            ((B.phase == PH_CHOOSE || (B.combat_rig && B.phase == PH_PARRY)) && B.avatar_clock != clock)) {
+            int pose = B.phase == PH_RING ? (B.combat_rig ? HP_WINDUP : HP_ATTACK)
+                     : B.phase == PH_PARRY ? (B.combat_rig && !clock && B.pending.kind != ACT_GUARD ? HP_GUARD_ENTRY : HP_GUARD)
+                     : clock & 1u ? HP_BREATH : HP_IDLE;
+            hero_obj_pose(B.hero, pose);
+        }
         B.avatar_clock=clock;
     }
     B.avatar_phase=B.phase;
@@ -755,7 +784,14 @@ void battle_tick(void) {
             wf_parry_make(&p, &r, B.b.h.st.stat[ST_AGI], f->agi, f->boss);
             uint32_t color = B.b.foe_move == FOE_HIT ? 0xff4f7a : 0xff8a3a;
             if (B.illustrated) lv_obj_add_flag(B.buttons[5], LV_OBJ_FLAG_HIDDEN);
+            if (B.combat_rig) hero_obj_pose(B.hero, B.pending.kind == ACT_GUARD ? HP_GUARD : HP_GUARD_ENTRY);
             parry_open(&B.parry, B.scr, &p, color, ri(RI_SHIELD), on_parry_tap);
+            if (B.illustrated) {
+                if (B.combat_rig) lv_obj_move_foreground(B.hero);
+                lv_obj_remove_flag(B.info, LV_OBJ_FLAG_CLICKABLE);
+                lv_obj_move_foreground(B.info);
+                lv_obj_move_foreground(B.vitals);
+            }
             phase(PH_PARRY);
         }
         break;
@@ -794,6 +830,7 @@ void r_classic_suspend(void) {
     if (B.ready_until && (int32_t)(B.ready_until - now) > 0) {
         uint32_t remaining = B.ready_until - now;
         B.phase_at -= remaining; B.next_ev_at -= remaining;
+        if (B.striking) B.strike_at -= remaining;
         if (B.ring.active) B.ring.start -= remaining;
         if (B.parry.active) B.parry.start -= remaining;
     }
@@ -806,6 +843,7 @@ void r_classic_wake(void) {
     if (R.screen != R_BATTLE || !B.suspended) return;
     uint32_t now = lv_tick_get(), delta = now - B.suspended_at + 650u;
     B.phase_at += delta; B.next_ev_at += delta;
+    if (B.striking) B.strike_at += delta;
     if (B.ring.active) B.ring.start += delta;
     if (B.parry.active) B.parry.start += delta;
     B.suspended = false;

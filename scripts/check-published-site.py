@@ -80,6 +80,7 @@ def check(base, commit):
         'guglie-classico': 'hero_rig/guglie-classico',
         'mappa-zaino-classico': 'hero_rig/mappa-zaino-classico',
         'servizi-classico': 'hero_rig/servizi-classico',
+        'pose-classico': 'hero_rig/pose-classico',
     }
     for name, source in screenshots.items():
         data,mime=get('assets/screens/'+name+'.png')

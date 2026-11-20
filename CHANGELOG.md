@@ -1,5 +1,11 @@
 # Note di versione
 
+## 0.10.0-preview.2 — 20 novembre 2026
+
+- Paladino e Cavaliere del Drago hanno nuove pose di carica, affondo, recupero, ingresso in guardia e parata. Arma, mano secondaria e copricapo seguono il rig personalizzato.
+- Il busto cambia appoggio sopra i piedi fermi. La cappa del Cavaliere del Drago segue la posa attraverso una deformazione continua.
+- Nel Classico, l’indicatore di timing lascia leggibili PV, PM e istruzioni. Il giudizio d’attacco è contenuto nel cerchio e l’istruzione dell’anello scompare al tocco.
+
 ## 0.10.0-preview.1 — 20 novembre 2026
 
 - Nuove pose per i tre assetti di Lanternbound, con carica, contatto, recupero, ingresso in guardia e parata.
