@@ -130,9 +130,10 @@ void parry_close(parry_widget *w) {
     w->active = false;
 }
 
-void quality_popup(lv_obj_t *parent, int q, int x, int y) {
+void quality_popup(lv_obj_t *parent, int q, int x, int y, const lv_font_t *font) {
     static const char *const it[] = {"Mancato", "Bene", "Ottimo!", "PERFETTO!"};
     static const char *const en[] = {"Miss", "Good", "Great!", "PERFECT!"};
     static const uint32_t colors[] = {COL_DIM, COL_TEXT, COL_HP, COL_GOLD};
-    kit_float_text(parent, TR(it[q & 3], en[q & 3]), colors[q & 3], q == 3 ? &wf_font_huge : &wf_font_big, x, y);
+    kit_float_text(parent, TR(it[q & 3], en[q & 3]), colors[q & 3],
+                   font ? font : q == 3 ? &wf_font_huge : &wf_font_big, x, y);
 }

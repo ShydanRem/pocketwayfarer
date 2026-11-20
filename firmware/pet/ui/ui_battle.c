@@ -239,7 +239,7 @@ static void on_ring_tap(lv_event_t *e) {
     ring_close(&B.ring);
     set_info(NULL);
     B.last_quality = q;
-    quality_popup(B.scr, q, CX, 120);
+    quality_popup(B.scr, q, CX, 120, NULL);
     if (B.duel) {
         wf_link_duel_submit(&ui.link, B.action, q, lv_tick_get());
         if (B.phase == PH_RING) {           /* not already resolved by the submit */

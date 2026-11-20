@@ -33,4 +33,4 @@ int parry_judge(parry_widget *w);
 bool parry_expired(const parry_widget *w);
 void parry_close(parry_widget *w);
 
-void quality_popup(lv_obj_t *parent, int quality, int x, int y);
+void quality_popup(lv_obj_t *parent, int quality, int x, int y, const lv_font_t *font);

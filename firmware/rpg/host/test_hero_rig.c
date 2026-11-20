@@ -15,6 +15,7 @@ static unsigned sibling_checks, minimum_sibling_alpha = PIXELS;
 static unsigned minimum_foot = GRID, maximum_foot;
 static unsigned decorative_checks;
 static unsigned cape_checks, minimum_cape_opaque = PIXELS;
+static unsigned combat_pose_checks;
 
 #define CHECK(condition, ...) do { if (!(condition)) { \
     if (failures < 24) { fprintf(stderr, "FAIL: "); fprintf(stderr, __VA_ARGS__); fputc('\n', stderr); } \
@@ -33,6 +34,7 @@ static int bottom(const image *im) {
         for (int x = 0; x < GRID; x++) if (im->alpha[y*GRID+x]) return y;
     return -1;
 }
+static int pose_count(const hero_look *l) { return hero_has_combat_rig(l) ? HP_COUNT : HP_HIT + 1; }
 
 static void compose(const hero_look *l, int expression, int pose, image *im) {
     hero_look before = *l;
@@ -125,7 +127,7 @@ static void geometry(void) {
         l.hair = (uint8_t)((f+skin+body)%6); l.hair_color = (uint8_t)((f+r+skin)%8);
         l.eyes = (uint8_t)((skin+body)%4); l.head = EMPTY; /* class default hat */
         compose(&l,expression,HP_IDLE,&idle);
-        for (int pose = HP_IDLE; pose < HP_COUNT; pose++) {
+        for (int pose = HP_IDLE; pose < pose_count(&l); pose++) {
             compose(&l,expression,pose,&frame);
             CHECK(!differs(&idle,&frame,78,GRID),"feet moved class=%u race=%u expr=%u pose=%d",f,r,expression,pose);
             /* Same input must reproduce every byte, independent of previous frame. */
@@ -147,7 +149,7 @@ static void joint_continuity(void) {
     for (unsigned f = 0; f < HERO_RIG_CLASS_COUNT; f++) for (unsigned r = 0; r < RACE_COUNT; r++) {
         hero_look l = bare_look(f,r); /* No weapon/offhand/hat to hide the seam. */
         compose(&l,HX_IDLE,HP_IDLE,&idle);
-        for (int pose = HP_IDLE; pose < HP_COUNT; pose++) {
+        for (int pose = HP_IDLE; pose < pose_count(&l); pose++) {
             compose(&l,HX_IDLE,pose,&frame);
             /* Planted lower legs and moving trunk overlap at their joint.
              * This catches the former breath gap at row63 (row66 for dwarf),
@@ -189,7 +191,7 @@ static void visible_channels(void) {
             compose(&l,expression,HP_IDLE,&changed);
             CHECK(differs(&baseline,&changed,0,40),"expression %d invisible on exposed face class=%u race=%u",expression,f,r);
         }
-        for (int pose = HP_BREATH; pose < HP_COUNT; pose++) {
+        for (int pose = HP_BREATH; pose < pose_count(&l); pose++) {
             compose(&l,HX_IDLE,pose,&changed);
             CHECK(differs(&baseline,&changed,0,GRID),"pose %d invisible class=%u race=%u",pose,f,r);
         }
@@ -211,7 +213,7 @@ static void sibling_identity(void) {
     for (unsigned pair = 0; pair < sizeof siblings/sizeof siblings[0]; pair++)
     for (unsigned race = 0; race < RACE_COUNT; race++)
     for (unsigned tier = 0; tier < RPG_TIERS; tier++)
-    for (int pose = HP_IDLE; pose < HP_COUNT; pose++) {
+    for (int pose = HP_IDLE; pose <= HP_HIT; pose++) {
         hero_look a = bare_look(siblings[pair][0],race);
         hero_look b = bare_look(siblings[pair][1],race);
         a.head = b.head = IT_HELM; a.head_tier = b.head_tier = (uint8_t)tier;
@@ -242,7 +244,7 @@ static void equipment(void) {
                 if (item <= IT_SCYTHE) { geared.weapon = (uint8_t)item; geared.weapon_tier = (uint8_t)tier; }
                 else if (item <= IT_CHARM) { geared.off = (uint8_t)item; geared.off_tier = (uint8_t)tier; }
                 else { geared.head = (uint8_t)item; geared.head_tier = (uint8_t)tier; }
-                for (int pose = HP_IDLE; pose < HP_COUNT; pose++) {
+                for (int pose = HP_IDLE; pose < pose_count(&l); pose++) {
                     compose(&geared,HX_IDLE,pose,&frame);
                     CHECK(!differs(&bare,&frame,78,GRID),"gear moved feet class=%u race=%u item=%u pose=%d",f,r,item,pose);
                     if (pose == HP_IDLE) tiers[tier] = frame;
@@ -255,7 +257,7 @@ static void equipment(void) {
         /* Mixed real channels, large weapon plus offhand and helmet together. */
         l.weapon = IT_SCYTHE; l.off = IT_SHIELD; l.head = IT_HELM;
         l.weapon_tier = 4; l.off_tier = 3; l.head_tier = 2;
-        for (int pose = HP_IDLE; pose < HP_COUNT; pose++) compose(&l,HX_HURT,pose,&frame);
+        for (int pose = HP_IDLE; pose < pose_count(&l); pose++) compose(&l,HX_HURT,pose,&frame);
     }
 }
 
@@ -278,7 +280,7 @@ static void cape_continuity(void) {
     /* Long left capes and robe panels must remain intact through the provisional torso lean.
      * Observe the composed pixels below the arm/neck, without held equipment,
      * class hat, tail or long hair supplying pixels that could hide a tear. */
-    static const unsigned classes[] = {24,30,33,35,38,39};
+    static const unsigned classes[] = {30,33,35,38,39};
     static const struct { int pose, dx; } leans[] = {
         {HP_ATTACK,2},{HP_GUARD,-1},{HP_HIT,-2}
     };
@@ -308,6 +310,53 @@ static void cape_continuity(void) {
     }
 }
 
+static void calibrated_poses(void) {
+    const unsigned classes[] = {16, 24};
+    const int poses[] = {HP_WINDUP, HP_ATTACK, HP_RECOVER, HP_GUARD_ENTRY, HP_GUARD};
+    const int body_start = 35, body_end = 77;
+    for (unsigned class_index = 0; class_index < sizeof classes / sizeof classes[0]; class_index++)
+    for (unsigned race = 0; race < RACE_COUNT; race++) {
+        hero_look l = bare_look(classes[class_index], race);
+        l.hair = 0;
+        image frames[sizeof poses / sizeof poses[0]];
+        for (unsigned p = 0; p < sizeof poses / sizeof poses[0]; p++) {
+            compose(&l, HX_IDLE, poses[p], &frames[p]);
+            const image *frame = &frames[p];
+            for (unsigned prior = 0; prior < p; prior++)
+                CHECK(differs(frame, &frames[prior], body_start, body_end),
+                      "identical calibrated body poses class=%u race=%u poses=%d/%d",
+                      l.class_id, race, poses[p], poses[prior]);
+            /* Flood the armor and cape from an occupied central pixel using
+             * diagonal continuity. Small trim pixels are allowed to be apart. */
+            bool seen[PIXELS] = {false};
+            uint16_t queue[PIXELS];
+            unsigned ink = 0, next = 0, count = 0;
+            for (int y = body_start; y < body_end; y++) for (int x = 0; x < GRID; x++)
+                if (frame->alpha[y * GRID + x]) ink++;
+            for (int x = 35; x <= 53; x++) if (frame->alpha[59 * GRID + x]) {
+                unsigned seed = 59 * GRID + (unsigned)x;
+                queue[count++] = (uint16_t)seed;
+                seen[seed] = true;
+                break;
+            }
+            while (next < count) {
+                int pixel = queue[next++], x = pixel % GRID, y = pixel / GRID;
+                for (int dy = -1; dy <= 1; dy++) for (int dx = -1; dx <= 1; dx++) {
+                    int nx = x + dx, ny = y + dy;
+                    if (nx < 0 || nx >= GRID || ny < body_start || ny >= body_end) continue;
+                    unsigned neighbor = (unsigned)(ny * GRID + nx);
+                    if (seen[neighbor] || !frame->alpha[neighbor]) continue;
+                    seen[neighbor] = true;
+                    queue[count++] = (uint16_t)neighbor;
+                }
+            }
+            CHECK(ink && count * 100 >= ink * 95, "disconnected armor/cape class=%u race=%u pose=%d (%u/%u)",
+                  l.class_id, race, poses[p], count, ink);
+            combat_pose_checks++;
+        }
+    }
+}
+
 static void full(void) {
     image frame;
     for (unsigned f = 0; f < HERO_RIG_CLASS_COUNT; f++) for (unsigned r = 0; r < RACE_COUNT; r++)
@@ -326,9 +375,11 @@ int main(int argc,char **argv) {
     bool exhaustive = argc == 2 && !strcmp(argv[1],"--full");
     if (argc > 1 && !exhaustive) { fprintf(stderr,"usage: %s [--full]\n",argv[0]); return 2; }
     metadata(); geometry(); joint_continuity(); visible_channels(); sibling_identity(); equipment(); fixed_decorations(); cape_continuity();
+    calibrated_poses();
     if (exhaustive) full();
     printf("hero rig: layers=%u frames=%u comparisons=%u joint_rows=%u full_cosmetics=%u sibling_checks=%u min_sibling_alpha=%u decorative_checks=%u cape_checks=%u min_cape_opaque=%u foot_rows=%u..%u failures=%u\n",
            layers_checked,frames,comparisons,joint_rows,full_cosmetics,sibling_checks,minimum_sibling_alpha,
            decorative_checks,cape_checks,minimum_cape_opaque,minimum_foot,maximum_foot,failures);
+    printf("classic rig: %u calibrated poses checked for contour continuity across all races\n", combat_pose_checks);
     return failures ? 1 : 0;
 }

@@ -1,6 +1,6 @@
 # Registro di avanzamento
 
-Aggiornato il 20 novembre 2026. Consegna corrente `0.10.0-preview.1`. [Roadmap operativa](../ROADMAP.md)
+Aggiornato il 20 novembre 2026. Consegna corrente `0.10.0-preview.2`. [Roadmap operativa](../ROADMAP.md)
 
 ## Consegna R1 — atlante delle classi, 0.4.1-preview.1
 
@@ -119,10 +119,14 @@ Oro accreditato, quota persa, progetto ed effetto sono leggibili nel riepilogo. 
 
 Nove fotogrammi aggiunti su Sentinella, Piromante e Predone, con armi, tessuti e palette dei tre costumi. Il contatto e il ritorno in posa seguono il tempo salvato. Verificati pausa, riavvio, parata perfetta, movimento ridotto e spazio sopra l’interfaccia a 466 × 466. [Catture e verifiche](combat-poses-evidence/README.md)
 
-## Prossimo lotto R7.2 — animazione del Classico
+## Consegna R7.2a — Paladino e Cavaliere del Drago
 
-1. Rifinire attacco e difesa su una classe a scudo e una a mantello lungo, con l’equipaggiamento realmente indossato.
-2. Verificare mani, cappa e copricapo a dimensione reale, con i tre bersagli e movimento ridotto.
-3. Estendere le pose alle famiglie dopo le verifiche su maschere, memoria, salvataggi e timing.
+Tra carica e contatto cambia l’angolo dell’arma attorno alla presa. In difesa il Paladino avvicina lo scudo. La cappa del Cavaliere del Drago segue il busto attraverso una deformazione continua. I test verificano geometria e prese, tre bersagli a schermo, risveglio durante l’impatto e ritorno al borgo dopo un riavvio completo. [Catture e verifiche](classic-combat-evidence/README.md)
+
+## Prossimo lotto R7.2b — profili per le altre famiglie
+
+1. Calibrare i profili di carica e parata per arco, bastone e falce.
+2. Estendere per famiglie dopo aver verificato mani, cape, dimensione circolare, compatibilità e budget.
+3. Verificare ogni famiglia tra equipaggiamento base e posseduto e conservare i risultati nel registro della roadmap.
 
 Il collaudo fisico può procedere in parallelo e serve per la stabile. [Sequenza e criteri](../ROADMAP.md#r6-e-r7--profondità-ritmo-e-feedback)

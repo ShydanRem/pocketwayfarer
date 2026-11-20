@@ -105,6 +105,10 @@ Le illustrazioni restano rappresentanti separati dal giocatore. La cresta del Dr
 
 I 40 ID validi hanno grafica dedicata. Le pose preliminari per le vesti continue degli ID 33, 35, 38 e 39 usano la stessa soluzione adottata per le cappe degli ID 24 e 30. Le prese seguono la traslazione della veste e le suole restano ferme dopo la trasformazione della razza. [Verifiche native](roadmap/master-b-evidence/README.md).
 
+## R7.2a — prime pose di combattimento del Classico
+
+Il Paladino (16) raccoglie l’arma e porta lo scudo verso il busto. Il Cavaliere del Drago (24) ha un affondo più aperto e una cappa che segue il busto. Le pose partono dai costumi registrati. La deformazione del costume e gli oggetti usano le stesse posizioni delle mani, mentre capo, capelli e copricapo condividono la posizione del collo. Il campionamento mantiene la trama a pixel e conserva le righe dei piedi. [Sorgenti e catture R7.2a](roadmap/classic-combat-evidence/README.md)
+
 ## Checklist di produzione
 
 - Sorgenti, prompt, identità del generatore e trasformazioni registrati.
