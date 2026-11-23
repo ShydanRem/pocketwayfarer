@@ -56,13 +56,13 @@ static void skills_dialog(void) {
         const rpg_skill_info *skill=rpg_skill(ci->skills[i]);
         n+=snprintf(body+n,sizeof body-(size_t)n,"%s%s\n",skill->kind==SK_PASSIVE?TR("Passiva: ","Passive: "):"",TX(skill->name));
     }
-    snprintf(body+n,sizeof body-(size_t)n,"\n%s",TR("Cambio: Classico / Eroe / Classe.",
-        "Change: Classic / Hero / Class."));
+    snprintf(body+n,sizeof body-(size_t)n,"\n%s",TR("Dal borgo, apri Classe per cambiare o avanzare.",
+        "Open Class at the village to switch or advance."));
     info_dialog(TX(ci->name),body);
 }
 static void action(lv_event_t *e) {
     int a=(int)(intptr_t)lv_event_get_user_data(e);
-    if(a==HOME) { r_go(R_TOWN); return; }
+    if(a==HOME) { r_go(R_CLASS); return; }
     if(a==FAMILY) { family_dialog(); return; }
     if(a==SKILLS) { skills_dialog(); return; }
     selected=(selected+RPG_CLASS_COUNT+(a==NEXT?1:-1))%RPG_CLASS_COUNT;
@@ -90,11 +90,11 @@ void scr_class_atlas(void) {
     text(s,subtitle,319,260,false,0xfff4dd);
     button(s,TR("Percorso","Path"),155,365,144,FAMILY);
     button(s,TR("Abilità","Skills"),311,365,144,SKILLS);
-    button(s,TR("Borgo","Village"),CX,420,144,HOME);
+    button(s,TR("Classe","Class"),CX,420,144,HOME);
 }
 bool class_atlas_key(int key) {
     if(key==WF_KEY_BOOT_DOWN) return false;
     if(key!=WF_KEY_BOOT_SHORT && key!=WF_KEY_BOOT_LONG) return false;
-    if(dialog) close_dialog(NULL); else r_go(R_TOWN);
+    if(dialog) close_dialog(NULL); else r_go(R_CLASS);
     return true;
 }

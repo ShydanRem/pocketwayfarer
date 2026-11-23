@@ -1,12 +1,12 @@
 # Lanternbound — spedizione HD-2D giocabile
 
-Implementazione aggiornata al 20 novembre 2026 (`0.10.0-preview.1`) nella **UI nativa C11/LVGL di Pocket Wayfarer**, per l’AMOLED circolare 466×466. Il firmware e l’eseguibile interattivo Linux usano lo stesso codice. Le immagini sono catture della UI effettiva. [Roadmap](ROADMAP.md)
+Dal 23 novembre 2026, **Servizi → Spedizione extra** apre Lanternbound dal Borgo Lanterna. Il firmware e l’eseguibile Linux usano la stessa UI C11/LVGL. [Roadmap](ROADMAP.md)
 
 ![Borgo, combattimento e reliquia](img/lantern/panoramica.png)
 
 ## Cosa si può giocare
 
-Dal borgo **Parti** apre il primo bivio con l’assetto indicato sul pulsante. **Eroe** permette di scegliere fra Sentinella, Piromante e Predone. La spedizione attraversa quattro stanze e il boss. Prima di entrare si vedono i nemici dei due percorsi. L’anteprima usa una copia dello stato e lascia la scoperta del bestiario all’incontro effettivo. Sei specie ordinarie hanno comportamenti distinti: custode, fiammella, lupo, granchio corazzato, pipistrello a doppio colpo e falena che cura gli alleati. Il Guardiano del Faro è un automa originale con attacco pesante e doppio colpo. [Prove della partenza diretta](roadmap/pacing-evidence/README.md)
+In Lanternbound **Parti** apre il primo bivio con l’assetto indicato sul pulsante. **Assetto** permette di scegliere fra Sentinella, Piromante e Predone. La spedizione attraversa quattro stanze e il boss. Prima di entrare puoi confrontare i nemici dei due percorsi. La scoperta del bestiario avviene all’incontro. Sei specie ordinarie hanno comportamenti distinti e il Guardiano del Faro usa un attacco pesante e un doppio colpo. [Prove della partenza diretta](roadmap/pacing-evidence/README.md)
 
 Nella stanza evento si sceglie Focolare (25 PV o 12 PM) oppure Specchio (offrire 12 PV, avendone più di 12, per Risonanza piena e 8 PM; rifiutare dà 12 PM). Dopo ogni scontro ordinario vengono proposte due reliquie diverse non possedute. A tre slot si può confrontare e sostituire una delle possedute; si può anche rinunciare alla ricompensa. Le sei reliquie modificano parata, danno ai feriti, guardia, scudo iniziale, bruciatura e cura proseguendo. Dopo il boss si conserva un progetto fra le reliquie della run: dalla collezione si può equipaggiare una reliquia iniziale per le spedizioni successive. Occupa uno dei tre slot. Una vittoria senza reliquie termina senza assegnare un progetto. [Regole e prove dello scambio](RELIC-CHOICES.md).
 
@@ -14,7 +14,7 @@ La quarta stanza offre **Sentiero** o **Bastione**. Il primo costa 0 PV e vale 1
 
 Il riepilogo mostra l’oro accreditato e, dopo la sconfitta, la quota persa. Dopo il Faro distingue un progetto nuovo da uno già noto. Puoi aprire la collezione sul progetto conservato o equipaggiarlo direttamente dal riepilogo e ripartire. Il riavvio ripristina esito e reliquia iniziale. [Catture e prove del rientro](roadmap/return-evidence/README.md)
 
-Dal menu `...` si aprono mappa, bestiario con indizi, collezione, opzioni, guida in tre pagine e `Classico`. Una caccia già attiva mostra stato e raccolta nel nuovo borgo; per cominciare una spedizione occorre concludere caccia/dungeon classici attivi. Creazione dettagliata, inventario, 40 classi e mondo precedente restano accessibili nel classico.
+Nel menu `...` trovi mappa, bestiario, collezione e opzioni. **Borgo** riporta al percorso principale. Concludi eventuali cacce o dungeon in corso per aprire una nuova spedizione. Dopo il riavvio la spedizione si riprende da **Servizi**.
 
 ![Tre assetti e boss con grafica propria](img/lantern/assetti-e-guardiano.png)
 
@@ -60,7 +60,7 @@ Gli effetti usano il tempo della fase salvata e si fermano con pausa/PWR. L’in
 
 ## Correzioni dell’audit e salvataggi
 
-Il formato **v4**, 2808 byte con header, accetta v1 (profilo da 1356 byte), v2 (1420 byte) e v3 (2788 byte). Mantiene identità, progressione, oggetti e snapshot di spedizione; aggiunge lezioni apprese e preferenza dei suggerimenti. L’indice dell’attore e i flag degli effetti usano i due byte prima riservati nello snapshot della v3, lasciandone invariati dimensioni e offset. Gli esistenti progetti, bestiario, resto delle monete e transazione classica restano conservati. Chi migra una v3 con vittorie può ripetere la guida dalle opzioni, senza doverla rifare automaticamente. CRC errata e dati troncati vengono rifiutati. Firmware più vecchi non leggono v4: conservare un backup NVS prima di un downgrade. Passare al Classico dentro questo firmware non richiede downgrade.
+Dal formato **v4** si conservano le lezioni apprese, l’attore del feedback e gli effetti. Il formato **v5** aggiunge i progressi di classe e legge v1–v4. Conserva progetti, bestiario, oro, stato della spedizione e transazione del percorso principale. [Formati, aggiornamento e ripristino](SALVATAGGI.md)
 
 | Problema della baseline | Comportamento attuale verificato |
 |---|---|

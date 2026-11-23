@@ -131,10 +131,14 @@ Arciere, Mago e Occultista adottano le nuove pose in tutti i rami. Totale **17 c
 
 Guerriero, Ladro, Chierico, Monaco e Artefice portano il totale a **40 classi su 40**. Le catture a 466 × 466 mostrano le otto famiglie in combattimento, con gli oggetti equipaggiati e i bersagli nella vista laterale. [Catture e verifiche](classic-all-poses-evidence/README.md)
 
-## Prossimo lotto R7.3 — audio opzionale
+## Lotto R7.3 in pausa — audio opzionale
 
 1. Verificare connessioni e uscita audio per la scheda Pocket usata dal firmware.
 2. Misurare sul dispositivo se pochi effetti di attacco, parata e ricompensa possono convivere con l’input.
 3. Se l’uscita è disponibile, integrare volume e muto mantenendo leggibili i segnali visivi.
 
 Il collaudo fisico può procedere in parallelo e serve per la stabile. [Sequenza e criteri](../ROADMAP.md#r6-e-r7--profondità-ritmo-e-feedback)
+
+## R7.4 — ingresso unico e cambio di famiglia
+
+La preview.5 apre direttamente il percorso delle **40 classi**. Creazione, borgo e battaglie mostrano lo stesso eroe. Il cambio di famiglia conserva grado, esperienza di classe e punti abilità. La migrazione legge i salvataggi v1–v4 e mantiene Lanternbound nei Servizi, compresa la spedizione in corso. Il collaudo da fare sul Pocket comprende installazione pulita, aggiornamento con profilo v4, prima battaglia e ritorno a una famiglia già iniziata. [Guida illustrata](../GUIDA.md)

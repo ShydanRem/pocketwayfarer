@@ -25,6 +25,57 @@ static rpg_game legacy(const rpg_game *g, uint16_t version, uint32_t size) {
     memcpy(data, &magic, 4); memcpy(data+4, &version, 2); memcpy(data+8, &size, 4); memcpy(data+12, &crc, 4);
     memcpy(data+16, g, size); assert(rpg_save_decode(data, size+16, &back)); return back;
 }
+
+static void family_progress(void) {
+    rpg_game g;
+    fresh(&g);
+    g.hero.cls = 29; /* Stormbow from a v4 save */
+    g.hero.level = 57;
+    g.hero.job_level = 18;
+    g.hero.job_xp = 6;
+    g.hero.skill_points = 7;
+    g.hero.equip[SLOT_WEAPON].plus = 4;
+    g.hero.hp = 9;
+    g.coach.learned = LNC_ATTACK;
+    ln_start(&g.lantern, LN_MAGE, 24);
+    rpg_game migrated = legacy(&g, 4, RPG_V4_PROFILE_BYTES);
+    assert(migrated.coach.learned == LNC_ATTACK && migrated.lantern.state == LN_ROUTE);
+    assert(!memcmp(&g.hero, &migrated.hero, sizeof g.hero));
+    assert(rpg_family_class(&migrated, FAM_ARCHER) == 29);
+    for (int family = 0; family < FAM_COUNT; family++) {
+        if (family == FAM_ARCHER) continue;
+        g = migrated;
+        assert(rpg_switch_family(&g, family) == RPG_OK && g.hero.cls == family);
+        assert(g.hero.level == 57 && g.hero.hp == 9 && g.hero.job_level == 1 && g.hero.skill_points == 1);
+        assert(g.hero.skill[rpg_class(family)->skills[0]] == 1);
+        for (int slot = 0; slot < SLOT_COUNT; slot++)
+            assert(rpg_item_empty(&g.hero.equip[slot]) || rpg_can_equip(&g, &g.hero.equip[slot]));
+        g.hero.job_xp = 44;
+        g = reload(&g);
+        assert(rpg_switch_family(&g, FAM_ARCHER) == RPG_OK && g.hero.cls == 29);
+        assert(g.hero.job_level == 18 && g.hero.job_xp == 6 && g.hero.skill_points == 7 && g.hero.hp == 9);
+        for (int slot = 0; slot < SLOT_COUNT; slot++) {
+            const rpg_item *original = &migrated.hero.equip[slot];
+            if (rpg_item_empty(original)) continue;
+            bool owned = !memcmp(&g.hero.equip[slot], original, sizeof *original);
+            for (int i = 0; i < RPG_BAG; i++) owned |= !memcmp(&g.bag[i], original, sizeof *original);
+            assert(owned);
+        }
+        assert(g.gold == migrated.gold && g.lantern.state == LN_ROUTE);
+        int count = rpg_bag_count(&g);
+        assert(rpg_switch_family(&g, family) == RPG_OK && g.hero.job_xp == 44);
+        assert(rpg_switch_family(&g, FAM_ARCHER) == RPG_OK && rpg_bag_count(&g) == count);
+    }
+    g = migrated;
+    for (int i = 0; i < RPG_BAG; i++) g.bag[i] = g.hero.equip[SLOT_WEAPON];
+    rpg_game before = g;
+    assert(rpg_switch_family(&g, FAM_MAGE) == RPG_ERR_BAG && !memcmp(&g, &before, sizeof g));
+    g.hunt.active = 1;
+    before = g;
+    assert(rpg_switch_family(&g, FAM_MAGE) == RPG_ERR_BUSY && !memcmp(&g, &before, sizeof g));
+    printf("families: v4 migration, seven switch/return paths, exact rank/skills/gear, full bag and active hunt: passed\n");
+}
+
 int main(void) {
     rpg_game g, a, b;
     fresh(&g); g.hero.hunger = 0; g.hero.morale = 100; a = b = g;
@@ -115,7 +166,8 @@ int main(void) {
     assert(a.coach.learned == LNC_ALL); /* existing winners are not retrained */
     a.coach.learned = LNC_ATTACK; a.coach.disabled = 1; b = reload(&a);
     assert(b.coach.learned == LNC_ATTACK && b.coach.disabled && b.lantern.wins == 1);
-    puts("v3 migration: exact profile/run retained; v4 coaching and effects roundtrip: passed");
+    puts("v3 migration: exact profile/run retained; coaching and effects roundtrip: passed");
+    family_progress();
     puts("reliability: all audit regressions passed");
     return 0;
 }

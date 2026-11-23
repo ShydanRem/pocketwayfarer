@@ -1,21 +1,21 @@
 # La guida di Pocket Wayfarer
 
-Pocket Wayfarer è un RPG fantasy per **Waveshare ESP32-S3-Touch-AMOLED-1.75**. Lanternbound è la nuova esperienza HD-2D: scegli un eroe, affronta cinque stanze e torna al borgo con un progetto per il viaggio successivo.
+Pocket Wayfarer è un RPG fantasy per **Waveshare ESP32-S3-Touch-AMOLED-1.75**. Scegli fra otto classi all’avvio ed esplora le Isole Sospese con lo stesso eroe.
 
-![Borgo, lotta e reliquia: schermate native](img/lantern/panoramica.png)
+![Borgo Lanterna nella preview.5](img/hero_rig/borgo-principale.png)
 
 ## Da dove cominciare
 
 | Vuoi… | Apri |
 |---|---|
 | Mettere il gioco sul Pocket, senza compilare | [Installazione dal browser](INSTALLAZIONE.md) |
-| Capire controlli, eroi e reliquie | [Manuale illustrato](GUIDA.md) |
+| Creare l’eroe, giocare e cambiare classe | [Manuale illustrato](GUIDA.md) |
 | Aggiornare conservando il profilo, fare un backup o ripristinarlo | [Salvataggi e aggiornamenti](SALVATAGGI.md) |
 | Risolvere problemi di USB, schermo o avvio | [Risoluzione dei problemi](RISOLUZIONE-PROBLEMI.md) |
 | Giocare su PC, compilare o modificare il progetto | [Sviluppo e build](SVILUPPO.md) |
 | Pubblicare sito e firmware su GitHub Pages | [Pubblicazione e rilascio](PUBBLICAZIONE.md) |
 
-La versione `0.4.1-preview.1` è una **preview**. Il core e la UI nativa sono verificati su PC, e il firmware compila per ESP32-S3; il nuovo build deve ancora essere collaudato sul Pocket fisico. L’installer mostra lo stesso stato.
+La versione `0.10.0-preview.5` è verificata su PC e compilata per ESP32-S3. Resta da collaudare sul Pocket fisico.
 
 ## Per approfondire
 

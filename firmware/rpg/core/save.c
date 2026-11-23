@@ -16,6 +16,7 @@ _Static_assert(offsetof(rpg_lantern, action) == 12, "Keep the combat action and 
 _Static_assert(offsetof(rpg_lantern, equipped) == 64, "Keep the v2 run prefix byte-compatible");
 _Static_assert(sizeof(rpg_lantern) == 68, "Keep the v3 run size byte-compatible");
 _Static_assert(offsetof(rpg_game, coach) == RPG_V3_PROFILE_BYTES, "Keep the v3 profile byte-compatible");
+_Static_assert(offsetof(rpg_game, families) == RPG_V4_PROFILE_BYTES, "Keep the v4 profile byte-compatible");
 _Static_assert(sizeof(rpg_game) + sizeof(rpg_save_header) <= 4096, "UI save buffer too small");
 
 void rpg_classic_begin(rpg_game *g) {
@@ -58,6 +59,12 @@ static void sanitize(rpg_game *g) {
     if (h->cls >= RPG_CLASS_COUNT) h->cls = 0;
     if (h->level < 1 || h->level > RPG_MAX_LEVEL) h->level = 1;
     if (h->job_level < 1 || h->job_level > rpg_job_max(h->cls)) h->job_level = 1;
+    for (int family = 0; family < FAM_COUNT; family++) {
+        rpg_family_progress *job = &g->families[family];
+        if (!job->job_level || job->cls >= RPG_CLASS_COUNT || rpg_class_family(job->cls) != family ||
+            rpg_class_family(h->cls) == family || job->job_level > rpg_job_max(job->cls))
+            *job = (rpg_family_progress){0};
+    }
     for (int s = 0; s < RPG_SKILL_COUNT; s++) if (h->skill[s] > RPG_SKILL_MAX_LV) h->skill[s] = RPG_SKILL_MAX_LV;
     for (int i = 0; i < SLOT_COUNT; i++) if (h->equip[i].type >= IT_TYPE_COUNT) h->equip[i].type = 0xff;
     for (int i = 0; i < RPG_BAG; i++) if (g->bag[i].type >= IT_TYPE_COUNT) g->bag[i].type = 0xff;
@@ -97,7 +104,8 @@ bool rpg_save_decode(const uint8_t *in, size_t len, rpg_game *g) {
     bool old = (h.version == 1 && h.size == RPG_V1_PROFILE_BYTES) ||
                (h.version == 2 && h.size == RPG_V2_PROFILE_BYTES);
     bool v3 = h.version == 3 && h.size == RPG_V3_PROFILE_BYTES;
-    if (!old && !v3 && (h.version != RPG_SAVE_VERSION || h.size != sizeof *g)) return false;
+    bool v4 = h.version == 4 && h.size == RPG_V4_PROFILE_BYTES;
+    if (!old && !v3 && !v4 && (h.version != RPG_SAVE_VERSION || h.size != sizeof *g)) return false;
     if (len != sizeof h + h.size) return false;
     if (crc32(in + sizeof h, h.size) != h.crc) return false;
     memset(g, 0, sizeof *g);

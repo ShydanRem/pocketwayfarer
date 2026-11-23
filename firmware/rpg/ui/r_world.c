@@ -47,8 +47,8 @@ void scr_map(void) {
             kit_img(s, ri(mark), 1, x, y - 40);
         }
     }
-    r_character_button(s, TR("Borgo Lanterna", "Lantern Hollow"), CX, 235, 170, 44, true, on_go, R_TOWN_CLASSIC);
-    r_back(s, R_TOWN_CLASSIC);
+    r_character_button(s, TR("Borgo Lanterna", "Lantern Hollow"), CX, 235, 170, 44, true, on_go, R_TOWN);
+    r_back(s, R_TOWN);
 }
 
 /* ---- Zone ---------------------------------------------------------------------------- */
@@ -459,6 +459,7 @@ static void on_option(lv_event_t *e) {
     case 1: R.g.brightness = (uint8_t)(R.g.brightness >= 100 ? 30 : R.g.brightness + 10); wf_platform_brightness(R.g.brightness); break;
     case 2: R.g.hour_offset = (uint8_t)((R.g.hour_offset + 1) % 24); break;
     case 3: R.g.auto_battle ^= 1; break;
+    case 4: R.g.lantern.reduced_motion ^= 1; break;
     }
     r_dirty();
     r_go(R_QUESTS);
@@ -502,20 +503,21 @@ void scr_quests(void) {
         lv_obj_set_width(stats, lv_pct(100));
         lv_obj_set_style_text_align(stats, LV_TEXT_ALIGN_CENTER, 0);
     } else {
-        static const wf_text labels[4] = {
+        static const wf_text labels[] = {
             {"Lingua", "Language"}, {"Luminosità", "Brightness"},
             {"Ora del giorno", "Time of day"}, {"AUTO nelle lotte", "AUTO in battles"},
+            {"Movimento ridotto", "Reduced motion"},
         };
-        for (int o = 0; o < 4; o++) {
+        for (int o = 0; o < (int)(sizeof labels / sizeof *labels); o++) {
             lv_obj_t *row = r_character_row(list, 60);
             if (o == 0) snprintf(buf, sizeof buf, "%s", TR("Italiano", "English"));
             else if (o == 1) snprintf(buf, sizeof buf, "%d%%", R.g.brightness);
             else if (o == 2) snprintf(buf, sizeof buf, "%02d:00", r_hour());
-            else snprintf(buf, sizeof buf, "%s", R.g.auto_battle ? TR("Sì", "On") : TR("No", "Off"));
+            else snprintf(buf, sizeof buf, "%s", (o == 3 ? R.g.auto_battle : R.g.lantern.reduced_motion) ? TR("Sì", "On") : TR("No", "Off"));
             r_character_row_text(row, 12, 191, TX(labels[o]), RC_IVORY, buf);
             lv_obj_t *b = r_character_button(row, TR("Cambia", "Change"), 0, 0, 86, 44, false, on_option, o);
             lv_obj_align(b, LV_ALIGN_RIGHT_MID, -8, 0);
         }
     }
-    r_back(s, R_TOWN_CLASSIC);
+    r_back(s, R_TOWN);
 }

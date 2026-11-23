@@ -119,7 +119,10 @@ int main(int argc, char **argv) {
     wf_app_start(NULL, 0);
     run(500);
     shot("titolo");
-    click_text("Personalizza");
+    click_text("Nuova avventura");
+    click(374, 300);                 /* mage */
+    shot("crea-classe");
+    click_text("Aspetto");
     run(300);
     shot("crea-razza");
     click(374, 300);                 /* elf */
@@ -134,15 +137,9 @@ int main(int argc, char **argv) {
     click_text("Avanti");            /* eyes */
     click(374, 300);
     click_text("Avanti");            /* face */
-    click_text("Avanti");            /* class */
-    click(374, 300);                 /* mage */
-    run(100);
-    shot("crea-classe");
     click_text("Avanti");            /* name */
     click_text("Inizia");
     run(400);
-    shot("benvenuto");
-    click_text("Andiamo");
     run(300);
     shot("citta");
 
@@ -271,10 +268,10 @@ int main(int argc, char **argv) {
     rpg_hunt_start(g, 0, fake_s);
     fake_s += 3 * 3600;
     g->hour_offset = 12;
-    r_go(R_TOWN_CLASSIC);
+    r_go(R_TOWN);
     run(1200);
     shot("citta-notte-caccia");
-    click(233, 146);
+    click(233, 303);
     run(300);
     shot("caccia-bottino");
     click_text("Ok");
@@ -284,7 +281,7 @@ int main(int argc, char **argv) {
     wf_lang = 1;
     g->lang = 1;
     g->hour_offset = 0;
-    r_go(R_TOWN_CLASSIC);
+    r_go(R_TOWN);
     run(300);
     shot("town-english");
     printf("preview: %d screenshots, %d saves\n", shot_no, saves);

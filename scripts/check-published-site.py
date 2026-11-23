@@ -83,6 +83,11 @@ def check(base, commit):
         'pose-classico': 'hero_rig/pose-classico',
         'pose-armi-classico': 'hero_rig/pose-armi-classico',
         'pose-famiglie-classico': 'hero_rig/pose-famiglie-classico',
+        'avvio': 'hero_rig/avvio',
+        'scelta-classe': 'hero_rig/scelta-classe',
+        'borgo-principale': 'hero_rig/borgo-principale',
+        'lotta-iniziale': 'hero_rig/lotta-iniziale',
+        'famiglie-classe': 'hero_rig/famiglie-classe',
     }
     for name, source in screenshots.items():
         data,mime=get('assets/screens/'+name+'.png')

@@ -94,8 +94,10 @@ def build_package(build, dest, allow_dirty=False):
     manifest = dict(name='Pocket Wayfarer', version=version, new_install_prompt_erase=True,
                     new_install_improv_wait_time=0,
                     builds=[dict(chipFamily='ESP32-S3', parts=[dict(path=p['path'], offset=p['offset']) for p in parts])])
+    save_header = (ROOT / 'firmware/rpg/core/rpg.h').read_text()
+    save_format = int(re.search(r'^#define RPG_SAVE_VERSION (\d+)u$', save_header, re.MULTILINE)[1])
     metadata = dict(schema=1, product='Pocket Wayfarer', version=version, channel='preview', board=BOARD,
-                    chip_family='ESP32-S3', flash_size=FLASH_BYTES, save_format=4,
+                    chip_family='ESP32-S3', flash_size=FLASH_BYTES, save_format=save_format,
                     source_commit=commit, source_dirty=dirty, hardware_tested=False,
                     flash_settings=args['flash_settings'], parts=parts,
                     save_partition=dict(offset=SAVE_OFFSET, size=SAVE_SIZE), app_partition=dict(offset=APP_OFFSET, size=APP_SIZE),

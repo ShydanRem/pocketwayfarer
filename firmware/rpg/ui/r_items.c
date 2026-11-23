@@ -129,7 +129,7 @@ void scr_equip(void) {
     snprintf(buf, sizeof buf, "ATK %ld · MATK %ld · %s %ld", (long)st.atk, (long)st.matk, TR("DIF", "DEF"), (long)st.def);
     r_character_panel(s, CX, 387, 288, 29);
     kit_label(s, &ln_font_body, RC_MUTED, buf, CX, 387);
-    r_character_button(s, TR("Indietro", "Back"), CX - 51, 426, 96, 42, false, on_go, R_TOWN_CLASSIC);
+    r_character_button(s, TR("Indietro", "Back"), CX - 51, 426, 96, 42, false, on_go, R_TOWN);
     r_character_button(s, TR("Zaino", "Bag"), CX + 51, 426, 96, 42, true, on_go, R_BAG);
 }
 
@@ -364,7 +364,7 @@ void scr_shop(void) {
         }
         if (!rpg_bag_count(&R.g)) r_text(list, TR("Niente da vendere", "Nothing to sell"), RC_MUTED, &ln_font_body);
     }
-    r_back(s, R.shop_in_dungeon ? R_DUNGEON : R_TOWN_CLASSIC);
+    r_back(s, R.shop_in_dungeon ? R_DUNGEON : R_TOWN);
 }
 
 /* ---- Forge ---------------------------------------------------------------------------------- */
@@ -448,5 +448,5 @@ void scr_forge(void) {
         lv_obj_t *button = item_button(s, &R.g.hero.equip[slot], CX + (2 * i - count + 1) * 23, 376, 42, on_forge_pick, slot);
         r_character_button_style(button, R.forge_pick == slot);
     }
-    r_back(s, R_TOWN_CLASSIC);
+    r_back(s, R_TOWN);
 }

@@ -1,6 +1,6 @@
 # Roadmap di Pocket Wayfarer
 
-**Aggiornata il 20 novembre 2026.** Il redesign del Classico comprende i cinque ambienti di esplorazione, i cinque dungeon, le 42 creature e le interfacce di servizio. Le transizioni di combattimento coprono i tre assetti di Lanternbound e tutte le **40 classi** del Classico. Il [registro di avanzamento](roadmap/STATUS.md) conserva le prove per ogni consegna.
+**Aggiornata il 23 novembre 2026.** Il percorso principale parte da un titolo unico e dalle otto classi base. Lo stesso eroe prosegue nel borgo, nei cinque ambienti e nei dungeon. Il cambio di famiglia conserva i progressi di ogni via. Lanternbound è una spedizione extra nei Servizi del borgo. [Registro di avanzamento](roadmap/STATUS.md)
 
 ## Obiettivo e regole di avanzamento
 
@@ -190,7 +190,8 @@ Arma, mano secondaria e testa sono i canali grafici dell’equipaggiamento già 
 | **R7.2a · consegna su host, due classi del Classico** | Paladino e Cavaliere del Drago verificati con equipaggiamento effettivo, quattro razze, controlli circolari, pausa e movimento ridotto. |
 | **R7.2b · consegna su host, composizione laterale** | Eroe e avversari si affrontano dai due lati. Il rig copre 17/40 classi con i nuovi profili di arco, bastone e falce. Test IT/EN su tre bersagli e boss. |
 | **R7.2c · consegna su host, 40/40 classi** | Cinque profili aggiunti. Verificati tutti i rami, le quattro razze e gli oggetti, con catture native delle otto famiglie nella vista laterale. |
-| **R7.3 · prossimo, audio opzionale** | Verificare prima l’uscita audio sul Pocket. Se utilizzabile, aggiungere pochi segnali distinti e controlli per volume e muto. Gli stessi eventi devono essere leggibili a schermo. |
+| **R7.3 · in pausa, audio opzionale** | Riprendere dopo il collaudo del nuovo percorso principale. Verificare l’uscita audio e l’interazione con i tempi di gioco sul Pocket. |
+| **R7.4 · percorso unico e cambio di classe** | Titolo, creazione, borgo, prima vittoria e cambio di famiglia verificati in italiano e inglese su host. Migrazione dai profili v1–v4. |
 | **R8 · candidata 1.0** | Installazione pulita e aggiornamento da una preview con dati, prove sul Pocket di anello, parata e sonno/risveglio, sessione lunga, controllo del budget e pacchetto di ripristino. |
 
 Il primo obiettivo di design è una scelta comprensibile, non più numeri sullo schermo. Registrare, con consenso e senza introdurre account, osservazioni di playtest: tempi reali di spedizione, motivo delle sconfitte, scelte di percorso/reliquia, uso di Guardia/supporti e volontà di iniziare un altro viaggio. Una sessione di 5–8 minuti è una **ipotesi da provare**, non un dato già misurato.
