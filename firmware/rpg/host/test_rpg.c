@@ -430,6 +430,53 @@ static void test_hunt_and_save(void) {
     if (verbose) printf("  save size: %zu bytes\n", n);
 }
 
+/* One continuous profile with a prepared loadout per region, normal room
+ * costs, both bosses, a paid checkpoint rest and real combat outcomes. */
+static void test_campaign(void) {
+    rpg_game g;
+    new_hero(&g, FAM_WARRIOR, 66);
+    for (int zone = 0; zone < RPG_ZONES; zone++) {
+        CHECK(g.zone_unlocked == zone);
+        const rpg_zone_info *region = rpg_zone(zone);
+        grow(&g, (region->min_level + region->max_level) / 2 + 2, 0);
+        while (g.hero.stamina < 50) CHECK(rpg_inn(&g) == RPG_OK);
+        CHECK(rpg_dungeon_enter(&g, zone, 0, T0) == RPG_OK);
+        int floors = 0, bosses = 0, fights = 0;
+        while (g.run.active) {
+            int row = g.run.row + 1, col = 0;
+            while (col < RPG_COLS && !rpg_room_reachable(&g.run, row, col)) col++;
+            CHECK(col < RPG_COLS);
+            rpg_foe foes[RPG_MAX_FOES];
+            int n;
+            int kind = rpg_room_enter(&g, row, col, foes, &n);
+            CHECK(kind > 0);
+            if (!n) {
+                rpg_room_result room;
+                rpg_room_resolve(&g, &room, foes, &n);
+            }
+            if (n) {
+                CHECK(fight(&g, foes, n, WF_Q_PERFECT, WF_Q_PERFECT, (uint32_t)++fights,
+                            B_FLAG_DUNGEON | (kind == ROOM_BOSS ? B_FLAG_BOSS : 0)) == B_WON);
+                g.run.cleared[row] |= (uint8_t)(1u << col);
+            }
+            if (row != RPG_ROWS) continue;
+            floors++;
+            bosses += kind == ROOM_BOSS;
+            if (g.run.floor == 5) {
+                rpg_dungeon_leave(&g, false);
+                CHECK(rpg_dungeon_checkpoint(&g, zone));
+                CHECK(rpg_inn(&g) == RPG_OK);
+                CHECK(rpg_dungeon_enter(&g, zone, 1, T0) == RPG_OK && g.run.floor == 6);
+            } else CHECK(rpg_dungeon_descend(&g) >= 0);
+        }
+        CHECK(floors == RPG_FLOORS && bosses == 2 && g.best_floor[zone] == RPG_FLOORS);
+        uint8_t save[4096];
+        size_t bytes = rpg_save_encode(&g, save, sizeof save);
+        CHECK(bytes && rpg_save_decode(save, bytes, &g));
+        printf("campaign: zone %d, %d floors, %d fights, two bosses, checkpoint and reload passed\n", zone + 1, floors, fights);
+    }
+}
+
 int main(int argc, char **argv) {
     verbose = argc > 1 && argv[1][0];
     test_data();
@@ -438,6 +485,7 @@ int main(int argc, char **argv) {
     test_battle_basics();
     test_hunt_and_save();
     test_dungeon();
+    test_campaign();
     test_balance();
     printf("rpg: %d checks passed\n", checks);
     return 0;

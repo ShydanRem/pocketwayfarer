@@ -236,6 +236,9 @@ static void primary_adventure(void) {
         press(TR("Inizia", "Begin"));
         assert(R.screen == R_TOWN && R.g.hero.cls == FAM_ARCHER && R.g.hero.equip[SLOT_WEAPON].type == IT_BOW);
         assert(R.g.lantern.state == LN_NONE && !find(lv_screen_active(), TR("Classico", "Classic")));
+        assert(find(lv_layer_top(), TR("Il primo viaggio", "Your first journey")));
+        shot(language ? "guida-avvio-en" : "guida-avvio-it");
+        press(TR("Partiamo", "Let's go"));
         check_buttons(lv_screen_active());
         const char *actions[] = {TR("Mappa", "Map"), TR("Classe", "Class"), TR("Eroe", "Hero"),
                                  TR("Equip", "Gear"), TR("Servizi", "Services")};
@@ -250,11 +253,30 @@ static void primary_adventure(void) {
         }
         shot(language ? "borgo-en" : "borgo-it");
         press(TR("Mappa", "Map"));
+        assert(find(lv_screen_active(), TR("Scegli i Prati di Lumen", "Choose Lumen Meadows")));
         press(TX(rpg_zone(0)->field_name));
         press(TR("Combatti", "Fight"));
         assert(R.screen == R_BATTLE);
         run(1250);
+        assert(find(lv_screen_active(), TR("Inizia con Attacco", "Start with Attack")));
         shot(language ? "lotta-en" : "lotta-it");
+        press(TR("Guardia", "Guard"));
+        for (int t = 0; t < 500 && rpg_battle_phase() != 6; t++) run(5);
+        assert(find(lv_screen_active(), TR("Onda sullo scudo\nTocca o BOOT", "Wave hits the shield\nTap or BOOT")));
+        for (int t = 0; t < 500 && rpg_battle_parry_quality_now() != WF_Q_GOOD; t++) run(5);
+        assert(rpg_battle_parry_quality_now() == WF_Q_GOOD && wf_app_key(WF_KEY_BOOT_DOWN));
+        assert(!rpg_guide_needs(&R.g, RPG_GUIDE_PARRY));
+        for (int t = 0; t < 500 && rpg_battle_phase() != 1; t++) run(5);
+        press(TR("Attacco", "Attack"));
+        lv_obj_t *caption = find(lv_screen_active(), TR("Scintilla nell’arco\nTocca o BOOT", "Spark in the arc\nTap or BOOT"));
+        assert(caption);
+        lv_obj_update_layout(lv_screen_active());
+        assert(lv_obj_get_height(caption) <= lv_obj_get_height(lv_obj_get_parent(caption)) - 4);
+        shot(language ? "guida-anello-en" : "guida-anello-it");
+        for (int t = 0; t < 500 && rpg_battle_ring_quality_now() != WF_Q_PERFECT; t++) run(5);
+        assert(rpg_battle_ring_quality_now() == WF_Q_PERFECT);
+        click(CX, CY);
+        assert(!rpg_guide_needs(&R.g, RPG_GUIDE_RING));
         for (int elapsed = 0; elapsed < 18000 && rpg_battle_phase() != 7; elapsed += 5) {
             if (rpg_battle_phase() == 1) press(TR("Attacco", "Attack"));
             if (rpg_battle_ring_quality_now() == WF_Q_PERFECT || rpg_battle_parry_quality_now() == WF_Q_PERFECT)
@@ -262,10 +284,32 @@ static void primary_adventure(void) {
             run(5);
         }
         assert(R.g.kills && R.g.hero.cls == FAM_ARCHER);
+        assert(!rpg_guide_needs(&R.g, RPG_GUIDE_RING | RPG_GUIDE_WIN) && rpg_guide_needs(&R.g, RPG_GUIDE_ROOM));
         press(TR("Continua", "Continue"));
         assert(R.screen == R_ZONE);
-        assert(wf_app_key(WF_KEY_BOOT_SHORT) && R.screen == R_MAP);
-        assert(wf_app_key(WF_KEY_BOOT_SHORT) && R.screen == R_TOWN);
+        assert(find(lv_screen_active(), TR("Prossima tappa: la Cripta", "Next stop: the Crypt")));
+        press(TX(rpg_zone(0)->dungeon_name));
+        assert(find(lv_screen_active(), TR("Tocca una stanza dorata", "Tap a gold room")));
+        shot(language ? "guida-cripta-en" : "guida-cripta-it");
+        int room = 0;
+        while (!rpg_room_reachable(&R.g.run, 0, room)) room++;
+        /* A deterministic non-combat room isolates the retreat check. */
+        R.g.run.rooms[0][room] = ROOM_EVENT;
+        r_go(R_DUNGEON);
+        click(131 + room * 102, 340);
+        assert(!rpg_guide_needs(&R.g, RPG_GUIDE_ALL));
+        press(TR("Avanti", "Onward"));
+        R.g.hero.stamina = 1;
+        R.g.cons[CO_RETURN] = 0;
+        R.g.gold = 120;
+        R.g.run.gold = 22;
+        r_go(R_DUNGEON);
+        assert(find(lv_screen_active(), TR("Stamina finita · Esci", "Out of stamina · Exit")));
+        press(TR("Esci", "Exit"));
+        press(TR("Ritirati", "Retreat"));
+        assert(R.screen == R_TOWN && R.g.gold == 109 && !R.g.run.active && !R.g.cons[CO_RETURN]);
+        wf_app_start(saved, saved_len);
+        assert(R.screen == R_TOWN && R.g.gold == 109 && !rpg_guide_needs(&R.g, RPG_GUIDE_ALL));
 
         uint32_t job_xp = R.g.hero.job_xp;
         press(TR("Classe", "Class")); press(TR("Cambia classe", "Switch class"));
@@ -286,8 +330,24 @@ static void primary_adventure(void) {
         assert(R.screen == R_LANTERN_HOME && !find(lv_screen_active(), TR("Eroe", "Hero")));
         press(TR("Borgo", "Village"));
         assert(R.screen == R_TOWN && R.g.hero.cls == FAM_ARCHER);
+
+        press(TR("Servizi", "Services")); press(TR("Diario", "Journal")); press(TR("Opzioni", "Options"));
+        lv_obj_t *name = find(lv_screen_active(), TR("Guida iniziale", "First journey guide"));
+        assert(name);
+        lv_obj_t *row = lv_obj_get_parent(lv_obj_get_parent(name));
+        lv_obj_t *toggle = find(row, TR("Cambia", "Change"));
+        assert(toggle);
+        lv_obj_scroll_to_view_recursive(toggle, LV_ANIM_OFF);
+        lv_obj_update_layout(lv_screen_active());
+        lv_area_t a;
+        lv_obj_get_coords(toggle, &a);
+        click((a.x1 + a.x2) / 2, (a.y1 + a.y2) / 2);
+        assert(rpg_guide_needs(&R.g, RPG_GUIDE_ALL));
+        wf_app_flush_save(); wf_app_start(saved, saved_len);
+        assert(R.screen == R_TOWN && rpg_guide_needs(&R.g, RPG_GUIDE_ALL));
+        assert(!find(lv_layer_top(), TR("Il primo viaggio", "Your first journey")));
     }
-    puts("primary adventure: clean start, eight classes, first battle, switch and resume job after reboot, separated expedition IT/EN: passed");
+    puts("primary adventure: eight classes, first-journey lessons, attack/parry, first Crypt room, no-scroll retreat, job reload and separate expedition IT/EN: passed");
 }
 
 int main(int argc, char **argv) {

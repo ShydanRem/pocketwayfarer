@@ -29,6 +29,16 @@ void scr_map(void) {
     lv_obj_t *s = r_scene(RS_WORLD);
     r_character_panel(s, CX, 53, 250, 42);
     kit_label(s, &ln_font_title, RC_GOLD, TR("Isole Sospese", "Floating Isles"), CX, 53);
+    int completed = 0;
+    for (int z = 0; z < RPG_ZONES; z++) completed += R.g.best_floor[z] >= RPG_FLOORS;
+    char progress[80];
+    if (rpg_guide_needs(&R.g, RPG_GUIDE_WIN) && !completed)
+        snprintf(progress, sizeof progress, "%s", TR("Scegli i Prati di Lumen", "Choose Lumen Meadows"));
+    else snprintf(progress, sizeof progress,
+                  completed == RPG_ZONES ? TR("Isole completate %d/%d", "All islands cleared %d/%d")
+                                         : TR("Dungeon completati %d/%d", "Dungeons cleared %d/%d"), completed, RPG_ZONES);
+    r_character_panel(s, CX, 95, 280, 27);
+    kit_label(s, &wf_font_small, RC_IVORY, progress, CX, 95);
     for (int z = 0; z < RPG_ZONES; z++) {
         int x = r_world_spots[z][0], y = r_world_spots[z][1];
         bool open = z <= R.g.zone_unlocked;
@@ -94,14 +104,17 @@ void scr_zone(void) {
                  z->min_level, z->max_level, R.g.hero.stamina);
         r_character_panel(s, CX, 169, 296, 34);
         kit_label(s, &ln_font_body, RC_IVORY, details, CX, 169);
-        r_character_button(s, TR("Combatti", "Fight"), 124, 222, 126, 52, true, on_fight, 0);
+        const bool guide_dungeon = R.zone == 0 && !rpg_guide_needs(&R.g, RPG_GUIDE_WIN) &&
+                                   rpg_guide_needs(&R.g, RPG_GUIDE_ROOM);
+        r_character_button(s, TR("Combatti", "Fight"), 124, 222, 126, 52, !guide_dungeon, on_fight, 0);
         r_character_button(s, TR("Caccia auto", "Auto hunt"), 342, 222, 126, 52, false, on_hunt, 0);
-        r_character_button(s, TX(z->dungeon_name), CX, 302, 240, 50, false, on_enter, 0);
+        r_character_button(s, TX(z->dungeon_name), CX, 302, 240, 50, guide_dungeon, on_enter, 0);
         bool checkpoint = rpg_dungeon_checkpoint(&R.g, R.zone);
         if (checkpoint)
             r_character_button(s, TR("Dal piano 6", "From floor 6"), CX, 352, 184, 38, false, on_enter, 1);
         snprintf(details, sizeof details, TR("Record piano %d", "Best floor %d"), R.g.best_floor[R.zone]);
-        kit_label(s, &ln_font_body, RC_MUTED, details, CX, checkpoint ? 385 : 349);
+        const char *tip = guide_dungeon ? TR("Prossima tappa: la Cripta", "Next stop: the Crypt") : details;
+        kit_label(s, &ln_font_body, guide_dungeon ? RC_GOLD : RC_MUTED, tip, CX, checkpoint ? 385 : 349);
         r_character_button(s, TR("Mappa", "Map"), CX, 423, 122, 44, false, on_go, R_MAP);
         return;
     }
@@ -142,8 +155,8 @@ static lv_obj_t *dungeon_dialog(const char *title, const char *body, const wf_sp
 static void leave_to_town(const char *title, const char *body, const wf_sprite *icon) {
     r_save_now();
     r_go(R_TOWN);
-    dlg = kit_dialog(title, body, icon);
-    kit_dialog_button(dlg, "Ok", COL_BTN_OK, close_dlg, 0);
+    dlg = r_character_dialog(title, body, icon);
+    r_character_button_style(kit_dialog_button(dlg, "Ok", COL_BTN_OK, close_dlg, 0), true);
 }
 
 static void descend_choice(int leave) {
@@ -154,9 +167,17 @@ static void descend_choice(int leave) {
     }
     int r = rpg_dungeon_descend(&R.g);
     if (r == 1) {
-        char body[128];
-        snprintf(body, sizeof body, TR("Hai conquistato %s!", "You conquered %s!"), TX(rpg_zone(R.g.run.zone)->dungeon_name));
-        leave_to_town(TR("Dungeon completato!", "Dungeon cleared!"), body, ri(RI_TROPHY));
+        int zone = R.g.run.zone;
+        char body[180];
+        bool final = zone == RPG_ZONES - 1;
+        if (final) snprintf(body, sizeof body, "%s", TR("Hai sconfitto il Drago Stellare.\nTutti e cinque i dungeon sono completati.",
+                                                         "You defeated the Star Dragon.\nAll five dungeons are cleared."));
+        else if (zone + 1 == R.g.zone_unlocked)
+            snprintf(body, sizeof body, TR("Hai conquistato %s!\nProssima isola: %s.", "You conquered %s!\nNext island: %s."),
+                     TX(rpg_zone(zone)->dungeon_name), TX(rpg_zone(zone + 1)->field_name));
+        else snprintf(body, sizeof body, TR("Hai conquistato %s!", "You conquered %s!"), TX(rpg_zone(zone)->dungeon_name));
+        leave_to_town(final ? TR("Isole completate", "All islands cleared") : TR("Dungeon completato!", "Dungeon cleared!"), body, ri(RI_TROPHY));
+        r_character_button_style(kit_dialog_button(dlg, TR("Mappa", "Map"), COL_PANEL_HI, on_go, R_MAP), false);
         return;
     }
     r_save_now();
@@ -208,6 +229,7 @@ static void on_room(lv_event_t *e) {
     int kind = rpg_room_enter(&R.g, room_row, room_col, foes, &n);
     if (kind < 0) { rpg_classic_cancel(&R.g); kit_toast(rpg_err(-kind), ri(RI_STAMINA)); return; }
     r_dirty();
+    if (R.g.run.zone == 0) r_guide_learn(RPG_GUIDE_ROOM);
     if (n) { r_start_battle(foes, n, true, kind == ROOM_BOSS); return; }
     if (kind == ROOM_STAIRS) { rpg_classic_cancel(&R.g); r_save_now(); r_go(R_DUNGEON); stairs_dialog(); return; }
     if (kind == ROOM_MERCHANT) {
@@ -266,18 +288,30 @@ static void on_exit_run(lv_event_t *e) {
     (void)e;
     kit_dialog_close(dlg);
     dlg = NULL;
-    if (!R.g.cons[CO_RETURN]) { kit_toast(TR("Ti serve una pergamena di ritorno", "You need a return scroll"), ri(RI_SCROLL)); return; }
-    R.g.cons[CO_RETURN]--;
-    rpg_dungeon_leave(&R.g, false);
-    leave_to_town(TR("Pergamena usata", "Scroll used"), TR("Una luce ti riporta in città.", "A light carries you back to town."), &rpg_cons_icons[CO_RETURN]);
+    if (R.g.run.row >= 0 && R.g.cons[CO_RETURN]) {
+        R.g.cons[CO_RETURN]--;
+        rpg_dungeon_leave(&R.g, false);
+        leave_to_town(TR("Pergamena usata", "Scroll used"), TR("Una luce ti riporta al borgo.", "A light carries you back to town."), &rpg_cons_icons[CO_RETURN]);
+        return;
+    }
+    uint32_t lost = rpg_dungeon_retreat(&R.g);
+    char body[100];
+    if (lost) snprintf(body, sizeof body, TR("Hai lasciato %lu oro nella discesa.", "You left %lu gold behind."), (unsigned long)lost);
+    else snprintf(body, sizeof body, "%s", TR("Torni al borgo con il bottino.", "You return to town with your loot."));
+    leave_to_town(TR("Di ritorno", "Back home"), body, ri(RI_STAIRS));
 }
 
 static void on_exit_ask(lv_event_t *e) {
     (void)e;
-    char body[96];
-    snprintf(body, sizeof body, TR("Usare una pergamena di ritorno? (ne hai %d)", "Use a return scroll? (you have %d)"), R.g.cons[CO_RETURN]);
+    char body[136];
+    bool retreat = R.g.run.row >= 0 && !R.g.cons[CO_RETURN];
+    if (R.g.run.row < 0) snprintf(body, sizeof body, "%s", TR("Da qui puoi tornare al borgo con tutto il bottino.", "From here you can return to town with all your loot."));
+    else if (retreat) snprintf(body, sizeof body, TR("Puoi ritirarti lasciando %lu oro. Gli oggetti sono al sicuro.",
+                                                    "Retreat leaving %lu gold behind. You keep your items."),
+                               (unsigned long)(R.g.run.gold / 2u < R.g.gold ? R.g.run.gold / 2u : R.g.gold));
+    else snprintf(body, sizeof body, TR("Usare una pergamena di ritorno? (ne hai %d)", "Use a return scroll? (you have %d)"), R.g.cons[CO_RETURN]);
     dlg = dungeon_dialog(TR("Uscire?", "Leave?"), body, &rpg_cons_icons[CO_RETURN]);
-    kit_dialog_button(dlg, TR("Esci", "Leave"), COL_BAD, on_exit_run, 0);
+    kit_dialog_button(dlg, retreat ? TR("Ritirati", "Retreat") : TR("Esci", "Leave"), COL_BAD, on_exit_run, 0);
     kit_dialog_button(dlg, TR("Resta", "Stay"), COL_PANEL_HI, close_dlg, 0);
 }
 
@@ -362,8 +396,12 @@ void scr_dungeon(void) {
     if (illustrated) {
         r_character_panel(s, CX, 55, 264, 52);
         kit_label(s, &ln_font_title, RC_GOLD, TX(z->dungeon_name), CX, 44);
-        snprintf(buf, sizeof buf, TR("Piano %d/%d · %lu oro", "Floor %d/%d · %lu gold"),
-                 run->floor, RPG_FLOORS, (unsigned long)run->gold);
+        if (R.g.hero.stamina < 2 && run->row < RPG_ROWS - 1)
+            snprintf(buf, sizeof buf, "%s", TR("Stamina finita · Esci", "Out of stamina · Exit"));
+        else if (run->zone == 0 && run->row < 0 && rpg_guide_needs(&R.g, RPG_GUIDE_ROOM))
+            snprintf(buf, sizeof buf, "%s", TR("Tocca una stanza dorata", "Tap a gold room"));
+        else snprintf(buf, sizeof buf, TR("Piano %d/%d · Stamina %d", "Floor %d/%d · Stamina %d"),
+                      run->floor, RPG_FLOORS, R.g.hero.stamina);
         kit_label(s, &wf_font_small, RC_IVORY, buf, CX, 68);
     } else {
         snprintf(buf, sizeof buf, "%s · %s %d/%d", TX(z->dungeon_name), TR("Piano", "Floor"), run->floor, RPG_FLOORS);
@@ -460,9 +498,16 @@ static void on_option(lv_event_t *e) {
     case 2: R.g.hour_offset = (uint8_t)((R.g.hour_offset + 1) % 24); break;
     case 3: R.g.auto_battle ^= 1; break;
     case 4: R.g.lantern.reduced_motion ^= 1; break;
+    case 5:
+        if (rpg_guide_needs(&R.g, RPG_GUIDE_ALL)) r_guide_learn(RPG_GUIDE_ALL);
+        else rpg_guide_reset(&R.g);
+        break;
     }
     r_dirty();
     r_go(R_QUESTS);
+    if (o == 5) kit_toast(rpg_guide_needs(&R.g, RPG_GUIDE_ALL)
+                         ? TR("Guida iniziale attiva", "First journey guide on")
+                         : TR("Guida iniziale disattivata", "First journey guide off"), NULL);
 }
 
 static void on_quest_tab(lv_event_t *e) {
@@ -507,13 +552,14 @@ void scr_quests(void) {
             {"Lingua", "Language"}, {"Luminosità", "Brightness"},
             {"Ora del giorno", "Time of day"}, {"AUTO nelle lotte", "AUTO in battles"},
             {"Movimento ridotto", "Reduced motion"},
+            {"Guida iniziale", "First journey guide"},
         };
         for (int o = 0; o < (int)(sizeof labels / sizeof *labels); o++) {
             lv_obj_t *row = r_character_row(list, 60);
             if (o == 0) snprintf(buf, sizeof buf, "%s", TR("Italiano", "English"));
             else if (o == 1) snprintf(buf, sizeof buf, "%d%%", R.g.brightness);
             else if (o == 2) snprintf(buf, sizeof buf, "%02d:00", r_hour());
-            else snprintf(buf, sizeof buf, "%s", (o == 3 ? R.g.auto_battle : R.g.lantern.reduced_motion) ? TR("Sì", "On") : TR("No", "Off"));
+            else snprintf(buf, sizeof buf, "%s", (o == 3 ? R.g.auto_battle : o == 4 ? R.g.lantern.reduced_motion : rpg_guide_needs(&R.g, RPG_GUIDE_ALL)) ? TR("Sì", "On") : TR("No", "Off"));
             r_character_row_text(row, 12, 191, TX(labels[o]), RC_IVORY, buf);
             lv_obj_t *b = r_character_button(row, TR("Cambia", "Change"), 0, 0, 86, 44, false, on_option, o);
             lv_obj_align(b, LV_ALIGN_RIGHT_MID, -8, 0);

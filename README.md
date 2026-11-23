@@ -8,7 +8,7 @@ Un RPG fantasy HD-2D per **Waveshare ESP32-S3-Touch-AMOLED-1.75**, con schermo r
 
 **[Roadmap operativa](docs/ROADMAP.md)** · [Stato del lotto attivo](docs/roadmap/STATUS.md) · [Direzione artistica delle 40 classi](docs/CLASS-ART-BIBLE.md)
 
-> **0.10.0-preview.5** — Nuovo ingresso, borgo unico e cambio di famiglia con progressi separati. [Note di versione](CHANGELOG.md)
+> **0.10.0-preview.6** — Primo viaggio guidato, prossima isola dopo ogni boss finale e ritirata senza pergamena. [Note di versione](CHANGELOG.md)
 
 ## Sul Pocket, in pochi passaggi
 
@@ -22,7 +22,7 @@ Il pacchetto include firmware, grafica e font: non servono compilazione, microSD
 
 ## Il primo viaggio
 
-**Nuova avventura → scegli la classe → Inizia.** Apri **Aspetto** se vuoi personalizzare l’eroe prima di partire. Al borgo scegli **Mappa → Prati di Lumen → Combatti**. Tocca **Classe → Cambia classe** per provare un’altra famiglia e tornare in seguito a quella già avanzata.
+**Nuova avventura → scegli la classe → Inizia.** Apri **Aspetto** per personalizzare l’eroe. Scegli **Partiamo** per seguire la guida fino alla prima stanza della Cripta o **Salta guida** per partire in autonomia. Tocca **Classe → Cambia classe** per provare un’altra famiglia e tornare in seguito a quella già avanzata.
 
 ![Otto avatar base nel renderer nativo](docs/img/hero_rig/otto-avatar-base.png)
 

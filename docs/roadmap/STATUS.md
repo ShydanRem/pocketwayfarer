@@ -142,3 +142,7 @@ Il collaudo fisico può procedere in parallelo e serve per la stabile. [Sequenza
 ## R7.4 — ingresso unico e cambio di famiglia
 
 La preview.5 apre direttamente il percorso delle **40 classi**. Creazione, borgo e battaglie mostrano lo stesso eroe. Il cambio di famiglia conserva grado, esperienza di classe e punti abilità. La migrazione legge i salvataggi v1–v4 e mantiene Lanternbound nei Servizi, compresa la spedizione in corso. Il collaudo da fare sul Pocket comprende installazione pulita, aggiornamento con profilo v4, prima battaglia e ritorno a una famiglia già iniziata. [Guida illustrata](../GUIDA.md)
+
+## R7.5 — primo viaggio e campagna
+
+Guida ignorabile e riattivabile, primo Gelatino, apprendimento di attacco e parata e indicazioni per entrare nella Cripta. Mappa e riepiloghi mostrano sblocchi e chiusura della campagna. Una discesa resta reversibile a stamina esaurita. [Catture, prove e limiti](campaign-evidence/README.md)

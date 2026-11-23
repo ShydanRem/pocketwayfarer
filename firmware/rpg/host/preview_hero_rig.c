@@ -323,6 +323,7 @@ static void character_flow(void) {
             press(step == 0 ? TR("Aspetto", "Appearance") : step == 7 ? TR("Inizia", "Begin") : TR("Avanti", "Next"));
         }
         assert(R.screen == R_TOWN && R.loaded && saves > initial_saves);
+        press(TR("Salta guida", "Skip guide"));
         rpg_game decoded;
         assert(rpg_save_decode(saved, saved_len, &decoded));
         assert(decoded.lang == lang && !memcmp(&decoded.hero, &R.g.hero, sizeof decoded.hero));
@@ -665,9 +666,9 @@ static void crypt_flow(void) {
         scrolls = R.g.cons[CO_RETURN];
         press(TR("Esci", "Exit"));
         press(TR("Esci", "Leave"));
-        assert(R.screen == R_TOWN && !R.g.run.active && R.g.cons[CO_RETURN] == scrolls - 1);
+        assert(R.screen == R_TOWN && !R.g.run.active && R.g.cons[CO_RETURN] == scrolls);
         wf_app_start(saved, saved_len);
-        assert(!R.g.run.active && R.g.cons[CO_RETURN] == scrolls - 1);
+        assert(!R.g.run.active && R.g.cons[CO_RETURN] == scrolls);
     }
     wf_lang = 0;
     puts("Crypt: IT/EN touch entrance/locked rooms, mimic retry, exact-once loot, boss checkpoint after leaving, and floor 10 unlock passed");
@@ -929,12 +930,16 @@ static void expedition_flow(int zone, const expedition_example *example) {
         int next = final_region ? zone : zone + 1;
         assert(R.screen == R_TOWN && R.g.zone_unlocked == next && R.g.best_floor[zone] == RPG_FLOORS);
         assert(!R.g.run.active && R.g.gold == gold && R.g.bosses == previous_bosses + 1 && !R.g.classic.active);
-        assert(find(lv_layer_top(), TR("Dungeon completato!", "Dungeon cleared!")));
+        assert(find(lv_layer_top(), final_region ? TR("Isole completate", "All islands cleared") : TR("Dungeon completato!", "Dungeon cleared!")));
         if (final_region) {
-            assert(find(lv_layer_top(), TR("Hai conquistato Cittadella Celeste!", "You conquered Celestial Citadel!")));
+            assert(find(lv_layer_top(), TR("Hai sconfitto il Drago Stellare.\nTutti e cinque i dungeon sono completati.",
+                                         "You defeated the Star Dragon.\nAll five dungeons are cleared.")));
             expedition_shot(example->region, "ritorno");
         }
-        press("Ok");
+        if (final_region) {
+            press(TR("Mappa", "Map"));
+            assert(R.screen == R_MAP && find(lv_screen_active(), TR("Isole completate 5/5", "All islands cleared 5/5")));
+        } else press("Ok");
         if (final_region) {
             for (int i = 0; i < (lang ? 1 : 2); i++) {
                 wf_app_start(saved, saved_len);

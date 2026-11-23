@@ -95,6 +95,7 @@ static void new_adventure(void) {
     run(40);
     press(TR("Nuova avventura", "New adventure"));
     press(TR("Inizia", "Begin"));
+    press(TR("Salta guida", "Skip guide"));
     assert(R.loaded && R.screen == R_TOWN);
 }
 static void enter_expedition(void) {

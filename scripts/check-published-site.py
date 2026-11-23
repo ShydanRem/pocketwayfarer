@@ -88,6 +88,9 @@ def check(base, commit):
         'borgo-principale': 'hero_rig/borgo-principale',
         'lotta-iniziale': 'hero_rig/lotta-iniziale',
         'famiglie-classe': 'hero_rig/famiglie-classe',
+        'guida-avvio': 'hero_rig/guida-avvio',
+        'guida-anello': 'hero_rig/guida-anello',
+        'guida-cripta': 'hero_rig/guida-cripta',
     }
     for name, source in screenshots.items():
         data,mime=get('assets/screens/'+name+'.png')

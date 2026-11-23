@@ -139,6 +139,7 @@ int main(int argc, char **argv) {
     click_text("Avanti");            /* face */
     click_text("Avanti");            /* name */
     click_text("Inizia");
+    click_text("Salta guida");
     run(400);
     run(300);
     shot("citta");

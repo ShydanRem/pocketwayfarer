@@ -471,6 +471,8 @@ typedef struct {
 void rpg_room_resolve(rpg_game *g, rpg_room_result *res, rpg_foe *foes, int *n);
 int rpg_dungeon_descend(rpg_game *g);            /* after stairs/boss */
 void rpg_dungeon_leave(rpg_game *g, bool defeated);
+/* Emergency retreat from inside a floor. Returns the gold left behind. */
+uint32_t rpg_dungeon_retreat(rpg_game *g);
 
 int rpg_field_encounter(rpg_game *g, int zone, rpg_foe *foes, int *n);
 int rpg_hunt_start(rpg_game *g, int zone, uint32_t now);
@@ -504,6 +506,11 @@ typedef struct {
     uint8_t cls, job_level; /* zero level means the family has never been played */
 } rpg_family_progress;
 
+enum {
+    RPG_GUIDE_RING = 1u, RPG_GUIDE_PARRY = 2u, RPG_GUIDE_WIN = 4u, RPG_GUIDE_ROOM = 8u,
+    RPG_GUIDE_ALL = 15u, RPG_GUIDE_MARK = 0xa7u,
+};
+
 struct rpg_game {
     rpg_hero hero;
     uint32_t gold;
@@ -526,9 +533,13 @@ struct rpg_game {
     rpg_classic_checkpoint classic;
     uint8_t reserved_v3[2]; /* preserve the old profile's tail padding */
     ln_coach coach;
-    uint8_t reserved_v4[2];
+    uint8_t guide_mark, guide_done; /* v4 tail padding, reserved in the original v5 */
     rpg_family_progress families[FAM_COUNT];
 };
+static inline bool rpg_guide_needs(const rpg_game *g, unsigned lesson) {
+    return g->guide_mark == RPG_GUIDE_MARK && (g->guide_done & lesson) != lesson;
+}
+static inline void rpg_guide_reset(rpg_game *g) { g->guide_mark = RPG_GUIDE_MARK; g->guide_done = 0; }
 void rpg_classic_begin(rpg_game *g);
 void rpg_classic_cancel(rpg_game *g);
 void rpg_classic_recover(rpg_game *g);

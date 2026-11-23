@@ -91,6 +91,8 @@ static void sanitize(rpg_game *g) {
     ln_sanitize(&g->lantern);
     g->coach.learned &= LNC_ALL;
     g->coach.disabled = !!g->coach.disabled;
+    if (g->guide_mark != RPG_GUIDE_MARK || (g->guide_done & ~RPG_GUIDE_ALL))
+        g->guide_mark = g->guide_done = 0;
     g->gold_remainder %= 50;
     if (g->classic.active > 2 || g->classic.zone >= RPG_ZONES ||
         (g->classic.active == 2 && (g->classic.outcome < B_WON || g->classic.outcome > B_FLED))) rpg_classic_cancel(g);
@@ -110,6 +112,7 @@ bool rpg_save_decode(const uint8_t *in, size_t len, rpg_game *g) {
     if (crc32(in + sizeof h, h.size) != h.crc) return false;
     memset(g, 0, sizeof *g);
     memcpy(g, in + sizeof h, h.size);
+    if (old || v3 || v4) g->guide_mark = g->guide_done = 0;
     if (old || v3) {
         g->lantern.effect_actor = g->lantern.target < 2 ? g->lantern.target : 0;
         g->lantern.effect_flags = 0;

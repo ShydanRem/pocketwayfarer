@@ -76,13 +76,23 @@ static void set_info(const char *t) {
     lv_label_set_text(lv_obj_get_child(B.info, 0), t);
     lv_obj_remove_flag(B.info, LV_OBJ_FLAG_HIDDEN);
 }
+static const char *ring_prompt(void) {
+    return rpg_guide_needs(&R.g, RPG_GUIDE_RING)
+        ? TR("Scintilla nell’arco\nTocca o BOOT", "Spark in the arc\nTap or BOOT")
+        : TR("Tocca sull'arco dorato!", "Tap on the golden arc!");
+}
+static const char *parry_prompt(void) {
+    return rpg_guide_needs(&R.g, RPG_GUIDE_PARRY)
+        ? TR("Onda sullo scudo\nTocca o BOOT", "Wave hits the shield\nTap or BOOT")
+        : TR("Para: tocca quando l'onda arriva!", "Parry: tap when the wave lands!");
+}
 static bool waiting_for_input(void) {
     if (B.suspended) return true;
     if (B.ready_until) {
         if ((int32_t)(lv_tick_get() - B.ready_until) < 0) return true;
         B.ready_until = 0;
-        if (B.phase == PH_RING) set_info(TR("Tocca sull'arco dorato!", "Tap on the golden arc!"));
-        else if (B.phase == PH_PARRY) set_info(TR("Para: tocca quando l'onda arriva!", "Parry: tap when the wave lands!"));
+        if (B.phase == PH_RING) set_info(ring_prompt());
+        else if (B.phase == PH_PARRY) set_info(parry_prompt());
     }
     return false;
 }
@@ -361,18 +371,23 @@ static void finish(void) {
     const char *title;
     const wf_sprite *ic = NULL;
     if (B.b.state == B_WON) {
+        bool first_win = rpg_guide_needs(&R.g, RPG_GUIDE_WIN);
+        r_guide_learn(RPG_GUIDE_WIN);
         hero_face(HX_HAPPY, 0);
         title = TR("Vittoria!", "Victory!");
         ic = ri(RI_TROPHY);
         int n = snprintf(body, sizeof body, TR("+%lu PE  +%lu PE classe\n+%lu oro", "+%lu XP  +%lu job XP\n+%lu gold"),
                          (unsigned long)loot.xp, (unsigned long)loot.job_xp, (unsigned long)loot.gold);
+        if (first_win && !B.dungeon && R.zone == 0)
+            n += snprintf(body + n, sizeof body - (size_t)n, "%s", TR("\nProssima tappa: Cripta dei Lumi.", "Next stop: Lantern Crypt."));
         for (int i = 0; i < loot.nitems && n < (int)sizeof body - 60; i++)
             n += snprintf(body + n, sizeof body - (size_t)n, "\n%s (%s)", rpg_item_name(&loot.items[i], name, sizeof name),
                           TX(rpg_rarity_name(loot.items[i].rarity)));
-        if (loot.gem) n += snprintf(body + n, sizeof body - (size_t)n, TR("\nGemma d'anima: %s!", "\nSoul gem: %s!"), TX(rpg_species(loot.gem - 1)->name));
-        if (loot.cons[CO_ORE]) n += snprintf(body + n, sizeof body - (size_t)n, TR("\nMinerale x%d", "\nOre x%d"), loot.cons[CO_ORE]);
-        if (loot.levels) n += snprintf(body + n, sizeof body - (size_t)n, TR("\nLIVELLO %d!", "\nLEVEL %d!"), R.g.hero.level);
-        if (loot.job_levels) snprintf(body + n, sizeof body - (size_t)n, TR("\nLivello classe %d!", "\nJob level %d!"), R.g.hero.job_level);
+        if (loot.gem && n < (int)sizeof body) n += snprintf(body + n, sizeof body - (size_t)n, TR("\nGemma d'anima: %s!", "\nSoul gem: %s!"), TX(rpg_species(loot.gem - 1)->name));
+        if (loot.cons[CO_ORE] && n < (int)sizeof body) n += snprintf(body + n, sizeof body - (size_t)n, TR("\nMinerale x%d", "\nOre x%d"), loot.cons[CO_ORE]);
+        if (loot.levels && n < (int)sizeof body) n += snprintf(body + n, sizeof body - (size_t)n, TR("\nLIVELLO %d!", "\nLEVEL %d!"), R.g.hero.level);
+        if (loot.job_levels && n < (int)sizeof body)
+            snprintf(body + n, sizeof body - (size_t)n, TR("\nLivello classe %d!", "\nJob level %d!"), R.g.hero.job_level);
     } else if (B.b.state == B_LOST) {
         title = TR("Sconfitta", "Defeat");
         ic = ri(RI_SKULL);
@@ -397,7 +412,9 @@ static void hero_turn(void) {
         return;
     }
     place_marker();
-    set_info(B.illustrated ? TX(rpg_species(B.b.foe[B.target].species)->name) : NULL);
+    if (rpg_guide_needs(&R.g, RPG_GUIDE_RING) && !R.g.auto_battle)
+        set_info(TR("Inizia con Attacco", "Start with Attack"));
+    else set_info(B.illustrated ? TX(rpg_species(B.b.foe[B.target].species)->name) : NULL);
     show_buttons(true);
     phase(PH_CHOOSE);
 }
@@ -454,6 +471,7 @@ static void on_ring_tap(lv_event_t *e) {
     (void)e;
     if (B.phase != PH_RING || waiting_for_input()) return;
     int q = ring_judge(&B.ring);
+    if (q >= WF_Q_GOOD) r_guide_learn(RPG_GUIDE_RING);
     ring_close(&B.ring);
     set_info(NULL);
     if (B.illustrated) {
@@ -489,7 +507,7 @@ static void act(const rpg_action *a) {
     for (int i = 0; i < B.b.nfoes; i++) if (B.b.foe[i].level > lvl) lvl = B.b.foe[i].level;
     wf_ring_make(&ring, &r, B.b.h.st.timing * 3 + 10, lvl / 2, R.g.hero.morale);
     show_buttons(false);
-    set_info(TR("Tocca sull'arco dorato!", "Tap on the golden arc!"));
+    set_info(ring_prompt());
     if (B.illustrated) {
         lv_obj_set_width(B.info, 208);
         lv_obj_set_width(lv_obj_get_child(B.info, 0), 196);
@@ -610,6 +628,7 @@ static void on_parry_tap(lv_event_t *e) {
     (void)e;
     if (B.phase != PH_PARRY || waiting_for_input()) return;
     int q = parry_judge(&B.parry);
+    if (q >= WF_Q_GOOD) r_guide_learn(RPG_GUIDE_PARRY);
     parry_close(&B.parry);
     set_info(NULL);
     if (B.illustrated) lv_obj_remove_flag(B.buttons[5], LV_OBJ_FLAG_HIDDEN);
@@ -778,7 +797,7 @@ void battle_tick(void) {
                 play_events(AFTER_FOE);
                 break;
             }
-            set_info(TR("Para: tocca quando l'onda arriva!", "Parry: tap when the wave lands!"));
+            set_info(parry_prompt());
             wf_rng r;
             wf_rng_seed(&r, wf_platform_random());
             wf_parry p;
