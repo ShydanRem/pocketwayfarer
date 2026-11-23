@@ -30,7 +30,7 @@ Il dialogo di ESP Web Tools può mostrare pulsanti in inglese, come **Install**,
 
 ## Primo avvio
 
-Al primo avvio tocca **Nuova avventura**, scegli la classe con le frecce e premi **Inizia**. **Aspetto** apre la personalizzazione. Al borgo segui **Mappa → Prati di Lumen → Combatti**.
+Al primo avvio tocca **Nuova avventura**, scegli la classe con le frecce e premi **Inizia**. **Aspetto** apre la personalizzazione. Al borgo scegli **Partiamo** per seguire la guida o **Salta guida**. La prima tappa è **Mappa → Prati di Lumen → Combatti**.
 
 Se aggiorni un profilo esistente, ritrovi il tuo eroe al borgo o nel dungeon che stavi esplorando. Le spedizioni Lanternbound salvate si riprendono da **Servizi**. [Backup e aggiornamenti](SALVATAGGI.md)
 

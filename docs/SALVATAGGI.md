@@ -68,6 +68,7 @@ La versione corrente scrive **v5** e legge v1–v4. Il blob RPG v5 occupa **2.87
 | Riavvio durante una battaglia classica non conclusa | Ripristina lo stato precedente all’ingresso e ripropone l’incontro, con consumabili e risorse coerenti. |
 | Risultato classico già pagato | Ricostruisce la navigazione senza assegnare di nuovo il premio. |
 | Profilo v1–v4 | Conserva eroe, classe attiva, equipaggiamento e spedizione salvata. |
+| Guida del primo viaggio | Le lezioni apprese usano spazio già riservato nel v5. I profili delle versioni precedenti possono attivare la guida dalle opzioni. |
 | Ritorno a una versione precedente | Ripristina anche un backup del profilo compatibile con quel firmware. |
 
 Se una NVS è illeggibile o appartiene a un altro layout, l’inizializzazione può ricrearla; la conservazione del profilo non è una promessa valida per qualunque cambio di firmware. I controlli CRC proteggono l’integrità del blob, non sostituiscono un backup.

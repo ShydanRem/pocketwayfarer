@@ -64,6 +64,35 @@ void r_save_now(void) {
 }
 
 static void scr_services(void);
+static lv_obj_t *welcome;
+
+void r_guide_learn(unsigned lesson) {
+    if (rpg_guide_needs(&R.g, lesson)) {
+        R.g.guide_done |= lesson;
+        r_dirty();
+    }
+}
+
+static void welcome_deleted(lv_event_t *e) {
+    if (lv_event_get_target(e) == welcome) welcome = NULL;
+}
+
+static void welcome_close(lv_event_t *e) {
+    if (e && (intptr_t)lv_event_get_user_data(e)) {
+        r_guide_learn(RPG_GUIDE_ALL);
+        r_save_now();
+    }
+    kit_dialog_close(welcome);
+}
+
+static void first_journey(void) {
+    welcome = r_character_dialog(TR("Il primo viaggio", "Your first journey"),
+        TR("Apri Mappa e raggiungi i Prati di Lumen.\nLa guida ti accompagna fino alla prima stanza della Cripta.",
+           "Open Map and head to Lumen Meadows.\nThe guide takes you to the first room of the Crypt."), NULL);
+    lv_obj_add_event_cb(welcome, welcome_deleted, LV_EVENT_DELETE, NULL);
+    r_character_button_style(kit_dialog_button(welcome, TR("Partiamo", "Let's go"), COL_BTN_OK, welcome_close, 0), true);
+    r_character_button_style(kit_dialog_button(welcome, TR("Salta guida", "Skip guide"), COL_PANEL_HI, welcome_close, 1), false);
+}
 
 void r_go(int screen) {
     if (screen == R_CLASS && (R.screen == R_TOWN || R.screen == R_HERO || R.screen == R_SKILLS))
@@ -208,9 +237,11 @@ static void create_step(int direction) {
     if (direction == 1 && (cstep == CS_CLASS || cstep == CS_NAME)) {
         draft.lang = wf_lang;
         rpg_game_new(&R.g, &draft, r_now(), wf_platform_random());
+        rpg_guide_reset(&R.g);
         R.loaded = true;
         r_save_now();
         r_go(R_TOWN);
+        first_journey();
         return;
     }
     cstep += direction < 0 ? -1 : 1;
@@ -225,7 +256,10 @@ static void draw_creation(void) {
     lv_obj_t *s = r_character_screen();
     c_title = kit_label(s, &ln_font_title, RC_GOLD, "", CX, 54);
     c_progress = kit_bar(s, CX, 79, 144, 6, RC_GOLD, 1, CS_COUNT - 1);
-    if (cstep == CS_CLASS) lv_obj_add_flag(c_progress, LV_OBJ_FLAG_HIDDEN);
+    if (cstep == CS_CLASS) {
+        lv_obj_add_flag(c_progress, LV_OBJ_FLAG_HIDDEN);
+        kit_label(s, &ln_font_body, RC_MUTED, TR("Usa le frecce per scegliere", "Use the arrows to choose"), CX, 86);
+    }
     hero_look l;
     draft_look(&l);
     fx_shadow(s, CX, 252, 80);
@@ -489,6 +523,7 @@ bool wf_app_key(int key) {
     if (key == WF_KEY_BOOT_SHORT || key == WF_KEY_BOOT_LONG) {
         if (R.screen == R_CREATE) { create_step(-1); return true; }
         if (!R.loaded) return false;
+        if (R.screen == R_TOWN && welcome) { welcome_close(NULL); return true; }
         if (R.screen == R_DUNGEON || R.screen == R_BATTLE || R.screen == R_TOWN) return true;
         if ((R.screen == R_BAG || R.screen == R_EQUIP || R.screen == R_SHOP) && r_items_close_dialog()) return true;
         if (R.screen == R_SKILLS) r_go(R_HERO);

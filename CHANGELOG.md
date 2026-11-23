@@ -1,5 +1,11 @@
 # Note di versione
 
+## 0.10.0-preview.6 — 23 novembre 2026
+
+- La guida del primo viaggio accompagna dalla scelta di classe alla prima stanza della Cripta. Il primo incontro guidato propone un Gelatino singolo. Attacco e parata perdono il suggerimento esteso dopo un buon timing.
+- Mappa e vittorie indicano i dungeon completati e la prossima isola. Il Drago Stellare chiude la campagna con un riepilogo dedicato.
+- Puoi tornare gratis dal punto di partenza di un piano. Dentro un piano, senza pergamena, puoi ritirarti lasciando parte dell’oro. Una sconfitta in dungeon applica una sola penalità al morale.
+
 ## 0.10.0-preview.5 — 23 novembre 2026
 
 - Nuovo titolo e scelta di classe al primo passo. L’eroe selezionato è quello che entra al borgo e combatte nelle Isole Sospese.

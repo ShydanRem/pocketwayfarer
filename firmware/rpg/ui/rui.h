@@ -36,6 +36,7 @@ uint32_t r_now(void);
 int r_hour(void);
 void r_dirty(void);
 void r_save_now(void);
+void r_guide_learn(unsigned lesson);
 void r_go(int screen);
 const wf_sprite *ri(int id);
 /* Scene background plus its ambient lights and particles. */

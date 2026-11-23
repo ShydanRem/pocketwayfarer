@@ -566,7 +566,8 @@ void rpg_battle_finish(rpg_game *g, const rpg_battle *b, rpg_loot *loot) {
         rpg_stats st;
         rpg_stats_get(g, &st);
         hero->hp = st.max_hp / 10 > 0 ? st.max_hp / 10 : 1;
-        hero->morale = (int16_t)(hero->morale > 10 ? hero->morale - 10 : 0);
+        /* Dungeon defeat is settled by rpg_dungeon_leave, including on reload. */
+        if (!(b->flags & B_FLAG_DUNGEON)) hero->morale = (int16_t)(hero->morale > 10 ? hero->morale - 10 : 0);
         g->deaths++;
         return;
     }

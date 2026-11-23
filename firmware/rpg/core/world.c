@@ -230,6 +230,15 @@ void rpg_dungeon_leave(rpg_game *g, bool defeated) {
     run->active = 0;
 }
 
+uint32_t rpg_dungeon_retreat(rpg_game *g) {
+    if (!g->run.active) return 0;
+    uint32_t lost = g->run.row < 0 ? 0 : g->run.gold / 2u;
+    if (lost > g->gold) lost = g->gold;
+    g->gold -= lost;
+    rpg_dungeon_leave(g, false);
+    return lost;
+}
+
 /* ---- Fields --------------------------------------------------------------------------- */
 static int field_level(const rpg_game *g, int zone, wf_rng *r) {
     const rpg_zone_info *z = rpg_zone(zone);
@@ -243,11 +252,16 @@ int rpg_field_encounter(rpg_game *g, int zone, rpg_foe *foes, int *n) {
     if (g->hero.stamina < 1) return RPG_ERR_STAMINA;
     if (g->hero.hp <= 0) return RPG_ERR_DEAD;
     wf_rng r = game_rng(g);
-    const rpg_zone_info *z = rpg_zone(zone);
-    int roll = wf_rng_range(&r, 0, 99);
-    *n = roll < 50 ? 1 : roll < 85 ? 2 : 3;
-    for (int i = 0; i < *n; i++)
-        rpg_foe_make(&foes[i], z->field_foes[wf_rng_range(&r, 0, 3)], field_level(g, zone, &r), wf_rng_chance(&r, 6));
+    if (zone == 0 && !g->kills && rpg_guide_needs(g, RPG_GUIDE_WIN)) {
+        *n = 1;
+        rpg_foe_make(&foes[0], SP_SLIME, 1, false);
+    } else {
+        const rpg_zone_info *z = rpg_zone(zone);
+        int roll = wf_rng_range(&r, 0, 99);
+        *n = roll < 50 ? 1 : roll < 85 ? 2 : 3;
+        for (int i = 0; i < *n; i++)
+            rpg_foe_make(&foes[i], z->field_foes[wf_rng_range(&r, 0, 3)], field_level(g, zone, &r), wf_rng_chance(&r, 6));
+    }
     g->hero.stamina--;
     g->rng_state = r.s;
     return RPG_OK;

@@ -168,6 +168,35 @@ int main(void) {
     assert(b.coach.learned == LNC_ATTACK && b.coach.disabled && b.lantern.wins == 1);
     puts("v3 migration: exact profile/run retained; coaching and effects roundtrip: passed");
     family_progress();
+
+    fresh(&g);
+    rpg_guide_reset(&g);
+    a = legacy(&g, 4, RPG_V4_PROFILE_BYTES);
+    assert(!rpg_guide_needs(&a, RPG_GUIDE_ALL));
+    assert(rpg_field_encounter(&g, 0, foes, &n) == RPG_OK && n == 1 && foes[0].species == SP_SLIME && !foes[0].elite);
+    rpg_classic_begin(&g);
+    g.guide_done |= RPG_GUIDE_RING;
+    b = reload(&g);
+    assert(!rpg_guide_needs(&b, RPG_GUIDE_RING) && rpg_guide_needs(&b, RPG_GUIDE_PARRY));
+    g = b;
+    assert(rpg_dungeon_enter(&g, 0, 0, T0) == RPG_OK);
+    g.run.gold = 24;
+    before = g.gold;
+    assert(rpg_dungeon_retreat(&g) == 0 && g.gold == before && !g.run.active);
+    assert(rpg_dungeon_enter(&g, 0, 0, T0) == RPG_OK);
+    g.run.floor = 6; g.run.row = 0; g.run.gold = 24;
+    assert(rpg_dungeon_retreat(&g) == 12 && g.gold == before - 12 && g.best_floor[0] == 5);
+    b = reload(&g);
+    assert(rpg_dungeon_retreat(&b) == 0 && b.gold == before - 12 && !b.run.active);
+    assert(rpg_dungeon_enter(&b, 0, 1, T0) == RPG_OK);
+    rpg_battle down = {.state = B_LOST, .flags = B_FLAG_DUNGEON};
+    rpg_loot loot;
+    int morale = b.hero.morale;
+    rpg_battle_finish(&b, &down, &loot);
+    assert(b.hero.morale == morale);
+    rpg_dungeon_leave(&b, true);
+    assert(b.hero.morale == morale - 10);
+    puts("guide saved in v5, old padding ignored, retreat charges once and defeat settles morale once: passed");
     puts("reliability: all audit regressions passed");
     return 0;
 }

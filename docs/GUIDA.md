@@ -4,11 +4,11 @@
 
 1. Tocca **Nuova avventura** e usa le frecce per vedere le otto classi iniziali, il loro ruolo e il loro equipaggiamento.
 2. Tocca **Inizia** per salvare l’eroe. Apri **Aspetto** se vuoi scegliere razza, volto, capelli e nome prima di partire.
-3. Al **Borgo Lanterna** ritrovi l’eroe che hai appena creato. Apri **Mappa → Prati di Lumen → Combatti** per il primo incontro.
+3. Al **Borgo Lanterna** scegli **Partiamo**, poi **Mappa → Prati di Lumen → Combatti**. La guida ti presenta un Gelatino singolo, spiega il momento di attacco e parata e indica la Cripta dopo la prima vittoria.
 
-![Arciere nella scelta della classe iniziale](img/hero_rig/scelta-classe.png)
+![La guida del primo viaggio al Borgo Lanterna](img/hero_rig/guida-avvio.png)
 
-Se stai aggiornando un profilo esistente, il Pocket apre il borgo con il tuo eroe o riprende il dungeon che avevi in corso. [Aggiornamento e backup](SALVATAGGI.md)
+I suggerimenti di attacco e parata si riducono dopo il primo buon timing per ciascuna azione. Puoi scegliere **Salta guida** oppure riattivarla da **Servizi → Diario → Opzioni → Guida iniziale**. Un aggiornamento riprende il profilo esistente, anche con la guida disattivata. [Aggiornamento e backup](SALVATAGGI.md)
 
 ## La prima battaglia
 
@@ -20,6 +20,8 @@ Se stai aggiornando un profilo esistente, il Pocket apre il borgo con il tuo ero
 - **PWR** salva e spegne lo schermo. Al risveglio una breve preparazione precede la ripresa. Nei menu **BOOT** torna indietro o chiude la scheda aperta.
 
 **Combatti** ai Prati di Lumen costa un punto Stamina. Da lì puoi anche avviare **Caccia auto** e ritirare il bottino al borgo, oppure entrare nella **Cripta dei Lumi**.
+
+![L’arco dorato e il suggerimento per touch o BOOT](img/hero_rig/guida-anello.png)
 
 ## Cambiare ed evolvere la classe
 
@@ -43,7 +45,9 @@ Dal borgo scegli **Servizi → Spedizione extra** per giocare le cinque stanze d
 
 La mappa procede dal basso verso l’alto. Scegli una stanza con il bordo dorato, collegata alla tua posizione. **Qui** indica la stanza in cui sei. **Visitata** marca una sosta precedente e **?** indica una stanza ancora da scoprire. I nodi dorati mostrano il tipo di stanza prima che tu entri. Una stanza ordinaria costa 2 punti Stamina.
 
-In basso **Scorte** apre pozioni ed eteri. **Esci** chiede se usare una pergamena di ritorno. Puoi tornare al borgo anche dalle scale, tenendo il bottino. Dopo aver battuto il Re Gelatino al piano 5 puoi scegliere di rientrare dal piano 6 in una discesa successiva. Battere il Re delle Ossa al piano 10 sblocca la Riva di Vetro.
+![La guida indica le stanze raggiungibili nella prima Cripta](img/hero_rig/guida-cripta.png)
+
+In basso **Scorte** apre pozioni ed eteri. Da inizio piano o dalle scale puoi rientrare col bottino. Dentro il piano, **Esci** usa una pergamena se la possiedi. Senza pergamena puoi ritirarti lasciando metà dell’oro trovato in quella discesa, conservando oggetti e checkpoint. Dopo il Re Gelatino al piano 5 puoi ripartire dal piano 6. Il Re delle Ossa al piano 10 sblocca la Riva di Vetro.
 
 ## Alla Riva di Vetro
 
@@ -75,7 +79,7 @@ Entra nella **Fucina Infernale** dalla schermata delle Caverne. Al piano 5 il **
 
 Dopo la Fucina Infernale, scegli le **Guglie del Cielo** sul lato destro della mappa. Gli incontri all’aperto coprono i livelli **48–70**. Dalla terrazza delle Guglie puoi entrare nella **Cittadella Celeste**.
 
-Il **Custode Celeste** al piano 5 apre il checkpoint del piano 6. Al piano 10 il **Drago Stellare** chiude la spedizione. **Continua** porta al borgo con il bottino. Puoi tornare alle Guglie dalla mappa e vedere **Record piano 10** sotto l’ingresso della Cittadella.
+Il **Custode Celeste** al piano 5 apre il checkpoint del piano 6. Al piano 10 il **Drago Stellare** chiude la campagna. Il riepilogo conferma i cinque dungeon completati e offre **Mappa** per vedere il progresso. Puoi tornare alle Guglie e rigiocare la Cittadella.
 
 ## Orientarsi e gestire lo zaino
 
