@@ -1,5 +1,11 @@
 # Note di versione
 
+## 0.10.0-preview.5 — 23 novembre 2026
+
+- Nuovo titolo e scelta di classe al primo passo. L’eroe selezionato è quello che entra al borgo e combatte nelle Isole Sospese.
+- **Classe → Cambia classe** permette di provare tutte le otto famiglie e riprendere i progressi della via precedente. Gli oggetti incompatibili vengono stivati. Con lo zaino pieno il cambio si annulla per intero.
+- **Servizi → Spedizione extra** apre Lanternbound. I salvataggi v1–v4 si leggono e vengono aggiornati al formato v5 al prossimo salvataggio.
+
 ## 0.10.0-preview.4 — 20 novembre 2026
 
 - Guerriero, Ladro, Chierico, Monaco e Artefice ricevono i profili di combattimento. Le nuove pose coprono tutte le 40 classi del Classico.

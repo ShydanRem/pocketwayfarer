@@ -313,6 +313,9 @@ bool rpg_learn_skill(rpg_game *g, int skill);
 int rpg_class_skills(int cls, int out[9]);
 bool rpg_can_change_class(const rpg_game *g, int target);
 bool rpg_change_class(rpg_game *g, int target);
+/* Base families can be revisited. Each resumes its last exact class. */
+int rpg_family_class(const rpg_game *g, int family);
+int rpg_switch_family(rpg_game *g, int family);
 
 /* Needs */
 enum { RPG_OK = 0, RPG_ERR_GOLD, RPG_ERR_NONE, RPG_ERR_FULL, RPG_ERR_STAMINA, RPG_ERR_LEVEL, RPG_ERR_CLASS,
@@ -487,12 +490,19 @@ int rpg_hunt_collect(rpg_game *g, uint32_t now, rpg_haul *out);
 #define RPG_V1_PROFILE_BYTES 1356u
 #define RPG_V2_PROFILE_BYTES 1420u
 #define RPG_V3_PROFILE_BYTES 2788u
+#define RPG_V4_PROFILE_BYTES 2792u
 typedef struct {
     uint8_t active;    /* 1: unfinished transaction; 2: settled result awaiting navigation */
     uint8_t outcome, dungeon, zone;
     uint8_t gold_remainder;
     uint8_t profile[RPG_V1_PROFILE_BYTES];
 } rpg_classic_checkpoint;
+
+typedef struct {
+    uint32_t job_xp;
+    uint16_t skill_points;
+    uint8_t cls, job_level; /* zero level means the family has never been played */
+} rpg_family_progress;
 
 struct rpg_game {
     rpg_hero hero;
@@ -516,12 +526,14 @@ struct rpg_game {
     rpg_classic_checkpoint classic;
     uint8_t reserved_v3[2]; /* preserve the old profile's tail padding */
     ln_coach coach;
+    uint8_t reserved_v4[2];
+    rpg_family_progress families[FAM_COUNT];
 };
 void rpg_classic_begin(rpg_game *g);
 void rpg_classic_cancel(rpg_game *g);
 void rpg_classic_recover(rpg_game *g);
 #define RPG_SAVE_MAGIC 0x31475052u   /* "RPG1" */
-#define RPG_SAVE_VERSION 4u
+#define RPG_SAVE_VERSION 5u
 size_t rpg_save_size(void);
 size_t rpg_save_encode(const rpg_game *g, uint8_t *out, size_t cap);
 bool rpg_save_decode(const uint8_t *in, size_t len, rpg_game *g);

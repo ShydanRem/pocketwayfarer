@@ -163,7 +163,6 @@ static void studio(int cls,int race,int skin,int hair,int color,int pose) {
 static void creation(void) {
     for(int lang=0;lang<2;lang++) {
         wf_lang=(uint8_t)lang;r_go(R_CREATE);run(80);
-        for(int step=0;step<6;step++)press(TR("Avanti","Next"));
         for(int cls=0;cls<FAM_COUNT;cls++) {
             assert(find(lv_screen_active(),TX(rpg_class(cls)->name)));
             controls_clear();
@@ -175,7 +174,7 @@ static void creation(void) {
 }
 static void actual_views(int cls) {
     profile(cls,cls==1?RACE_ELF:RACE_HUMAN,cls?3:1,cls?2:0,cls?5:1);
-    const int screens[]={R_TOWN_CLASSIC,R_HERO,R_CLASS,R_EQUIP};
+    const int screens[]={R_TOWN,R_HERO,R_CLASS,R_EQUIP};
     const char *names[]={"borgo","statistiche","classe","equip"};
     for(int i=0;i<4;i++) {
         r_go(screens[i]);run(80);controls_clear();
@@ -237,7 +236,7 @@ static void class_mapping(void) {
         r_save_now();rpg_game decoded;assert(rpg_save_decode(saved,saved_len,&decoded));
         assert(decoded.hero.cls==cls && decoded.hero.hair_color==R.g.hero.hair_color);
     }
-    puts("40 exact class IDs, all modular costumes, size presets and save v4 roundtrips passed");
+    puts("40 exact class IDs, all modular costumes, size presets and save v5 roundtrips passed");
 }
 static void large_vitals(void) {
     const int classes[]={8,10,16,17,23,24,25,26,27,28,29,30,31,32,33,34,35,36,37,38,39};
@@ -304,12 +303,12 @@ static void flow_shot(const char *part) {
 
 /* Navigate through public touch targets and verify the persisted outcomes. */
 static void character_flow(void) {
-    static const char *steps[] = {"razza", "pelle", "capelli", "colore", "occhi", "viso", "classe", "nome"};
+    static const char *steps[] = {"classe", "razza", "pelle", "capelli", "colore", "occhi", "viso", "nome"};
     for (int lang = 0; lang < 2; lang++) {
         wf_app_start(NULL, 0);
         wf_lang = (uint8_t)lang;
         r_go(R_TITLE);
-        press(TR("Personalizza", "Customize"));
+        press(TR("Nuova avventura", "New adventure"));
         assert(R.screen == R_CREATE);
         int initial_saves = saves;
         for (int step = 0; step < 8; step++) {
@@ -321,17 +320,13 @@ static void character_flow(void) {
                 press(TR("Avanti", "Next"));
             }
             assert(saves == initial_saves);
-            press(step == 7 ? TR("Inizia!", "Begin!") : TR("Avanti", "Next"));
+            press(step == 0 ? TR("Aspetto", "Appearance") : step == 7 ? TR("Inizia", "Begin") : TR("Avanti", "Next"));
         }
         assert(R.screen == R_TOWN && R.loaded && saves > initial_saves);
         rpg_game decoded;
         assert(rpg_save_decode(saved, saved_len, &decoded));
         assert(decoded.lang == lang && !memcmp(&decoded.hero, &R.g.hero, sizeof decoded.hero));
-        press(TR("Andiamo!", "Let's go!"));
-        press("...");
-        press(TR("Classico", "Classic"));
-        assert(R.screen == R_TOWN_CLASSIC);
-        click(374, 196);
+        press(TR("Eroe", "Hero"));
         assert(R.screen == R_HERO);
         int points = R.g.hero.stat_points;
         int strength = R.g.hero.stat[ST_STR];
@@ -351,8 +346,8 @@ static void character_flow(void) {
         flow_shot("promozioni");
         assert(wf_app_key(WF_KEY_BOOT_SHORT) && R.screen == R_HERO);
         press(TR("Indietro", "Back"));
-        assert(R.screen == R_TOWN_CLASSIC);
-        click(92, 296);
+        assert(R.screen == R_TOWN);
+        press(TR("Equip", "Gear"));
         assert(R.screen == R_EQUIP);
         controls_clear();
         flow_shot("equipaggiamento");
@@ -367,13 +362,13 @@ static void character_flow(void) {
         press(TR("Equipaggia", "Equip"));
         assert(!memcmp(&R.g.hero.equip[SLOT_WEAPON], &weapon, sizeof weapon));
         assert(wf_app_key(WF_KEY_BOOT_SHORT) && R.screen == R_EQUIP);
-        assert(wf_app_key(WF_KEY_BOOT_SHORT) && R.screen == R_TOWN_CLASSIC);
+        assert(wf_app_key(WF_KEY_BOOT_SHORT) && R.screen == R_TOWN);
         r_save_now();
         assert(rpg_save_decode(saved, saved_len, &decoded));
         assert(!memcmp(&decoded.hero, &R.g.hero, sizeof decoded.hero));
     }
     wf_lang = 0;
-    puts("character flow: IT/EN creation, stat and skill point spending, match touch/BOOT back routes, remove and equip via bag, v4 saves passed");
+    puts("character flow: IT/EN creation, stat and skill point spending, match touch/BOOT back routes, remove and equip via bag, v5 saves passed");
 }
 
 static void lumen_shot(const char *part) {
@@ -390,9 +385,7 @@ static void lumen_flow(void) {
         R.g.hero.stat[ST_STR] += 20;
         R.g.hero.stat[ST_VIT] += 20;
         r_go(R_TOWN);
-        press("...");
-        press(TR("Classico", "Classic"));
-        assert(R.screen == R_TOWN_CLASSIC);
+        assert(R.screen == R_TOWN);
         lumen_shot("borgo");
         press(TR("Mappa", "Map"));
         assert(R.screen == R_MAP);
@@ -487,7 +480,7 @@ static void lumen_flow(void) {
     run(1300);
     controls_clear();
     lumen_shot("bestiario");
-    puts("Lumen: IT/EN town-to-victory touch, all three targets, timed touch/BOOT, v4 rewards, floor 6 and new sprites passed");
+    puts("Lumen: IT/EN town-to-victory touch, all three targets, timed touch/BOOT, v5 rewards, floor 6 and new sprites passed");
 }
 
 static void crypt_shot(const char *stage) {
@@ -1032,7 +1025,7 @@ static void service_flow(void) {
         R.bag_tab = R.shop_tab = 0;
         R.quest_options = false;
         R.forge_pick = SLOT_WEAPON;
-        r_go(R_TOWN_CLASSIC);
+        r_go(R_TOWN);
         press(TR("Mappa", "Map"));
         check_map_buttons();
         service_shot("mappa-bloccata");
@@ -1051,13 +1044,13 @@ static void service_flow(void) {
         }
         if (lang) assert(wf_app_key(WF_KEY_BOOT_SHORT));
         else press(TR("Indietro", "Back"));
-        assert(R.screen == R_TOWN_CLASSIC);
+        assert(R.screen == R_TOWN);
 
         const rpg_item armor = {.type=IT_PLATE, .tier=2, .level=25, .rarity=RAR_RARE};
         const rpg_item charm = {.type=IT_CHARM, .tier=3, .level=55, .rarity=RAR_LEGENDARY, .plus=10};
         for (int i = 0; i < RPG_BAG - 1; i++) assert(rpg_bag_add(&R.g, &armor));
         assert(rpg_bag_add(&R.g, &charm));
-        click(92, 296);
+        press(TR("Equip", "Gear"));
         press(TR("Zaino", "Bag"));
         assert(R.screen == R_BAG);
         char name[64];
@@ -1087,6 +1080,7 @@ static void service_flow(void) {
         assert(wf_app_key(WF_KEY_BOOT_SHORT) && R.screen == R_EQUIP);
         press(TR("Indietro", "Back"));
 
+        press(TR("Servizi", "Services"));
         press(TR("Bottega", "Shop"));
         press(TR("Equip.", "Gear"));
         rpg_item stock[4];
@@ -1122,8 +1116,9 @@ static void service_flow(void) {
         assert(lv_obj_get_scroll_y(lv_obj_get_parent(row)) == y);
         assert(R.g.cons[CO_RETURN] == scrolls + 1 && R.g.gold == gold - rpg_consumable(CO_RETURN)->price);
         press(TR("Indietro", "Back"));
-        assert(R.screen == R_TOWN_CLASSIC);
+        assert(R.screen == R_TOWN);
 
+        press(TR("Servizi", "Services"));
         press(TR("Forgia", "Forge"));
         gold = R.g.gold;
         const uint32_t cost = rpg_forge_gold(&R.g.hero.equip[SLOT_WEAPON]);
@@ -1132,8 +1127,9 @@ static void service_flow(void) {
         press(TR("Potenzia", "Upgrade"));
         assert(R.g.hero.equip[SLOT_WEAPON].plus == 1);
         assert(R.g.gold == gold - cost && R.g.cons[CO_ORE] == ore - 1);
-        assert(wf_app_key(WF_KEY_BOOT_SHORT) && R.screen == R_TOWN_CLASSIC);
-        press(TR("Missioni", "Quests"));
+        assert(wf_app_key(WF_KEY_BOOT_SHORT) && R.screen == R_TOWN);
+        press(TR("Servizi", "Services"));
+        press(TR("Diario", "Journal"));
         service_shot("missioni");
         gold = R.g.gold;
         const int bread = R.g.cons[CO_BREAD];
@@ -1145,7 +1141,7 @@ static void service_flow(void) {
         press(TR("Opzioni", "Options"));
         assert(find(lv_screen_active(), TR("Ora del giorno", "Time of day")));
         service_shot("opzioni");
-        assert(wf_app_key(WF_KEY_BOOT_SHORT) && R.screen == R_TOWN_CLASSIC);
+        assert(wf_app_key(WF_KEY_BOOT_SHORT) && R.screen == R_TOWN);
 
         wf_app_start(saved, saved_len);
         assert(R.screen == R_TOWN && R.g.gold == gold && R.g.quests[0].claimed);
@@ -1155,7 +1151,7 @@ static void service_flow(void) {
         assert(!memcmp(&R.g.hero.equip[SLOT_OFFHAND], &charm, sizeof charm));
     }
     wf_lang = 0;
-    puts("Classic services: IT/EN map, touch scroll to bag slot 40, equip, use, full-bag rejection, sell/buy, forge, claim and v4 reload passed");
+    puts("Classic services: IT/EN map, touch scroll to bag slot 40, equip, use, full-bag rejection, sell/buy, forge, claim and v5 reload passed");
 }
 
 static void assert_classic_pose(int pose) {
@@ -1282,7 +1278,7 @@ static void classic_combat_rig(void) {
         assert(R.screen == R_TOWN && R.g.classic.active == 0);
     }
     wf_lang = 0;
-    puts("classic combat rig: all eight families, equipment, three targets, wake, reduced motion, parry and v4 rollback passed");
+    puts("classic combat rig: all eight families, equipment, three targets, wake, reduced motion, parry and v5 rollback passed");
 }
 
 int main(int argc,char **argv) {

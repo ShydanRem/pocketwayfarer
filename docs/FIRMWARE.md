@@ -40,9 +40,9 @@ idf.py -p /dev/ttyACM0 flash monitor
 `common/platform.h`. `-DWF_GAME=rpg` (predefinito) compila l'RPG, `-DWF_GAME=pet`
 il compagno della v0.1. Ognuno salva con la propria chiave NVS.
 
-L'RPG include ora la prima spedizione HD-2D Lanternbound, con accesso al gioco
-classico dal borgo. Regole, catture effettive e istruzioni del build dedicato:
-[LANTERNBOUND.md](LANTERNBOUND.md). Il formato RPG v4 legge v1/v2/v3 e conserva lo stato completo della spedizione,
+L’RPG apre sul percorso delle 40 classi. Lanternbound si raggiunge da **Servizi → Spedizione extra**.
+Regole, catture e istruzioni di verifica nel documento dedicato.
+[LANTERNBOUND.md](LANTERNBOUND.md). Il formato RPG v5 legge v1–v4, memorizza la progressione delle famiglie e conserva lo stato completo della spedizione,
 incluso il timing in pausa. Aggiunge reliquia iniziale, bestiario, frazioni
 oro delle missioni e snapshot transazionale per gli incontri classici. Un
 riavvio ripropone l’incontro classico dallo stato precedente all’ingresso;
@@ -56,7 +56,7 @@ dal tempo della fase e non introducono timer di regole separati.
 | | |
 |---|---|
 | App | partizione `factory` da 6 MB |
-| Salvataggio | partizione NVS `wf_nvs` (256 KB), un blob versionato con CRC32 (2808 byte per l’RPG v4, header incluso), scritto in modo atomico da NVS |
+| Salvataggio | partizione NVS `wf_nvs` (256 KB), un blob versionato con CRC32 (2.872 byte per l’RPG v5, header incluso), scritto in modo atomico da NVS |
 | Grafica | sprite indicizzati 8 bit in flash, espansi in PSRAM (RGB565 + alfa) e liberati al cambio schermata. HD-2D: fondali 466×466 a 1×, attori 88×88 a 1×/2×; nel classico l'eroe resta composto da livelli ritagliati |
 | Binario | RPG con Lanternbound, quaranta avatar modulari, tutti gli ambienti del Classico e l’atlante. Circa 5,00 MiB con 17% libero nella partizione da 6 MiB. Il compagno è una build alternativa. [Dimensione e hash](roadmap/bastion-evidence/firmware.json) |
 | Rendering | LVGL a buffer parziale (466×48 righe, DMA interna), lettura touch ogni 10 ms per i minigiochi di timing |

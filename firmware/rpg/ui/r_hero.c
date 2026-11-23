@@ -6,6 +6,13 @@
 static lv_obj_t *dlg;
 static void close_dlg(lv_event_t *e) { (void)e; kit_dialog_close(dlg); dlg = NULL; }
 static void on_go(lv_event_t *e) { r_go((int)(intptr_t)lv_event_get_user_data(e)); }
+static void dialog_deleted(lv_event_t *e) { if (lv_event_get_target(e) == dlg) dlg = NULL; }
+static lv_obj_t *class_dialog(const char *title, const char *body) {
+    dlg = r_character_dialog(title, body, ri(RI_CROWN));
+    lv_obj_add_event_cb(dlg, dialog_deleted, LV_EVENT_DELETE, NULL);
+    return dlg;
+}
+static int class_back(void) { return R.return_screen == R_TOWN ? R_TOWN : R_HERO; }
 
 static void tabs(lv_obj_t *s, int active) {
     static const wf_text names[3] = {{"Statistiche", "Stats"}, {"Abilità", "Skills"}, {"Classe", "Class"}};
@@ -67,7 +74,7 @@ void scr_hero(void) {
              TR("PM", "SP"), (long)st.max_sp, st.crit, TR("Schivata", "Dodge"), st.dodge, st.double_act);
     lv_obj_t *totals = kit_label(s, &ln_font_body, RC_MUTED, buf, CX, 373);
     lv_obj_set_style_text_line_space(totals, -8, 0);
-    hero_back(s, R_TOWN_CLASSIC);
+    hero_back(s, R_TOWN);
 }
 
 /* ---- Skills -------------------------------------------------------------------------- */
@@ -159,7 +166,7 @@ static void on_change(lv_event_t *e) {
     char body[160];
     snprintf(body, sizeof body, TR("%s è ora %s!\n%s", "%s is now a %s!\n%s"), R.g.hero.name, TX(rpg_class(c)->name),
              TX(rpg_class(c)->blurb));
-    dlg = r_character_dialog(TR("Nuova classe!", "New class!"), body, ri(RI_CROWN));
+    class_dialog(TR("Nuova classe!", "New class!"), body);
     r_character_button_style(kit_dialog_button(dlg, TR("Evviva!", "Hooray!"), COL_BTN_OK, close_dlg, 0), true);
 }
 
@@ -170,7 +177,7 @@ static void on_pick(lv_event_t *e) {
     int n = snprintf(body, sizeof body, "%s\n", TX(ci->blurb));
     for (int k = 0; k < 3 && ci->skills[k] != 0xff && n < (int)sizeof body - 40; k++)
         n += snprintf(body + n, sizeof body - (size_t)n, "\n· %s", TX(rpg_skill(ci->skills[k])->name));
-    dlg = r_character_dialog(TX(ci->name), body, ri(RI_CROWN));
+    class_dialog(TX(ci->name), body);
     if (rpg_can_change_class(&R.g, c))
         r_character_button_style(kit_dialog_button(dlg, TR("Diventa!", "Become!"), COL_BTN_OK, on_change, c), true);
     r_character_button_style(kit_dialog_button(dlg, TR("Chiudi", "Close"), COL_PANEL_HI, close_dlg, 0), false);
@@ -191,15 +198,15 @@ void scr_class(void) {
     kit_label(s, &ln_font_body, RC_GOLD, buf, CX, 236);
     int next[2], n = rpg_class_next(g->hero.cls, next);
     if (!n) {
-        r_character_panel(s, CX, 305, 320, 66);
+        r_character_panel(s, CX, 302, 320, 58);
         lv_obj_t *message = kit_label(s, &ln_font_body, RC_MUTED,
-            TR("Hai raggiunto l’apice della tua via.", "You reached the peak of your path."), CX, 305);
+            TR("Via completata", "Path mastered"), CX, 302);
         lv_obj_set_width(message, 300);
     } else {
         int need_base = rpg_class_tier(next[0]) == 2 ? 20 : 45;
         snprintf(buf, sizeof buf, TR("Classe %d/%d  ·  Livello %d/%d", "Job %d/%d  ·  Level %d/%d"), g->hero.job_level,
                  rpg_job_max(g->hero.cls), g->hero.level, need_base);
-        kit_label(s, &ln_font_body, RC_MUTED, buf, CX, 270);
+        kit_label(s, &ln_font_body, RC_MUTED, buf, CX, 266);
         for (int i = 0; i < n; i++) {
             int x = n == 1 ? CX : CX - 80 + i * 160;
             hero_look nl = l;
@@ -207,17 +214,75 @@ void scr_class(void) {
             nl.class_id = (uint8_t)next[i];
             int width = n == 1 ? 204 : 152;
             bool ready = rpg_can_change_class(g, next[i]);
-            lv_obj_t *b = r_character_button(s, TX(rpg_class(next[i])->name), x, 344, width, 108, ready, on_pick, next[i]);
+            lv_obj_t *b = r_character_button(s, TX(rpg_class(next[i])->name), x, 319, width, 86, ready, on_pick, next[i]);
             lv_obj_t *label = lv_obj_get_child(b, 0);
             lv_obj_set_width(label, width - 6);
             lv_obj_set_style_text_align(label, LV_TEXT_ALIGN_CENTER, 0);
             lv_obj_set_style_text_line_space(label, -4, 0);
-            lv_obj_align(label, LV_ALIGN_BOTTOM_MID, 0, -8);
+            lv_obj_align(label, LV_ALIGN_BOTTOM_MID, 0, -5);
             lv_obj_t *img = lv_image_create(b);
             lv_image_set_src(img, hero_image(&nl, HX_IDLE, 1));
-            lv_obj_align(img, LV_ALIGN_TOP_MID, 0, 5);
+            lv_obj_align(img, LV_ALIGN_TOP_MID, 0, 3);
             lv_obj_remove_flag(img, LV_OBJ_FLAG_CLICKABLE);
         }
     }
-    hero_back(s, R_HERO);
+    r_character_button(s, TR("Cambia classe", "Switch class"), 156, 385, 154, 42, true, on_go, R_CLASS_FAMILIES);
+    r_character_button(s, TR("Atlante", "Atlas"), 310, 385, 136, 42, false, on_go, R_CLASS_ATLAS);
+    hero_back(s, class_back());
+}
+
+static void on_switch(lv_event_t *e) {
+    int family = (int)(intptr_t)lv_event_get_user_data(e);
+    close_dlg(NULL);
+    int status = rpg_switch_family(&R.g, family);
+    if (status != RPG_OK) {
+        const char *message = status == RPG_ERR_BUSY ? TR("Concludi la caccia o il dungeon.", "Finish the hunt or dungeon first.") :
+            status == RPG_ERR_BAG ? TR("Fai spazio per l’equipaggiamento.", "Make room for your equipment.") : rpg_err(status);
+        kit_toast(message, ri(RI_BAG));
+        return;
+    }
+    r_save_now();
+    r_go(R_CLASS);
+}
+
+static void on_family(lv_event_t *e) {
+    int family = (int)(intptr_t)lv_event_get_user_data(e);
+    int cls = rpg_family_class(&R.g, family);
+    const rpg_family_progress *saved = &R.g.families[family];
+    char body[200];
+    snprintf(body, sizeof body,
+             TR("Classe %d · %s\nL’equipaggiamento incompatibile passa nello zaino.",
+                "Job %d · %s\nIncompatible gear moves to your bag."),
+             saved->job_level ? saved->job_level : 1,
+             saved->job_level ? TR("Via già iniziata", "Resume this path") : TR("Nuova via", "Start a new path"));
+    class_dialog(TX(rpg_class(cls)->name), body);
+    r_character_button_style(kit_dialog_button(dlg, TR("Conferma", "Confirm"), COL_BTN_OK, on_switch, family), true);
+    r_character_button_style(kit_dialog_button(dlg, TR("Annulla", "Cancel"), COL_PANEL_HI, close_dlg, 0), false);
+}
+
+void scr_class_families(void) {
+    lv_obj_t *s = r_character_screen();
+    r_character_panel(s, CX, 82, 306, 74);
+    kit_label(s, &ln_font_title, RC_GOLD, TR("Cambia classe", "Switch class"), CX, 67);
+    kit_label(s, &ln_font_body, RC_IVORY, TR("Ogni via conserva i progressi", "Each path keeps its progress"), CX, 99);
+    int active = rpg_class_family(R.g.hero.cls);
+    for (int family = 0; family < FAM_COUNT; family++) {
+        int cls = rpg_family_class(&R.g, family);
+        int x = family % 2 ? 316 : 150, y = 153 + family / 2 * 62;
+        lv_obj_t *b = r_character_button(s, TX(rpg_class(cls)->name), x, y, 149, 53, family == active, on_family, family);
+        lv_obj_t *label = lv_obj_get_child(b, 0);
+        lv_obj_set_width(label, 137);
+        lv_obj_set_style_text_align(label, LV_TEXT_ALIGN_CENTER, 0);
+        lv_obj_set_style_text_line_space(label, -4, 0);
+        lv_obj_center(label);
+        if (family == active) lv_obj_remove_flag(b, LV_OBJ_FLAG_CLICKABLE);
+    }
+    hero_back(s, R_CLASS);
+}
+
+bool class_family_key(int key) {
+    if (key != WF_KEY_BOOT_SHORT && key != WF_KEY_BOOT_LONG) return false;
+    if (dlg) close_dlg(NULL);
+    else r_go(R.screen == R_CLASS_FAMILIES ? R_CLASS : class_back());
+    return true;
 }

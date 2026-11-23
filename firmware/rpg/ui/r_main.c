@@ -63,12 +63,16 @@ void r_save_now(void) {
     R.last_save_s = r_now();
 }
 
+static void scr_services(void);
+
 void r_go(int screen) {
+    if (screen == R_CLASS && (R.screen == R_TOWN || R.screen == R_HERO || R.screen == R_SKILLS))
+        R.return_screen = R.screen == R_TOWN ? R_TOWN : R_HERO;
     R.screen = screen;
     switch (screen) {
-    case R_TITLE: scr_lantern_title(); break;
+    case R_TITLE: scr_title(); break;
     case R_CREATE: scr_create(); break;
-    case R_TOWN: scr_town(); break;
+    case R_LANTERN_HOME: scr_lantern_home(); break;
     case R_MAP: scr_map(); break;
     case R_ZONE: scr_zone(); break;
     case R_BATTLE: scr_battle(); break;
@@ -76,13 +80,15 @@ void r_go(int screen) {
     case R_HERO: scr_hero(); break;
     case R_SKILLS: scr_skills(); break;
     case R_CLASS: scr_class(); break;
+    case R_CLASS_FAMILIES: scr_class_families(); break;
     case R_CLASS_ATLAS: scr_class_atlas(); break;
     case R_EQUIP: scr_equip(); break;
     case R_BAG: scr_bag(); break;
     case R_SHOP: scr_shop(); break;
     case R_FORGE: scr_forge(); break;
     case R_QUESTS: scr_quests(); break;
-    case R_TOWN_CLASSIC: scr_town_classic(); break;
+    case R_TOWN: scr_town(); break;
+    case R_SERVICES: scr_services(); break;
     case R_LANTERN: scr_lantern(); break;
     default: scr_town(); break;
     }
@@ -104,17 +110,18 @@ static void on_lang(lv_event_t *e) {
 }
 
 void scr_title(void) {
-    lv_obj_t *s = r_scene(RS_TITLE);
-    lv_obj_t *t = kit_label(s, &wf_font_huge, COL_GOLD, "Pocket\nWayfarer", CX, 116);
-    lv_obj_set_style_text_line_space(t, 4, 0);
-    kit_label(s, &wf_font_small, COL_TEXT, TR("Un RPG tascabile", "A pocket RPG"), CX, 182);
-    kit_text_button(s, TR("Nuova avventura", "New adventure"), CX, 330, 230, 54, COL_BTN_OK, on_go, R_CREATE);
-    kit_text_button(s, "Italiano", CX - 64, 396, 116, 44, wf_lang ? COL_PANEL_HI : COL_BTN, on_lang, 0);
-    kit_text_button(s, "English", CX + 64, 396, 116, 44, wf_lang ? COL_BTN : COL_PANEL_HI, on_lang, 1);
+    lv_obj_t *s = kit_screen(&classic_lumen_town);
+    kit_dim(s, 48);
+    r_character_panel(s, CX, 140, 302, 119);
+    lv_obj_t *t = kit_label(s, &ln_font_title, RC_GOLD, "POCKET\nWAYFARER", CX, 140);
+    lv_obj_set_style_text_line_space(t, 7, 0);
+    r_character_button(s, TR("Nuova avventura", "New adventure"), CX, 319, 238, 59, true, on_go, R_CREATE);
+    r_character_button(s, "Italiano", CX - 65, 388, 120, 48, !wf_lang, on_lang, 0);
+    r_character_button(s, "English", CX + 65, 388, 120, 48, wf_lang, on_lang, 1);
 }
 
 /* ---- Hero creation ------------------------------------------------------------------- */
-enum { CS_RACE, CS_SKIN, CS_HAIR, CS_COLOR, CS_EYES, CS_BODY, CS_CLASS, CS_NAME, CS_COUNT };
+enum { CS_CLASS, CS_RACE, CS_SKIN, CS_HAIR, CS_COLOR, CS_EYES, CS_BODY, CS_NAME, CS_COUNT };
 static rpg_new_hero draft;
 static int cstep;
 static lv_obj_t *c_hero, *c_title, *c_value, *c_blurb, *c_next;
@@ -139,18 +146,19 @@ static void random_name(void) {
 }
 
 static lv_obj_t *c_progress;
+static void draw_creation(void);
 
 static void create_refresh(void) {
     static const wf_text steps[CS_COUNT] = {{"Razza", "Race"}, {"Carnagione", "Skin"}, {"Capelli", "Hair"},
-                                            {"Colore capelli", "Hair colour"}, {"Occhi", "Eyes"},
-                                            {"Viso", "Face"}, {"Classe", "Class"}, {"Nome", "Name"}};
+                                            {"Colore capelli", "Hair colour"}, {"Occhi", "Eyes"}, {"Viso", "Face"}, {"Nome", "Name"}};
     static const wf_text hair[6] = {{"Corti", "Short"}, {"A punta", "Spiky"}, {"Lunghi", "Long"},
                                     {"Coda", "Ponytail"}, {"Caschetto", "Bob"}, {"Trecce", "Braids"}};
     static const wf_text eyes[4] = {{"Nocciola", "Hazel"}, {"Azzurri", "Blue"}, {"Verdi", "Green"}, {"Viola", "Violet"}};
     char buf[96];
-    snprintf(buf, sizeof buf, "%s  ·  %d/%d", TX(steps[cstep]), cstep + 1, CS_COUNT);
+    if (cstep == CS_CLASS) snprintf(buf, sizeof buf, "%s", TR("Scegli la classe", "Choose your class"));
+    else snprintf(buf, sizeof buf, "%s  ·  %d/%d", TX(steps[cstep - 1]), cstep, CS_COUNT - 1);
     lv_label_set_text(c_title, buf);
-    lv_bar_set_value(c_progress, cstep + 1, LV_ANIM_OFF);
+    lv_bar_set_value(c_progress, cstep, LV_ANIM_OFF);
     const char *blurb = "";
     switch (cstep) {
     case CS_RACE: lv_label_set_text(c_value, TX(rpg_race(draft.race)->name)); blurb = TX(rpg_race(draft.race)->blurb); break;
@@ -160,13 +168,21 @@ static void create_refresh(void) {
     case CS_EYES: lv_label_set_text(c_value, TX(eyes[draft.eyes])); break;
     case CS_BODY: lv_label_set_text(c_value, draft.body ? TR("Ciglia lunghe", "Long lashes") : TR("Semplice", "Simple")); break;
     case CS_CLASS:
+    {
+        static const wf_text roles[FAM_COUNT] = {
+            {"Spada e difesa", "Sword and defence"}, {"Magia elementale", "Elemental magic"},
+            {"Frecce e distanza", "Ranged arrows"}, {"Pugnale e veleno", "Dagger and poison"},
+            {"Cure e magia sacra", "Healing and holy magic"}, {"Tirapugni e raffiche", "Gauntlets and bursts"},
+            {"Martello e bombe", "Hammer and bombs"}, {"Falce e maledizioni", "Scythe and curses"},
+        };
         lv_label_set_text(c_value, TX(rpg_class(draft.cls)->name));
-        blurb = TX(rpg_class(draft.cls)->blurb);
+        blurb = TX(roles[draft.cls]);
         break;
+    }
     default: lv_label_set_text(c_value, draft.name); blurb = TR("Tocca le frecce per un altro nome", "Tap the arrows for another name"); break;
     }
     lv_label_set_text(c_blurb, blurb);
-    lv_label_set_text(lv_obj_get_child(c_next, 0), cstep == CS_COUNT - 1 ? TR("Inizia!", "Begin!") : TR("Avanti", "Next"));
+    lv_label_set_text(lv_obj_get_child(c_next, 0), cstep == CS_CLASS || cstep == CS_NAME ? TR("Inizia", "Begin") : TR("Avanti", "Next"));
     hero_look l;
     draft_look(&l);
     hero_obj_set(c_hero, &l, HX_IDLE, 3);
@@ -187,38 +203,29 @@ static void on_cycle(lv_event_t *e) {
     create_refresh();
 }
 
-static void on_step(lv_event_t *e) {
-    int d = (int)(intptr_t)lv_event_get_user_data(e);
-    if (d < 0 && cstep == 0) { r_go(R_TITLE); return; }
-    if (d > 0 && cstep == CS_COUNT - 1) {
+static void create_step(int direction) {
+    if (direction < 0 && cstep == CS_CLASS) { r_go(R_TITLE); return; }
+    if (direction == 1 && (cstep == CS_CLASS || cstep == CS_NAME)) {
         draft.lang = wf_lang;
         rpg_game_new(&R.g, &draft, r_now(), wf_platform_random());
         R.loaded = true;
         r_save_now();
         r_go(R_TOWN);
-        char body[160];
-        snprintf(body, sizeof body,
-                 TR("Benvenuto a Borgo Lanterna, %s! Esplora i campi, scendi nei dungeon e diventa leggenda.",
-                    "Welcome to Lantern Hollow, %s! Roam the fields, delve into dungeons and become a legend."),
-                 R.g.hero.name);
-        dlg = r_character_dialog(TX(rpg_class(R.g.hero.cls)->name), body, ri(RI_CROWN));
-        r_character_button_style(kit_dialog_button(dlg, TR("Andiamo!", "Let's go!"), COL_BTN_OK, close_dlg, 0), true);
         return;
     }
-    cstep += d;
-    create_refresh();
+    cstep += direction < 0 ? -1 : 1;
+    draw_creation();
 }
 
-void scr_create(void) {
+static void on_step(lv_event_t *e) {
+    create_step((int)(intptr_t)lv_event_get_user_data(e));
+}
+
+static void draw_creation(void) {
     lv_obj_t *s = r_character_screen();
-    if (!draft.name[0]) {
-        random_name();
-        draft.skin = 1;
-        draft.hair_color = (uint8_t)(wf_platform_random() % 8);
-    }
-    cstep = 0;
     c_title = kit_label(s, &ln_font_title, RC_GOLD, "", CX, 54);
-    c_progress = kit_bar(s, CX, 79, 144, 6, RC_GOLD, 1, CS_COUNT);
+    c_progress = kit_bar(s, CX, 79, 144, 6, RC_GOLD, 1, CS_COUNT - 1);
+    if (cstep == CS_CLASS) lv_obj_add_flag(c_progress, LV_OBJ_FLAG_HIDDEN);
     hero_look l;
     draft_look(&l);
     fx_shadow(s, CX, 252, 80);
@@ -230,10 +237,21 @@ void scr_create(void) {
     c_blurb = kit_label(s, &ln_font_body, RC_MUTED, "", CX, 330);
     lv_obj_set_width(c_blurb, 222);
     lv_label_set_long_mode(c_blurb, LV_LABEL_LONG_WRAP);
-    r_character_button(s, TR("Indietro", "Back"), CX - 68, 394, 120, 48, false, on_step, -1);
+    r_character_button(s, cstep == CS_CLASS ? TR("Aspetto", "Appearance") : TR("Indietro", "Back"),
+                       CX - 75, 394, 139, 48, false, on_step, cstep == CS_CLASS ? 2 : -1);
     c_next = r_character_button(s, "", CX + 68, 394, 120, 48, true, on_step, 1);
     c_blink = lv_tick_get() + 2000;
     create_refresh();
+}
+
+void scr_create(void) {
+    if (!draft.name[0]) {
+        random_name();
+        draft.skin = 1;
+        draft.hair_color = (uint8_t)(wf_platform_random() % 8);
+    }
+    cstep = CS_CLASS;
+    draw_creation();
 }
 
 void create_tick(void) {
@@ -249,21 +267,20 @@ void create_tick(void) {
 }
 
 /* ---- Town ---------------------------------------------------------------------------- */
-static lv_obj_t *t_hero, *t_arcs[3], *t_hp, *t_sp, *t_info, *t_hunt, *t_gift;
+static lv_obj_t *t_hero, *t_hp, *t_sp, *t_info, *t_needs, *t_hunt, *t_gift;
 static uint32_t t_refresh, t_blink;
 
 static void town_refresh(void) {
     rpg_game *g = &R.g;
     rpg_stats st;
     rpg_stats_get(g, &st);
-    lv_arc_set_value(t_arcs[0], g->hero.hunger / 1000);
-    lv_arc_set_value(t_arcs[1], g->hero.stamina);
-    lv_arc_set_value(t_arcs[2], g->hero.morale);
     r_vitals_update(t_hp, t_sp, g->hero.hp, st.max_hp, g->hero.sp, st.max_sp);
     char buf[96];
-    snprintf(buf, sizeof buf, "%s · Lv %d\n%s · %s %d", g->hero.name, g->hero.level, TX(rpg_class(g->hero.cls)->name),
-             TR("Cl", "Job"), g->hero.job_level);
+    snprintf(buf, sizeof buf, "%s · Lv %d\n%s", g->hero.name, g->hero.level, TX(rpg_class(g->hero.cls)->name));
     lv_label_set_text(t_info, buf);
+    snprintf(buf, sizeof buf, TR("Stamina %d · %lu oro", "Stamina %d · %lu gold"),
+             g->hero.stamina, (unsigned long)g->gold);
+    lv_label_set_text(t_needs, buf);
     if (g->hunt.active) {
         char d[24];
         rpg_haul h;
@@ -272,11 +289,11 @@ static void town_refresh(void) {
                  r_fmt_time(h.minutes * 60u, d, sizeof d), (unsigned long)h.kills);
         lv_label_set_text(lv_obj_get_child(t_hunt, 0), buf);
         lv_obj_remove_flag(t_hunt, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_add_flag(t_needs, LV_OBJ_FLAG_HIDDEN);
     } else {
         lv_obj_add_flag(t_hunt, LV_OBJ_FLAG_HIDDEN);
+        lv_obj_remove_flag(t_needs, LV_OBJ_FLAG_HIDDEN);
     }
-    if (g->daily_claimed) lv_obj_add_flag(t_gift, LV_OBJ_FLAG_HIDDEN);
-    else lv_obj_remove_flag(t_gift, LV_OBJ_FLAG_HIDDEN);
 }
 
 static void on_gift(lv_event_t *e) {
@@ -287,10 +304,10 @@ static void on_gift(lv_event_t *e) {
     char body[128];
     snprintf(body, sizeof body, TR("Giorno %d di fila!\n+%d oro, %s", "Day %d in a row!\n+%d gold, %s"), R.g.streak, gold,
              TX(rpg_consumable(item)->name));
-    dlg = kit_dialog(TR("Regalo del giorno", "Daily gift"), body, ri(RI_GIFT));
-    kit_dialog_button(dlg, TR("Grazie!", "Thanks!"), COL_BTN_OK, close_dlg, 0);
+    lv_obj_add_state(t_gift, LV_STATE_DISABLED);
+    dlg = r_character_dialog(TR("Regalo del giorno", "Daily gift"), body, ri(RI_GIFT));
+    r_character_button_style(kit_dialog_button(dlg, TR("Grazie!", "Thanks!"), COL_BTN_OK, close_dlg, 0), true);
     r_dirty();
-    town_refresh();
 }
 
 static void on_collect(lv_event_t *e) {
@@ -322,7 +339,6 @@ static void on_inn_rest(lv_event_t *e) {
     int r = rpg_inn(&R.g);
     kit_toast(r == RPG_OK ? TR("Riposato! PV e PM pieni", "Rested! HP and SP full") : rpg_err(r), ri(RI_BED));
     if (r == RPG_OK) r_dirty();
-    town_refresh();
     (void)e;
 }
 
@@ -336,14 +352,7 @@ static void on_eat(lv_event_t *e) {
         if (r == RPG_OK) r = rpg_use_consumable(&R.g, c);
     }
     kit_toast(r == RPG_OK ? TR("Gnam!", "Yum!") : rpg_err(r), &rpg_cons_icons[c]);
-    if (r == RPG_OK) {
-        r_dirty();
-        hero_look l;
-        hero_look_from_game(&l, &R.g);
-        hero_obj_set(t_hero, &l, HX_HAPPY, 3);
-        t_blink = lv_tick_get() + 1500;
-    }
-    town_refresh();
+    if (r == RPG_OK) r_dirty();
 }
 
 static void on_inn(lv_event_t *e) {
@@ -353,61 +362,52 @@ static void on_inn(lv_event_t *e) {
              TR("Letto caldo: PV/PM pieni, +50 stamina (%lu oro).\nOppure un pasto (se non ne hai, lo compri).",
                 "A warm bed: full HP/SP, +50 stamina (%lu gold).\nOr a meal (bought if you have none)."),
              (unsigned long)rpg_inn_price(&R.g));
-    dlg = kit_dialog(TR("Locanda", "Inn"), body, ri(RI_BED));
-    kit_dialog_button(dlg, TR("Dormi", "Sleep"), COL_BTN, on_inn_rest, 0);
-    kit_dialog_button(dlg, TR("Pane", "Bread"), COL_BTN_ALT, on_eat, CO_BREAD);
-    kit_dialog_button(dlg, TR("Stufato", "Stew"), COL_BTN_ALT, on_eat, CO_STEW);
-    kit_dialog_button(dlg, TR("Torta", "Pie"), COL_BTN_ALT, on_eat, CO_PIE);
+    dlg = r_character_dialog(TR("Locanda", "Inn"), body, ri(RI_BED));
+    r_character_button_style(kit_dialog_button(dlg, TR("Dormi", "Sleep"), COL_BTN, on_inn_rest, 0), true);
+    r_character_button_style(kit_dialog_button(dlg, TR("Pane", "Bread"), COL_BTN_ALT, on_eat, CO_BREAD), false);
+    r_character_button_style(kit_dialog_button(dlg, TR("Stufato", "Stew"), COL_BTN_ALT, on_eat, CO_STEW), false);
+    r_character_button_style(kit_dialog_button(dlg, TR("Torta", "Pie"), COL_BTN_ALT, on_eat, CO_PIE), false);
+    r_character_button_style(kit_dialog_button(dlg, TR("Chiudi", "Close"), COL_PANEL_HI, close_dlg, 0), false);
 }
 
-static void on_soon(lv_event_t *e) {
-    (void)e;
-    kit_toast(TR("Legami: in arrivo (party, duelli, scambi)", "Bonds: coming soon (party, duels, trades)"), ri(RI_LINK));
+static void scr_services(void) {
+    lv_obj_t *s = r_character_screen();
+    r_character_panel(s, CX, 81, 282, 52);
+    kit_label(s, &ln_font_title, RC_GOLD, TR("Servizi del borgo", "Village services"), CX, 81);
+    r_character_button(s, TR("Bottega", "Shop"), 153, 156, 144, 52, false, on_go, R_SHOP);
+    r_character_button(s, TR("Forgia", "Forge"), 313, 156, 144, 52, false, on_go, R_FORGE);
+    r_character_button(s, TR("Locanda", "Inn"), 153, 220, 144, 52, false, on_inn, 0);
+    r_character_button(s, TR("Diario", "Journal"), 313, 220, 144, 52, false, on_go, R_QUESTS);
+    t_gift = r_character_button(s, TR("Regalo del giorno", "Daily gift"), CX, 284, 194, 52,
+                                !R.g.daily_claimed, on_gift, 0);
+    if (R.g.daily_claimed) lv_obj_add_state(t_gift, LV_STATE_DISABLED);
+    r_character_button(s, ln_active(&R.g.lantern) ? TR("Riprendi spedizione", "Resume expedition") : TR("Spedizione extra", "Side expedition"),
+                       CX, 348, 234, 48, false, on_go, R_LANTERN_HOME);
+    r_back(s, R_TOWN);
 }
 
-void scr_town_classic(void) {
+void scr_town(void) {
     if (R.g.run.active) { r_go(R_DUNGEON); return; }
     bool night = r_hour() < 7 || r_hour() >= 20;
     lv_obj_t *s = kit_screen(&classic_lumen_town);
     if (night) kit_dim(s, 74);
-    static const uint32_t colors[3] = {COL_HUNGER, 0xffd23f, COL_MOOD};
-    static const int icons_[3] = {RI_FOOD, RI_STAMINA, RI_MORALE};
-    static const float mids[3] = {226.0f, 270.0f, 314.0f};
-    for (int i = 0; i < 3; i++) {
-        t_arcs[i] = kit_arc(s, 226, 16, (int)mids[i] - 19, (int)mids[i] + 19, colors[i], 0, 100);
-        float a = mids[i] * 3.14159265f / 180.0f;
-        kit_img(s, ri(icons_[i]), 2, CX + (int)lroundf(192 * cosf(a)), CY + (int)lroundf(192 * sinf(a)));
-    }
     r_vitals_arcs(s, &t_hp, &t_sp, true);
-    r_character_panel(s, CX, 99, 316, 82);
-    kit_label(s, &ln_font_title, RC_GOLD, TR("Borgo Lanterna", "Lantern Hollow"), CX, 75);
-    t_info = kit_label(s, &ln_font_body, RC_IVORY, "", CX, 110);
+    r_character_panel(s, CX, 91, 316, 88);
+    kit_label(s, &ln_font_title, RC_GOLD, TR("Borgo Lanterna", "Lantern Hollow"), CX, 65);
+    t_info = kit_label(s, &ln_font_body, RC_IVORY, "", CX, 106);
     lv_obj_set_style_text_line_space(t_info, -2, 0);
     hero_look l;
     hero_look_from_game(&l, &R.g);
-    fx_shadow(s, CX, 352, 90);
-    t_hero = hero_obj(s, &l, HX_IDLE, 3, CX, 352-hero_foot_offset(&l,3));
+    fx_shadow(s, CX, 281, 82);
+    t_hero = hero_obj(s, &l, HX_IDLE, 3, CX, 281-hero_foot_offset(&l,3));
     if(!hero_uses_rig(&l))kit_bob(t_hero, 3, 1500);
-    /* Hub buttons around the hero. */
-    static const struct { wf_text name; int screen; int x, y; } hub[] = {
-        {{"Mappa", "Map"}, R_MAP, 92, 196},
-        {{"Eroe", "Hero"}, R_HERO, 374, 196},
-        {{"Equip", "Gear"}, R_EQUIP, 92, 296},
-        {{"Bottega", "Shop"}, R_SHOP, 374, 296},
-        {{"Forgia", "Forge"}, R_FORGE, 150, 380},
-        {{"Locanda", "Inn"}, -1, 316, 380},
-        {{"Missioni", "Quests"}, R_QUESTS, 233, 424},
-    };
-    for (unsigned i = 0; i < sizeof hub / sizeof hub[0]; i++) {
-        lv_event_cb_t cb = hub[i].screen < 0 ? on_inn : on_go;
-        int w = i == 6 ? 118 : 106;
-        r_character_button(s, TX(hub[i].name), hub[i].x, hub[i].y, w, 44, i == 0, cb, hub[i].screen);
-    }
-    lv_obj_t *links = kit_round_button(s, ri(RI_LINK), NULL, 187, 194, 40, COL_PANEL_HI, on_soon, 0);
-    r_character_button_style(links, false);
-    t_gift = kit_round_button(s, ri(RI_GIFT), NULL, 279, 194, 42, COL_BTN_ALT, on_gift, 0);
-    r_character_button_style(t_gift, true);
-    t_hunt = r_character_button(s, "", CX, 156, 316, 32, true, on_collect, 0);
+    t_needs = kit_label(s, &ln_font_body, RC_IVORY, "", CX, 303);
+    t_hunt = r_character_button(s, "", CX, 302, 300, 36, true, on_collect, 0);
+    r_character_button(s, TR("Mappa", "Map"), 149, 346, 150, 47, true, on_go, R_MAP);
+    r_character_button(s, TR("Classe", "Class"), 317, 346, 150, 47, false, on_go, R_CLASS);
+    r_character_button(s, TR("Eroe", "Hero"), 139, 398, 86, 44, false, on_go, R_HERO);
+    r_character_button(s, TR("Equip", "Gear"), CX, 398, 86, 44, false, on_go, R_EQUIP);
+    r_character_button(s, TR("Servizi", "Services"), 327, 398, 86, 44, false, on_go, R_SERVICES);
     t_refresh = 0;
     t_blink = lv_tick_get() + 2500;
     town_refresh();
@@ -453,10 +453,11 @@ void wf_app_start(const uint8_t *save, size_t len) {
             if (dungeon) r_after_dungeon_battle(outcome);
             else { r_save_now(); r_go(outcome == B_LOST ? R_TOWN : R_ZONE); }
         } else {
-            r_go(R.g.run.active ? R_DUNGEON : R.g.lantern.state ? R_LANTERN : R_TOWN);
+            r_go(R.g.run.active ? R_DUNGEON : R_TOWN);
             if (R.screen == R_DUNGEON) r_recover_dungeon_navigation();
         }
     } else {
+        draft = (rpg_new_hero){0};
         r_go(R_TITLE);
     }
     R.last_tick_s = r_now();
@@ -470,10 +471,9 @@ void wf_app_tick(void) {
         if (R.dirty && (R.save_due_s ? t >= R.save_due_s : t - R.last_save_s >= 300)) r_save_now();
     }
     switch (R.screen) {
-    case R_TOWN: lantern_tick(); break;
-    case R_TOWN_CLASSIC: town_tick(); break;
+    case R_LANTERN_HOME: lantern_tick(); break;
+    case R_TOWN: town_tick(); break;
     case R_LANTERN: lantern_tick(); break;
-    case R_TITLE: lantern_tick(); break;
     case R_BATTLE: battle_tick(); break;
     case R_CREATE: create_tick(); break;
     default: break;
@@ -483,19 +483,21 @@ void wf_app_tick(void) {
 bool wf_app_key(int key) {
     if (key >= WF_KEY_BOOT_SHORT && key <= WF_KEY_BOOT_DOWN) lv_display_trigger_activity(NULL);
     if (R.screen == R_CLASS_ATLAS) return class_atlas_key(key);
-    if (R.screen == R_LANTERN || R.screen == R_TOWN) return lantern_key(key);
+    if (R.screen == R_CLASS || R.screen == R_CLASS_FAMILIES) return class_family_key(key);
+    if (R.screen == R_LANTERN || R.screen == R_LANTERN_HOME) return lantern_key(key);
     if (R.screen == R_BATTLE && battle_key(key)) return true;
     if (key == WF_KEY_BOOT_SHORT || key == WF_KEY_BOOT_LONG) {
+        if (R.screen == R_CREATE) { create_step(-1); return true; }
         if (!R.loaded) return false;
         if (R.screen == R_DUNGEON || R.screen == R_BATTLE || R.screen == R_TOWN) return true;
         if ((R.screen == R_BAG || R.screen == R_EQUIP || R.screen == R_SHOP) && r_items_close_dialog()) return true;
-        if (R.screen == R_SKILLS || R.screen == R_CLASS) r_go(R_HERO);
-        else if (R.screen == R_HERO || R.screen == R_EQUIP) r_go(R_TOWN_CLASSIC);
+        if (R.screen == R_SKILLS) r_go(R_HERO);
+        else if (R.screen == R_HERO || R.screen == R_EQUIP) r_go(R_TOWN);
         else if (R.screen == R_BAG) r_go(R_EQUIP);
         else if (R.screen == R_ZONE) r_go(R_MAP);
         else if (R.screen == R_SHOP && R.shop_in_dungeon) r_go(R_DUNGEON);
         else if (R.screen == R_MAP || R.screen == R_SHOP || R.screen == R_FORGE || R.screen == R_QUESTS)
-            r_go(R_TOWN_CLASSIC);
+            r_go(R_TOWN);
         else r_go(R_TOWN);
         return true;
     }
@@ -508,7 +510,7 @@ bool wf_app_busy(void) { return R.screen == R_BATTLE || R.screen == R_CREATE ||
     (R.screen == R_LANTERN && R.g.lantern.state >= LN_CHOOSE &&
      R.g.lantern.state <= LN_IMPACT && !R.g.lantern.paused); }
 void wf_app_wake(void) {
-    if (R.screen == R_TOWN_CLASSIC) town_refresh();
+    if (R.screen == R_TOWN) town_refresh();
     lantern_wake();
     r_classic_wake();
 }

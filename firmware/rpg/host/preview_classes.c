@@ -45,11 +45,11 @@ int main(int argc,char **argv) {
     lv_display_set_flush_cb(display,flush);
     lv_indev_t *input=lv_indev_create();lv_indev_set_type(input,LV_INDEV_TYPE_POINTER);
     lv_indev_set_read_cb(input,read_touch);lv_timer_set_period(lv_indev_get_read_timer(input),10);
-    wf_app_start(NULL,0);run(150);press("Gioca");
+    new_adventure();
     R.g.hero.race=RACE_BEAST;R.g.hero.skin=4;R.g.hero.hair=5;R.g.hero.hair_color=7;R.g.hero.eyes=3;R.g.hero.body=1;
     rpg_game expected=R.g;unsigned initial_saves=saves;
     for(int language=0;language<2;language++) {
-        wf_lang=language;press("...");press(TR("Classi","Classes"));
+        wf_lang=language;r_go(R_TOWN);press(TR("Classe","Class"));press(TR("Atlante","Atlas"));
         for(int c=0;c<RPG_CLASS_COUNT;c++) {
             assert_card(c);
             if(!language && (c<CLASS_ART_COUNT || c==32 || c==39)) {
@@ -88,6 +88,7 @@ int main(int argc,char **argv) {
         assert_card(0);
         wf_app_flush_save();ms+=20000;seconds+=20;wf_app_wake();run(20);
         assert_card(0);assert(!wf_app_busy());
+        assert(wf_app_key(WF_KEY_BOOT_SHORT) && R.screen==R_CLASS);
         assert(wf_app_key(WF_KEY_BOOT_SHORT) && R.screen==R_TOWN);
     }
     rpg_tick(&expected,seconds);

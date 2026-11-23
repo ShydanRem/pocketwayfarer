@@ -30,13 +30,13 @@ Il dialogo di ESP Web Tools può mostrare pulsanti in inglese, come **Install**,
 
 ## Primo avvio
 
-Un Pocket nuovo mostra il titolo. Tocca **Gioca** per partire subito, oppure **Personalizza** per creare l’eroe nel percorso classico. Nel borgo scegli **Parti**, seleziona l’assetto e poi il cammino.
+Al primo avvio tocca **Nuova avventura**, scegli la classe con le frecce e premi **Inizia**. **Aspetto** apre la personalizzazione. Al borgo segui **Mappa → Prati di Lumen → Combatti**.
 
-Se stai aggiornando un profilo esistente, il gioco può aprire direttamente il borgo, una spedizione in pausa o il dungeon classico recuperato. Non è necessario creare un nuovo eroe.
+Se aggiorni un profilo esistente, ritrovi il tuo eroe al borgo o nel dungeon che stavi esplorando. Le spedizioni Lanternbound salvate si riprendono da **Servizi**. [Backup e aggiornamenti](SALVATAGGI.md)
 
-![Borgo Lanterna](img/lantern/02-borgo.png)
+![Borgo Lanterna e comandi principali](img/hero_rig/borgo-principale.png)
 
-I primi combattimenti includono suggerimenti contestuali. Il [manuale illustrato](GUIDA.md) spiega attacco, parata, Guardia e Risonanza.
+Il manuale illustra i comandi, la prima battaglia e come cambiare classe. [Manuale illustrato](GUIDA.md)
 
 ## Installazione manuale
 

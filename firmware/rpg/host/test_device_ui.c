@@ -6,6 +6,7 @@
 #undef wf_platform_save
 #undef main
 #include "device_input.h"
+extern int rpg_battle_parry_quality_now(void);
 
 static bool delayed_save, reject_save;
 bool wf_platform_save(const void *data, size_t n) {
@@ -107,6 +108,8 @@ static void cadence_and_judgment(void) {
 static int deleted_victims;
 static void victim_deleted(lv_event_t *e) { (void)e; deleted_victims++; }
 static void scene_lifetimes(void) {
+    kit_screen(NULL);
+    const size_t persistent = image_bytes; /* shared FX entries outlive screens */
     for (int cycle = 0; cycle < 20; cycle++) {
         kit_toast("first", NULL);
         kit_screen(NULL); /* deletes toast; its old address may be reused below */
@@ -126,7 +129,7 @@ static void scene_lifetimes(void) {
         for (int type = 0; type < IT_TYPE_COUNT; type++) for (int tier = 0; tier < RPG_TIERS; tier++)
             assert(gfx_sprite(&rpg_item_icons[type][tier], scale));
     assert(first == gfx_sprite(&rpg_item_icons[0][0], 2) && first->data == pixels && first->data_size == bytes);
-    kit_screen(NULL); assert(image_bytes == 0);
+    kit_screen(NULL); assert(image_bytes == persistent);
     puts("toast address reuse deletes no unrelated widgets; all220 icon/scale entries retain descriptors; scene frees all image bytes: passed");
 }
 
@@ -172,7 +175,7 @@ static void modal_targets(lv_obj_t *dialog, bool click_actions) {
 static void modal_and_gems(void) {
     rpg_new_hero hero = {0}; rpg_game_new(&R.g, &hero, seconds, 71); R.loaded = true;
     for (int language = 0; language < 2; language++) for (int type = 0; type < IT_TYPE_COUNT; type++) {
-        wf_lang = language; r_go(R_TOWN);
+        wf_lang = language; r_go(R_LANTERN_HOME);
         rpg_item item = {.type=type, .tier=4, .rarity=RAR_LEGENDARY, .plus=10, .level=70, .sockets=2};
         item.gems[0] = SP_ELDER_STUMP+1;
         item.aff[0]=AF_LIFESTEAL; item.aff[1]=AF_SP_REGEN; item.aff[2]=AF_GOLD;
@@ -217,6 +220,76 @@ static void modal_and_gems(void) {
     puts("all42 gem species plus Close: final species reached by touch scrolling and socketed: passed");
 }
 
+static void primary_adventure(void) {
+    for (int language = 0; language < 2; language++) {
+        wf_app_start(NULL, 0);
+        press(language ? "English" : "Italiano");
+        shot(language ? "ingresso-en" : "ingresso-it");
+        press(TR("Nuova avventura", "New adventure"));
+        assert(find(lv_screen_active(), TR("Scegli la classe", "Choose your class")));
+        for (int family = 0; family < FAM_COUNT; family++) {
+            assert(find(lv_screen_active(), TX(rpg_class(family)->name)));
+            press(">");
+        }
+        press(">"); press(">");
+        shot(language ? "scelta-en" : "scelta-it");
+        press(TR("Inizia", "Begin"));
+        assert(R.screen == R_TOWN && R.g.hero.cls == FAM_ARCHER && R.g.hero.equip[SLOT_WEAPON].type == IT_BOW);
+        assert(R.g.lantern.state == LN_NONE && !find(lv_screen_active(), TR("Classico", "Classic")));
+        check_buttons(lv_screen_active());
+        const char *actions[] = {TR("Mappa", "Map"), TR("Classe", "Class"), TR("Eroe", "Hero"),
+                                 TR("Equip", "Gear"), TR("Servizi", "Services")};
+        for (size_t i = 0; i < sizeof actions / sizeof *actions; i++) {
+            lv_obj_t *label = find(lv_screen_active(), actions[i]);
+            assert(label);
+            lv_area_t b;
+            lv_obj_get_coords(lv_obj_get_parent(label), &b);
+            for (int x = b.x1; x <= b.x2; x += b.x2 - b.x1)
+            for (int y = b.y1; y <= b.y2; y += b.y2 - b.y1)
+                assert((x - CX) * (x - CX) + (y - CY) * (y - CY) < CX * CY);
+        }
+        shot(language ? "borgo-en" : "borgo-it");
+        press(TR("Mappa", "Map"));
+        press(TX(rpg_zone(0)->field_name));
+        press(TR("Combatti", "Fight"));
+        assert(R.screen == R_BATTLE);
+        run(1250);
+        shot(language ? "lotta-en" : "lotta-it");
+        for (int elapsed = 0; elapsed < 18000 && rpg_battle_phase() != 7; elapsed += 5) {
+            if (rpg_battle_phase() == 1) press(TR("Attacco", "Attack"));
+            if (rpg_battle_ring_quality_now() == WF_Q_PERFECT || rpg_battle_parry_quality_now() == WF_Q_PERFECT)
+                assert(wf_app_key(WF_KEY_BOOT_DOWN));
+            run(5);
+        }
+        assert(R.g.kills && R.g.hero.cls == FAM_ARCHER);
+        press(TR("Continua", "Continue"));
+        assert(R.screen == R_ZONE);
+        assert(wf_app_key(WF_KEY_BOOT_SHORT) && R.screen == R_MAP);
+        assert(wf_app_key(WF_KEY_BOOT_SHORT) && R.screen == R_TOWN);
+
+        uint32_t job_xp = R.g.hero.job_xp;
+        press(TR("Classe", "Class")); press(TR("Cambia classe", "Switch class"));
+        shot(language ? "famiglie-en" : "famiglie-it");
+        press(TX(rpg_class(FAM_MAGE)->name));
+        assert(find(lv_layer_top(), TR("Conferma", "Confirm")));
+        assert(wf_app_key(WF_KEY_BOOT_SHORT) && R.g.hero.cls == FAM_ARCHER);
+        run(40);
+        press(TX(rpg_class(FAM_MAGE)->name)); press(TR("Conferma", "Confirm"));
+        assert(R.screen == R_CLASS && R.g.hero.cls == FAM_MAGE && R.g.hero.equip[SLOT_WEAPON].type == IT_STAFF);
+        wf_app_start(saved, saved_len);
+        assert(R.screen == R_TOWN && R.g.hero.cls == FAM_MAGE);
+        press(TR("Classe", "Class")); press(TR("Cambia classe", "Switch class"));
+        press(TX(rpg_class(FAM_ARCHER)->name)); press(TR("Conferma", "Confirm"));
+        assert(R.g.hero.cls == FAM_ARCHER && R.g.hero.job_xp == job_xp);
+        assert(wf_app_key(WF_KEY_BOOT_SHORT) && R.screen == R_TOWN);
+        enter_expedition();
+        assert(R.screen == R_LANTERN_HOME && !find(lv_screen_active(), TR("Eroe", "Hero")));
+        press(TR("Borgo", "Village"));
+        assert(R.screen == R_TOWN && R.g.hero.cls == FAM_ARCHER);
+    }
+    puts("primary adventure: clean start, eight classes, first battle, switch and resume job after reboot, separated expedition IT/EN: passed");
+}
+
 int main(int argc, char **argv) {
     setvbuf(stdout, NULL, _IOLBF, 0);
     assert(argc == 2); dest = argv[1];
@@ -226,8 +299,8 @@ int main(int argc, char **argv) {
     lv_display_set_flush_cb(display, flush);
     lv_indev_t *input = lv_indev_create(); lv_indev_set_type(input, LV_INDEV_TYPE_POINTER);
     lv_indev_set_read_cb(input, read_touch); lv_timer_set_period(lv_indev_get_read_timer(input), 10);
-    wf_app_start(NULL, 0); run(150); press("Gioca");
-    cadence_and_judgment(); scene_lifetimes(); modal_and_gems();
-    printf("device UI regressions: %d native timing captures; no physical latency claim\n", shots);
+    new_adventure();
+    cadence_and_judgment(); scene_lifetimes(); modal_and_gems(); primary_adventure();
+    printf("device UI regressions: %d native captures; no physical latency claim\n", shots);
     return 0;
 }

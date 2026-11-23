@@ -266,6 +266,64 @@ bool rpg_change_class(rpg_game *g, int target) {
     return true;
 }
 
+int rpg_family_class(const rpg_game *g, int family) {
+    if ((unsigned)family >= FAM_COUNT) return -1;
+    if (rpg_class_family(g->hero.cls) == family) return g->hero.cls;
+    const rpg_family_progress *progress = &g->families[family];
+    return progress->job_level ? progress->cls : family;
+}
+
+int rpg_switch_family(rpg_game *g, int family) {
+    int target = rpg_family_class(g, family);
+    if (target < 0 || g->hero.cls == target) return RPG_ERR_CLASS;
+    if (g->classic.active || g->run.active || g->hunt.active) return RPG_ERR_BUSY;
+
+    /* Plan the entire move on a copy so a full bag cannot strand equipment
+     * or partially switch a career. The active job lives in hero only. */
+    rpg_game next = *g;
+    rpg_hero *h = &next.hero;
+    int previous = rpg_class_family(h->cls);
+    next.families[previous] = (rpg_family_progress){h->job_xp, h->skill_points, h->cls, h->job_level};
+    rpg_family_progress career = next.families[family];
+    next.families[family] = (rpg_family_progress){0};
+    h->cls = (uint8_t)target;
+    h->job_level = career.job_level ? career.job_level : 1;
+    h->job_xp = career.job_xp;
+    h->skill_points = career.job_level ? career.skill_points : 1;
+
+    const int starter[] = {[SLOT_WEAPON] = start_weapon[family], [SLOT_OFFHAND] = start_offhand[family],
+                           [SLOT_BODY] = start_body[family]};
+    for (int slot = 0; slot < SLOT_COUNT; slot++) {
+        rpg_item *equipped = &h->equip[slot];
+        if (rpg_can_equip(&next, equipped)) continue;
+        const bool principal = slot == SLOT_WEAPON || slot == SLOT_OFFHAND || slot == SLOT_BODY;
+        if (principal) {
+            int found = -1;
+            for (int i = 0; i < RPG_BAG; i++) {
+                const rpg_item *item = &next.bag[i];
+                if (!rpg_can_equip(&next, item) || rpg_item_type_get(item->type)->slot != slot) continue;
+                if (found < 0 || item->level > next.bag[found].level) found = i;
+            }
+            if (found >= 0) {
+                rpg_equip(&next, found);
+                continue;
+            }
+        }
+        if (!rpg_item_empty(equipped)) {
+            if (!rpg_bag_add(&next, equipped)) return RPG_ERR_BAG;
+            equipped->type = 0xff;
+        }
+        if (principal && !career.job_level) basic_item(equipped, starter[slot]);
+    }
+    if (!career.job_level) h->skill[rpg_class(target)->skills[0]] = 1;
+    rpg_stats stats;
+    rpg_stats_get(&next, &stats);
+    h->hp = g->hero.hp < stats.max_hp ? g->hero.hp : stats.max_hp;
+    h->sp = g->hero.sp < stats.max_sp ? g->hero.sp : stats.max_sp;
+    *g = next;
+    return RPG_OK;
+}
+
 /* ---- Real time ------------------------------------------------------------------------ */
 bool rpg_tick(rpg_game *g, uint32_t now) {
     bool changed = false;

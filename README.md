@@ -1,16 +1,14 @@
 # Pocket Wayfarer
 
-**Un borgo illuminato, una strada da scegliere, un faro da riaccendere.**
+Un RPG fantasy HD-2D per **Waveshare ESP32-S3-Touch-AMOLED-1.75**, con schermo rotondo 466×466, touch e tasti. Crea l’eroe, scegli fra otto classi iniziali ed esplora le Isole Sospese.
 
-Un RPG fantasy HD-2D per **Waveshare ESP32-S3-Touch-AMOLED-1.75**, con schermo rotondo 466×466, touch e tasti. La nuova esperienza **Lanternbound** include cinque stanze, tre eroi, reliquie con effetti distinti e un ritorno al borgo che prepara il viaggio successivo.
-
-![Schermate reali: borgo, combattimento e reliquia](docs/img/lantern/panoramica.png)
+![Il Borgo Lanterna con l’Arciere e i comandi principali](docs/img/hero_rig/borgo-principale.png)
 
 **[Installa dal browser](https://shydanrem.github.io/pocketwayfarer/)** · **[Manuale illustrato](docs/GUIDA.md)** · **[Tutta la documentazione](docs/README.md)**
 
 **[Roadmap operativa](docs/ROADMAP.md)** · [Stato del lotto attivo](docs/roadmap/STATUS.md) · [Direzione artistica delle 40 classi](docs/CLASS-ART-BIBLE.md)
 
-> **0.10.0-preview.4** — Tutte le **40 classi del Classico** hanno pose di carica, impatto, recupero e difesa nella vista laterale. [Catture e prove R7.2c](docs/roadmap/classic-all-poses-evidence/README.md) · [Roadmap](docs/ROADMAP.md)
+> **0.10.0-preview.5** — Nuovo ingresso, borgo unico e cambio di famiglia con progressi separati. [Note di versione](CHANGELOG.md)
 
 ## Sul Pocket, in pochi passaggi
 
@@ -24,38 +22,11 @@ Il pacchetto include firmware, grafica e font: non servono compilazione, microSD
 
 ## Il primo viaggio
 
-**Gioca → Parti → scegli il cammino.** L’assetto in uso è scritto sul pulsante **Parti**. Apri **Eroe** se vuoi cambiarlo. La guida contestuale insegna attacco, parata e Risonanza durante le prime lotte. Puoi ripeterla dalle opzioni.
-
-| Nella spedizione | La tua scelta |
-|---|---|
-| Percorsi | Vedi i nemici prima di entrare: un avversario robusto o due più fragili. |
-| Combattimento | Bersaglio, attacco a tempo, due abilità e Guardia per recuperare PM e ridurre i danni. |
-| Risonanza | Tre parate perfette preparano l’effetto dell’offensiva del tuo assetto. |
-| Reliquie | Sei effetti, due proposte per ricompensa; a tre slot confronti e sostituisci, oppure rinunci. |
-| Eventi | Focolare per riprendere fiato o Specchio per un patto a costo di PV. |
-| Ritorno | Rientri con tutto l’oro; una sconfitta perde `floor(oro / 4)`. Retry senza attesa di stamina. |
-| Vittoria | Il Guardiano chiude il viaggio; conservi un progetto equipaggiabile nella run successiva. |
-
-![Sentinella, Piromante, Predone e Guardiano del Faro](docs/img/lantern/assetti-e-guardiano.png)
-
-La Sentinella protegge e prepara, il Piromante applica bruciatura, il Predone sfrutta la Preparazione. Affondi, rinculo, parata perfetta ed effetti distinti rispettano pausa e movimento ridotto. Nel borgo trovi mappa, bestiario, collezione e opzioni IT/EN.
-
-Da **… → Classi** consulti anche le 40 classi classiche, le loro abilità e i percorsi di evoluzione. Le otto basi hanno nuove illustrazioni; le evoluzioni indicano quando mostrano il ritratto della famiglia. L'atlante non cambia il tuo eroe e resta distinto dai tre assetti della spedizione.
-
-Nel Classico, tutte le 40 classi usano i nuovi avatar modulari: razza, pelle, capelli, occhi, volto e oggetti restano quelli del tuo eroe. La tavola seguente mostra il renderer LVGL in uno studio di verifica, non un nuovo luogo giocabile.
+**Nuova avventura → scegli la classe → Inizia.** Apri **Aspetto** se vuoi personalizzare l’eroe prima di partire. Al borgo scegli **Mappa → Prati di Lumen → Combatti**. Tocca **Classe → Cambia classe** per provare un’altra famiglia e tornare in seguito a quella già avanzata.
 
 ![Otto avatar base nel renderer nativo](docs/img/hero_rig/otto-avatar-base.png)
 
-## Controlli essenziali
-
-| Comando | Azione |
-|---|---|
-| Touch | Bersaglio, menu e timing di attacco/parata. |
-| BOOT | Timing alla pressione; durante la scelta in battaglia mette in pausa. Nei menu, indietro al rilascio. |
-| II | Pausa anche durante l’anello e la parata. |
-| PWR | Salva e spegne/riaccende lo schermo. |
-
-Riprendi conserva la fase e concede 650 ms di preparazione. Timing assistito allarga le finestre del 50%; movimento ridotto mantiene i segnali necessari senza effetti decorativi in movimento. [Regole, eroi e reliquie](docs/GUIDA.md).
+**Touch** seleziona bersagli e comandi. Durante attacco e parata puoi usare anche **BOOT**. Nei menu BOOT torna indietro. **PWR** salva e spegne o riaccende lo schermo. [Manuale illustrato](docs/GUIDA.md)
 
 ## Provare senza dispositivo
 
@@ -67,11 +38,9 @@ bash scripts/play-desktop.sh
 
 Mouse = touch, Spazio/Invio = BOOT, Esc = BOOT lungo, P = PWR, F5 = salva/ricarica. È la stessa UI nativa C/LVGL del firmware. Usa `--save build/prova.bin` per un profilo separato. [Requisiti e istruzioni di sviluppo](docs/SVILUPPO.md).
 
-## Il gioco classico resta disponibile
+## Spedizione extra
 
-Da **… → Classico** accedi al precedente RPG: creazione dettagliata, 40 classi, equipaggiamento, campi e dungeon, bottega, forgia, missioni e caccia offline. Usa lo stesso profilo migrato; non richiede un downgrade. Il redesign grafico non copre ancora tutte le sue schermate e regioni. Legami nell’RPG e audio non sono funzioni completate della preview.
-
-I difetti dell’audit su incontri interrotti, missioni oro/sociali, morale e bottino a zaino pieno sono coperti da regressioni correnti. [Progettazione classica](docs/RPG-DESIGN.md), [regole implementate e prove](docs/LANTERNBOUND.md).
+**Servizi → Spedizione extra** apre Lanternbound, cinque stanze con tre assetti e sei reliquie. I suoi progressi sono conservati. **Borgo** riporta al percorso principale. [Regole di Lanternbound](docs/LANTERNBOUND.md)
 
 ## Documentazione
 
@@ -87,7 +56,7 @@ I difetti dell’audit su incontri interrotti, missioni oro/sociali, morale e bo
 
 ## Verifiche e provenienza
 
-La suite comprende 55.639 controlli RPG, 1.434 del compagno, 600 spedizioni simulate e 49 catture native Lanternbound con 432 salvataggi validati. Tre ulteriori catture verificano il cerchio con frame da 120 ms. L'atlante aggiunge 80 schede IT/EN e 17 catture, con 208 riferimenti alle abilità e 16 percorsi verificati. Include sanitizer, errori di input/salvataggio, cache, dialoghi, migrazione v1/v2/v3 e confronto del rendering aggiornato con quello completo. [Log e limiti](docs/lantern-evidence/README.md), [prove R1](docs/roadmap/evidence/README.md). Sono verifiche del codice e dei percorsi esercitati, non misure di autonomia o coinvolgimento dei giocatori.
+La suite nativa verifica il percorso dal primo avvio alla prima vittoria in italiano e inglese, il cambio di famiglia e il ripristino dei progressi. Copre anche combat timing, migrazione v1–v4, equipaggiamento e gioco salvato. Il collaudo della nuova preview sul Pocket fisico resta aperto. [Roadmap e prove](docs/ROADMAP.md)
 
 Gli atlas HD-2D originali e i font hanno [sorgenti, prompt e registro](assets/lantern/README.md). [Crediti e licenze dei componenti](THIRD_PARTY.md). L’installazione dal browser si ispira al percorso di [TamaPoke](https://socquique.github.io/TamaPoke/web/) e usa ESP Web Tools; non copia firmware o contenuti del gioco. L’infrastruttura hardware deriva dal lavoro su [PocketD-D](https://github.com/ShydanRem/PocketD-D), senza contenuti o regole D&D.
 

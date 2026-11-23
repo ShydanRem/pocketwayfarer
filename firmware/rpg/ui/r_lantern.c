@@ -19,7 +19,7 @@ LV_FONT_DECLARE(ln_font_title)
 #define TITLE (&ln_font_title)
 
 enum { PAGE_TOWN, PAGE_BATTLE, PAGE_ROUTE, PAGE_RELIC, PAGE_EVENT, PAGE_CLEAR, PAGE_RESULT,
-       PAGE_MENU, PAGE_LOADOUT, PAGE_OPTIONS, PAGE_COLLECTION, PAGE_TITLE, PAGE_MAP, PAGE_BESTIARY, PAGE_HELP, PAGE_HUNT,
+       PAGE_MENU, PAGE_LOADOUT, PAGE_OPTIONS, PAGE_COLLECTION, PAGE_MAP, PAGE_BESTIARY, PAGE_HELP,
        PAGE_REPLACE };
 static struct {
     int page, pick, frame, skill_menu, offer_pick;
@@ -175,13 +175,13 @@ static void changed_from(const rpg_lantern *before) {
 }
 
 /* Event codes are private to this screen: no callbacks survive a scene change. */
-enum { C_DEPART = 1, C_HERO, C_BAG, C_MORE, C_HOME, C_CLASSIC, C_MAP, C_EQUIP, C_OPTIONS,
+enum { C_DEPART = 1, C_HERO, C_BAG, C_MORE, C_HOME, C_VILLAGE, C_MAP, C_OPTIONS,
        C_LEFT, C_RIGHT, C_BEGIN, C_ROUTE0, C_ROUTE1, C_ATTACK, C_SKILLS, C_GUARD,
        C_POWER, C_SUPPORT, C_PAUSE, C_RESUME, C_TARGET0, C_TARGET1, C_RELIC,
        C_CONTINUE, C_RETREAT, C_EVENT0, C_EVENT1, C_RETRY, C_ASSIST, C_MOTION,
-       C_LANGUAGE, C_QUICK, C_CUSTOM, C_COLLECTION, C_ABORT, C_EQUIP_RELIC,
-       C_BESTIARY, C_HELP, C_HUNT, C_COLLECT_HUNT, C_TIPS, C_REPLAY_TIPS, C_ACK_TIP,
-       C_REPLACE_RELIC, C_CANCEL_REPLACE, C_SKIP_RELIC, C_CLASSES, C_BASTION, C_EQUIP_RESULT };
+       C_LANGUAGE, C_COLLECTION, C_ABORT, C_EQUIP_RELIC,
+       C_BESTIARY, C_HELP, C_TIPS, C_REPLAY_TIPS, C_ACK_TIP,
+       C_REPLACE_RELIC, C_CANCEL_REPLACE, C_SKIP_RELIC, C_BASTION, C_EQUIP_RESULT };
 
 static void departure_button(const char *text, int y) {
     lv_obj_t *b = button(L.root, text, CX, y, 216, 72, C_DEPART, true);
@@ -193,48 +193,34 @@ static void departure_button(const char *text, int y) {
     lv_obj_align(loadout_name, LV_ALIGN_CENTER, 0, 13);
 }
 
-void scr_lantern_title(void) {
-    scene(PAGE_TITLE, 0, 50);
-    panel(L.root, CX, 91, 330, 46, 225);
-    label(L.root, "POCKET WAYFARER", CX, 91, 314, IVORY, true);
-    panel(L.root, CX, 124, 238, 28, 225);
-    label(L.root, "LANTERNBOUND", CX, 124, 270, AMBER, false);
-    ground_shadow(CX, 282, 70);
-    L.hero = kit_img(L.root, hero_sprite(0), 2, CX, 202);
-    button(L.root, TR("Gioca", "Play"), CX, 323, 236, 72, C_QUICK, true);
-    button(L.root, TR("Personalizza", "Customize"), CX, 397, 176, 52, C_CUSTOM, false);
-    button(L.root, wf_lang ? "EN" : "IT", CX, 43, 52, 42, C_LANGUAGE, false);
-}
-
-void scr_town(void) {
+void scr_lantern_home(void) {
     if (R.g.run.active) { r_go(R_DUNGEON); return; }
-    if (ln_active(game())) { r_go(R_LANTERN); return; }
+    if (game()->state != LN_NONE) { r_go(R_LANTERN); return; }
     scene(PAGE_TOWN, 0, 0);
     char sub[64];
     const char *summary = game()->wins == 1 ? TR("%lu oro  ·  %u spedizione", "%lu gold  ·  %u expedition")
                                              : TR("%lu oro  ·  %u spedizioni", "%lu gold  ·  %u expeditions");
     snprintf(sub, sizeof sub, summary,
              (unsigned long)R.g.gold, game()->wins);
-    header(TR("Borgo Lanterna", "Lantern Hollow"), sub);
+    header("Lanternbound", sub);
     ground_shadow(160, 275, 70);
     L.hero = kit_img(L.root, hero_sprite(0), 2, 160, 195);
-    if (R.g.hunt.active) button(L.root, TR("Caccia", "Hunt"), 311, 238, 110, 52, C_HUNT, false);
     button(L.root, "...", 347, 146, 52, 52, C_MORE, false);
-    button(L.root, TR("Eroe", "Hero"), 169, 306, 116, 54, C_HERO, false);
-    button(L.root, TR("Zaino", "Relics"), 297, 306, 116, 54, C_BAG, false);
-    departure_button(TR("PARTI", "DEPART"), 376);
+    button(L.root, TR("Assetto", "Loadout"), 169, 289, 116, 54, C_HERO, false);
+    button(L.root, TR("Reliquie", "Relics"), 297, 289, 116, 54, C_BAG, false);
+    departure_button(TR("PARTI", "DEPART"), 350);
+    button(L.root, TR("Borgo", "Village"), CX, 422, 132, 44, C_VILLAGE, false);
 }
 static void menu(void) {
     scene(PAGE_MENU, 0, 160);
-    header(TR("Il borgo", "The village"), TR("Ogni viaggio comincia qui", "Every journey begins here"));
+    header("Lanternbound", TR("Spedizione extra", "Side expedition"));
     button(L.root, TR("Mappa", "Map"), 155, 166, 144, 58, C_MAP, false);
     button(L.root, TR("Bestiario", "Bestiary"), 311, 166, 144, 58, C_BESTIARY, false);
     button(L.root, TR("Collezione", "Collection"), 155, 234, 144, 58, C_COLLECTION, false);
     button(L.root, TR("Opzioni", "Options"), 311, 234, 144, 58, C_OPTIONS, false);
     button(L.root, TR("Come si gioca", "How to play"), 155, 302, 144, 58, C_HELP, false);
-    button(L.root, TR("Classi", "Classes"), 311, 302, 144, 58, C_CLASSES, false);
-    button(L.root, TR("Classico", "Classic"), 155, 370, 144, 58, C_CLASSIC, false);
-    button(L.root, TR("Torna", "Back"), 311, 370, 144, 58, C_HOME, false);
+    button(L.root, TR("Borgo", "Village"), 311, 302, 144, 58, C_VILLAGE, false);
+    button(L.root, TR("Torna", "Back"), CX, 370, 144, 58, C_HOME, false);
 }
 static void loadout(void) {
     scene(PAGE_LOADOUT, 0, 130);
@@ -332,18 +318,6 @@ static void help(void) {
     label(L.root, TX(body[p]), CX, 230, 278, IVORY, false);
     button(L.root, "<", 150, 347, 84, 60, C_LEFT, false); button(L.root, ">", 316, 347, 84, 60, C_RIGHT, false);
     button(L.root, TR("Torna", "Back"), CX, 412, 132, 44, C_HOME, false);
-}
-static void hunt(void) {
-    scene(PAGE_HUNT, 0, 140);
-    header(TR("Il viaggio in tasca", "The pocket journey"), NULL);
-    rpg_haul h; rpg_hunt_preview(&R.g, r_now(), &h);
-    L.hero = kit_img(L.root, hero_sprite(0), 2, CX, 193);
-    char b[192];
-    snprintf(b, sizeof b, TR("%lu min · %lu mostri\n%lu oro · %u oggetti\nSpazio libero: %d", "%lu min · %lu foes\n%lu gold · %u items\nBag space: %d"),
-             (unsigned long)h.minutes, (unsigned long)h.kills, (unsigned long)h.gold, h.nitems, RPG_BAG - rpg_bag_count(&R.g));
-    panel(L.root, CX, 285, 300, 100, 245); label(L.root, b, CX, 285, 284, IVORY, false);
-    button(L.root, TR("Raccogli", "Collect"), 162, 378, 130, 64, C_COLLECT_HUNT, true);
-    button(L.root, TR("Zaino", "Bag"), 304, 378, 130, 64, C_EQUIP, false);
 }
 static void bastion_route(const rpg_lantern *l) {
     const int routes[] = {LN_PATH_TRAIL, LN_PATH_BASTION};
@@ -748,7 +722,7 @@ static void result(void) {
     }
     button(L.root, TR("Collezione", "Collection"), 157, 371, 142, 58, C_COLLECTION, false);
     button(L.root, lost ? TR("Riprova", "Retry") : TR("Parti", "Depart"), 309, 371, 142, 58, C_RETRY, true);
-    button(L.root, TR("Borgo", "Village"), CX, 430, 130, 42, C_HOME, false);
+    button(L.root, TR("Borgo", "Village"), CX, 430, 130, 42, C_VILLAGE, false);
 }
 static void show(void) {
     int s = game()->state;
@@ -758,7 +732,7 @@ static void show(void) {
     else if (s == LN_EVENT) event();
     else if (s == LN_CLEARED) cleared();
     else if (result_state(s)) result();
-    else scr_town();
+    else r_go(R_LANTERN_HOME);
 }
 void scr_lantern(void) { L.skill_menu = 0; show(); }
 
@@ -770,22 +744,15 @@ static void on_click(lv_event_t *e) {
     if (c == C_TIPS) { R.g.coach.disabled ^= 1; save(); options(); return; }
     if (c == C_REPLAY_TIPS) { R.g.coach = (ln_coach){0}; save(); options(); return; }
     if (c == C_ACK_TIP) { ln_coach_ack(&R.g.coach, L.coach_tip); save(); battle_refresh(); return; }
-    if (c == C_QUICK) {
-        rpg_new_hero nh = {0};
-        snprintf(nh.name, sizeof nh.name, "Wayfarer"); nh.lang = wf_lang;
-        rpg_game_new(&R.g, &nh, r_now(), wf_platform_random());
-        R.loaded = true; save(); r_go(R_TOWN); return;
-    }
-    if (c == C_CUSTOM) { r_go(R_CREATE); return; }
     if (c == C_LANGUAGE) {
         wf_lang ^= 1; R.g.lang = wf_lang;
         if (R.loaded) save();
-        if (L.page == PAGE_TITLE) scr_lantern_title(); else options();
+        options();
         return;
     }
     if (c == C_HOME) {
         if (L.page == PAGE_COLLECTION && result_state(l->state)) result();
-        else { ln_home(l); save(); r_go(R_TOWN); }
+        else { ln_home(l); save(); r_go(R_LANTERN_HOME); }
         return;
     }
     if (c == C_MORE) { menu(); return; }
@@ -799,8 +766,11 @@ static void on_click(lv_event_t *e) {
         collection(); return;
     }
     if (c == C_OPTIONS) { options(); return; }
-    if (c == C_CLASSIC) { r_go(R_TOWN_CLASSIC); return; }
-    if (c == C_CLASSES) { r_go(R_CLASS_ATLAS); return; }
+    if (c == C_VILLAGE) {
+        if (result_state(l->state)) { ln_home(l); save(); }
+        r_go(R_TOWN);
+        return;
+    }
     if (c == C_MAP) { world_map(); return; }
     if (c == C_BESTIARY) { L.pick = 0; bestiary(); return; }
     if (c == C_HELP) { L.pick = 0; help(); return; }
@@ -811,14 +781,6 @@ static void on_click(lv_event_t *e) {
         while (!(l->relics & (1u << L.pick))) L.pick++;
         replace_relic(); return;
     }
-    if (c == C_HUNT) { hunt(); return; }
-    if (c == C_COLLECT_HUNT) {
-        rpg_haul haul;
-        int status = rpg_hunt_collect(&R.g, r_now(), &haul);
-        if (status != RPG_OK) { kit_toast(TR("Fai spazio nello zaino: il bottino è conservato", "Make bag space: your haul is safe"), NULL); return; }
-        save(); r_go(R_TOWN); kit_toast(TR("Bottino raccolto", "Haul collected"), NULL); return;
-    }
-    if (c == C_EQUIP) { r_go(R_BAG); return; }
     if (c == C_EQUIP_RELIC) {
         int r = L.pick % LR_COUNT;
         if (ln_equip_blueprint(l, l->equipped == r + 1 ? -1 : r)) { save(); collection(); }
@@ -859,7 +821,7 @@ static void on_click(lv_event_t *e) {
     }
     if (c == C_DEPART || c == C_BEGIN || c == C_RETRY) {
         if (R.g.run.active || R.g.hunt.active) {
-            kit_toast(TR("Concludi prima il viaggio o la caccia classica", "Finish your classic run or hunt first"), NULL); return;
+            kit_toast(TR("Concludi prima il dungeon o la caccia", "Finish your dungeon or hunt first"), NULL); return;
         }
         ln_start(l, l->archetype, wf_platform_random());
         R.screen = R_LANTERN; L.pick = L.skill_menu = 0; L.ready_ms = 0; changed(); return;
@@ -944,9 +906,10 @@ bool lantern_key(int key) {
         return true;
     }
     if (L.page == PAGE_LOADOUT || L.page == PAGE_MENU || L.page == PAGE_OPTIONS || L.page == PAGE_COLLECTION ||
-        L.page == PAGE_MAP || L.page == PAGE_BESTIARY || L.page == PAGE_HELP || L.page == PAGE_HUNT) {
-        r_go(R_TOWN); return true;
+        L.page == PAGE_MAP || L.page == PAGE_BESTIARY || L.page == PAGE_HELP) {
+        r_go(R_LANTERN_HOME); return true;
     }
+    if (L.page == PAGE_TOWN) { r_go(R_TOWN); return true; }
     return true;
 }
 void lantern_suspend(void) {

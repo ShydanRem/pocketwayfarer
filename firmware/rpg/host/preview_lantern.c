@@ -90,6 +90,24 @@ static void press(const char *s) {
     assert((x - 233) * (x - 233) + (y - 233) * (y - 233) < 233 * 233);
     click(x, y);
 }
+static void new_adventure(void) {
+    wf_app_start(NULL, 0);
+    run(40);
+    press(TR("Nuova avventura", "New adventure"));
+    press(TR("Inizia", "Begin"));
+    assert(R.loaded && R.screen == R_TOWN);
+}
+static void enter_expedition(void) {
+    assert(R.screen == R_TOWN);
+    press(TR("Servizi", "Services"));
+    press(ln_active(&R.g.lantern) ? TR("Riprendi spedizione", "Resume expedition")
+                                  : TR("Spedizione extra", "Side expedition"));
+}
+static void restore_expedition(void) {
+    wf_app_start(saved, saved_len);
+    enter_expedition();
+    assert(R.screen == R_LANTERN);
+}
 static void check_buttons(lv_obj_t *o) {
     if (lv_obj_has_flag(o, LV_OBJ_FLAG_HIDDEN)) return;
     if (lv_obj_check_type(o, &lv_button_class)) {
@@ -104,10 +122,9 @@ static void check_buttons(lv_obj_t *o) {
     for (uint32_t i = 0; i < lv_obj_get_child_count(o); i++) check_buttons(lv_obj_get_child(o, (int)i));
 }
 static void check_hero_clearance(const char *name) {
-    bool title = R.screen == R_TITLE;
-    bool town = R.screen == R_TOWN;
+    bool town = R.screen == R_LANTERN_HOME;
     bool battle = R.screen == R_LANTERN && R.g.lantern.state >= LN_CHOOSE && R.g.lantern.state <= LN_IMPACT;
-    if (!title && !town && !battle) return;
+    if (!town && !battle) return;
     lv_obj_t *screen = lv_screen_active();
     bool found = false;
     for (unsigned i = 0; i < lv_obj_get_child_count(screen); i++) {
@@ -115,7 +132,7 @@ static void check_hero_clearance(const char *name) {
         if (!lv_obj_check_type(o, &lv_image_class) || lv_obj_get_width(o) != 176) continue;
         lv_area_t a; lv_obj_get_coords(o, &a);
         int cx = (a.x1+a.x2+1)/2;
-        if (cx < (title ? 230 : town ? 145 : 105) || cx > (title ? 236 : town ? 175 : 150)) continue;
+        if (cx < (town ? 145 : 105) || cx > (town ? 175 : 150)) continue;
         const lv_image_dsc_t *image = lv_image_get_src(o);
         assert(image->header.cf == LV_COLOR_FORMAT_RGB565A8);
         const uint8_t *alpha = image->data + image->header.stride * image->header.h;
@@ -123,7 +140,7 @@ static void check_hero_clearance(const char *name) {
             if (!alpha[y*image->header.w+x]) continue;
             /* Test actual expanded sprite pixels against the rendered HUD,
              * rather than its padded transparent canvas. Feet used to fail. */
-            assert(a.y1+(int)y > (title ? 137 : 106) && a.y1+(int)y < (title ? 287 : town ? 279 : 285));
+            assert(a.y1+(int)y > 106 && a.y1+(int)y < (town ? 279 : 285));
             if (battle) {
                 int dx = a.x1 + (int)x - CX, dy = a.y1 + (int)y - CY;
                 assert(dx * dx + dy * dy < CX * CY && a.x1 + (int)x < CX);
@@ -131,8 +148,8 @@ static void check_hero_clearance(const char *name) {
         }
         found = true;
     }
-    /* Town subpages share R_TOWN but intentionally have no hero. */
-    if (title || !strcmp(name, "borgo") || !strcmp(name, "village-english") || !strcmp(name, "combattimento")) assert(found);
+    /* Town subpages share R_LANTERN_HOME but intentionally have no hero. */
+    if (!strcmp(name, "borgo") || !strcmp(name, "village-english") || !strcmp(name, "combattimento")) assert(found);
 }
 static void shot(const char *name) {
     lv_obj_update_layout(lv_screen_active());
@@ -196,7 +213,7 @@ static void defend_once(bool capture) {
 }
 static void return_after_hit(void) {
     while (R.g.lantern.state == LN_IMPACT) run(5);
-    assert(R.g.lantern.state == LN_RELIC); press("SCEGLI"); press("Rientra"); press("Borgo");
+    assert(R.g.lantern.state == LN_RELIC); press("SCEGLI"); press("Rientra"); press("Borgo"); enter_expedition();
 }
 static void check_relic_comparison(int incoming, int outgoing) {
     lv_obj_update_layout(lv_screen_active());
@@ -257,7 +274,7 @@ static void relic_exchange_ui(void) {
         wf_app_key(WF_KEY_PWR_SHORT); run(50); wf_app_key(WF_KEY_PWR_SHORT); run(50);
         assert(!memcmp(l, &before, sizeof before));
         check_relic_comparison(l->offers[choice], outgoing);
-        wf_app_flush_save(); wf_app_start(saved, saved_len); run(50);
+        wf_app_flush_save(); restore_expedition(); run(50);
         assert(!memcmp(&R.g.lantern, &before, sizeof before) && R.g.gold == gold);
         choice = selected_offer(); press(language ? "COMPARE" : "CONFRONTA");
         l = &R.g.lantern; outgoing = 0;
@@ -268,7 +285,7 @@ static void relic_exchange_ui(void) {
         assert(l->relics == ((before.relics & ~(1u << outgoing)) | (1u << incoming)));
         assert(l->currency == before.currency && l->rng == before.rng && R.g.gold == gold);
         unsigned swapped = l->relics;
-        wf_app_flush_save(); wf_app_start(saved, saved_len); run(50);
+        wf_app_flush_save(); restore_expedition(); run(50);
         assert(R.g.lantern.state == LN_CLEARED && R.g.lantern.relics == swapped);
         /* A second reward can be declined without changing the loadout. */
         l = &R.g.lantern; l->state = LN_RELIC;
@@ -298,7 +315,7 @@ static void no_relic_victory_ui(void) {
     assert(R.g.lantern.state == LN_WON && R.g.lantern.wins == wins + 1);
     assert(R.g.gold == gold + 80 && R.g.lantern.blueprints == projects);
     shot("vittoria-senza-reliquie");
-    wf_app_flush_save(); wf_app_start(saved, saved_len); run(50);
+    wf_app_flush_save(); restore_expedition(); run(50);
     assert(R.g.lantern.state == LN_WON && R.g.gold == gold + 80 && R.g.lantern.wins == wins + 1);
     press("Borgo");
     puts("no-relic UI: all five rooms, skip every reward, win without blueprint softlock, exactly one gold payout after reload: passed");
@@ -318,7 +335,7 @@ static void pacing_preview(bool bastion) {
         rpg_game_new(&R.g, &hero, seconds, 37);
         R.loaded = true;
         R.g.lantern.archetype = LN_SENTINEL;
-        r_go(R_TOWN);
+        r_go(R_LANTERN_HOME);
         run(100);
         if (!lang && !scenario) shot("pacing-borgo");
         rnd = platform_origins[scenario];
@@ -401,7 +418,7 @@ static void bastion_ui(void) {
 
         l->hp = 90;
         r_save_now();
-        wf_app_start(saved, saved_len);
+        restore_expedition();
         assert(l->state == LN_ROUTE && l->hp == 90 && l->currency == 30 && l->rng == before.rng);
         assert(find(lv_screen_active(), cost) && find(lv_screen_active(), prize));
         shot(lang ? "bastion-fork-en" : "bastione-bivio-it");
@@ -410,18 +427,18 @@ static void bastion_ui(void) {
         assert(l->state == LN_CHOOSE && l->hp == 78 && l->currency == 30 && l->branch == LN_PATH_BASTION);
         assert(l->foes[0].max_hp == 88);
         if (!lang) shot("bastione-combattimento-it");
-        wf_app_start(saved, saved_len);
+        restore_expedition();
         assert(l->paused && l->hp == 78 && l->branch == LN_PATH_BASTION && l->currency == 30);
         press(TR("Riprendi", "Resume"));
         run(650);
         play_battle();
         assert(l->state == LN_RELIC && l->currency == 55 && R.g.gold == gold);
-        wf_app_start(saved, saved_len);
+        restore_expedition();
         assert(l->state == LN_RELIC && l->currency == 55 && R.g.gold == gold);
         press(TR("Lascia", "Skip"));
         press(TR("Rientra", "Return"));
         assert(l->state == LN_RETURNED && R.g.gold == gold + 55);
-        wf_app_start(saved, saved_len);
+        restore_expedition();
         assert(l->state == LN_RETURNED && R.g.gold == gold + 55);
         if (!lang) shot("bastione-rientro-it");
         press(TR("Borgo", "Village"));
@@ -459,11 +476,11 @@ static void return_feedback_ui(void) {
         l->blueprints = 1u << LR_COAL;
         r_go(R_LANTERN);
         r_save_now();
-        wf_app_start(saved, saved_len);
+        restore_expedition();
         assert(l->state == LN_BLUEPRINT && R.g.gold == gold);
         press(TR("CONSERVA", "KEEP"));
         assert(l->state == LN_WON && R.g.gold == gold + 95 && l->settled == 96 && !l->equipped);
-        wf_app_start(saved, saved_len);
+        restore_expedition();
         assert(R.g.gold == gold + 95 && find(lv_screen_active(), TR("Nuovo progetto", "New blueprint")));
         assert(find(lv_screen_active(), relic) && find(lv_screen_active(), effect));
         check_label_clearance(effect, TR("Equipaggia", "Equip"));
@@ -478,7 +495,7 @@ static void return_feedback_ui(void) {
         press(TR("Torna", "Back"));
         press(TR("Equipaggia", "Equip"));
         assert(l->equipped == LR_BELL + 1);
-        wf_app_start(saved, saved_len);
+        restore_expedition();
         assert(l->equipped == LR_BELL + 1 && R.g.gold == gold + 95);
         assert(find(lv_screen_active(), TR("Pronta alla partenza", "Ready for next run")));
         if (!lang) shot("rientro-reliquia-pronta");
@@ -569,7 +586,7 @@ static void combat_poses(void) {
         run(850);
         assert(!memcmp(l, &frozen, sizeof *l));
         assert(expect_battle_hero(recovery) == frozen_x);
-        wf_app_start(saved, saved_len);
+        restore_expedition();
         assert(!memcmp(l, &frozen, sizeof *l));
         assert(expect_battle_hero(recovery) == frozen_x);
         press(TR("Riprendi", "Resume"));
@@ -604,13 +621,13 @@ static void departure_paths(void) {
         rpg_new_hero hero = {.lang = (uint8_t)lang};
         rpg_game_new(&R.g, &hero, seconds, 47);
         R.loaded = true;
-        r_go(R_TOWN);
-        press(TR("Eroe", "Hero"));
+        r_go(R_LANTERN_HOME);
+        press(TR("Assetto", "Loadout"));
         press(">");
         assert(R.g.lantern.archetype == LN_MAGE && R.g.lantern.state == LN_NONE);
         if (lang) assert(wf_app_key(WF_KEY_BOOT_SHORT));
         else press("Torna");
-        assert(R.screen == R_TOWN);
+        assert(R.screen == R_LANTERN_HOME);
         lv_obj_t *start = find(lv_screen_active(), TR("PARTI", "DEPART"));
         assert(start);
         lv_obj_t *name = find(lv_obj_get_parent(start), TX(ln_archetype_name(LN_MAGE)));
@@ -625,20 +642,20 @@ static void departure_paths(void) {
 
         const uint32_t gold = R.g.gold;
         assert(rpg_hunt_start(&R.g, 0, seconds) == RPG_OK);
-        r_go(R_TOWN);
+        r_go(R_LANTERN_HOME);
         const uint32_t random_before = rnd;
         press(TR("PARTI", "DEPART"));
-        assert(R.screen == R_TOWN && R.g.hunt.active && R.g.lantern.state == LN_NONE);
+        assert(R.screen == R_LANTERN_HOME && R.g.hunt.active && R.g.lantern.state == LN_NONE);
         assert(R.g.gold == gold && rnd == random_before);
-        assert(!strcmp(kit_last_toast(), TR("Concludi prima il viaggio o la caccia classica",
-                                             "Finish your classic run or hunt first")));
+        assert(!strcmp(kit_last_toast(), TR("Concludi prima il dungeon o la caccia",
+                                             "Finish your dungeon or hunt first")));
         R.g.hunt.active = 0;
         press("...");
         press(TR("Mappa", "Map"));
         press(TR("Parti", "Depart"));
         assert(R.g.lantern.state == LN_ROUTE && R.g.lantern.archetype == LN_MAGE);
         const uint32_t seed = R.g.lantern.rng;
-        wf_app_start(saved, saved_len);
+        restore_expedition();
         assert(R.screen == R_LANTERN && R.g.lantern.state == LN_ROUTE && R.g.lantern.rng == seed);
         assert(R.g.lantern.archetype == LN_MAGE && R.g.gold == gold);
         press(TR("Rientra", "Return"));
@@ -667,9 +684,9 @@ int main(int argc, char **argv) {
         return 0;
     }
     wf_app_start(NULL, 0); run(150); shot("titolo");
-    press("Gioca"); assert(R.loaded && R.screen == R_TOWN); run(150); shot("borgo");
-    press("Eroe"); run(100); shot("assetto");
-    press("Torna"); assert(R.screen == R_TOWN);
+    new_adventure(); enter_expedition(); run(150); shot("borgo");
+    press("Assetto"); run(100); shot("assetto");
+    press("Torna"); assert(R.screen == R_LANTERN_HOME);
     press("PARTI"); assert(R.g.lantern.state == LN_ROUTE); shot("percorso");
     lv_obj_t *route_name = find(lv_screen_active(), "Fiammella");
     assert(route_name && lv_obj_get_height(route_name) <= 30); /* never wraps into the footer */
@@ -692,7 +709,7 @@ int main(int argc, char **argv) {
     press("Torna"); press("Attacco"); assert(R.g.lantern.state == LN_ATTACK);
     /* Unannounced reboot from the last committed, unpaused action checkpoint. */
     int committed_sp = R.g.lantern.sp;
-    wf_app_start(saved, saved_len); run(100);
+    restore_expedition(); run(100);
     assert(R.g.lantern.paused && R.g.lantern.elapsed_ms == 0 && R.g.lantern.sp == committed_sp);
     press("Riprendi"); run(650);
     run(250); shot("anello");
@@ -701,7 +718,7 @@ int main(int argc, char **argv) {
     /* PWR path: the actual app flush serializes a paused timing phase. */
     wf_app_flush_save(); assert(R.g.lantern.paused);
     rpg_lantern suspended = R.g.lantern;
-    wf_app_start(saved, saved_len); run(200);
+    restore_expedition(); run(200);
     assert(R.g.lantern.paused && R.g.lantern.elapsed_ms == suspended.elapsed_ms);
     assert(R.g.lantern.foes[0].hp == suspended.foes[0].hp && R.g.lantern.foes[1].hp == suspended.foes[1].hp);
     shot("pausa-ripresa");
@@ -728,13 +745,13 @@ int main(int argc, char **argv) {
     uint32_t gold0 = R.g.gold;
     press("CONSERVA"); assert(R.g.lantern.state == LN_WON && R.g.gold == gold0 + 80);
     shot("vittoria");
-    wf_app_start(saved, saved_len); run(100); assert(R.g.gold == gold0 + 80); /* no duplicate bank */
-    press("Borgo"); assert(R.screen == R_TOWN); press("Zaino"); shot("collezione");
+    restore_expedition(); run(100); assert(R.g.gold == gold0 + 80); /* no duplicate bank */
+    press("Borgo"); assert(R.screen == R_TOWN); enter_expedition(); press("Reliquie"); shot("collezione");
     press("Equipaggia"); assert(R.g.lantern.equipped != 0); shot("reliquia-iniziale"); press("Torna");
     press("..."); press("Mappa"); shot("mappa-hd2d"); wf_app_key(WF_KEY_BOOT_SHORT);
     press("..."); press("Bestiario"); shot("bestiario"); press(">"); shot("bestiario-fiammella"); press("Torna");
     press("..."); press("Come si gioca"); shot("guida-intento"); press(">"); shot("guida-sinergie"); press(">"); shot("guida-ritorno"); press("Torna");
-    press("Eroe"); press(">"); shot("piromante"); press(">"); shot("predone"); wf_app_key(WF_KEY_BOOT_SHORT);
+    press("Assetto"); press(">"); shot("piromante"); press(">"); shot("predone"); wf_app_key(WF_KEY_BOOT_SHORT);
     press("..."); press("Opzioni"); press("Italiano / English"); shot("options-english"); press("Back");
     shot("village-english");
     press("DEPART"); press("Trail");
@@ -745,7 +762,7 @@ int main(int argc, char **argv) {
     }
     assert(R.g.lantern.state == LN_LOST); shot("defeat-english");
     press("Retry"); assert(R.g.lantern.state == LN_ROUTE && R.g.lantern.hp == R.g.lantern.max_hp);
-    press("Return"); assert(R.g.lantern.state == LN_RETURNED); press("Village");
+    press("Return"); assert(R.g.lantern.state == LN_RETURNED); press("Village"); enter_expedition();
     /* Dedicated UI fixture for the second authored event; full branch behavior
      * is also exercised by the core run simulations. */
     press("DEPART");
@@ -788,19 +805,19 @@ int main(int argc, char **argv) {
     wf_app_start(saved, saved_len); run(50);
     assert(R.g.gold == gold0 && R.g.classic.active == 0);
     press("Scendi"); assert(R.g.run.floor == 6);
-    R.g.run.active = 0; r_go(R_TOWN);
+    R.g.run.active = 0; r_go(R_LANTERN_HOME);
     /* Unresolved stairs are recovered even without an active battle marker. */
     R.g.hero.stamina = 100; assert(rpg_dungeon_enter(&R.g, 0, 0, seconds) == RPG_OK);
     R.g.run.row = RPG_ROWS; R.g.run.col = 1; r_go(R_DUNGEON); r_save_now();
     wf_app_start(saved, saved_len); run(50); press("Scendi"); assert(R.g.run.floor == 2);
-    R.g.run.active = 0; r_go(R_TOWN);
+    R.g.run.active = 0; r_go(R_LANTERN_HOME);
     /* A fresh lesson sequence uses real touch/BOOT. Showcases below start
      * from the existing saved hero; no damage or timing values are injected. */
     uint32_t profile_gold = R.g.gold;
     press("..."); press("Opzioni"); press("Suggerimenti: sì");
     assert(R.g.coach.disabled); press("Ripeti guida");
     assert(!R.g.coach.disabled && !R.g.coach.learned && R.g.gold == profile_gold);
-    press("Torna"); press("Eroe"); press(">"); /* Predone -> Sentinella */
+    press("Torna"); press("Assetto"); press(">"); /* Predone -> Sentinella */
     assert(R.g.lantern.archetype == LN_SENTINEL); press("Parti"); press("Sentiero");
     assert(find(lv_screen_active(), TX(ln_coach_caption(LNT_ATTACK)))); shot("guida-primo-attacco");
     press("Attacco"); shot("guida-timing-in-gioco"); judge_at(WF_Q_MISS);
@@ -821,16 +838,16 @@ int main(int argc, char **argv) {
     run(100); shot("risonanza-impatto");
     press("II"); rpg_lantern frozen = R.g.lantern;
     run(500); assert(R.g.lantern.elapsed_ms == frozen.elapsed_ms && R.g.lantern.rng == frozen.rng);
-    wf_app_flush_save(); wf_app_start(saved, saved_len); run(100);
+    wf_app_flush_save(); restore_expedition(); run(100);
     assert(R.g.coach.learned == LNC_ALL && R.g.lantern.effect_flags == frozen.effect_flags);
     press("Riprendi"); run(300); assert(R.g.lantern.elapsed_ms == frozen.elapsed_ms);
     run(350); assert(R.g.lantern.hp == frozen.hp && R.g.lantern.sp == frozen.sp && R.g.lantern.rng == frozen.rng);
     return_after_hit();
-    press("Eroe"); press(">"); press("Parti"); press("Sentiero");
+    press("Assetto"); press(">"); press("Parti"); press("Sentiero");
     assert(R.g.lantern.archetype == LN_MAGE && !find(lv_screen_active(), TX(ln_coach_caption(LNT_ATTACK))));
     shot("seconda-spedizione-senza-guida"); press("Abilità"); press("Brace\n6 PM"); judge_at(WF_Q_PERFECT);
     run(100); shot("brace-impatto"); return_after_hit();
-    press("Eroe"); press(">"); press("Parti"); press("Sentiero");
+    press("Assetto"); press(">"); press("Parti"); press("Sentiero");
     assert(R.g.lantern.archetype == LN_ROGUE); press("Abilità"); check_buttons(lv_screen_active());
     press("Doppio\n6 PM"); judge_at(WF_Q_PERFECT); run(100); shot("doppio-impatto"); return_after_hit();
     press("..."); press("Opzioni"); press("Movimento ridotto: no");
@@ -848,8 +865,9 @@ int main(int argc, char **argv) {
     bastion_ui();
     return_feedback_ui();
     combat_poses();
+    r_go(R_LANTERN_HOME); run(20);
     size_t stable = image_bytes;
-    for (int i = 0; i < 12; i++) { r_go(R_TOWN); run(20); }
+    for (int i = 0; i < 12; i++) { r_go(R_LANTERN_HOME); run(20); }
     assert(image_bytes == stable);
     assert(peak_image_bytes < 2u * 1024u * 1024u);
     printf("lantern UI: %d real-LVGL screenshots, %d validated saves; image buffers peak %zu bytes\n", shots, saves, peak_image_bytes);
