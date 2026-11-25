@@ -303,6 +303,8 @@ typedef struct {
     int timing;                     /* ring width bonus from DEX */
 } rpg_stats;
 void rpg_stats_get(const rpg_game *g, rpg_stats *out);
+/* Project stats with a different weapon without editing the profile. */
+void rpg_stats_with_weapon(const rpg_game *g, const rpg_item *weapon, rpg_stats *out);
 int rpg_power(const rpg_game *g);   /* rough combat rating */
 uint32_t rpg_xp_next(int level);
 uint32_t rpg_job_xp_next(int cls, int job_level);

@@ -101,7 +101,7 @@ static void add_affix(rpg_stats *st, int *pct, int kind, int val) {
     }
 }
 
-void rpg_stats_get(const rpg_game *g, rpg_stats *st) {
+void rpg_stats_with_weapon(const rpg_game *g, const rpg_item *weapon, rpg_stats *st) {
     const rpg_hero *h = &g->hero;
     memset(st, 0, sizeof *st);
     const rpg_race_info *race = rpg_race(h->race);
@@ -109,7 +109,7 @@ void rpg_stats_get(const rpg_game *g, rpg_stats *st) {
     int pct[3] = {0, 0, 0};   /* atk, matk, hp */
     int watk = 0, wmatk = 0, def = 0, mdef = 0, hp = 0;
     for (int s = 0; s < SLOT_COUNT; s++) {
-        const rpg_item *it = &h->equip[s];
+        const rpg_item *it = s == SLOT_WEAPON ? weapon : &h->equip[s];
         if (rpg_item_empty(it)) continue;
         watk += rpg_item_atk(it);
         wmatk += rpg_item_matk(it);
@@ -128,10 +128,12 @@ void rpg_stats_get(const rpg_game *g, rpg_stats *st) {
     pct[2] += passive_value(h, PS_HP);
     int fam = rpg_class_family(h->cls), tier = rpg_class_tier(h->cls);
     int tier_mult = tier == 1 ? 100 : tier == 2 ? 115 : 130;
-    const rpg_item *w = &h->equip[SLOT_WEAPON];
-    bool bow = !rpg_item_empty(w) && w->type == IT_BOW;
     int *S = st->stat;
-    st->atk = watk * (100 + pct[0]) / 100 + (bow ? S[ST_DEX] * 2 + S[ST_STR] / 2 : S[ST_STR] * 2 + S[ST_DEX] / 2) + h->level;
+    int weapon_stat = S[ST_STR] * 2 + S[ST_DEX] / 2;
+    if (weapon->type == IT_BOW) weapon_stat = S[ST_DEX] * 2 + S[ST_STR] / 2;
+    else if (weapon->type == IT_DAGGER && S[ST_AGI] > S[ST_STR])
+        weapon_stat += S[ST_AGI] - S[ST_STR];
+    st->atk = watk * (100 + pct[0]) / 100 + weapon_stat + h->level;
     st->matk = wmatk * (100 + pct[1]) / 100 + S[ST_INT] * 2 + h->level;
     st->def = (st->def + def + S[ST_VIT] + h->level / 2) * (100 + passive_value(h, PS_DEF)) / 100;
     st->mdef = mdef + S[ST_INT] / 2 + S[ST_VIT] / 2;
@@ -153,6 +155,10 @@ void rpg_stats_get(const rpg_game *g, rpg_stats *st) {
     /* Low needs hurt; high morale helps. */
     if (h->hunger < 20000) { st->atk = st->atk * 80 / 100; st->matk = st->matk * 80 / 100; }
     if (h->morale >= 80) st->crit += 5;
+}
+
+void rpg_stats_get(const rpg_game *g, rpg_stats *st) {
+    rpg_stats_with_weapon(g, &g->hero.equip[SLOT_WEAPON], st);
 }
 
 int rpg_power(const rpg_game *g) {

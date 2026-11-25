@@ -74,9 +74,12 @@ const char *r_item_lines(const rpg_item *it, char *buf, int cap) {
 }
 
 void r_item_dialog(const rpg_item *it, const char *extra, lv_obj_t **dlg) {
-    char name[48], body[260];
+    enum { STATS_CAP = 260 };
+    char name[48], body[STATS_CAP + 112];
     rpg_item_name(it, name, sizeof name);
-    r_item_lines(it, body, sizeof body);
+    r_item_lines(it, body, STATS_CAP);
+    if (it->type == IT_DAGGER)
+        strncat(body, TR("\nBonus ATK se AGI > FOR", "ATK bonus if AGI > STR"), sizeof body - strlen(body) - 1);
     if (extra) strncat(body, extra, sizeof body - strlen(body) - 1);
     *dlg = kit_dialog(name, body, item_icon(it));
     lv_obj_t *panel = lv_obj_get_child(*dlg, 0);

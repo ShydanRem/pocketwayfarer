@@ -190,15 +190,21 @@ static void on_bag_item(lv_event_t *e) {
     rpg_item *it = &R.g.bag[picked];
     char extra[64] = "";
     const rpg_item *cur = &R.g.hero.equip[rpg_item_type_get(it->type)->slot];
-    if (!rpg_item_empty(cur)) {
+    bool can_equip = rpg_can_equip(&R.g, it);
+    if ((it->type == IT_DAGGER || cur->type == IT_DAGGER) && can_equip) {
+        rpg_stats current, projected;
+        rpg_stats_get(&R.g, &current);
+        rpg_stats_with_weapon(&R.g, it, &projected);
+        snprintf(extra, sizeof extra, TR("\nAttacco eroe %+d", "Hero ATK %+d"), projected.atk - current.atk);
+    } else if (!rpg_item_empty(cur)) {
         int d = (rpg_item_atk(it) + rpg_item_matk(it) + rpg_item_def(it)) - (rpg_item_atk(cur) + rpg_item_matk(cur) + rpg_item_def(cur));
         snprintf(extra, sizeof extra, TR("\nRispetto all'attuale: %+d", "\nCompared to current: %+d"), d);
     }
-    if (!rpg_can_equip(&R.g, it))
+    if (!can_equip)
         strncat(extra, it->level > R.g.hero.level ? TR("\nLivello troppo alto", "\nLevel too high") : TR("\nNon per la tua classe", "\nNot for your class"),
                 sizeof extra - strlen(extra) - 1);
     item_dialog(it, extra);
-    if (rpg_can_equip(&R.g, it)) item_action(TR("Equipaggia", "Equip"), true, on_equip_item, 0);
+    if (can_equip) item_action(TR("Equipaggia", "Equip"), true, on_equip_item, 0);
     bool free_socket = false;
     for (int k = 0; k < it->sockets; k++) free_socket |= !it->gems[k];
     bool have_gem = false;

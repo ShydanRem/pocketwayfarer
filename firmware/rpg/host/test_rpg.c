@@ -235,6 +235,37 @@ static void test_items(void) {
     for (int i = 0; i < 4; i++) CHECK(!rpg_item_empty(&stock[i]) && stock[i].level <= g.hero.level);
 }
 
+static void test_dagger_scaling(void) {
+    rpg_game g;
+    new_hero(&g, FAM_ROGUE, 1);
+    g.hero.race = RACE_HUMAN;
+    g.hero.stat[ST_STR] = 20;
+    g.hero.stat[ST_AGI] = 10;
+    rpg_stats slow, fast, projected;
+    rpg_stats_get(&g, &slow);
+    int base = g.hero.level;
+    for (int slot = 0; slot < SLOT_COUNT; slot++) base += rpg_item_atk(&g.hero.equip[slot]);
+    CHECK(slow.atk == base + slow.stat[ST_STR] * 2 + slow.stat[ST_DEX] / 2);
+    g.hero.stat[ST_AGI] = 20;
+    rpg_stats_get(&g, &fast);
+    CHECK(fast.atk == slow.atk);
+    g.hero.stat[ST_AGI] = 32;
+    rpg_stats_get(&g, &fast);
+    CHECK(fast.atk == slow.atk + 12);
+
+    rpg_item sword = {.type = IT_SWORD, .level = 1, .aff = {AF_STR}, .aff_val = {2}};
+    CHECK(rpg_bag_add(&g, &sword));
+    rpg_game before = g;
+    rpg_stats_with_weapon(&g, &g.bag[0], &projected);
+    CHECK(!memcmp(&g, &before, sizeof g) && projected.atk < fast.atk);
+    CHECK(rpg_equip(&g, 0) == RPG_OK);
+    rpg_stats_get(&g, &slow);
+    CHECK(!memcmp(&slow, &projected, sizeof slow));
+    g.hero.stat[ST_AGI] += 5;
+    rpg_stats_get(&g, &fast);
+    CHECK(fast.atk == slow.atk);
+}
+
 static void test_battle_basics(void) {
     rpg_game g;
     new_hero(&g, FAM_MAGE, 4);
@@ -544,6 +575,7 @@ int main(int argc, char **argv) {
     test_data();
     test_hero();
     test_items();
+    test_dagger_scaling();
     test_battle_basics();
     test_parry_damage();
     test_arcane_missiles();

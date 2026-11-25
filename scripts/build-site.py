@@ -42,7 +42,7 @@ RIG_SCREENS['pose-classico'] = 'pose-classico'
 RIG_SCREENS['pose-armi-classico'] = 'pose-armi-classico'
 RIG_SCREENS['pose-famiglie-classico'] = 'pose-famiglie-classico'
 RIG_SCREENS.update({name: name for name in ('avvio', 'scelta-classe', 'borgo-principale', 'lotta-iniziale', 'famiglie-classe')})
-RIG_SCREENS.update({name: name for name in ('guida-avvio', 'guida-anello', 'guida-cripta', 'bonus-piano', 'esito-parata-bene')})
+RIG_SCREENS.update({name: name for name in ('guida-avvio', 'guida-anello', 'guida-cripta', 'bonus-piano', 'esito-parata-bene', 'confronto-pugnale')})
 
 
 def manual_html():

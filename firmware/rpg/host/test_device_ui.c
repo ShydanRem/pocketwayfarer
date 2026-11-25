@@ -445,6 +445,44 @@ static void parry_result_ui(void) {
     puts("parry result: four qualities, touch/BOOT/timeout, both languages and no zero damage on perfect guard");
 }
 
+static void dagger_comparison(void) {
+    for (int lang = 0; lang < 2; lang++) {
+        rpg_new_hero profile = {.name = "Vesper", .cls = FAM_ROGUE, .lang = (uint8_t)lang};
+        rpg_game_new(&R.g, &profile, r_now(), 27);
+        R.g.hero.level = 12;
+        R.g.hero.stat[ST_STR] = 10;
+        R.g.hero.stat[ST_AGI] = 28;
+        const rpg_item dagger = {.type = IT_DAGGER, .level = 12, .tier = 1};
+        const rpg_item sword = {.type = IT_SWORD, .level = 12, .tier = 1};
+        R.g.hero.equip[SLOT_WEAPON] = dagger;
+        rpg_stats initial, changed;
+        rpg_stats_get(&R.g, &initial);
+        assert(rpg_bag_add(&R.g, &sword));
+        R.bag_tab = 0;
+        r_go(R_BAG);
+        char name[48];
+        press(rpg_item_name(&sword, name, sizeof name));
+        lv_obj_t *panel = lv_obj_get_child(lv_obj_get_child(lv_layer_top(), -1), 0);
+        assert(strstr(lv_label_get_text(lv_obj_get_child(panel, 2)), TR("Attacco eroe -12", "Hero ATK -12")));
+        press(TR("Equipaggia", "Equip"));
+        rpg_stats_get(&R.g, &changed);
+        assert(changed.atk == initial.atk - 12);
+        press(rpg_item_name(&dagger, name, sizeof name));
+        panel = lv_obj_get_child(lv_obj_get_child(lv_layer_top(), -1), 0);
+        const char *body = lv_label_get_text(lv_obj_get_child(panel, 2));
+        assert(strstr(body, TR("Bonus ATK se AGI > FOR", "ATK bonus if AGI > STR")));
+        assert(strstr(body, TR("Attacco eroe +12", "Hero ATK +12")));
+        shot(lang ? "confronto-pugnale-en" : "confronto-pugnale-it");
+        press(TR("Equipaggia", "Equip"));
+        rpg_stats_get(&R.g, &changed);
+        assert(changed.atk == initial.atk);
+        wf_app_flush_save();
+        wf_app_start(saved, saved_len);
+        assert(R.g.hero.equip[SLOT_WEAPON].type == IT_DAGGER && R.g.hero.stat[ST_AGI] == 28);
+    }
+    puts("dagger comparison: both swaps, matching actual ATK, bilingual scaling hint and saved loadout");
+}
+
 int main(int argc, char **argv) {
     setvbuf(stdout, NULL, _IOLBF, 0);
     assert(argc == 2); dest = argv[1];
@@ -456,6 +494,7 @@ int main(int argc, char **argv) {
     lv_indev_set_read_cb(input, read_touch); lv_timer_set_period(lv_indev_get_read_timer(input), 10);
     new_adventure();
     cadence_and_judgment(); scene_lifetimes(); modal_and_gems(); primary_adventure(); pacing_ui(); parry_result_ui();
+    dagger_comparison();
     printf("device UI regressions: %d native captures; no physical latency claim\n", shots);
     return 0;
 }
