@@ -1,6 +1,6 @@
 # Registro di avanzamento
 
-Aggiornato il 25 novembre 2026. Consegna corrente `0.10.0-preview.7`. [Roadmap operativa](../ROADMAP.md)
+Aggiornato il 25 novembre 2026. Consegna corrente `0.10.0-preview.8`. [Roadmap operativa](../ROADMAP.md)
 
 ## Consegna R1 — atlante delle classi, 0.4.1-preview.1
 
@@ -150,3 +150,7 @@ Guida ignorabile e riattivabile, primo Gelatino, apprendimento di attacco e para
 ## R7.6 — ritmo della campagna
 
 La prima conquista di un piano assegna PE all’eroe e alla classe. Gli stessi profili simulati della preview.6 passano da 79,5 a 39 tentativi mediani di incontro nei campi. I Missili arcani usano l’attacco magico. I test nativi coprono entrambe le scelte alle scale, il riavvio e il timing dei missili. [Metodo, risultati e limiti](campaign-pacing-evidence/README.md)
+
+## R7.7 — efficacia e lettura della parata
+
+La parata «Bene» riduce i danni del 45%. L’esito compare sopra l’arena in italiano e inglese. Su 192 profili simulati, da 88 a 128 finali con timing «Bene» costante e da 76 a 116 con parate miste. Il tempo di reazione fisico resta da misurare. [Metodo e catture native](parry-feedback-evidence/README.md)

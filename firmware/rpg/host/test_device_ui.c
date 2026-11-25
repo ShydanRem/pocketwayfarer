@@ -402,6 +402,49 @@ static void pacing_ui(void) {
     puts("first-clear UI: both choices and reload IT/EN; Arcane Missiles opens and resolves the timing ring");
 }
 
+static void parry_result_ui(void) {
+    static const wf_text results[] = {{"Parata mancata", "Missed parry"},
+        {"Bene · Danni -45%", "Good · Damage -45%"}, {"Ottimo · Danni -55%", "Great · Damage -55%"},
+        {"Perfetta · Contrattacco", "Perfect · Counter"}};
+    static const char *const captures[] = {"esito-mancato", "esito-bene", "esito-ottimo", "esito-perfetta"};
+    for (int lang = 0; lang < 2; lang++) {
+        for (int q = WF_Q_MISS; q <= WF_Q_PERFECT; q++) {
+            rpg_new_hero profile = {.name = "Parry", .cls = FAM_WARRIOR, .lang = (uint8_t)lang};
+            rpg_game_new(&R.g, &profile, r_now(), 120);
+            R.g.hero.stat[ST_AGI] = 1; /* Wait for the wave, with no dodge chance. */
+            R.g.lantern.reduced_motion = (uint8_t)lang;
+            wf_lang = R.g.lang;
+            R.zone = 0;
+            rpg_foe foe;
+            rpg_foe_make(&foe, SP_SLIME, 1, false);
+            r_start_battle(&foe, 1, false, false);
+            run(1250);
+            press(TR("Guardia", "Guard"));
+            for (int t = 0; t < 500 && rpg_battle_phase() != 6; t++) run(5);
+            assert(rpg_battle_phase() == 6);
+            if (q == WF_Q_MISS && !lang) {
+                for (int t = 0; t < 600 && rpg_battle_phase() == 6; t++) run(5);
+            } else {
+                for (int t = 0; t < 500 && rpg_battle_parry_quality_now() != q; t++) run(5);
+                assert(rpg_battle_parry_quality_now() == q);
+                if ((q + lang) % 2) assert(wf_app_key(WF_KEY_BOOT_DOWN));
+                else click(CX, CY);
+            }
+            run(170);
+            lv_obj_t *result = find(lv_screen_active(), TX(results[q]));
+            assert(result && rpg_battle_phase() == 4);
+            lv_obj_update_layout(lv_screen_active());
+            assert(lv_obj_get_height(result) < lv_obj_get_height(lv_obj_get_parent(result)) - 4);
+            if (q == WF_Q_PERFECT) assert(!find(lv_screen_active(), "-0"));
+            char name[40];
+            snprintf(name, sizeof name, "%s-%s", captures[q], lang ? "en" : "it");
+            shot(name);
+            rpg_classic_cancel(&R.g);
+        }
+    }
+    puts("parry result: four qualities, touch/BOOT/timeout, both languages and no zero damage on perfect guard");
+}
+
 int main(int argc, char **argv) {
     setvbuf(stdout, NULL, _IOLBF, 0);
     assert(argc == 2); dest = argv[1];
@@ -412,7 +455,7 @@ int main(int argc, char **argv) {
     lv_indev_t *input = lv_indev_create(); lv_indev_set_type(input, LV_INDEV_TYPE_POINTER);
     lv_indev_set_read_cb(input, read_touch); lv_timer_set_period(lv_indev_get_read_timer(input), 10);
     new_adventure();
-    cadence_and_judgment(); scene_lifetimes(); modal_and_gems(); primary_adventure(); pacing_ui();
+    cadence_and_judgment(); scene_lifetimes(); modal_and_gems(); primary_adventure(); pacing_ui(); parry_result_ui();
     printf("device UI regressions: %d native captures; no physical latency claim\n", shots);
     return 0;
 }

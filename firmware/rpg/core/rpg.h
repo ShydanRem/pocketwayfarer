@@ -436,6 +436,8 @@ int rpg_battle_target(const rpg_battle *b, int preferred);   /* first alive foe 
 void rpg_battle_hero(rpg_battle *b, rpg_game *g, const rpg_action *a, int quality);
 /* Picks the next foe to act (state B_FOES); returns false when the round ended. */
 bool rpg_battle_next_foe(rpg_battle *b);
+/* Percent of incoming damage blocked by timing, before other defenses. */
+int rpg_parry_block_pct(int quality);
 /* The acting foe attacks; parry = defensive timing (ignored when dodged). */
 void rpg_battle_foe(rpg_battle *b, int parry);
 /* Simple automatic choice for AUTO mode and idle simulations. */

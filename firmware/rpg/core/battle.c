@@ -20,7 +20,13 @@
 #endif
 
 static const int quality_mult[4] = {40, 100, 125, 150};
-static const int parry_taken[4] = {100, 70, 45, 0};
+static const int parry_taken[4] = {100, 55, 45, 0};
+
+int rpg_parry_block_pct(int quality) {
+    if (quality < WF_Q_MISS) quality = WF_Q_MISS;
+    if (quality > WF_Q_PERFECT) quality = WF_Q_PERFECT;
+    return 100 - parry_taken[quality];
+}
 
 void rpg_foe_make(rpg_foe *f, int sp, int level, bool elite) {
     const rpg_species_info *s = rpg_species(sp);
