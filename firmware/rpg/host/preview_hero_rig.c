@@ -1212,7 +1212,6 @@ static void classic_combat_rig(void) {
         {34, RACE_HUMAN, 4, 0, "grandmaster-rig", {IT_KNUCKLE, IT_CHARM, IT_CIRCLET}},
         {36, RACE_DWARF, 3, 1, "runesmith-rig", {IT_HAMMER, IT_SHIELD, IT_HELM}},
     };
-    rnd = 17;
     for (int quiet = 0; quiet < 2; quiet++) for (unsigned i = 0; i < sizeof examples / sizeof examples[0]; i++) {
         profile(examples[i].cls, examples[i].race, examples[i].skin, examples[i].hair, 3);
         R.g.lang = wf_lang = (uint8_t)quiet;
@@ -1235,6 +1234,20 @@ static void classic_combat_rig(void) {
             rpg_foe_make(&foes[j], species[j], 7, false);
             foes[j].hp = foes[j].max_hp = 2000;
         }
+        /* Find a first turn that reaches parry for this loadout. Reset the
+         * platform seed so earlier captures and particles cannot change it. */
+        uint32_t seed;
+        for (seed = 17; seed < 100; seed++) {
+            rnd = seed;
+            rpg_game sim = R.g;
+            rpg_battle battle;
+            rpg_battle_start(&battle, &sim, foes, 3, wf_platform_random(), 0);
+            rpg_action attack = {.kind = ACT_ATTACK, .target = 0};
+            rpg_battle_hero(&battle, &sim, &attack, WF_Q_PERFECT);
+            if (rpg_battle_next_foe(&battle) && !battle.foe_dodge) break;
+        }
+        assert(seed < 100);
+        rnd = seed;
         r_start_battle(foes, 3, false, false);
         run(1100);
         assert(rpg_battle_phase() == CLASSIC_CHOOSE);
