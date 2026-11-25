@@ -23,6 +23,10 @@ I suggerimenti di attacco e parata si riducono dopo il primo buon timing per cia
 
 ![L’arco dorato e il suggerimento per touch o BOOT](img/hero_rig/guida-anello.png)
 
+Quando l’onda raggiunge lo scudo, tocca o premi **BOOT**. Sopra l’arena leggi il risultato. **Bene** riduce il danno del 45%, **Ottimo** del 55%. **Perfetta** annulla il danno e risponde con un contrattacco. La riduzione da timing si applica prima di **Guardia**.
+
+![La parata Bene indica quanti danni assorbe](img/hero_rig/esito-parata-bene.png)
+
 ## Cambiare ed evolvere la classe
 
 ![Le otto famiglie nella scelta Cambia classe](img/hero_rig/famiglie-classe.png)

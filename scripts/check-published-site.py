@@ -92,6 +92,7 @@ def check(base, commit):
         'guida-anello': 'hero_rig/guida-anello',
         'guida-cripta': 'hero_rig/guida-cripta',
         'bonus-piano': 'hero_rig/bonus-piano',
+        'esito-parata-bene': 'hero_rig/esito-parata-bene',
     }
     for name, source in screenshots.items():
         data,mime=get('assets/screens/'+name+'.png')

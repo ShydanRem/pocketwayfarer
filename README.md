@@ -8,7 +8,7 @@ Un RPG fantasy HD-2D per **Waveshare ESP32-S3-Touch-AMOLED-1.75**, con schermo r
 
 **[Roadmap operativa](docs/ROADMAP.md)** · [Stato del lotto attivo](docs/roadmap/STATUS.md) · [Direzione artistica delle 40 classi](docs/CLASS-ART-BIBLE.md)
 
-> **0.10.0-preview.7** — PE alla prima conquista di un piano e correzione dei Missili arcani. [Note di versione](CHANGELOG.md)
+> **0.10.0-preview.8** — Parata «Bene» più efficace e risultato della difesa visibile sopra l’arena. [Note di versione](CHANGELOG.md)
 
 ## Sul Pocket, in pochi passaggi
 

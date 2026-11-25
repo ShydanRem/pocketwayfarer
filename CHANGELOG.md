@@ -1,5 +1,10 @@
 # Note di versione
 
+## 0.10.0-preview.8 — 25 novembre 2026
+
+- Nel combattimento delle Isole Sospese, una parata **Bene** assorbe il 45% del danno. **Ottimo** assorbe il 55% e una parata perfetta annulla il colpo e contrattacca.
+- Sopra l’arena compare l’esito della parata. La parata perfetta usa una posa di difesa e un lampo dorato.
+
 ## 0.10.0-preview.7 — 25 novembre 2026
 
 - La prima conquista di ogni piano assegna PE eroe e PE classe. Il bonus vale sia se scendi sia se rientri al borgo dalle scale. I piani già registrati come completati tengono il loro record.

@@ -4,10 +4,12 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
 #include "rpg.h"
 #include "timing.h"
 
 static const uint32_t T0 = 9800u * 86400u + 10u * 3600u;
+enum { TIMING_MIXED = -1 };
 
 static void new_hero(rpg_game *g, int family, uint32_t seed) {
     rpg_new_hero profile = {.cls = (uint8_t)family, .race = (uint8_t)(seed % RACE_COUNT)};
@@ -43,6 +45,8 @@ static void invest(rpg_game *g, int branch) {
 static int sustain_fight(rpg_game *g, rpg_foe *foes, int n, int q, uint32_t seed, int flags) {
     rpg_battle b;
     rpg_battle_start(&b, g, foes, n, seed, flags);
+    wf_rng timing_rng;
+    wf_rng_seed(&timing_rng, seed ^ 0x9e3779b9u);
     for (int guard = 0; guard < 400 && !rpg_battle_over(&b); guard++) {
         if (b.state == B_HERO) {
             rpg_action a;
@@ -52,10 +56,15 @@ static int sustain_fight(rpg_game *g, rpg_foe *foes, int n, int q, uint32_t seed
                 a.kind = ACT_ITEM;
                 a.item = CO_ETHER;
             }
-            rpg_battle_hero(&b, g, &a, q);
+            rpg_battle_hero(&b, g, &a, q == TIMING_MIXED ? WF_Q_GOOD : q);
         } else if (b.state == B_FOES) {
             while (rpg_battle_next_foe(&b)) {
-                rpg_battle_foe(&b, q);
+                int parry = q;
+                if (q == TIMING_MIXED && !b.foe_dodge && b.foe_move != FOE_HEAL) {
+                    int roll = wf_rng_range(&timing_rng, 0, 99);
+                    parry = roll < 15 ? WF_Q_MISS : roll < 80 ? WF_Q_GOOD : roll < 98 ? WF_Q_GREAT : WF_Q_PERFECT;
+                }
+                rpg_battle_foe(&b, parry);
                 if (rpg_battle_over(&b)) break;
             }
         }
@@ -147,7 +156,12 @@ int main(int argc, char **argv) {
     int seeds = argc > 2 ? atoi(argv[2]) : 16;
     if (start < 1 || start > 1000000 || seeds < 1 || seeds > 100) return 2;
     uint32_t last = (uint32_t)(start + seeds);
-    const int q = WF_Q_GREAT;
+    const char *quality = argc > 3 ? argv[3] : "great";
+    int q;
+    if (!strcmp(quality, "great")) q = WF_Q_GREAT;
+    else if (!strcmp(quality, "good")) q = WF_Q_GOOD;
+    else if (!strcmp(quality, "mixed")) q = TIMING_MIXED;
+    else return 2;
     for (int family = 0; family < FAM_COUNT; family++) {
         for (uint32_t seed = start; seed < last; seed++) {
             rpg_game g;

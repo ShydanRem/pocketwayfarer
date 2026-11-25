@@ -214,6 +214,11 @@ static int play(const rpg_event *e) {
             return 420;
         }
         lunge(B.foe_img[e->actor], (HERO_X - B.foe_x[e->actor]) / 7, (HERO_Y - B.foe_y[e->actor]) / 7);
+        if (e->quality == WF_Q_PERFECT) {
+            hero_obj_set_pose(B.hero, &B.look, HX_IDLE, 3, HP_GUARD);
+            fx_sparks(B.scr, HERO_X + 28, HERO_Y - 10, RC_GOLD, 5);
+            return 420;
+        }
         if (e->value) {
             fx_sparks(B.scr, HERO_X, HERO_Y - 10, 0xff6a4a, 5);
             if (!B.combat_rig && !R.g.lantern.reduced_motion && e->value * 5 > B.b.h.st.max_hp) {
@@ -223,10 +228,9 @@ static int play(const rpg_event *e) {
         lv_obj_set_style_image_recolor(B.hero, lv_color_hex(0xff4a4a), 0);
         kit_flash(B.hero, 0xff4a4a, 260);
         if (!B.combat_rig && !R.g.lantern.reduced_motion) kit_shake(B.hero, 6);
-        hero_obj_set_pose(B.hero,&B.look,e->quality==3?HX_IDLE:HX_HURT,3,e->quality==3?HP_GUARD:HP_HIT);
+        hero_obj_set_pose(B.hero, &B.look, HX_HURT, 3, HP_HIT);
         snprintf(buf, sizeof buf, "-%ld", (long)e->value);
-        kit_float_text(B.scr, buf, e->value ? COL_BAD : COL_ENERGY, &wf_font_big, HERO_X + 40, HERO_Y - 70);
-        if (e->quality == 3) kit_float_text(B.scr, TR("Parata perfetta!", "Perfect parry!"), COL_GOLD, &wf_font_small, CX, 342);
+        kit_float_text(B.scr, buf, COL_BAD, &wf_font_big, HERO_X + 40, HERO_Y - 70);
         update_vitals();
         return 420;
     case EV_MISS:
@@ -630,7 +634,14 @@ static void on_parry_tap(lv_event_t *e) {
     int q = parry_judge(&B.parry);
     if (q >= WF_Q_GOOD) r_guide_learn(RPG_GUIDE_PARRY);
     parry_close(&B.parry);
-    set_info(NULL);
+    char result[64];
+    if (q == WF_Q_PERFECT) set_info(TR("Perfetta · Contrattacco", "Perfect · Counter"));
+    else if (q == WF_Q_MISS) set_info(TR("Parata mancata", "Missed parry"));
+    else {
+        const char *rating = q == WF_Q_GOOD ? TR("Bene", "Good") : TR("Ottimo", "Great");
+        snprintf(result, sizeof result, TR("%s · Danni -%d%%", "%s · Damage -%d%%"), rating, rpg_parry_block_pct(q));
+        set_info(result);
+    }
     if (B.illustrated) lv_obj_remove_flag(B.buttons[5], LV_OBJ_FLAG_HIDDEN);
     rpg_battle_foe(&B.b, q);
     play_events(AFTER_FOE);

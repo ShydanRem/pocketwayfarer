@@ -194,6 +194,7 @@ Arma, mano secondaria e testa sono i canali grafici dell’equipaggiamento già 
 | **R7.4 · percorso unico e cambio di classe** | Titolo, creazione, borgo, prima vittoria e cambio di famiglia verificati in italiano e inglese su host. Migrazione dai profili v1–v4. |
 | **R7.5 · primo viaggio e campagna** | Guida con touch e BOOT, cinque regioni in sequenza, ritirata e transizione dopo il boss. [Prove e limiti](roadmap/campaign-evidence/README.md) |
 | **R7.6 · ritmo della campagna** | PE per la prima conquista dei piani e Missili arcani magici. Confronto su 128 profili simulati. Da misurare sul Pocket i tempi reali e le scelte di recupero. [Bilanciamento e cattura nativa](roadmap/campaign-pacing-evidence/README.md) |
+| **R7.7 · efficacia e lettura della parata** | «Bene» assorbe il 45% del danno. Quattro esiti leggibili in italiano e inglese. Confronto su 192 profili con timing fisso e misto. [Risultati e catture](roadmap/parry-feedback-evidence/README.md) |
 | **R8 · candidata 1.0** | Installazione pulita e aggiornamento da una preview con dati, prove sul Pocket di anello, parata e sonno/risveglio, sessione lunga, controllo del budget e pacchetto di ripristino. |
 
 Il primo obiettivo di design è una scelta comprensibile, non più numeri sullo schermo. Registrare, con consenso e senza introdurre account, osservazioni di playtest: tempi reali di spedizione, motivo delle sconfitte, scelte di percorso/reliquia, uso di Guardia/supporti e volontà di iniziare un altro viaggio. Una sessione di 5–8 minuti è una **ipotesi da provare**, non un dato già misurato.

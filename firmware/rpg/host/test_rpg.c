@@ -278,6 +278,36 @@ static void test_battle_basics(void) {
     }
 }
 
+static void test_parry_damage(void) {
+    rpg_game g;
+    new_hero(&g, FAM_WARRIOR, 3);
+    rpg_foe foe;
+    rpg_foe_make(&foe, SP_SKELETON, 3, false);
+    rpg_battle start;
+    rpg_battle_start(&start, &g, &foe, 1, 91, 0);
+    start.state = B_FOES;
+    start.acting = 0;
+    start.foe_move = FOE_HIT;
+    start.h.hp = start.h.st.max_hp = 1000;
+    rpg_battle miss = start;
+    rpg_battle_foe(&miss, WF_Q_MISS);
+    int damage = start.h.hp - miss.h.hp;
+    CHECK(damage > 10);
+    static const int blocked[] = {0, 45, 55, 100};
+    for (int q = WF_Q_MISS; q <= WF_Q_PERFECT; q++) {
+        for (int guarding = 0; guarding <= 1; guarding++) {
+            rpg_battle b = start;
+            b.h.guarding = (uint8_t)guarding;
+            rpg_battle_foe(&b, q);
+            int expected = damage * (100 - blocked[q]) / 100 / (guarding ? 2 : 1);
+            CHECK(rpg_parry_block_pct(q) == blocked[q]);
+            CHECK(start.h.hp - b.h.hp == expected && b.ev[0].value == expected);
+            CHECK(b.ev[0].kind == EV_HIT && b.ev[0].quality == q);
+            CHECK(q == WF_Q_PERFECT ? b.ev_count == 2 && b.ev[1].kind == EV_COUNTER : b.ev_count == 1);
+        }
+    }
+}
+
 /* ---- Balance ---------------------------------------------------------------------- */
 static void test_balance(void) {
     static const int levels[] = {3, 8, 15, 25, 38, 55, 68};
@@ -515,6 +545,7 @@ int main(int argc, char **argv) {
     test_hero();
     test_items();
     test_battle_basics();
+    test_parry_damage();
     test_arcane_missiles();
     test_hunt_and_save();
     test_dungeon();
