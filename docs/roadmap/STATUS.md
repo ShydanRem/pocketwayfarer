@@ -1,6 +1,6 @@
 # Registro di avanzamento
 
-Aggiornato il 20 novembre 2026. Consegna corrente `0.10.0-preview.4`. [Roadmap operativa](../ROADMAP.md)
+Aggiornato il 25 novembre 2026. Consegna corrente `0.10.0-preview.7`. [Roadmap operativa](../ROADMAP.md)
 
 ## Consegna R1 — atlante delle classi, 0.4.1-preview.1
 
@@ -146,3 +146,7 @@ La preview.5 apre direttamente il percorso delle **40 classi**. Creazione, borgo
 ## R7.5 — primo viaggio e campagna
 
 Guida ignorabile e riattivabile, primo Gelatino, apprendimento di attacco e parata e indicazioni per entrare nella Cripta. Mappa e riepiloghi mostrano sblocchi e chiusura della campagna. Una discesa resta reversibile a stamina esaurita. [Catture, prove e limiti](campaign-evidence/README.md)
+
+## R7.6 — ritmo della campagna
+
+La prima conquista di un piano assegna PE all’eroe e alla classe. Gli stessi profili simulati della preview.6 passano da 79,5 a 39 tentativi mediani di incontro nei campi. I Missili arcani usano l’attacco magico. I test nativi coprono entrambe le scelte alle scale, il riavvio e il timing dei missili. [Metodo, risultati e limiti](campaign-pacing-evidence/README.md)

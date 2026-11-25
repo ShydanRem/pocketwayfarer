@@ -159,16 +159,29 @@ static void leave_to_town(const char *title, const char *body, const wf_sprite *
     r_character_button_style(kit_dialog_button(dlg, "Ok", COL_BTN_OK, close_dlg, 0), true);
 }
 
+static void first_clear_caption(char *text, size_t cap) {
+    uint32_t xp = rpg_dungeon_first_clear_xp(&R.g);
+    const rpg_hero *hero = &R.g.hero;
+    text[0] = '\0';
+    if (!xp) return;
+    if (hero->level < RPG_MAX_LEVEL)
+        snprintf(text, cap, TR("Prima conquista · +%lu PE", "First clear · +%lu XP"), (unsigned long)xp);
+    else if (hero->job_level < rpg_job_max(hero->cls))
+        snprintf(text, cap, TR("Prima conquista · +%lu PE classe", "First clear · +%lu job XP"), (unsigned long)(xp * 7u / 10u));
+}
+
 static void descend_choice(int leave) {
     if (leave) {
         rpg_dungeon_leave(&R.g, false);
         leave_to_town(TR("Di ritorno", "Back home"), TR("Torni in città con tutto il bottino.", "You return to town with all your loot."), ri(RI_STAIRS));
         return;
     }
+    char bonus[64];
+    first_clear_caption(bonus, sizeof bonus);
     int r = rpg_dungeon_descend(&R.g);
     if (r == 1) {
         int zone = R.g.run.zone;
-        char body[180];
+        char body[224];
         bool final = zone == RPG_ZONES - 1;
         if (final) snprintf(body, sizeof body, "%s", TR("Hai sconfitto il Drago Stellare.\nTutti e cinque i dungeon sono completati.",
                                                          "You defeated the Star Dragon.\nAll five dungeons are cleared."));
@@ -176,6 +189,10 @@ static void descend_choice(int leave) {
             snprintf(body, sizeof body, TR("Hai conquistato %s!\nProssima isola: %s.", "You conquered %s!\nNext island: %s."),
                      TX(rpg_zone(zone)->dungeon_name), TX(rpg_zone(zone + 1)->field_name));
         else snprintf(body, sizeof body, TR("Hai conquistato %s!", "You conquered %s!"), TX(rpg_zone(zone)->dungeon_name));
+        if (bonus[0]) {
+            size_t used = strlen(body);
+            snprintf(body + used, sizeof body - used, "\n%s", bonus);
+        }
         leave_to_town(final ? TR("Isole completate", "All islands cleared") : TR("Dungeon completato!", "Dungeon cleared!"), body, ri(RI_TROPHY));
         r_character_button_style(kit_dialog_button(dlg, TR("Mappa", "Map"), COL_PANEL_HI, on_go, R_MAP), false);
         return;
@@ -191,9 +208,13 @@ static void on_descend(lv_event_t *e) {
 }
 
 static void stairs_dialog(void) {
-    char body[96];
-    snprintf(body, sizeof body, TR("Scendi al piano %d o torni in città tenendo il bottino?", "Go down to floor %d or head back to town with your loot?"),
-             R.g.run.floor + 1);
+    char body[160], bonus[64];
+    first_clear_caption(bonus, sizeof bonus);
+    if (bonus[0]) snprintf(body, sizeof body, TR("%s\nScendi al piano %d o torna al borgo.",
+                                                "%s\nDescend to floor %d or return to town."),
+                           bonus, R.g.run.floor + 1);
+    else snprintf(body, sizeof body, TR("Scendi al piano %d o torni in città tenendo il bottino?", "Go down to floor %d or head back to town with your loot?"),
+                  R.g.run.floor + 1);
     dlg = dungeon_dialog(TR("Scale", "Stairs"), body, ri(RI_STAIRS));
     kit_dialog_button(dlg, TR("Scendi", "Descend"), COL_BTN_OK, on_descend, 0);
     kit_dialog_button(dlg, TR("Città", "Town"), COL_PANEL_HI, on_descend, 1);

@@ -164,7 +164,7 @@ static const rpg_skill_info skills[RPG_SKILL_COUNT] = {
     S("Terremoto", "Earthquake", SK_NOVA, EL_EARTH, 160, 18, 1, 16, 3, 2, 0, 0, 0, 0),
     S("Sintonia elementale", "Attunement", SK_PASSIVE, 0, 8, 3, 0, 0, 0, 0, 0, 0, PS_MATK, 0),
     /* 11 Arcanist */
-    S("Missili arcani", "Arcane Missiles", SK_MULTI, EL_NEUTRAL, 70, 10, 3, 10, 2, 0, 0, 0, 0, 0),
+    S("Missili arcani", "Arcane Missiles", SK_MAGIC_MULTI, EL_NEUTRAL, 70, 10, 3, 10, 2, 0, 0, 0, 0, 0),
     S("Barriera di mana", "Mana Shield", SK_BUFF, EL_NEUTRAL, 30, 6, 0, 12, 2, 4, 0, 0, BF_SHIELD, 3),
     S("Riserva arcana", "Arcane Reserve", SK_PASSIVE, 0, 10, 4, 0, 0, 0, 0, 0, 0, PS_SP, 0),
     /* 12 Ranger */

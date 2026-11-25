@@ -925,6 +925,7 @@ static void expedition_flow(int zone, const expedition_example *example) {
         auto_win();
         uint32_t gold = R.g.gold;
         assert(gold > previous_gold && R.g.bosses == previous_bosses + 1);
+        bool job_bonus_visible = R.g.hero.job_level < rpg_job_max(R.g.hero.cls);
         if (final_region && !lang) press(TR("Continua", "Continue"));
         else wf_app_start(saved, saved_len);
         int next = final_region ? zone : zone + 1;
@@ -932,8 +933,13 @@ static void expedition_flow(int zone, const expedition_example *example) {
         assert(!R.g.run.active && R.g.gold == gold && R.g.bosses == previous_bosses + 1 && !R.g.classic.active);
         assert(find(lv_layer_top(), final_region ? TR("Isole completate", "All islands cleared") : TR("Dungeon completato!", "Dungeon cleared!")));
         if (final_region) {
-            assert(find(lv_layer_top(), TR("Hai sconfitto il Drago Stellare.\nTutti e cinque i dungeon sono completati.",
-                                         "You defeated the Star Dragon.\nAll five dungeons are cleared.")));
+            char summary[176];
+            int n = snprintf(summary, sizeof summary, "%s", TR("Hai sconfitto il Drago Stellare.\nTutti e cinque i dungeon sono completati.",
+                                                               "You defeated the Star Dragon.\nAll five dungeons are cleared."));
+            if (job_bonus_visible)
+                snprintf(summary + n, sizeof summary - (size_t)n, TR("\nPrima conquista · +%lu PE classe", "\nFirst clear · +%lu job XP"),
+                         (unsigned long)(rpg_xp_next(z->max_level) / 2u * 7u / 10u));
+            assert(find(lv_layer_top(), summary));
             expedition_shot(example->region, "ritorno");
         }
         if (final_region) {

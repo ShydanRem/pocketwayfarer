@@ -87,9 +87,11 @@ static const char *skill_desc(int s, int lv, char *buf, int cap) {
         {"Potenzia %d%% per %d turni", "Boost %d%% for %d turns"}, {"Indebolisce (%d%%)", "Hex (%d%%)"},
         {"Risucchio %d%%", "Drain %d%%"}, {"Evoca un alleato (%d%%) per %d turni", "Summons an ally (%d%%) for %d turns"},
         {"Passiva: +%d", "Passive: +%d"},
+        {"%d colpi magici da %d%%", "%d magic hits of %d%%"},
     };
     int n;
-    if (k->kind == SK_MULTI) n = snprintf(buf, (size_t)cap, TX(kinds[1]), k->hits, p);
+    if (k->kind == SK_MULTI || k->kind == SK_MAGIC_MULTI)
+        n = snprintf(buf, (size_t)cap, TX(kinds[k->kind]), k->hits, p);
     else if (k->kind == SK_BUFF || k->kind == SK_SUMMON) n = snprintf(buf, (size_t)cap, TX(kinds[k->kind]), p, k->turns);
     else n = snprintf(buf, (size_t)cap, TX(kinds[k->kind]), p);
     if (k->element && k->kind != SK_PASSIVE) n += snprintf(buf + n, (size_t)(cap - n), " · %s", TX(rpg_element_name(k->element)));

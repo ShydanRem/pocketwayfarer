@@ -1,5 +1,10 @@
 # Note di versione
 
+## 0.10.0-preview.7 — 25 novembre 2026
+
+- La prima conquista di ogni piano assegna PE eroe e PE classe. Il bonus vale sia se scendi sia se rientri al borgo dalle scale. I piani già registrati come completati tengono il loro record.
+- I tre Missili arcani dell’Arcanista usano l’attacco magico contro la difesa magica. Mantengono lo stesso costo, la scelta del bersaglio e la prova di timing.
+
 ## 0.10.0-preview.6 — 23 novembre 2026
 
 - La guida del primo viaggio accompagna dalla scelta di classe alla prima stanza della Cripta. Il primo incontro guidato propone un Gelatino singolo. Attacco e parata perdono il suggerimento esteso dopo un buon timing.

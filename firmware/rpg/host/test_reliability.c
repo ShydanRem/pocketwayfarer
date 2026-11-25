@@ -76,6 +76,45 @@ static void family_progress(void) {
     printf("families: v4 migration, seven switch/return paths, exact rank/skills/gear, full bag and active hunt: passed\n");
 }
 
+static void first_clear_rewards(void) {
+    rpg_game g;
+    fresh(&g);
+    assert(rpg_dungeon_enter(&g, 0, 0, T0) == RPG_OK);
+    assert(!rpg_dungeon_first_clear_xp(&g) && rpg_dungeon_descend(&g) < 0);
+    g.run.row = RPG_ROWS;
+    g = reload(&g);
+    uint32_t xp = rpg_dungeon_first_clear_xp(&g);
+    assert(xp == rpg_xp_next(1) / 2u);
+    rpg_game expected = g;
+    rpg_gain_xp(&expected, xp, xp * 7u / 10u, NULL);
+    assert(rpg_dungeon_descend(&g) == 0 && g.best_floor[0] == 1 && g.run.floor == 2);
+    assert(!memcmp(&g.hero, &expected.hero, sizeof g.hero));
+    rpg_dungeon_leave(&g, false);
+    g = reload(&g);
+    assert(rpg_dungeon_enter(&g, 0, 0, T0) == RPG_OK);
+    g.run.row = RPG_ROWS;
+    assert(!rpg_dungeon_first_clear_xp(&g));
+    rpg_dungeon_leave(&g, false);
+    assert(!memcmp(&g.hero, &expected.hero, sizeof g.hero));
+
+    assert(rpg_dungeon_enter(&g, 0, 0, T0) == RPG_OK);
+    g.run.floor = 5;
+    rpg_dungeon_floor(&g.run);
+    g.run.row = RPG_ROWS;
+    assert(!rpg_dungeon_first_clear_xp(&g) && rpg_dungeon_descend(&g) < 0);
+    g.run.cleared[RPG_ROWS] = 1u << g.run.col;
+    xp = rpg_dungeon_first_clear_xp(&g);
+    expected = g;
+    assert(xp > 0);
+    rpg_gain_xp(&expected, xp, xp * 7u / 10u, NULL);
+    rpg_dungeon_leave(&g, false);
+    g = reload(&g);
+    assert(rpg_dungeon_checkpoint(&g, 0) && !g.run.active);
+    assert(!memcmp(&g.hero, &expected.hero, sizeof g.hero));
+    assert(rpg_dungeon_enter(&g, 0, 1, T0) == RPG_OK && g.run.floor == 6);
+    puts("first clears: XP awarded once across restarts and checkpoint return; unfinished floors reject descent");
+}
+
 int main(void) {
     rpg_game g, a, b;
     fresh(&g); g.hero.hunger = 0; g.hero.morale = 100; a = b = g;
@@ -168,6 +207,7 @@ int main(void) {
     assert(b.coach.learned == LNC_ATTACK && b.coach.disabled && b.lantern.wins == 1);
     puts("v3 migration: exact profile/run retained; coaching and effects roundtrip: passed");
     family_progress();
+    first_clear_rewards();
 
     fresh(&g);
     rpg_guide_reset(&g);

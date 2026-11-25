@@ -105,7 +105,7 @@ static void test_data(void) {
     for (int s = 0; s < RPG_SKILL_COUNT; s++) {
         CHECK(owner[s] == 1);
         const rpg_skill_info *k = rpg_skill(s);
-        CHECK(k->name.it && k->name.en && k->kind <= SK_PASSIVE);
+        CHECK(k->name.it && k->name.en && k->kind < SK_KIND_COUNT);
         if (k->kind != SK_PASSIVE) CHECK(k->sp > 0);
     }
     for (int sp = 0; sp < SP_COUNT; sp++) CHECK(rpg_species(sp)->name.it && rpg_species(sp)->m_hp);
@@ -477,12 +477,45 @@ static void test_campaign(void) {
     }
 }
 
+static void test_arcane_missiles(void) {
+    rpg_game g;
+    new_hero(&g, FAM_MAGE, 1);
+    int branches[2];
+    CHECK(rpg_class_next(FAM_MAGE, branches) == 2);
+    g.hero.cls = (uint8_t)branches[1];
+    int skill = rpg_class(g.hero.cls)->skills[0];
+    CHECK(rpg_skill(skill)->kind == SK_MAGIC_MULTI);
+    g.hero.skill[skill] = 1;
+    rpg_foe foe;
+    rpg_foe_make(&foe, SP_BONE_KING, 20, false);
+    foe.hp = foe.max_hp = 10000;
+    foe.def = 450;
+    foe.mdef = 0;
+    rpg_battle b;
+    rpg_battle_start(&b, &g, &foe, 1, 10, B_FLAG_BOSS);
+    b.h.st.atk = 15;
+    b.h.st.matk = 200;
+    b.h.sp = rpg_skill_cost(skill, 1);
+    rpg_action a;
+    rpg_battle_auto(&b, &g, &a);
+    CHECK(a.kind == ACT_SKILL && a.skill == skill);
+    rpg_battle_hero(&b, &g, &a, WF_Q_PERFECT);
+    int hits = 0;
+    for (unsigned i = 0; i < b.ev_count; i++) {
+        if (b.ev[i].kind != EV_CRIT_HIT || b.ev[i].skill != skill) continue;
+        CHECK(b.ev[i].value > 100);
+        hits++;
+    }
+    CHECK(hits == 3 && b.h.sp == 0);
+}
+
 int main(int argc, char **argv) {
     verbose = argc > 1 && argv[1][0];
     test_data();
     test_hero();
     test_items();
     test_battle_basics();
+    test_arcane_missiles();
     test_hunt_and_save();
     test_dungeon();
     test_campaign();

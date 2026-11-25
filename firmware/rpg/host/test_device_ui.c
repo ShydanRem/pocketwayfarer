@@ -350,6 +350,58 @@ static void primary_adventure(void) {
     puts("primary adventure: eight classes, first-journey lessons, attack/parry, first Crypt room, no-scroll retreat, job reload and separate expedition IT/EN: passed");
 }
 
+static void pacing_ui(void) {
+    for (int lang = 0; lang < 2; lang++) {
+        rpg_new_hero profile = {.name = "Arcana", .cls = FAM_MAGE, .lang = (uint8_t)lang};
+        rpg_game_new(&R.g, &profile, r_now(), 414);
+        wf_lang = R.g.lang;
+        assert(rpg_dungeon_enter(&R.g, 0, 0, r_now()) == RPG_OK);
+        R.g.run.row = RPG_ROWS - 1;
+        for (int col = 0; col < RPG_COLS; col++) {
+            R.g.run.col = (int8_t)col;
+            if (rpg_room_reachable(&R.g.run, RPG_ROWS, 1)) break;
+        }
+        r_go(R_DUNGEON);
+        press(TR("Scale", "Stairs"));
+        uint32_t xp = rpg_dungeon_first_clear_xp(&R.g);
+        assert(xp == 29 && !R.g.best_floor[0]);
+        const char *caption = TR("Prima conquista · +29 PE\nScendi al piano 2 o torna al borgo.",
+                                 "First clear · +29 XP\nDescend to floor 2 or return to town.");
+        assert(find(lv_layer_top(), caption));
+        wf_app_start(saved, saved_len);
+        assert(R.screen == R_DUNGEON && find(lv_layer_top(), caption) && !R.g.best_floor[0]);
+        shot(lang ? "bonus-piano-en" : "bonus-piano-it");
+        rpg_game expected = R.g;
+        rpg_gain_xp(&expected, xp, xp * 7u / 10u, NULL);
+        press(lang ? "Town" : "Scendi");
+        assert(R.g.best_floor[0] == 1 && R.g.hero.xp == expected.hero.xp && R.g.hero.job_xp == expected.hero.job_xp);
+        wf_app_start(saved, saved_len);
+        assert(R.g.best_floor[0] == 1 && R.g.hero.xp == expected.hero.xp && R.g.hero.job_xp == expected.hero.job_xp);
+        assert(lang ? R.screen == R_TOWN && !R.g.run.active : R.screen == R_DUNGEON && R.g.run.floor == 2);
+
+        rpg_dungeon_leave(&R.g, false);
+        int branches[2];
+        assert(rpg_class_next(FAM_MAGE, branches) == 2);
+        R.g.hero.cls = (uint8_t)branches[1];
+        memset(R.g.hero.skill, 0, sizeof R.g.hero.skill);
+        R.g.hero.skill[rpg_class(branches[1])->skills[0]] = 1;
+        R.g.hero.sp = 20;
+        rpg_foe foe;
+        rpg_foe_make(&foe, SP_SKELETON, 3, false);
+        r_start_battle(&foe, 1, false, false);
+        run(1250);
+        press(TR("Abilità", "Skills"));
+        click(CX, CY - 150);
+        assert(rpg_battle_phase() == 3);
+        for (int t = 0; t < 500 && rpg_battle_ring_quality_now() < WF_Q_GOOD; t++) run(5);
+        assert(rpg_battle_ring_quality_now() >= WF_Q_GOOD && wf_app_key(WF_KEY_BOOT_DOWN));
+        run(1000);
+        assert(rpg_battle_phase() != 3);
+        rpg_classic_cancel(&R.g);
+    }
+    puts("first-clear UI: both choices and reload IT/EN; Arcane Missiles opens and resolves the timing ring");
+}
+
 int main(int argc, char **argv) {
     setvbuf(stdout, NULL, _IOLBF, 0);
     assert(argc == 2); dest = argv[1];
@@ -360,7 +412,7 @@ int main(int argc, char **argv) {
     lv_indev_t *input = lv_indev_create(); lv_indev_set_type(input, LV_INDEV_TYPE_POINTER);
     lv_indev_set_read_cb(input, read_touch); lv_timer_set_period(lv_indev_get_read_timer(input), 10);
     new_adventure();
-    cadence_and_judgment(); scene_lifetimes(); modal_and_gems(); primary_adventure();
+    cadence_and_judgment(); scene_lifetimes(); modal_and_gems(); primary_adventure(); pacing_ui();
     printf("device UI regressions: %d native captures; no physical latency claim\n", shots);
     return 0;
 }
