@@ -89,8 +89,9 @@ def build():
                    ['{0, 0, 0, 0, 0, 0}' if f is None else e.sprite(f'room{n}', f().render()) for n, f in enumerate(I.ROOMS)]))
     t.append(table('wf_sprite', 'rpg_element_icons', ['EL_COUNT'],
                    [e.sprite(f'el{n}', I.element(n).render()) for n in range(7)]))
-    t.append(table('wf_sprite', 'rpg_skill_icons', ['11'],
-                   [e.sprite(f'sk{n}', f().render()) for n, f in enumerate(I.SKILL_KINDS)]))
+    skill_icons = [e.sprite(f'sk{n}', f().render()) for n, f in enumerate(I.SKILL_KINDS)]
+    skill_icons.append(skill_icons[I.SKILL_KINDS.index(I.sk_bolt)])  # SK_MAGIC_MULTI
+    t.append(table('wf_sprite', 'rpg_skill_icons', ['SK_KIND_COUNT'], skill_icons))
     t.append(table('wf_sprite', 'rpg_ui_icons', ['RI_COUNT'],
                    [e.sprite(f'ui_{name}', f().render()) for name, f in I.UI]))
     from PIL import Image
@@ -133,7 +134,7 @@ def build():
                                                      'extern const wf_sprite rpg_cons_icons[CO_COUNT];',
                                                      'extern const wf_sprite rpg_room_icons[ROOM_KIND_COUNT];',
                                                      'extern const wf_sprite rpg_element_icons[EL_COUNT];',
-                                                     'extern const wf_sprite rpg_skill_icons[11];',
+                                                     'extern const wf_sprite rpg_skill_icons[SK_KIND_COUNT];',
                                                      'extern const wf_sprite rpg_ui_icons[RI_COUNT];',
                                                      'extern const wf_sprite rpg_scenes[RS_COUNT];',
                                                      'extern const rpg_scene_fx rpg_scene_fxs[RS_COUNT];', '']

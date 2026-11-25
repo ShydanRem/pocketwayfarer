@@ -35,6 +35,8 @@ Gli oggetti incompatibili passano nello zaino. Il gioco può equipaggiare un ogg
 
 In **Eroe → Statistiche** e **Abilità** puoi spendere i punti guadagnati. Il tuo avatar conserva razza, volto e colori quando cambi equipaggiamento o classe. Arma, mano secondaria e testa mostrano gli oggetti equipaggiati.
 
+I **Missili arcani** dell’Arcanista colpiscono tre volte e usano **MATK** contro la difesa magica. Imbocca il ramo Arcanista partendo dal Mago se vuoi una magia a più colpi di elemento neutro.
+
 ## Lanternbound
 
 Dal borgo scegli **Servizi → Spedizione extra** per giocare le cinque stanze di Lanternbound. Le opzioni **Assetto** e **Reliquie** valgono per la spedizione. Se avevi una spedizione in corso, nel menu trovi **Riprendi spedizione**. **Borgo** riporta all’eroe e alla mappa principali. [Regole, reliquie e ritorno](LANTERNBOUND.md)
@@ -46,6 +48,10 @@ Dal borgo scegli **Servizi → Spedizione extra** per giocare le cinque stanze d
 La mappa procede dal basso verso l’alto. Scegli una stanza con il bordo dorato, collegata alla tua posizione. **Qui** indica la stanza in cui sei. **Visitata** marca una sosta precedente e **?** indica una stanza ancora da scoprire. I nodi dorati mostrano il tipo di stanza prima che tu entri. Una stanza ordinaria costa 2 punti Stamina.
 
 ![La guida indica le stanze raggiungibili nella prima Cripta](img/hero_rig/guida-cripta.png)
+
+Quando raggiungi le scale o sconfiggi il boss su un piano mai completato, guadagni un bonus di **PE eroe e PE classe**. Alle scale puoi scendere o tornare al borgo con lo stesso bonus. Il gioco usa il tuo record per assegnarlo una sola volta per piano, anche sui profili esistenti.
+
+![Le scale del primo piano mostrano il bonus di prima conquista](img/hero_rig/bonus-piano.png)
 
 In basso **Scorte** apre pozioni ed eteri. Da inizio piano o dalle scale puoi rientrare col bottino. Dentro il piano, **Esci** usa una pergamena se la possiedi. Senza pergamena puoi ritirarti lasciando metà dell’oro trovato in quella discesa, conservando oggetti e checkpoint. Dopo il Re Gelatino al piano 5 puoi ripartire dal piano 6. Il Re delle Ossa al piano 10 sblocca la Riva di Vetro.
 

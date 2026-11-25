@@ -15,7 +15,7 @@ Pocket Wayfarer è un RPG fantasy per **Waveshare ESP32-S3-Touch-AMOLED-1.75**. 
 | Giocare su PC, compilare o modificare il progetto | [Sviluppo e build](SVILUPPO.md) |
 | Pubblicare sito e firmware su GitHub Pages | [Pubblicazione e rilascio](PUBBLICAZIONE.md) |
 
-La versione `0.10.0-preview.6` è verificata su PC e compilata per ESP32-S3. Resta da collaudare sul Pocket fisico.
+La versione `0.10.0-preview.7` è verificata su PC e compilata per ESP32-S3. Resta da collaudare sul Pocket fisico.
 
 ## Per approfondire
 

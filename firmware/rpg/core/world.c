@@ -197,12 +197,34 @@ void rpg_room_resolve(rpg_game *g, rpg_room_result *res, rpg_foe *foes, int *n) 
     g->rng_state = r.s;
 }
 
+static bool floor_complete(const rpg_run *run) {
+    if (run->row != RPG_ROWS) return false;
+    int kind = run->rooms[RPG_ROWS][run->col];
+    return kind == ROOM_STAIRS || (kind == ROOM_BOSS && (run->cleared[RPG_ROWS] & (1u << run->col)));
+}
+
+uint32_t rpg_dungeon_first_clear_xp(const rpg_game *g) {
+    const rpg_run *run = &g->run;
+    if (!run->active || run->floor <= g->best_floor[run->zone] || !floor_complete(run)) return 0;
+    return rpg_xp_next(floor_level(run, 0)) / 2u;
+}
+
+static void record_floor_clear(rpg_game *g) {
+    const rpg_run *run = &g->run;
+    uint32_t xp = rpg_dungeon_first_clear_xp(g);
+    if (xp) {
+        g->best_floor[run->zone] = run->floor;
+        rpg_gain_xp(g, xp, xp * 7u / 10u, NULL);
+    }
+    if (run->floor == RPG_FLOORS && run->zone == g->zone_unlocked && g->zone_unlocked + 1 < RPG_ZONES)
+        g->zone_unlocked++;
+}
+
 int rpg_dungeon_descend(rpg_game *g) {
     rpg_run *run = &g->run;
-    if (!run->active) return -1;
-    if (run->floor > g->best_floor[run->zone]) g->best_floor[run->zone] = run->floor;
+    if (!run->active || !floor_complete(run)) return -1;
+    record_floor_clear(g);
     if (run->floor >= RPG_FLOORS) {
-        if (run->zone == g->zone_unlocked && g->zone_unlocked + 1 < RPG_ZONES) g->zone_unlocked++;
         run->active = 0;
         return 1;
     }
@@ -214,11 +236,8 @@ int rpg_dungeon_descend(rpg_game *g) {
 void rpg_dungeon_leave(rpg_game *g, bool defeated) {
     rpg_run *run = &g->run;
     if (!run->active) return;
-    int completed = run->floor - 1;
-    if (!defeated && run->row == RPG_ROWS &&
-        (run->rooms[RPG_ROWS][run->col] == ROOM_STAIRS || (run->cleared[RPG_ROWS] & (1u << run->col))))
-        completed = run->floor;
-    if (completed > g->best_floor[run->zone]) g->best_floor[run->zone] = (uint8_t)completed;
+    if (!defeated && floor_complete(run)) record_floor_clear(g);
+    else if (run->floor - 1 > g->best_floor[run->zone]) g->best_floor[run->zone] = run->floor - 1;
     if (defeated) {
         uint32_t lost = run->gold / 2u;
         g->gold = g->gold > lost ? g->gold - lost : 0;

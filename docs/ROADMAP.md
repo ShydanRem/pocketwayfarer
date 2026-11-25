@@ -1,6 +1,6 @@
 # Roadmap di Pocket Wayfarer
 
-**Aggiornata il 23 novembre 2026.** Il percorso principale parte da un titolo unico e dalle otto classi base. Lo stesso eroe prosegue nel borgo, nei cinque ambienti e nei dungeon. Il cambio di famiglia conserva i progressi di ogni via. Lanternbound è una spedizione extra nei Servizi del borgo. [Registro di avanzamento](roadmap/STATUS.md)
+**Aggiornata il 25 novembre 2026.** Il percorso principale parte da un titolo unico e dalle otto classi base. Lo stesso eroe prosegue nel borgo, nei cinque ambienti e nei dungeon. Il cambio di famiglia conserva i progressi di ogni via. Lanternbound è una spedizione extra nei Servizi del borgo. [Registro di avanzamento](roadmap/STATUS.md)
 
 ## Obiettivo e regole di avanzamento
 
@@ -193,6 +193,7 @@ Arma, mano secondaria e testa sono i canali grafici dell’equipaggiamento già 
 | **R7.3 · in pausa, audio opzionale** | Riprendere dopo il collaudo del nuovo percorso principale. Verificare l’uscita audio e l’interazione con i tempi di gioco sul Pocket. |
 | **R7.4 · percorso unico e cambio di classe** | Titolo, creazione, borgo, prima vittoria e cambio di famiglia verificati in italiano e inglese su host. Migrazione dai profili v1–v4. |
 | **R7.5 · primo viaggio e campagna** | Guida con touch e BOOT, cinque regioni in sequenza, ritirata e transizione dopo il boss. [Prove e limiti](roadmap/campaign-evidence/README.md) |
+| **R7.6 · ritmo della campagna** | PE per la prima conquista dei piani e Missili arcani magici. Confronto su 128 profili simulati. Da misurare sul Pocket i tempi reali e le scelte di recupero. [Bilanciamento e cattura nativa](roadmap/campaign-pacing-evidence/README.md) |
 | **R8 · candidata 1.0** | Installazione pulita e aggiornamento da una preview con dati, prove sul Pocket di anello, parata e sonno/risveglio, sessione lunga, controllo del budget e pacchetto di ripristino. |
 
 Il primo obiettivo di design è una scelta comprensibile, non più numeri sullo schermo. Registrare, con consenso e senza introdurre account, osservazioni di playtest: tempi reali di spedizione, motivo delle sconfitte, scelte di percorso/reliquia, uso di Guardia/supporti e volontà di iniziare un altro viaggio. Una sessione di 5–8 minuti è una **ipotesi da provare**, non un dato già misurato.

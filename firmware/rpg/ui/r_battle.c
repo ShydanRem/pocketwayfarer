@@ -490,7 +490,7 @@ static bool needs_ring(const rpg_action *a) {
     if (a->kind == ACT_ATTACK) return true;
     if (a->kind != ACT_SKILL) return false;
     const rpg_skill_info *k = rpg_skill(a->skill);
-    return k->kind <= SK_NOVA || k->kind == SK_DRAIN || (k->kind == SK_DEBUFF && k->power);
+    return k->kind <= SK_NOVA || k->kind == SK_MAGIC_MULTI || k->kind == SK_DRAIN || (k->kind == SK_DEBUFF && k->power);
 }
 
 static void act(const rpg_action *a) {

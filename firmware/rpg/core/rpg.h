@@ -70,7 +70,9 @@ typedef enum {
     SK_DEBUFF,      /* status on one (or all if `hits`=9) */
     SK_DRAIN,       /* magical, heals part of damage  */
     SK_SUMMON,      /* ally that strikes every round  */
-    SK_PASSIVE
+    SK_PASSIVE,
+    SK_MAGIC_MULTI, /* magical, `hits` on one target  */
+    SK_KIND_COUNT
 } rpg_skill_kind;
 
 enum { BF_NONE, BF_ATK, BF_DEF, BF_MATK, BF_CRIT, BF_DODGE, BF_REGEN, BF_SHIELD, BF_RAGE, BF_COUNT };
@@ -469,6 +471,8 @@ typedef struct {
 } rpg_room_result;
 /* Resolves a non-fight room. */
 void rpg_room_resolve(rpg_game *g, rpg_room_result *res, rpg_foe *foes, int *n);
+/* Base XP available when settling the first completion of the current floor. */
+uint32_t rpg_dungeon_first_clear_xp(const rpg_game *g);
 int rpg_dungeon_descend(rpg_game *g);            /* after stairs/boss */
 void rpg_dungeon_leave(rpg_game *g, bool defeated);
 /* Emergency retreat from inside a floor. Returns the gold left behind. */

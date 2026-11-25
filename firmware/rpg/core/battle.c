@@ -206,10 +206,11 @@ static void use_skill(rpg_battle *b, rpg_game *g, int index, int target, int qua
         foe_status(b, target, k->status, k->chance + lv * 3, turns);
         break;
     case SK_MULTI:
+    case SK_MAGIC_MULTI:
         for (int i = 0; i < k->hits; i++) {
             int t = rpg_battle_target(b, target);
             if (t < 0) break;
-            hit_foe(b, t, power, false, k->element, quality, s);
+            hit_foe(b, t, power, k->kind == SK_MAGIC_MULTI, k->element, quality, s);
             if (i == 0) foe_status(b, t, k->status, k->chance, turns);
         }
         break;
@@ -538,7 +539,7 @@ void rpg_battle_auto(const rpg_battle *b, const rpg_game *g, rpg_action *a) {
         case SK_BUFF: score = h->buff[k->buff] ? 0 : alive >= 2 || b->flags & B_FLAG_BOSS ? 160 : 60; break;
         case SK_SUMMON: score = h->summon_turns ? 0 : 170; break;
         case SK_CLEAVE: case SK_NOVA: score = k->power * (alive >= 2 ? alive : 1) * 9 / 10; break;
-        case SK_MULTI: score = k->power * k->hits; break;
+        case SK_MULTI: case SK_MAGIC_MULTI: score = k->power * k->hits; break;
         case SK_DEBUFF: score = (k->hits == 9 ? alive : 1) * 60 + k->power; break;
         default: score = k->power; break;
         }

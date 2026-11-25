@@ -78,7 +78,7 @@ extern const wf_sprite rpg_item_icons[IT_TYPE_COUNT][RPG_TIERS];
 extern const wf_sprite rpg_cons_icons[CO_COUNT];
 extern const wf_sprite rpg_room_icons[ROOM_KIND_COUNT];
 extern const wf_sprite rpg_element_icons[EL_COUNT];
-extern const wf_sprite rpg_skill_icons[11];
+extern const wf_sprite rpg_skill_icons[SK_KIND_COUNT];
 extern const wf_sprite rpg_ui_icons[RI_COUNT];
 extern const wf_sprite rpg_scenes[RS_COUNT];
 extern const rpg_scene_fx rpg_scene_fxs[RS_COUNT];
