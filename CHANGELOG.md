@@ -1,5 +1,10 @@
 # Note di versione
 
+## 0.10.0-preview.9 — 25 novembre 2026
+
+- Il pugnale del Ladro usa la Forza e la più alta tra Forza e Agilità per l’attacco. Vale anche per Assassino, Duellante, Lama Notturna e Maestro di Lame.
+- Nello Zaino, il confronto tra pugnale e spada indica quanto cambia l’attacco dell’eroe con l’arma equipaggiata.
+
 ## 0.10.0-preview.8 — 25 novembre 2026
 
 - Nel combattimento delle Isole Sospese, una parata **Bene** assorbe il 45% del danno. **Ottimo** assorbe il 55% e una parata perfetta annulla il colpo e contrattacca.

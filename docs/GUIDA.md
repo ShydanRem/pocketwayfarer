@@ -39,6 +39,10 @@ Gli oggetti incompatibili passano nello zaino. Il gioco può equipaggiare un ogg
 
 In **Eroe → Statistiche** e **Abilità** puoi spendere i punti guadagnati. Il tuo avatar conserva razza, volto e colori quando cambi equipaggiamento o classe. Arma, mano secondaria e testa mostrano gli oggetti equipaggiati.
 
+Il **pugnale** aggiunge all’attacco una quota di Forza e una seconda quota pari al valore più alto tra Forza e Agilità. La spada usa la Forza per entrambe. Aprendo l’arma nello **Zaino**, leggi il cambio di **Attacco eroe** per il tuo equipaggiamento attuale.
+
+![Lo Zaino mostra l’aumento dell’attacco dell’eroe passando dalla spada al pugnale](img/hero_rig/confronto-pugnale.png)
+
 I **Missili arcani** dell’Arcanista colpiscono tre volte e usano **MATK** contro la difesa magica. Imbocca il ramo Arcanista partendo dal Mago se vuoi una magia a più colpi di elemento neutro.
 
 ## Lanternbound
